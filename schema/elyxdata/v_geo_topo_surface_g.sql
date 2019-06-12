@@ -1,0 +1,80 @@
+DROP VIEW "ELYX_DATA"."V_GEO_TOPO_SURF_G";
+DROP SYNONYM "ELYX_DATA"."V_GEO_TOPO_SURF_G_SEQ";
+
+CREATE OR REPLACE FORCE VIEW ELYX_DATA.V_GEO_TOPO_SURF_G AS (
+SELECT
+	OBJECTID,
+	CLA_INU,
+	GEOM,
+	GEO_DV,
+	GEO_DF,
+	GEO_ON_VALIDE,
+	GEO_NMN,
+	GEO_DS,
+	GEO_NMS,
+	GEO_DM
+FROM GEO.TA_SUR_TOPO_G
+WHERE (
+	CLA_INU = 206 OR
+	CLA_INU = 805 OR
+	CLA_INU = 804 OR
+	CLA_INU = 806 OR
+	CLA_INU = 348 OR
+	CLA_INU = 357 OR
+	CLA_INU = 364 OR
+	CLA_INU = 356 OR
+	CLA_INU = 223 OR
+	CLA_INU = 831 OR
+	CLA_INU = 834 OR
+	CLA_INU = 832 OR
+	CLA_INU = 830 OR
+	CLA_INU = 848 OR
+	CLA_INU = 363 OR
+	CLA_INU = 355 OR
+	CLA_INU = 362 OR
+	CLA_INU = 214 OR
+	CLA_INU = 219 OR
+	CLA_INU = 325 OR
+	CLA_INU = 356 OR
+	CLA_INU = 867 OR
+	CLA_INU = 223)
+  AND GEO_ON_VALIDE = 0
+);
+
+CREATE OR REPLACE SYNONYM "ELYX_DATA"."V_GEO_TOPO_SURF_G_SEQ" FOR "GEO"."TA_SUR_TOPO_G_SEQ";
+
+GRANT SELECT, DELETE, UPDATE, INSERT ON "ELYX_DATA"."V_GEO_TOPO_SURF_G" TO CULM_DSIF_ROLE;
+
+GRANT SELECT ON "ELYX_DATA"."V_GEO_TOPO_SURF_G" TO CULM_TOPO_ROLE;
+
+-- droit pour le role sur la table système créée par elyx
+GRANT SELECT, INSERT, UPDATE, DELETE ON V_GEO_TOPO_SURF_G_AR TO CULM_DSIF_ROLE;
+GRANT SELECT ON V_GEO_TOPO_SURF_G_AR TO CULM_TOPO_ROLE;
+
+geo.ta_sur_topo_g
+GRANT SELECT ON geo.ta_sur_topo_g TO ELYX_DATA WITH GRANT OPTION;
+GRANT SELECT, ALTER ON "GEO"."TA_SUR_TOPO_G_SEQ" TO ELYX_DATA WITH GRANT OPTION;
+
+GRANT SELECT ON "ELYX_DATA"."V_GEO_TOPO_SURF_G" TO ELYX_DATA WITH GRANT OPTION;
+
+GRANT SELECT ON ELYX_DATA.V_GEO_TOPO_SURF_G_SEQ TO CULM_ELYX_ADMIN
+
+
+CREATE OR REPLACE TRIGGER "ELYX_DATA"."DELETE_TOPO_G_SURF"
+instead of delete ON "ELYX_DATA"."V_GEO_TOPO_SURF_G"
+declare
+username varchar(30);
+vMessage varchar2(32000);
+BEGIN
+select sys_context('USERENV','OS_USER') into username from dual;
+vmessage:='phase delete de '||:old.objectid;
+update GEO.ta_sur_topo_g set geo_on_valide=1 ,geo_df=sysdate ,geo_dm=sysdate ,GEO_NMN=username where objectid=:old.objectid;
+EXCEPTION
+WHEN OTHERS THEN
+vMessage := vMessage || chr(10) || 'Le trigger instead of V_GEO_TOPO_SURF_G rencontre des problèmes par '||username;
+mail.sendmail('jrmorreale@lillemetropole.fr',vMessage,'Souci Le trigger instead of V_GEO_TOPO_G',
+		'jrmorreale@lillemetropole.fr','jrmorreale@lillemetropole.fr') ;
+END;
+
+/
+ALTER TRIGGER "ELYX_DATA"."DELETE_TOPO_G_SURF" ENABLE;
