@@ -1,82 +1,67 @@
-CREATE INDEX TA_SUR_TOPO_G_DATE_MAJ_NBR_IDX ON TA_SUR_TOPO_G (GEO_NMN, GEO_DM);
+/*
+Décompte des actions par agent sur les 7 derniers jours du mois courant
+Les objets créés sont comptés en double car leur champs de date de mise à jour est rempli avec la date de création
+*/
 
-CREATE INDEX TA_SUR_TOPO_G_DATE_CREATION_NBR_IDX ON TA_SUR_TOPO_G (GEO_NMS, GEO_DS) TABLESPACE INDX_GEO;;
-
-INDX_GEO
-SELECT *FROM USER_TABLESPACES
-
--- par type d'action, par année et par mois
 WITH
-source_creation AS (
+-- décompte des surfaces créées et modifiées
+source_stats_surface AS (
 	SELECT
-	  'surfaces créées' AS "type",
+	  'surfaces créées' AS "type_action",
 		GEO_NMS AS agent,
-		extract(year from GEO_DS) as "année",
-		extract(month from GEO_DS) as "mois",
-		COUNT(GEO_DS) AS total
+		COUNT(GEO_NMS) AS total
 	FROM GEO.TA_SUR_TOPO_G
-	group by
-		extract(year from GEO_DS),
-		extract(month from GEO_DS),
-		GEO_NMS
+	WHERE
+		GEO_DS > = (SELECT SYSDATE - 7 FROM dual)
+		AND EXTRACT(YEAR FROM GEO_DS) = EXTRACT(YEAR FROM sysdate)
+		AND EXTRACT(MONTH FROM GEO_DS) = EXTRACT(MONTH FROM sysdate)
+  GROUP BY GEO_NMS
 	UNION
 	SELECT
-	  'lignes créées' AS "type",
-		GEO_NMS AS agent,
-		extract(year from GEO_DS) as "année",
-		extract(month from GEO_DS) as "mois",
-		COUNT(GEO_DS) AS total
-	FROM GEO.TA_LIG_TOPO_G
-	group by
-		extract(year from GEO_DS),
-		extract(month from GEO_DS),
-		GEO_NMS
+	  'surfaces màj' AS "type_action",
+		GEO_NMN AS agent,
+		COUNT(GEO_NMS) AS total
+	FROM GEO.TA_SUR_TOPO_G
+	WHERE
+		GEO_DM > = (SELECT SYSDATE - 7 FROM dual)
+		AND EXTRACT(YEAR FROM GEO_DS) = EXTRACT(YEAR FROM sysdate)
+		AND EXTRACT(MONTH FROM GEO_DS) = EXTRACT(MONTH FROM sysdate)
+  GROUP BY GEO_NMN
 	),
 
-source_maj AS (
+-- décompte des lignes créées et modifiées
+source_stats_ligne AS (
 	SELECT
-	  'surfaces màj' AS "type",
-		GEO_NMN AS agent,
-		extract(year from GEO_DS) as "année",
-		extract(month from GEO_DS) as "mois",
-		COUNT(GEO_DS) AS total
-	FROM GEO.TA_SUR_TOPO_G
-	group by
-		extract(year from GEO_DS),
-		extract(month from GEO_DS),
-		GEO_NMN
+		'lignes créées' AS "type_action",
+		GEO_NMS AS agent,
+		COUNT(GEO_NMS) AS total
+	FROM GEO.TA_LIG_TOPO_G
+	WHERE
+		GEO_DS > = (SELECT SYSDATE - 7 FROM dual)
+		AND EXTRACT(YEAR FROM GEO_DS) = EXTRACT(YEAR FROM sysdate)
+		AND EXTRACT(MONTH FROM GEO_DS) = EXTRACT(MONTH FROM sysdate)
+	GROUP BY GEO_NMS
 	UNION
 	SELECT
-	  'lignes màj' AS "type",
+		'lignes màj' AS "type_action",
 		GEO_NMN AS agent,
-		extract(year from GEO_DS) as "année",
-		extract(month from GEO_DS) as "mois",
-		COUNT(GEO_DS) AS total
+		COUNT(GEO_NMS) AS total
 	FROM GEO.TA_LIG_TOPO_G
-	group by
-		extract(year from GEO_DS),
-		extract(month from GEO_DS),
-		GEO_NMN
+	WHERE GEO_DM > = (SELECT SYSDATE - 7 FROM dual)
+	GROUP BY GEO_NMN
 	),
 
--- fusion des sources pour pouvoir faire un simple tri sur le total par la suite
+-- fusion des sources pour pouvoir faire un tri sur le total par la suite (limite d'oracle)
 fusion AS (
-	SELECT * FROM source_creation
+	SELECT * FROM source_stats_surface
 	UNION
-	SELECT * FROM source_maj)
+	SELECT * FROM source_stats_ligne
+	)
 
-SELECT 
+SELECT
   agent,
-	SUM(total)
+	type_action,
+  SUM(total) AS nbr
 FROM fusion
-WHERE "année" >= 2019
-
-
-
-
-
-select extract(year from date_created) as yr, extract(month from date_created) as mon,
-       sum(Num_of_Pictures)
-from pictures_table
-group by extract(year from date_created), extract(month from date_created)
-order by yr, mon;
+GROUP BY type_action, agent
+ORDER BY agent, nbr DESC
