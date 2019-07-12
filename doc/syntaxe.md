@@ -1,30 +1,74 @@
 # Syntaxe du code SQL
 
-## Indentation
+## Indentation générale
 
-Il faut faire un retour à la ligne par élément.
+* Il faut faire un retour à la ligne par élément
+ * cela facilite le débogage et la lecture des logs
+* L'indentation par ligne se fait par tabulation et non par espace
+* Les commentaires doit être en ligne quand ils font moins de 80 caractères et ne nécessitent pas de retour à la ligne
+ * En cas de dépassement, il faut passer en commentaire de bloc
+ * Si la documentation commence à être longue, il faut privilégier un fichier annexe en markdown ayant le même nom que le fichier SQL
+* En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence
 
-L'indentation par ligne se fait par tabulation et non par espace.
+```SQL
+-- invalide
+SELECT valeur FROM table_a WHERE valeur > 1 AND valeur != 6
+-- valide
+SELECT
+	valeur
+FROM
+	table_a
+WHERE
+	table_a.valeur > 1
+	AND valeur != 6
+```
 
-Les commentaires doit être en ligne quand ils font moins de 80 caractères et ne nécessitent pas de retour à la ligne. En cas de dépassement, il faut passer en commentaire de bloc. Si la documentation commence à être longue, il faut privilégier un fichier annexe en markdown ayant le même nom que le fichier SQL.
+## Nommage
 
-En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence.
+### Règles générales
 
-## Fonctions
+* Les noms ne doivent pas être proches de mots-clés réservés par le système ou la norme ANSI SQL (binary, type, action)
+* La longueur totale de la chaîne de caractère ne doit pas dépasser 30 signes (limite dure d'Oracle < 12.2g)
+* Il ne doit pas y avoir d'espace, d'accent ou de caractères spéciaux
+* Un nom doit commencer par une lettre et ne pas finir avec un underscore
+* La séparation entre mots doit être faite avec un caractère underscore *_*
+ * Il ne doit pas y avoir d'underscores successifs
 
-L'appel aux noms des fonctions se fait en majuscule.
+### Tables et Vues
 
-## Colonnes et champs
+* Il faut préfixer
+ * les tables avec *TA_*
+ * les vues avec *V_*
+ * les vues matérialisées avec *VM_*
 
-L'appel aux colonnes et champs se fait en minuscule. Pareil pour les alias.
+### Noms réservés
 
-Les noms ne doivent pas être proche de noms système, c-à-d pas de noms *type*.
+Tous les noms réservés doivent être en majuscule se fait en majuscule.
 
-Il ne doit pas y avoir d'espace, d'accent, de caractères spéciaux ou de majuscules.
+```SQL
+-- invalide
+select valeur from table_a where table_a.valeur > 1
+-- valide
+SELECT valeur FROM table_a WHERE table_a.valeur > 1
+```
 
-La séparation entre mots doit être faite avec un caractère underscore _.
+### Colonnes
 
-## Jointures
+* Utilisez un nom au singulier
+* Aucun champ ne peut avoir le même intitulé que celui de la table
+* Toujours en minuscule
+* Préfixez
+	* une clé primaire par *id_*
+	* une clé étrangère par *fid_*
+
+### Alias
+
+* Il faut inclure le mot-clé AS avant la valeur
+* Pour les alias de fonctions, utilisez le nom que vous auriez donné à une colonne normale
+
+## Requêtes
+
+### Jointures
 
 Les jointures doivent être matérialisées et non pas apparaître dans la clause WHERE.
 
@@ -35,4 +79,10 @@ WHERE table_a.id = table_b.id
 JOIN table_b ON table_a.id = table_b.id
 ```
 
+## Création
 
+## Clés
+
+## Contraintes
+
+## Types
