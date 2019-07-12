@@ -1,0 +1,184 @@
+/*
+Import des données initiales dans une table  OCS_2D via FME
+*/
+
+
+-- création d'une table pour les sources des différentes géométries
+CREATE TABLE geo.ta_ocs2d_type_source (
+	"OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+	"SOURCE" VARCHAR2(254 BYTE)
+)
+TABLESPACE "DATA_GEO";
+-- sélection des différentes source et insertion, la future clé primaire est à 0 par défaut
+INSERT INTO geo.ta_ocs2d_type_source ("OBJECTID", "SOURCE")
+SELECT DISTINCT
+  '0' AS "OBJECTID",
+  SOURCE15 AS "SOURCE"
+FROM "GEO"."OCS_2D"
+ORDER BY SOURCE15;
+-- création d'une séquence car oracle n'a pas d'expression du type generate_series pour préremplir une colonne de clé primaire
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+-- remplissage du champs qui servira de clé en déclinant la séquence
+UPDATE geo.ta_ocs2d_type_source
+SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+-- suppression de la séquence CAR ORACLE NE GERE PAS UN SIMPLE ALTER SEQUENCE RESTART !
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+-- création de la contrainte clé primaire
+ALTER TABLE "GEO"."TA_OCS2D_TYPE_SOURCE"
+	ADD CONSTRAINT "pk_ta_ocs2d_type_source" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+-- extraction des classes de couvertures
+CREATE TABLE geo.ta_ocs2d_type_couverture (
+	"OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+  "NV1" NUMBER(2) NOT NULL,
+  "NV2" NUMBER(2),
+  "NV3" NUMBER(2),
+	"CS" VARCHAR2(8 BYTE) NOT NULL
+)
+TABLESPACE "DATA_GEO";
+
+INSERT INTO geo.ta_ocs2d_type_couverture (OBJECTID, NV1,NV2, NV3, CS)
+SELECT DISTINCT
+  '0' AS "OBJECTID",
+  SUBSTR(CS15,3,1) AS NV1,
+  SUBSTR(CS15,5,1) AS NV2,
+  SUBSTR(CS15,7,1) AS NV3,
+	CS15 AS CS
+FROM "OCS_2D"
+ORDER BY NV1, NV2, NV3;
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+UPDATE geo.ta_ocs2d_type_couverture SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+ALTER TABLE "GEO"."TA_OCS2D_TYPE_COUVERTURE"
+	ADD CONSTRAINT "pk_ta_ocs2d_type_couverture" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+-- extraction des classes d'usage
+CREATE TABLE geo.ta_ocs2d_type_usage (
+	"OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+  "NV1" NUMBER(2) NOT NULL,
+  "NV2" NUMBER(2),
+  "NV3" NUMBER(2),
+	"CS" VARCHAR2(8 BYTE) NOT NULL
+)
+TABLESPACE "DATA_GEO";
+
+INSERT INTO geo.ta_ocs2d_type_usage (OBJECTID, NV1,NV2, NV3, CS)
+SELECT DISTINCT
+  '0' AS "OBJECTID",
+  SUBSTR(CS15,3,1) AS NV1,
+  SUBSTR(CS15,5,1) AS NV2,
+  SUBSTR(CS15,7,1) AS NV3,
+	CS15 AS CS
+FROM "OCS_2D"
+ORDER BY NV1, NV2, NV3;
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+UPDATE geo.ta_ocs2d_type_usage SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+ALTER TABLE "GEO"."TA_OCS2D_TYPE_USAGE"
+	ADD CONSTRAINT "pk_ta_ocs2d_type_usage" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+COMMENT ON TABLE geo.ta_ocs2d_type_usage IS '';
+
+--
+CREATE TABLE geo.ta_ocs2d_type_indice (
+	"OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+  "INDICE" NUMBER(2)
+)
+TABLESPACE "DATA_GEO";
+
+INSERT INTO geo.ta_ocs2d_type_indice (OBJECTID, INDICE)
+SELECT DISTINCT
+  '0' AS "OBJECTID",
+  INDICE15 AS INDICE
+FROM "OCS_2D"
+ORDER BY INDICE15;
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+UPDATE geo.ta_ocs2d_type_indice SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+COMMENT ON TABLE geo.ta_ocs2d_type_indice IS 'indice synthétique de fiabilité';
+
+ALTER TABLE "GEO"."TA_OCS2D_TYPE_INDICE"
+	ADD CONSTRAINT "pk_ta_ocs2d_type_indice" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+--
+CREATE TABLE geo.ta_ocs2d_commentaire (
+	"OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+  "COMMENTAIRE" VARCHAR2(1024 BYTE)
+	)
+TABLESPACE "DATA_GEO";
+
+INSERT INTO geo.ta_ocs2d_commentaire (OBJECTID, COMMENTAIRE)
+SELECT DISTINCT
+  '0' AS "OBJECTID",
+  COMMENT15 AS COMMENTAIRE
+FROM "OCS_2D"
+ORDER BY COMMENT15;
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+UPDATE geo.ta_ocs2d_commentaire SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+COMMENT ON TABLE geo.ta_ocs2d_commentaire IS 'commentaire lié à un objet';
+
+ALTER TABLE "GEO".ta_ocs2d_commentaire
+	ADD CONSTRAINT "pk_ta_ocs2d_commentaire" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+--
+DROP TABLE geo.ta_ocs2d_donnees;
+
+CREATE TABLE geo.ta_ocs2d_donnees (
+  "OBJECTID" NUMBER(38,0) NOT NULL ENABLE,
+	"geom" SDO_GEOMETRY,
+	"millesime" NUMBER(4),
+	"id_usage" NUMBER(38,0),
+	"id_couverture" NUMBER(38,0),
+	"id_indice" NUMBER(38,0),
+	"id_source" NUMBER(38,0),
+	"id_commentaire" NUMBER(38,0)
+	)
+TABLESPACE "DATA_GEO";
+
+INSERT INTO geo.ta_ocs2d_donnees ("OBJECTID", "geom", "millesime")
+SELECT
+  '0' AS "OBJECTID",
+	"GEOM",
+	'2015' AS "millesime"
+FROM "OCS_2D";
+
+CREATE SEQUENCE SEQ_TEMP_OCS2D INCREMENT BY 1 START WITH 1;
+UPDATE geo.ta_ocs2d_donnees SET OBJECTID = SEQ_TEMP_OCS2D.NEXTVAL;
+DROP SEQUENCE SEQ_TEMP_OCS2D;
+
+ALTER TABLE "GEO".ta_ocs2d_donnees
+	ADD CONSTRAINT "pk_ta_ocs2d_commentaire" PRIMARY KEY ("OBJECTID")
+	USING INDEX TABLESPACE "INDX_GEO" ENABLE;
+
+COMMENT ON TABLE geo.ta_ocs2d_donnees IS 'données de la base OCS2D (livraison PPIGE)';
+
+
+/*
+PHASE DE COUPLAGE !
+*/
+
+UPDATE geo.ta_ocs2d_donnees
+SET id_usage = ta_ocs2d_type_usage.objectid
+FROM
+
+
+
+
+
+--COMMENT ON TABLE geo. IS '';
