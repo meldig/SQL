@@ -49,8 +49,20 @@ Les commentaires doivent être en ligne quand ils font moins de 80 caractères e
 ```
 
 En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence.
-
-
+```SQL
+-- invalide
+SELECT
+		COUNT(SDO_LRS.CONNECTED_GEOM_SEGMENTS(SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 0.005)) AS connecte
+-- valide
+SELECT
+		COUNT(
+			SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+				SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
+				SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 
+				0.005
+			)
+		) AS connecte
+```
 
 ## Fonctions
 
