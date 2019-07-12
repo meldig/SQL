@@ -68,6 +68,7 @@ SELECT valeur FROM table_a WHERE table_a.valeur > 1
 
 ## Requêtes
 
+
 ### Jointures
 
 Les jointures doivent être matérialisées et non pas apparaître dans la clause WHERE.
@@ -79,6 +80,46 @@ WHERE table_a.id = table_b.id
 JOIN table_b ON table_a.id = table_b.id
 ```
 
+### Restreindre un ensemble
+
+* Privilégiez l'usage de BETWEEN plutôt que de AND pour une plage de valeurs numériques
+	```SQL
+	-- invalide
+	valeur >= 1 AND valeur <= 100
+	-- valide
+	valeur BETWEEN 1 AND 100
+	```
+* Privilégiez l'usage de IN plutôt que de OR pour une plage de valeurs alphanumériques
+	```SQL
+	-- invalide
+	valeur = 'AAA' AND valeur = 'BBB' AND valeur = 'CCC'
+	-- valide
+	valeur IN ('AAA', 'BBB', 'CCC')
+	```
+
+### Sous-requête et CTE
+
+```SQL
+-- invalide
+SELECT
+ valeurs
+FROM table_a
+WHERE
+	table_a.id = (SELECT valeur_b FROM table_b)
+-- valide
+WITH
+	cte AS (
+	SELECT
+		valeur_b
+	FROM table_b
+	)
+	SELECT
+	 valeur_a
+	FROM table_a
+	WHERE
+		table_a.id = cte.
+```
+
 ## Création
 
 ## Clés
@@ -86,3 +127,7 @@ JOIN table_b ON table_a.id = table_b.id
 ## Contraintes
 
 ## Types
+
+### Mise à jour
+
+merge ... using
