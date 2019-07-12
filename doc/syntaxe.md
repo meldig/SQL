@@ -69,7 +69,7 @@ SELECT
 L'appel aux noms des fonctions se fait en majuscule.
 ```SQL
 -- invalide
-select sdo_lrs.convert_to_lrs_geom(a.geom)
+SELECT sdo_lrs.convert_to_lrs_geom(a.geom)
 -- valide
 SELECT SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom)
 ```
