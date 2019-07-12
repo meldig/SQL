@@ -2,6 +2,7 @@
 DROP TABLE GEO.TA_POINT_WARNING;
 DROP SEQUENCE GEO.TA_POINT_WARNING_pk_seq;
 DROP TRIGGER GEO.TA_POINT_WARNING_tg_pk_seq;
+DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = 'TA_POINT_WARNING';
 
 -- création de la table et des contraintes associées
 CREATE TABLE GEO."TA_POINT_WARNING" (
