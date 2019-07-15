@@ -12,15 +12,47 @@
 
 ```SQL
 -- invalide
-SELECT valeur FROM table_a WHERE valeur > 1 AND valeur != 6
+SELECT a.cla_inu, count(a.objectid)
+-- valide
+SELECT 
+	a.cla_inu,
+	count(a.objectid)
+```
+
+```SQL
+-- Commentaire en ligne - invalide
+-- 1. Chargement des données de plans d'eau valides (filtrage des données);
+-- 2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
+-- 3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
+
+-- Commentaire en ligne - valide
+-- AND a.OBJECTID = 900114;
+
+-- Commentaire en bloc - invalide
+/*AND a.OBJECTID = 900114;*/
+
+-- Commentaire en bloc - valide
+/*
+1. Chargement des données de plans d'eau valides (filtrage des données);
+2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
+3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
+*/
+```
+
+En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence.
+```SQL
+-- invalide
+SELECT
+	COUNT(SDO_LRS.CONNECTED_GEOM_SEGMENTS(SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 0.005)) AS connecte
 -- valide
 SELECT
-	valeur
-FROM
-	table_a
-WHERE
-	table_a.valeur > 1
-	AND valeur != 6
+	COUNT(
+		SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+			SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
+			SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 
+			0.005
+		)
+	) AS connecte
 ```
 
 ## Nommage
@@ -47,9 +79,13 @@ Tous les noms réservés doivent être en majuscule se fait en majuscule.
 
 ```SQL
 -- invalide
-select valeur from table_a where table_a.valeur > 1
+select valeur 
+from table_a 
+where table_a.valeur > 1
 -- valide
-SELECT valeur FROM table_a WHERE table_a.valeur > 1
+SELECT valeur 
+FROM table_a 
+WHERE table_a.valeur > 1
 ```
 
 ### Colonnes
@@ -60,14 +96,6 @@ SELECT valeur FROM table_a WHERE table_a.valeur > 1
 * Préfixez
 	* une clé primaire par *id_*
 	* une clé étrangère par *fid_*
-
-### Alias
-
-* Il faut inclure le mot-clé AS avant la valeur
-* Pour les alias de fonctions, utilisez le nom que vous auriez donné à une colonne normale
-
-## Requêtes
-
 
 ### Jointures
 
