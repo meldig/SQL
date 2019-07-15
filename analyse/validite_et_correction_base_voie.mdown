@@ -1,0 +1,94 @@
+## Fiche Explicative : Recherche et Correction des erreurs de topologie de la Base Voie
+
+## Vérification de la validité de la géométrie de chaque objet de la Base Voie (avec une tolérance = 1mm ) :
+
+```SQL
+SELECT 
+	a.OBJECTID,
+	SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.GEOM, 0.001)
+FROM
+	GEO.LM_VOIE a
+WHERE
+	SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.GEOM, 0.001) <> 'TRUE'
+;
+```
+
+# Les éléments vérifiés par la requête ci-dessus sont :
+
+1. La valeur du SDO_GTYPE ;
+1. La valeur du SDO_ETYPE -> Si SDO_GTYPE = 2002, alors SDO_ETYPE doit avoir au moins 1 élément en LINE ;
+1. La valeur SDO_ELEM_INFO_ARRAY -> si la valeur se compose de trois valeurs valides ;
+1. L'absence de sommets en doublon ;
+1. Si la ligne dispose d'au moins deux sommets ;
+1. Si la ligne se situe bien dans l'aire déterminée par le DIMINFO de la vue USER_SDO_GEOM_METADATA ;
+1. La LRS géométrie a trois ou quatre dimensions ;
+
+# Résultat :
+
+Si aucun message d'erreur spécifiant une erreur de géométrie ou si aucune donnée FALSE n'est retournée, alors toutes les lignes sont valides.
+
+## Décompte des mauvaises connexion entre lignes :
+
+```SQL
+SELECT
+    COUNT(
+        SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+            SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
+            SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+            0.005
+        )
+    )/2 AS connecte
+FROM
+    GEO.LM_VOIE a,
+    GEO.LM_VOIE b
+WHERE 
+    a.objectid <> b.objectid
+    AND SDO_WITHIN_DISTANCE(
+        b.geom, 
+        a.geom, 
+        'distance = 0.005'
+    ) = 'TRUE'
+    AND SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+            SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), 
+            SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+            0.005
+        ) = 'FALSE'
+;
+```
+
+La requête ci-dessus vérifie si deux lignes sont connectées avec une tolérance de 5 mm. La division du COUNT() par deux est obligatoire puisque la fonction vérifie chaque connexion deux fois : si le segment A est connecté au segment B et si le segement B est connecté au segement A.
+
+**Précision :** Deux lignes sont connectées si et seulement si elles se rejoignent au niveau de leur point de départ ou point d'arrivée. Dans TOUT autre cas, les lignes ne sont pas connectées (même si elles s'intersectent en leur milieu).
+
+## Sélection des identifiants des lignes mal connectées :
+
+```SQL
+SELECT
+    a.objectid AS ligne_1,
+    b.objectid AS ligne_2,
+    SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+        SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
+        SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+        0.005
+    ) AS connecte
+FROM
+    GEO.LM_VOIE a,
+    GEO.LM_VOIE b
+WHERE 
+    a.objectid <> b.objectid
+    AND SDO_WITHIN_DISTANCE(
+            b.geom, 
+            a.geom, 
+            'distance = 0.005'
+        ) = 'TRUE'
+    AND SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+            SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), 
+            SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 
+            0.005
+        ) = 'FALSE'
+;
+```
+
+La requête ci-dessus indique les idenfiants des lignes pour chaque mauvaise connection.
+
+**ATTENTION :** en raison de l'utilisation de la fonction SDO_LRS.CONNECTED _GEOM_SEGMENTS() chaque mauvaise connection est en doublon, puisque la fonction vérifie chaque connexion deux fois : si le segment A est connecté au segment B et si le segement B est connecté au segement A.
