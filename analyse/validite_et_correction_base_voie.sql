@@ -3,12 +3,6 @@ Vérification de l'invalidité de la géométrie de chaque objet de la Base Voie
 */
 
 SELECT 
-    COUNT(a.OBJECTID)
-FROM 
-    LM_VOIE a;
-
-
-SELECT 
     a.OBJECTID,
     SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.GEOM, 0.001)
 FROM 
