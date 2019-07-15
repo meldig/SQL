@@ -4,56 +4,47 @@
 
 * Il faut faire un retour à la ligne par élément
  * cela facilite le débogage et la lecture des logs
+	 ```SQL
+	 -- invalide
+	 SELECT cla_inu, count(objectid) FROM table_a
+	 -- valide
+	 SELECT
+	 	cla_inu,
+	 	count(objectid)
+	 FROM table_a
+	 ```
 * L'indentation par ligne se fait par tabulation et non par espace
 * Les commentaires doit être en ligne quand ils font moins de 80 caractères et ne nécessitent pas de retour à la ligne
  * En cas de dépassement, il faut passer en commentaire de bloc
  * Si la documentation commence à être longue, il faut privilégier un fichier annexe en markdown ayant le même nom que le fichier SQL
+	```SQL
+	-- Commentaire en ligne - invalide
+	-- 1. Chargement des données de plans d'eau valides (filtrage des données);
+	-- 2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
+	-- 3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
+
+	-- Commentaire en bloc - valide
+	/*
+	1. Chargement des données de plans d'eau valides (filtrage des données);
+	2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
+	3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
+	*/
+	```
 * En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence
-
-```SQL
--- invalide
-SELECT a.cla_inu, count(a.objectid)
--- valide
-SELECT 
-	a.cla_inu,
-	count(a.objectid)
-```
-
-```SQL
--- Commentaire en ligne - invalide
--- 1. Chargement des données de plans d'eau valides (filtrage des données);
--- 2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
--- 3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
-
--- Commentaire en ligne - valide
--- AND a.OBJECTID = 900114;
-
--- Commentaire en bloc - invalide
-/*AND a.OBJECTID = 900114;*/
-
--- Commentaire en bloc - valide
-/*
-1. Chargement des données de plans d'eau valides (filtrage des données);
-2. Création d'un identifiant unique par objet qui se mettra à jour automatiquement en cas d'insertion ou de modification d'objet ;
-3. Comblement des espaces de 40 cm maximum entre les polygones adjacents ;
-*/
-```
-
-En cas de sous-requête ou d'imbrication de plusieurs niveaux, il faut incrémenter l'indentation en conséquence.
-```SQL
--- invalide
-SELECT
-	COUNT(SDO_LRS.CONNECTED_GEOM_SEGMENTS(SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 0.005)) AS connecte
--- valide
-SELECT
-	COUNT(
-		SDO_LRS.CONNECTED_GEOM_SEGMENTS(
-			SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
-			SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 
-			0.005
-		)
-	) AS connecte
-```
+	```SQL
+	-- invalide
+	SELECT
+		COUNT(SDO_LRS.CONNECTED_GEOM_SEGMENTS(SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom), 0.005)) AS connecte
+	-- valide
+	SELECT
+		COUNT(
+			SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+				SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom),
+				SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+				0.005
+			)
+		) AS connecte
+	```
 
 ## Nommage
 
@@ -79,12 +70,12 @@ Tous les noms réservés doivent être en majuscule se fait en majuscule.
 
 ```SQL
 -- invalide
-select valeur 
-from table_a 
+select valeur
+from table_a
 where table_a.valeur > 1
 -- valide
-SELECT valeur 
-FROM table_a 
+SELECT valeur
+FROM table_a
 WHERE table_a.valeur > 1
 ```
 
