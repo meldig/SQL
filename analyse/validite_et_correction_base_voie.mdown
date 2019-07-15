@@ -58,7 +58,7 @@ WHERE
 
 La requête ci-dessus vérifie si deux lignes sont connectées avec une tolérance de 5 mm. La division du COUNT() par deux est obligatoire puisque la fonction vérifie chaque connexion deux fois : si le segment A est connecté au segment B et si le segement B est connecté au segement A.
 
-**Précision : ** Deux lignes sont connectées si et seulement si elles se rejoignent au niveau de leur point de départ ou point d'arrivée. Dans TOUT autre cas, les lignes ne sont pas connectées (même si elles s'intersectent en leur milieu).
+**Précision :** Deux lignes sont connectées si et seulement si elles se rejoignent au niveau de leur point de départ ou point d'arrivée. Dans TOUT autre cas, les lignes ne sont pas connectées (même si elles s'intersectent en leur milieu).
 
 ## Sélection des identifiants des lignes mal connectées :
 
