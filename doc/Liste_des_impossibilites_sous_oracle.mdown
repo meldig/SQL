@@ -1,0 +1,9 @@
+# Liste des actions impossibles sous Oracle
+
+## Manipulation de géométrie
+	
+	* Créer une vue fusionnant des géométries ;
+
+## Création / modification d'objets
+	
+	* Création d'index spatial sur une table temporaire ;
