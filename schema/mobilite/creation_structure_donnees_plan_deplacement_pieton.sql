@@ -92,7 +92,7 @@ VALUES(
 CREATE INDEX ta_pdp_points_interet_SIDX
 ON ta_pdp_points_interet(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS('sdo_indx_dims=2, layer_gtype=POINT, tablespace=INDX_G_MOBILITE , work_tablespace=DAta_pdp_TEMP');
+PARAMETERS('sdo_indx_dims=2, layer_gtype=POINT, tablespace=INDX_G_MOBILITE , work_tablespace=DATA_TEMP');
 
 -- 8. Création de la séquence d'auto-incrémentation
 CREATE SEQUENCE SEQ_ta_pdp_points_interet
@@ -198,7 +198,7 @@ VALUES(
 CREATE INDEX ta_pdp_troncons_SIDX
 ON ta_pdp_troncons(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS('sdo_indx_dims=2, layer_gtype=LINE, tablespace=INDX_G_MOBILITE , work_tablespace=DAta_pdp_TEMP');
+PARAMETERS('sdo_indx_dims=2, layer_gtype=LINE, tablespace=INDX_G_MOBILITE , work_tablespace=DATA_TEMP');
 
 -- 8. Création de la séquence d'auto-incrémentation
 CREATE SEQUENCE SEQ_ta_pdp_troncons
