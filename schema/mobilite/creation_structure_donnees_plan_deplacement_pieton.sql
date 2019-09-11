@@ -337,3 +337,9 @@ VALUES(
     ), 
     2154
 );
+
+-- 3. Création des commentaires sur la vue et les champs
+COMMENT ON TABLE v_pdp_mega_troncons IS 'Vue fusionnant les géométries des troncons par méga-troncon utilisé dans le plan de déplacement piéton.';
+COMMENT ON COLUMN g_mobilite.v_pdp_mega_troncons.id_megatrc IS 'Identifiant de chaque méga-tronçon.';
+COMMENT ON COLUMN g_mobilite.v_pdp_mega_troncons.valeur_temps IS 'Temps nécessaire pour parcourir chaque méga_tronçon à pied.';
+COMMENT ON COLUMN g_mobilite.v_pdp_mega_troncons.geom IS 'géométrie de type polyligne fusionnant les tronçons par méga-tronçon.';
