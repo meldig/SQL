@@ -91,7 +91,10 @@ CREATE OR REPLACE TRIGGER test_ta_acq_grille
                 mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - geo.test_ta_grille','trigger@lillemetropole.fr');
     END;
 
--- 9. Trigger empêchant la suppression des données
+/* 9. Trigger empêchant la suppression des données
+Source : Defining Your Own Error Messages: Procedure RAISE_APPLICATION_ERROR
+https://docs.oracle.com/cd/B19306_01/appdev.102/b14261/errors.htm#i3372
+*/
 
 CREATE OR REPLACE  TRIGGER test_ta_acq_grille_no_delete
     BEFORE DELETE ON test_ta_acq_grille
@@ -99,7 +102,7 @@ CREATE OR REPLACE  TRIGGER test_ta_acq_grille_no_delete
 
     BEGIN
         IF DELETING THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Interdiction de supprimer la donnée.');
+            RAISE_APPLICATION_ERROR(-20001, 'Vous devez catégoriser les objets de la grille et non les supprimer. Il faut donc créer une nouvelle thématique, refaire une grille et affecter la nouvelle thématique à la nouvelle grille.');
         END IF;
 
 END;
