@@ -107,7 +107,7 @@ BEGIN
 END;
 
 -- 10. Création du déclencheur mettant à jour les champs date_saisie et date_maj
-CREATE OR REPLACE TRIGGER g_mobilite.ta_pdp_points_interet
+CREATE OR REPLACE TRIGGER ta_pdp_points_interet
     BEFORE INSERT OR UPDATE ON ta_pdp_points_interet
     FOR EACH ROW
 
@@ -213,7 +213,7 @@ BEGIN
 END;
 
 -- 10. Création du déclencheur mettant à jour les champs date_saisie et date_maj
-CREATE OR REPLACE TRIGGER geo.ta_pdp_troncons
+CREATE OR REPLACE TRIGGER ta_pdp_troncons
     BEFORE INSERT OR UPDATE ON ta_pdp_troncons
     FOR EACH ROW
 
@@ -270,7 +270,7 @@ BEGIN
 END;
 
 -- 10. Création du déclencheur mettant à jour les champs date_saisie et date_maj
-CREATE OR REPLACE TRIGGER geo.ta_pdp_mega_troncons
+CREATE OR REPLACE TRIGGER ta_pdp_mega_troncons
     BEFORE INSERT OR UPDATE ON ta_pdp_mega_troncons
     FOR EACH ROW
 
