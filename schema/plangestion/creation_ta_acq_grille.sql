@@ -4,7 +4,7 @@
 CREATE TABLE ta_acq_grille(
 	objectid NUMBER(38,0),
 	fid_thematique NUMBER(38,0),
-	avancement NUMBER(1,0) DEFAULT 0,
+	fid_libelle NUMBER(1,0),
 	geo_nmn Varchar2(20),
 	geo_dm DATE,
 	geom SDO_GEOMETRY
@@ -24,7 +24,7 @@ TABLESPACE
 COMMENT ON TABLE ta_acq_grille IS 'Table octroyant une grille de lecture et de gestion au territoire de la MEL';
 COMMENT ON COLUMN geo.ta_acq_grille.objectid IS 'Identifiant autoincrémenté de chaque objet de la grille.';
 COMMENT ON COLUMN geo.ta_acq_grille.fid_thematique IS 'clé étrangère liant les objets de la grille à la thématique - ta_acq_thematique.';
-COMMENT ON COLUMN geo.ta_acq_grille.avancement IS 'Etat d''avancement des objets - 1 = fait et 0 = à faire';
+COMMENT ON COLUMN geo.ta_acq_grille.fid_libelle IS 'Clé étrangère liant les objets de la grille à leur libellé.';
 COMMENT ON COLUMN geo.ta_acq_grille.geo_nmn IS 'Auteur de la dernière modification de l''objet';
 COMMENT ON COLUMN geo.ta_acq_grille.geo_dm IS 'Date de la dernière modification de l''objet.';
 COMMENT ON COLUMN geo.ta_acq_grille.geom IS 'Géométrie des objets de type polygone.';
@@ -64,15 +64,24 @@ BEGIN
     :new.objectid := SEQ_ta_acq_grille.nextval;
 END;
 
--- 8. Création de la clé étrangère
+-- 8. Création des clés étrangères
 ALTER TABLE ta_acq_grille
 ADD CONSTRAINT ta_acq_grille_fid_theme_FK 
 FOREIGN KEY (fid_thematique)
 REFERENCES GEO.ta_acq_thematique(objectid)
 ;
 
+ALTER TABLE ta_acq_grille
+ADD CONSTRAINT ta_acq_grille_fid_libelle_FK 
+FOREIGN KEY (fid_libelle)
+REFERENCES GEO.ta_libelle(objectid)
+;
+
 -- 4. Création d'un index sur les clés étrangères
 CREATE INDEX ta_acq_grille_fid_theme_IDX ON ta_acq_grille(fid_thematique)
+    TABLESPACE INDX_GEO;
+
+CREATE INDEX ta_acq_grille_fid_libelle_IDX ON ta_acq_grille(fid_libelle)
     TABLESPACE INDX_GEO;
 
 -- 8. Création du déclencheur mettant à jour des champs geo_nmn et geo_dm
