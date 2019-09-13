@@ -4,7 +4,7 @@
 CREATE TABLE ta_grille(
 	objectid NUMBER(38,0),
 	fid_thematique NUMBER(38,0),
-	fid_lib_etat NUMBER(1,0),
+	fid_lib_etat NUMBER(38,0),
 	geo_nmn Varchar2(20),
 	geo_dm DATE,
 	geom SDO_GEOMETRY
@@ -77,14 +77,14 @@ FOREIGN KEY (fid_lib_etat)
 REFERENCES GEO.ta_libelle(objectid)
 ;
 
--- 4. Création d'un index sur les clés étrangères
+-- 9. Création d'un index sur les clés étrangères
 CREATE INDEX ta_grille_fid_theme_IDX ON ta_grille(fid_thematique)
     TABLESPACE INDX_GEO;
 
 CREATE INDEX ta_grille_fid_lib_etat_IDX ON ta_grille(fid_lib_etat)
     TABLESPACE INDX_GEO;
 
--- 8. Création du déclencheur mettant à jour des champs geo_nmn et geo_dm
+-- 10. Création du déclencheur mettant à jour des champs geo_nmn et geo_dm
 CREATE OR REPLACE TRIGGER ta_grille
     BEFORE UPDATE ON ta_grille
     FOR EACH ROW
@@ -100,7 +100,7 @@ CREATE OR REPLACE TRIGGER ta_grille
                 mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - geo.ta_grille','trigger@lillemetropole.fr');
     END;
 
-/* 9. Trigger empêchant la suppression des données
+/* 11. Trigger empêchant la suppression des données
 Source : Defining Your Own Error Messages: Procedure RAISE_APPLICATION_ERROR
 https://docs.oracle.com/cd/B19306_01/appdev.102/b14261/errors.htm#i3372
 */
@@ -116,7 +116,7 @@ CREATE OR REPLACE  TRIGGER ta_grille_no_delete
 
 END;
         
--- 9. Affectation du droit de sélection sur les objets de la table aux administrateurs
+-- 12. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON geo.ta_grille TO G_ADT_DSIG_ADM;
 
 -- 1. Création de la table ta_thematique
@@ -124,14 +124,14 @@ GRANT SELECT ON geo.ta_grille TO G_ADT_DSIG_ADM;
 CREATE TABLE ta_thematique(
     objectid NUMBER(38,0),
     thematique VARCHAR2(4000),
-    date_nmn DATE
+    geo_ds DATE
 );
 
 -- 2. Création des commentaires sur la table et les champs
 COMMENT ON TABLE ta_thematique IS 'Table regroupant toutes les thématiques utilisées dans la table ta_grille';
 COMMENT ON COLUMN geo.ta_thematique.objectid IS 'Identifiant autoincrémenté de chaque thématique.';
 COMMENT ON COLUMN geo.ta_thematique.thematique IS 'Thématique décrivant l''utilisation de la grille ta_grille.';
-COMMENT ON COLUMN geo.ta_thematique.date_nmn IS 'Date de création de la thématique.';
+COMMENT ON COLUMN geo.ta_thematique.geo_ds IS 'Date de création de la thématique.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE 
@@ -156,8 +156,8 @@ BEGIN
 END;
 
 -- 6. Création du déclencheur d'insertion de la date de création de la thématique dans le champ geo_ds
-CREATE OR REPLACE TRIGGER ta_grille_date_nmn
-    BEFORE INSERT ON ta_grille
+CREATE OR REPLACE TRIGGER ta_thematique_geo_ds
+    BEFORE INSERT ON ta_thematique
     FOR EACH ROW
 
     BEGIN
