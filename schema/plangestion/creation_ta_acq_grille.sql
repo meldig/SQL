@@ -118,7 +118,7 @@ CREATE TABLE ta_acq_thematique(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE ta_acq_thematique IS 'Table regroupant toutes les thémaitques utilisées dans la table ta_acq_grille';
+COMMENT ON TABLE ta_acq_thematique IS 'Table regroupant toutes les thématiques utilisées dans la table ta_acq_grille';
 COMMENT ON COLUMN geo.ta_acq_thematique.objectid IS 'Identifiant autoincrémenté de chaque thématique.';
 COMMENT ON COLUMN geo.ta_acq_thematique.thematique IS 'Thématique décrivant l''utilisation de la grille ta_acq_grille.';
 
