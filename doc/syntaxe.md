@@ -146,7 +146,7 @@ WITH
 ### Nommage
 
 * Champ de la clé primaire : objectid
-* Champ de la clé étrangère : fid_nomchamp_de_la_table_parent
+* Champ de la clé étrangère : fid_mot_clé_de_la_table_parent
 
 ## Contraintes
 
@@ -171,6 +171,12 @@ merge ... using
 ### Nommage
 
 * Déclencheur de l'auto-incrémentation d'une clé primaire : BEF_nomtable
+
+## Séquence
+
+### Nommage
+
+* Séquence d'auto-incrémentation de clé primaire : SEQ_nomtable 
 
 ## Index
 
