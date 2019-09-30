@@ -1,0 +1,32 @@
+# L'Utilisation de GitHub
+
+Objectif : présenter les différents types d'actions possibles dans GitHub
+
+
+## Dans GitHub Desktop :
+
+* Commit to master/branch : cette commande permet d'enregistrer les modifications, créations ou suppressions d'un fichier dans GitHub Desktop.
+* Push origin : cette commande permet d'envoyer un commit d'un fichier en local sur votre dépôt GitHub personnel.
+* New branch : cette commande permet de créer une branche à partir soit du fichier principal (master), soit d'une autre branche.
+
+## Dans GitHub (compte internet) :
+
+* Pull request : cette commande permet d'envoyer la mise à jour, création ou suppression d'un fichier de votre dépôt GitHub vers le dépôt GitHub de référence.
+* Merge request : Cette commande permet de fusionner les requêtes et notamment une mise à jour et son fichier de destination.
+* Rebase : Cette commande permet de mettre à jour son dossier à partir du dépôt de référence, tout en préservant ses mises à jour personelles.
+
+
+# Les procédures de mises à jour du dépôt de référence "meldig" :
+
+## Mise à jour du dépôt meldig à partir d'une modification en local :
+
+1. Ouverture du fichier à modifier ;
+1. Ouverture de GitHub Desktop ;
+1. S'il s'agit de votre première modification, cliquez sur branch / new branch et créez une branche de mise à jour de votre code. Sinon, sélectionnez votre branch dans le menu déroulant Current branch ;
+1. Dans votre éditeur de texte, modifiez votre code et enregistrez-le ;
+1. Dans GitHub Desktop faite un commit pour enregistrer vos changements dans GitHub Desktop ;
+1. Dans GitHub Desktop fait un push origin afin d'envoyer vos changement sur votre dépôt GitHub personnel ;
+1. Dans votre dépôt GitHub personnel, faites un pull request vers le dépôt de référence afin d'y envoyer votre commit ;
+	* Créez un titre explicite ;
+	* N'hésitez pas à écrire des commentaires afin d'expliciter votre/vos commit(s) ;
+	* Un pull request doit concerner la modification d'un et d'un seul fichier
