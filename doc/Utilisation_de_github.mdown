@@ -13,7 +13,7 @@ Objectif : présenter les différents types d'actions possibles dans GitHub
 
 * Pull request : cette commande permet d'envoyer la mise à jour, création ou suppression d'un fichier de votre dépôt GitHub vers le dépôt GitHub de référence.
 * Merge request : Cette commande permet de fusionner les requêtes et notamment une mise à jour et son fichier de destination.
-* Rebase : Cette commande permet de mettre à jour son dossier à partir du dépôt de référence, tout en préservant ses mises à jour personelles.
+* Rebase : Cette commande permet de mettre à jour son dossier à partir du dépôt de référence, tout en préservant ses mises à jour personnelles.
 
 
 # Les procédures de mises à jour du dépôt de référence "meldig" :
