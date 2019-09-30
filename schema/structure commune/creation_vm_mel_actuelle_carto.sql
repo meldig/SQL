@@ -16,12 +16,7 @@ DISABLE QUERY REWRITE AS
 SELECT
 	a.insee,
 	a.nom,
-	SDO_AGGR_UNION(
-		SDOAGGRTYPE(
-			a.geom,
-			0.005
-		)
-	) AS geom
+	SDO_AGGR_UNION(SDOAGGRTYPE(a.geom,0.005)) AS geom
 	
 FROM
 	ta_commune a
