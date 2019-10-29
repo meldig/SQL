@@ -18,4 +18,4 @@
 	1. Décomposition des multi-géométries en géométries simples dans QGIS et export du résultat dans un shape en local ->  Vecteurs / Outils de géométrie / De morceaux multiples à morceaux uniques ;
 	1. Suppression de tous les champs autres que le champ objectid ;
 	1. Insertion des objets produits à l'étape 3 dans la table TA_DIFF_CARTO_LIDAR via FME, en faisant bien attention de connecter le champ du shape objetid au champ id_carto de la table TA_DIFF_CARTO_LIDAR ;
-	1. Mise à jour du champ TA_DIFF_CARTO_LIDAR.FID_LIBELLE avec la valeur 22 ;
+	1. Mise à jour du champ TA_DIFF_CARTO_LIDAR.FID_LIBELLE avec la valeur 21 ;
