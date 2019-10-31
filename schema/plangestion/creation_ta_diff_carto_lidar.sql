@@ -56,7 +56,7 @@ ON ta_diff_carto_lidar(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=INDX_GEO, work_tablespace=DATA_TEMP');
 
--- 8. Création de la fonction servant à calculer l'aire de chaque objet
+-- 8. Création des fonctions servant à calculer l'aire et le périmètres de chaque objet (l'utilisation du mot clé DETERMINISTIC permet d'avoir des résultats déterministes, uniques)
 CREATE OR REPLACE FUNCTION get_aire_polygone(geom MDSYS.SDO_GEOMETRY) RETURN NUMBER DETERMINISTIC AS
 BEGIN
     RETURN (SDO_GEOM.SDO_AREA(geom, 0.001));
