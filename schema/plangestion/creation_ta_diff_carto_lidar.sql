@@ -74,7 +74,7 @@ ADD surface NUMBER AS (get_aire_polygone(geom));
 ALTER TABLE ta_diff_carto_lidar
 ADD perimetre NUMBER AS(get_perimetre(geom));
 
--- 9. Création de l'index multi-colonnes avec expression
+-- 9. Création de l'index multi-colonnes sur les trois champs fid_libelle, surface et perimetre
 CREATE INDEX ta_diff_carto_lidar_IDX
 ON ta_diff_carto_lidar(fid_libelle, surface, perimetre)
 TABLESPACE INDX_GEO;
