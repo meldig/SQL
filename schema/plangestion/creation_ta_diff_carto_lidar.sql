@@ -62,7 +62,20 @@ BEGIN
     RETURN (SDO_GEOM.SDO_AREA(geom, 0.001));
 END;
 
+CREATE OR REPLACE FUNCTION get_perimetre(geom MDSYS.SDO_GEOMETRY) RETURN NUMBER DETERMINISTIC AS
+BEGIN
+    RETURN (SDO_GEOM.SDO_LENGTH(geom, 0.001));
+END;
+
+-- INSERTION des champs calculés surface et périmètre
+ALTER TABLE ta_diff_carto_lidar
+ADD surface NUMBER AS (get_aire_polygone(geom));
+
+ALTER TABLE ta_diff_carto_lidar
+ADD perimetre NUMBER AS(get_perimetre(geom));
+
 -- 9. Création de l'index multi-colonnes avec expression
 CREATE INDEX ta_diff_carto_lidar_IDX
-ON ta_diff_carto_lidar(fid_libelle, get_aire_polygone(geom))
+ON ta_diff_carto_lidar(fid_libelle, surface, perimetre)
 TABLESPACE INDX_GEO;
+
