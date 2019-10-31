@@ -67,14 +67,14 @@ BEGIN
     RETURN (SDO_GEOM.SDO_LENGTH(geom, 0.001));
 END;
 
--- INSERTION des champs calculés surface et périmètre
+-- 9. Insertiondes champs calculés surface et périmètre
 ALTER TABLE ta_diff_carto_lidar
 ADD surface NUMBER AS (get_aire_polygone(geom));
 
 ALTER TABLE ta_diff_carto_lidar
 ADD perimetre NUMBER AS(get_perimetre(geom));
 
--- 9. Création de l'index multi-colonnes sur les trois champs fid_libelle, surface et perimetre
+-- 10. Création de l'index multi-colonnes sur les trois champs fid_libelle, surface et perimetre
 CREATE INDEX ta_diff_carto_lidar_IDX
 ON ta_diff_carto_lidar(fid_libelle, surface, perimetre)
 TABLESPACE INDX_GEO;
