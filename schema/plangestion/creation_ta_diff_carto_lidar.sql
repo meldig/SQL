@@ -17,6 +17,8 @@ COMMENT ON COLUMN geo.ta_diff_carto_lidar.objectid IS 'Identifiant de chaque obj
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.fid_libelle IS 'Clé étrangère indiquant si l''objet provient du plan carto ou du lidar - ta_libelle.';
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.geom IS 'Géométrie de chaque objet.';
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.id_carto IS 'Identifiant d''appartenance des objets aux bâtis du plan de gestion - TA_SUR_TOPO_G.';
+COMMENT ON COLUMN geo.ta_diff_carto_lidar.surface IS 'Champ calculé à partir du champ geom indiquant la surface de chaque polygone en m².';
+COMMENT ON COLUMN geo.ta_diff_carto_lidar.perimetre IS 'Champ calculé à partir du champ geom indiquant le périmètre de chaque polygone en m.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_diff_carto_lidar 
