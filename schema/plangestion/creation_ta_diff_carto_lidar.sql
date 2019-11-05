@@ -37,11 +37,8 @@ COMMENT ON COLUMN geo.ta_diff_carto_lidar.geom IS 'Géométrie de chaque objet.'
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.id_carto IS 'Identifiant d''appartenance des objets aux bâtis du plan de gestion - TA_SUR_TOPO_G.';
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.surface IS 'Champ calculé à partir du champ geom indiquant la surface de chaque polygone en m².';
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.perimetre IS 'Champ calculé à partir du champ geom indiquant le périmètre de chaque polygone en m.';
-<<<<<<< Updated upstream
-=======
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.ratio IS 'Ratio entre la surface et le périmètre de chaque objet distinguant les différences dues au dévers de celles dues à un problème de saisie ou à une mise à jour manquante';
 COMMENT ON COLUMN geo.ta_diff_carto_lidar.statut IS 'Statut de l''objet permettant de savoir s''il a été vu, traité (1), ou pas (0).';
->>>>>>> Stashed changes
 
 -- 4. Création de la clé primaire
 ALTER TABLE ta_diff_carto_lidar 
@@ -81,39 +78,16 @@ ON ta_diff_carto_lidar(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=INDX_GEO, work_tablespace=DATA_TEMP');
 
-<<<<<<< Updated upstream
--- 8. Création des fonctions servant à calculer l'aire et le périmètre de chaque objet (l'utilisation du mot clé DETERMINISTIC permet d'avoir des résultats déterministes, uniques)
-CREATE OR REPLACE FUNCTION get_aire_polygone(geom MDSYS.SDO_GEOMETRY) RETURN NUMBER DETERMINISTIC AS
-BEGIN
-    RETURN (SDO_GEOM.SDO_AREA(geom, 0.001));
-END;
 
-CREATE OR REPLACE FUNCTION get_perimetre(geom MDSYS.SDO_GEOMETRY) RETURN NUMBER DETERMINISTIC AS
-BEGIN
-    RETURN (SDO_GEOM.SDO_LENGTH(geom, 0.001));
-END;
-
--- 9. Insertiondes champs calculés surface et périmètre
-ALTER TABLE ta_diff_carto_lidar
-ADD surface NUMBER AS (get_aire_polygone(geom));
-
-ALTER TABLE ta_diff_carto_lidar
-ADD perimetre NUMBER AS(get_perimetre(geom));
-
--- 10. Création de l'index multi-colonnes sur les trois champs fid_libelle, surface et perimetre
-=======
 -- 9. Création des indexes multi-colonnes
 
 -- 9.1. Création de l'index ta_diff_carto_lidar_idx
->>>>>>> Stashed changes
 CREATE INDEX ta_diff_carto_lidar_IDX
 ON ta_diff_carto_lidar(fid_libelle, surface, perimetre)
 TABLESPACE INDX_GEO;
 
-<<<<<<< Updated upstream
-=======
 -- 9.2. Création de l'index ta_diff_carto_lidar_2idx
 CREATE INDEX ta_diff_carto_lidar_2IDX
 ON ta_diff_carto_lidar(statut, fid_libelle, ratio, surface)
 TABLESPACE INDX_GEO;
->>>>>>> Stashed changes
+
