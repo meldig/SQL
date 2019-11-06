@@ -1,0 +1,21 @@
+## Fiche explicative : Insertion des différences de bâti entre le lidar (simplification 1m) et le plan de gestion
+
+# Cette fiche est à lire avec les deux fichiers suivants :
+	* meldig/sql/schema/plangestion/creation_ta_diff_carto_lidar.sql ;
+	* meldig/sql/modification/insertion_sous_elements_bati_ds_ta_diff_carto_lidar.sql ;
+
+1. Insertion du bâti issu du LIDAR différencié de celui issu du Plan de Gestion :
+	1. Réparation des géométries dans QGIS et enregistrement du résultat dans un shape en local -> Boîte à outils de traitements / Réparer les géométries ;
+	1. Différenciation des deux bâtis et export du résultat dans un shape enregistré en local -> Vecteur / Outils de géotraitement / Différence ;
+	1. Suppression de tous les champs du shape de l'étape précédente ;
+	1. Création d'une table temporaire dont la géométrie est de type multipolygone via la requête SQL présente dans le fichier "creation_ta_diff_carto_lidar.sql";
+	1. Insertion des données créées à l'étape 2 et modifiées à l'étape 3 dans la table TEMP_DIFF_CARTO_LIDAR via FME (l'opération ne prenant qu'une dizaine de minutes avec FME alors qu'elle prend plus de deux heures dans QGIS) ;
+	1. Extraction de tous les sous-éléments des objets de la table TEMP_DIFF_CARTO_LIDAR sous forme de polygones simples dans la table TA_DIFF_CARTO_LIDAR via la requête PL/SQL présente dans le fichier "creation_ta_diff_carto_lidar.sql"-> Objectif : n'avoir que des polygones simples dans la table d'arrivée ;
+
+1. Insertion du bâti issu du Plan de Gestion différencié de celui issu du LIDAR :
+	1. Réparation des géométries dans QGIS et enregistrement du résultat dans un shape en local -> Boîte à outils de traitements / Réparer les géométries ;
+	1. Différenciation des deux bâtis et export du résultat dans un shape enregistré en local -> Vecteur / Outils de géotraitement / Différence ;
+	1. Décomposition des multi-géométries en géométries simples dans QGIS et export du résultat dans un shape en local ->  Vecteurs / Outils de géométrie / De morceaux multiples à morceaux uniques ;
+	1. Suppression de tous les champs autres que le champ objectid ;
+	1. Insertion des objets produits à l'étape 3 dans la table TA_DIFF_CARTO_LIDAR via FME, en faisant bien attention de connecter le champ du shape objetid au champ id_carto de la table TA_DIFF_CARTO_LIDAR ;
+	1. Mise à jour du champ TA_DIFF_CARTO_LIDAR.FID_LIBELLE avec la valeur 21 ;
