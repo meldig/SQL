@@ -1,9 +1,9 @@
 /*
-Création de la vue matérialisée vm_contour_commune_ign_f qui propose les contours des communes de la MEL sous forme de ligne. Cette vue ne prend que le dernier millésime de la source BdTopo IGN français.
+Création de la vue matérialisée vm_contour_commune_ign_f qui répond à la demande d'avoir uniquement les contours des communes de la MEL sous forme de ligne. Cette vue ne prend que le dernier millésime de la source BdTopo IGN français.
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW vm_contour_commune_ign_f 
+CREATE MATERIALIZED VIEW g_referentiel.vm_contour_commune_ign_f 
 USING INDEX 
 TABLESPACE G_ADT_INDX 
 REFRESH ON DEMAND 
@@ -14,9 +14,8 @@ WITH
         SELECT
             max(a.MILLESIME) AS m1
         FROM
-            ta_acquisition a
-            INNER JOIN ta_source b
-            ON a.objectid = b.fid_date_acquisition
+            g_referentiel.ta_acquisition a
+        INNER JOIN g_referentiel.ta_source b ON a.objectid = b.fid_date_acquisition
         WHERE
             b.objectid = 3
         )
@@ -25,11 +24,9 @@ SELECT
     a.nom,
     SDO_UTIL.POLYGONTOLINE(a.geom) AS geom
 FROM
-    ta_commune a
-    INNER JOIN ta_source b
-    ON a.fid_source = b.objectid
-    INNER JOIN ta_acquisition c
-    ON b.fid_date_acquisition = c.objectid,
+    g_referentiel.ta_commune a
+INNER JOIN g_referentiel.ta_source b ON a.fid_source = b.objectid
+INNER JOIN g_referentiel.ta_acquisition c ON b.fid_date_acquisition = c.objectid,
     dernier_millesime d
 WHERE
     c.millesime = d.m1;
@@ -51,18 +48,8 @@ VALUES (
   'vm_contour_commune_ign_f',
   'GEOM', 
   SDO_DIM_ARRAY(
-    SDO_DIM_ELEMENT(
-      'X', 
-      594000, 
-      964000, 
-      0.005
-    ),
-    SDO_DIM_ELEMENT(
-      'Y', 
-      6987000, 
-      7165000, 
-      0.005
-    )
+    SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),
+    SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)
   ),
   2154
 );
