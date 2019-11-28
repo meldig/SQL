@@ -125,11 +125,11 @@ Remarques :
 * la géométrie est homogène. Seul un point n'a pas de géométrie: *CNUMLPU 18121*
 
 * 10 point se superposent
-	*661	SECUR	5885	SECUR
-	*5439	ADMIN	6564	SCOL0
-	*5208	MEDSO	6572	MEDSO
-	*15248	CO103	15272	CO104
-	*22947	BVOIE	22948	BVOIE
+	* 661	SECUR	5885	SECUR
+	* 5439	ADMIN	6564	SCOL0
+	* 5208	MEDSO	6572	MEDSO
+	* 15248	CO103	15272	CO104
+	* 22947	BVOIE	22948	BVOIE
 
 * 197 éléments n'ont pas de *CDSFAMILLE* soit 2.06% du total des enregistrements.
 * 1 point n'a pas d'ORIGINE
