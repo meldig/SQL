@@ -124,9 +124,8 @@ Remarques :
 * Un même CDSFAMILLE peut provenir de plusieurs ORIGINE
 * la géométrie est homogène. Seul un point n'a pas de géométrie: *CNUMLPU 18121*
 
-* 10 point se superposent
+* 10 points de la table se superposent(ci-dessous les CNUMLPU et les CDSFAMILLE de ces points)
 
-	* CNUMLPU	CDSFAMILLE	CNUMLPU		CDSFAMILL
 	* 661		SECUR		5885		SECUR
 	* 5439		ADMIN		6564		SCOL0
 	* 5208		MEDSO		6572		MEDSO
