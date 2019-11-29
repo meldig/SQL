@@ -123,7 +123,15 @@ Remarques :
 
 * Un même CDSFAMILLE peut provenir de plusieurs ORIGINE
 * la géométrie est homogène. Seul un point n'a pas de géométrie: *CNUMLPU 18121*
-* 10 point ont une géométrie exacte
+
+* 10 points de la table se superposent(ci-dessous les CNUMLPU et les CDSFAMILLE de ces points)
+
+	* 661		SECUR		5885		SECUR
+	* 5439		ADMIN		6564		SCOL0
+	* 5208		MEDSO		6572		MEDSO
+	* 15248		CO103		15272		CO104
+	* 22947		BVOIE		22948		BVOIE
+
 * 197 éléments n'ont pas de *CDSFAMILLE* soit 2.06% du total des enregistrements.
 * 1 point n'a pas d'ORIGINE
 * 61 points ne sont pas renseigné (pas de CDSFAMILLE, ni ORIGINE, ni aucun libellé) * Pic de création des points en 1997 et 2007
