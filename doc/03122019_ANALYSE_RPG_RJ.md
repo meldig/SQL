@@ -63,8 +63,7 @@ Plusieurs remarques peuvent être faites suite à la lecture de ce document:
 * Le demandeur est le responsable du traitement au sens du RGPD. Le responsable du
 traitement doit identifier et classer les données à caractère personnel qu’il détient et respecter
 toutes les obligations qui lui incombent en vertu du RGPD, et notamment :
-** obligation d'information des personnes concernées sur les traitements réalisés (article
-14)
+** obligation d'information des personnes concernées sur les traitements réalisés (article 14)
 ** sous-traitance encadrée (article 38)
 ** tenue d'un registre de traitement (article 28).
 * Le périmètre géographique de communication des données du RPG doit correspondre strictement au périmètre sur lequel le demandeur est compétent pour l’exercice de la mission de service public motivant la demande. En cas de nécessité, une zone tampon pourra être ajoutée à la zone demandée. Le demandeur donnera un descriptif textuel (liste de départements ou de communes au format CSV) ou géographique (format SIG) de la zone géographique correspondant à sa demande.
