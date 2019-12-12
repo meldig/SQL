@@ -52,7 +52,7 @@ OBSERVATION: pourquoi y-a-t-il deux dates dans le nom du fichiers *RPG_2014_MEL_
 ## Demande du RPG
 
 Suivant le niveau demandé, la demande du RPG ne se fait pas auprès de la même structure:
-* niveau 2: IGN
+* niveau 1: IGN
 * niveau 2 et niveau 2+: DRAAF (direction régionale de l'agriculture, de l'alimentation et de la forêt)
 
 La demande est a réalisé à l'aide d'un formulaire de demande d'une extraction du registre parcellaire graphique (RPG).
