@@ -57,7 +57,7 @@ Suivant le niveau demandé, la demande du RPG ne se fait pas auprès de la même
 
 La demande est a réalisé à l'aide d'un formulaire de demande d'une extraction du registre parcellaire graphique (RPG).
 
-### Remarque sur le responsabilité quand à l'utilisation de la données
+### Responsabilité de l'utilisateur de la données
 
 Plusieurs remarques peuvent être faites suite à la lecture de ce document:
 * Le demandeur est le responsable du traitement au sens du RGPD. Le responsable du
@@ -78,3 +78,12 @@ présente note, sous le sigle RPG.
 d’une mission de service public. Le demandeur s’engage à inscrire les traitements réalisés
 avec les données du RPG dans son registre des traitements de données à caractère
 personnel.
+
+### Réserves d'utilisation
+
+Le RPG permet de connaître la localisation et certaines caractéristiques des parcelles et îlots des exploitants agricôles ayant déposé une déclaration en vue d'une aide de la PAC (Politique Agricole Commune).
+
+Limite d'usage: Le RPG doit être manié avec prudence pour les analyses du foncier agricole (évolution, morcellement, accessibilité, etc.) car l'image donnée par le RPG est approximative:
+* il manque des surfaces agricoles (surface des exploitations non aidées par exemple);
+* ces manques ne sont pas les mêmes d'une année sur l'autre (évolution des aides, surfaces non déclarées pour une raison relative à la vie d'une exploitation, projet d'aménagement commencé puis différé,...);
+* le dessin d'un îlot donné peut être modifié par l'exploitant alors même qu'il n'y a aucun changement sur le terrain.
