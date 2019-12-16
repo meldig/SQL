@@ -137,6 +137,15 @@ Remarques :
 * 61 points ne sont pas renseigné (pas de CDSFAMILLE, ni ORIGINE, ni aucun libellé) * Pic de création des points en 1997 et 2007
 * Pic de mise à jour: entre 2015 et 2018 
 
+### Remarque complémentaire sur le donnée POI de la table ILTALPU
+
+* Les origines COM, HEB et POL sont des données obsolètes pas du tout exhaustif.
+* Les lieux COM ont été importés d'une base sirène à un moment t. Désormais ces lieux ne sont plus à jour. les commerces sont maintenant affiché à partir de la table SIRENE.
+* Les points TRA sont a garder. Ces lieux sont des gares et des haltes de la MEL qui ne sont pas dans la table G_transport. Ils sont encore utilisés car ils ont été vérifié au sein de l'équipe(Danièle Clément).
+* Les données issues de l'origine SCO sont de deux types:
+** Certains ont été importés suite à des traitements sur une base issue de l’éducation nationale. C’était un import ancien sans matricule éducation nationale. Aujourd’hui on lit de préférence une table (à jour) issue de l’éducation nationale.
+** D’autres résultent de la saisie au sein de l'équipe. Ils sont à garder. Ils ont le symbole_lieu « scolaire_3u.geo »  et contiennent les universités (absentes des données éducation nationale :maternelle à lycée)
+
 ## OpenSreetMap(OSM):
 
 OpenStreetMap (OSM) est un projet de cartographie qui vise à constituer une base de données géographique libre du monde (permettant par exemple de créer des cartes sous licence libre), en utilisant le système GPS et d'autres données libres.
