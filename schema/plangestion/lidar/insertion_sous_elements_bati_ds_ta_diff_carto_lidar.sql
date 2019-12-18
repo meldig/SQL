@@ -1,5 +1,5 @@
 /*
-    Création d'une table temporaire qui servira à enregistrer les bâtis issus du lidar uniquement et dont la géométrie peut être de type multi-polygone. 
+    Partie 1 : Création d'une table temporaire qui servira à enregistrer les bâtis issus du lidar uniquement et dont la géométrie peut être de type multi-polygone. 
 */
 -- 1. Création de la table
 CREATE TABLE temp_diff_carto_lidar(
@@ -53,8 +53,8 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_GEO, work
 --------------------------------------------
 
 /*
-Cette requête permet d'insérer uniquement des polygones simples dans la table ta_diff_carto_lidar
-Problème : si cette requête fonctionne bien pour les données issues du lidar uniquement, le temps de traitement est anormalement long (plus de 02h00) pour les donnnées issues du plan de gestion uniquement.
+Partie 2 : Insertion des polygones simples dans la table temp_diff_bati_lidar
+Problème : si cette requête fonctionne bien pour les données issues du LiDAR, le temps de traitement est anormalement long (plus de 02h00) pour les donnnées issues du plan de gestion, c'est pourquoi on ne l'utilise que pour les données issues du LiDAR.
 */
 
 SET SERVEROUTPUT ON
