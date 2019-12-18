@@ -1,0 +1,42 @@
+### Méthode de remplissage de la table TA_DIFF_CARTO_LIDAR
+
+## Objectif : insérer dans la table TA_DIFF_CARTO_LIDAR la différenciation entre le bâti issu du Plan de Gestion et celui issu du LiDAR, afin d'apporter aux photo-interprètes une aide à la qualification de la donnée bâti.
+
+## Données source : 
+
+* GEO.TA_SUR_TOPO_G + filtre CLA_INU IN(206, 216, 232, 348, 357, 364, 804, 805, 806)-> Bâti issu du plan de gestion ;
+* \\batzella\lidar\2018\aerodata\vecteurs\bati.gpkg -> Bâti issu du LiDAR ;
+
+
+1. # Réparation des géométries
+
+	1. Réparation des géométries dans QGIS pour les données issues du Plan de Gestion (PG) et du LiDAR -> Traitement / Boîte à outils / Réparer les géométries ;
+	
+	1. Sauvegarde des données issues de l'étape 1 dans deux couches temporaires ;
+
+1. # Différenciation des géométries du PG et du LiDAR ;
+
+	1. Différenciation dans QGIS du bâti issu du PG par rapport au bâti issu du LiDAR en utilisant les couches réparées -> Vecteur / Outils de géotraitement / Différence ;
+	
+	1. Sauvegarde des données issues de l'étape 2.1 dans une couche temporaire ;
+	
+	1. Différenciation dans QGIS du bâti issu du LiDAR par rapport au bâti issu du PG en utilisant les couches réparées -> Vecteur / Outils de géotraitement / Différence. Sauvegardez les données résultantes dans un shape en local ;
+	
+	1. Sauvegarde des données issues de l'étape 2.3 dans une couche temporaire ;
+
+1. # Conversion des multi-géométries et géométries simples et sauvegarde des données en base
+
+	1. Dans QGIS transformez les multi-géométries en géométries simples pour les données issues de l'étape 2.2 et sauvegardez les dans un shape en local -> Vecteur / Outils de géométrie / de morceaux multiples à morceaux uniques ;
+	
+	1. Dans FME, insérez les données issues de l'étape 3.1 dans la table TA_DIFF_CARTO_LIDAR ;
+	
+	1. Dans FME, insérez les données issues de l'étape 2.4 dans la table temporaire TEMP_DIFF_CARTO_LIDAR (cf. code / sql / schema / plangestion / lidar / insertion_diff_bati_lidar_ds_ta_diff_carto_lidar.sql) ;
+	
+	1. Dans Oracle transformez les multi-géométries de la table TEMP_DIFF_CARTO_LIDAR (étape 3.3) en géométries simples (cf. code/sql/schema/plangestion/lidar/insertion_sous_elements_batis_ds_ta_diff_carto_lidar.sql) ;
+	
+	1. Dans Oracle Insérez les géométries simples issues de l'étape 3.4 dans la table TA_DIFF_CARTO_LIDAR ;
+
+
+
+La différence d'insertion des données issues du LiDAR ou du PG dans la table TA_DIFF_CARTO_LIDAR tient au fait que la requête en PL/SQL utilisée pour faire cette insertion est séquentielle et non ensembliste. 
+Donc comme chaque enregistrement est évalué(chaque sous-éléments est inséré dans la table afin de n'avoir que des géométries simples), cela prend beaucoup de temps, c'est pourquoi on ne l'utilise que pour les données issues du LiDAR (le temps de traitement étant raisonnable). Cette requête reste donc à optimiser afin de pouvoir aussi l'utiliser pour les données du bâti issu du PG (on utiliserai ainsi la mêùe méthode pour les deux catégories de données).
