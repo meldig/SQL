@@ -4,13 +4,35 @@ fid_thematique = 41 -> 'Vérification du bati issu du lidar et du plan de gestio
 fid_thematique = 61 -> 'grille en cours de transition' (valable pour l'ancienne grille 600*600)
 */
 
+
+/*
+OPERATION REALISEE EN DEUX TEMPS POUR LIMITER LA DUREE DU TRAITEMENT
+*/
+
+/*
+INITIALISE DE LA VALEUR DE FID_LIB_ETAT A 1 POUR TOUTE LA GRILLE 300*300
+*/
+
+UPDATE ta_grille
+SET FID_LIB_ETAT = 1
+WHERE FID_THEMATIQUE = 41
+;
+
+
+/*
+MISE A JOUR DE LA VALEUR SEULEMENT SUR LES CARREAUX DE LA GRILLE 300*300 CONTENUS DANS DES CARREAUX DE LA GRILLE 600*600 AYANT LE FID_LIB_ETAT A 3
+*/
+
 UPDATE ta_grille a
-SET a.FID_LIB_ETAT = (SELECT b.fid_lib_etat FROM ta_grille b WHERE b.fid_thematique = 61 AND SDO_COVEREDBY (a.GEOM, b.GEOM) = 'TRUE')
+SET a.FID_LIB_ETAT = (SELECT b.fid_lib_etat FROM ta_grille b WHERE b.fid_thematique = 61 AND b.fid_lib_etat = 3 AND SDO_GEOM.RELATE(a.geom, 'coveredby', b.geom,0.05) = 'COVEREDBY')
 WHERE 
     a.FID_THEMATIQUE = 41 
 ;
 
 /*
+
+ANCIENNE REQUETTE ET ERREUR
+
 Problème : cette requête permettrait la mise à jour sauf que lorsque je l'ai testée, j'obtiens le message d'erreur suivant : 
 
 UPDATE ta_grille a
