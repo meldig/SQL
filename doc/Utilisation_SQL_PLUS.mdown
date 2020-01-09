@@ -1,0 +1,93 @@
+# FICHE TECHNIQUE SQL*PLUS
+
+## 1. Objectif : 
+
+Pouvoir utiliser SQLPLUS pour être en capacité de recharger la structure d'un schéma, déployer une structure du schéma test vers le schéma de production, sauvegarder les données et détruire les tables.
+
+## 2. Connexion à la base Oracle depuis SQL PLUS
+
+### 2.1. Via l'application de bureau SQL PLUS :
+
+	1. Ouvrez l'application de bureau SQL PLUS ;
+
+	2. Dans l'invite de commande, entrez le nom d'utilisateur - Exemple : nom_du_schéma ;
+
+![Reader](images/SQLPLUS/SQLPLUS_nom_utilisateur.JPG)
+
+	3. Puis entrez le mot de passe respectant la nomenclature suivante : mot_de_passe@nom_instance. Attention, pour des raisons de sécurités le mot de passe tapé n'est pas affiché, mais il est bel et bien pris en compte. Une fois le mot de passe entré, tapez "Entrée" et, si les paramètres de connexion sont bons, vous verrez s'afficher la date de la dernière connexion, celle de la connexion actuelle et le prompt "SQL>" qui permet d'interroger la base Oracle via des requêtes SQL ;
+
+![Reader](images/SQLPLUS/SQLPLUS_mdp_et_connexion.JPG)
+
+### 2.2. Via l'invite de commande ;
+
+	1. Dans windows/Recherche tapez "cmd" et cliquez sur "Invite de commandes" ;
+
+![Reader](images/SQLPLUS/invite_de_commande_accès.jpg)
+
+	2. Dans l'invite de commande tapez les identifiants de connexion suivant la nomenclature suivante : sqlplus nom_utilisateur/mot_de_passe@nom_instance. Si les identifiants sont bons, vous verrez apparaître l'image ci-dessous dont le prompt "SQL>" vous permet de requêter directement sur Oracle à partir de l'invite de commande ;
+
+![Reader](images/SQLPLUS/invite_de_commande_connexion_bd_oracle.jpg)
+
+## 3. Les types de commandes autorisées à partir de SQLPLUS
+
+* **Commandes SQL** -> langage de requête utilisé pour lire, mettre à jour ou extraire des données ;
+
+* **Commandes PL/SQL** -> langage procédural propre à Oracle utilisé pour intégrer des requêtes SQL à des traitements procéduraux tels que les boucles, les variables, les structures de contrôles, etc ;
+
+* **Commandes SQL*PLUS** -> commandes internes de SQL*PLUS permettant entre autre de le paramétrer. 
+
+## 4. Utilisation de scripts pré-écrits :
+
+**Il existe deux méthodes :**
+
+1. **START** chemin_accès\nom_du_fichier.sql ;
+
+![Reader](images/SQLPLUS/utilisation_scripts_preecrit_methode_1.JPG)
+
+2. **@** chemin_accès\nom_du_fichier.sql ;
+
+![Reader](images/SQLPLUS/utilisation_scripts_preecrit_methode_2.JPG)
+
+* Le contenu est alors joué. S'il contient une requête vous obtiendrez le résultat de cette dernière, s'il en contient plusieurs vous obtiendrez les différents résultats successivement ;
+
+* Le chemin d'accès peut quant à lui être absolu ou relatif.
+
+## 5. Le buffer
+
+### 5.1. Utilisation du buffer :
+
+Le buffer est une zone mémoire contenant la dernière commande SQL, qu'elle ait été tapée directement dans SQL*PLUS ou depuis un fichier SQL pré-écrit. C'est un moyen pratique visualiser le code que l'on exécuté, surtout lorsqu'on a fait appel à un fichier pré-écrit.
+
+<br/>Pour l'utiliser, il suffit d'utiliser la commande **LIST**.
+
+![Reader](images/SQLPLUS/utilisation_scripts_preecrit_methode_2.JPG)
+
+### 5.2. Modification du contenu du buffer :
+
+Le contenu du buffer peut-être modifié avec la commande **Change** ou **C** en abrégé : CHANGE/texte à remplacer/texte de remplacement
+
+![Reader](images/SQLPLUS/buffer_remplacement_des_elements_du_buffer.JPG)
+
+### 5.3. Le contenu du buffer peut être rejoué :
+
+Le contenu du buffer peut être rejoué avec la commande **RUN** ou, plus court, **/**.
+
+![Reader](images/SQLPLUS/buffer_rejouer_le_buffer.JPG)
+
+### 5.4. Enregistrement du contenu du buffer :
+
+Le contenu du buffer peut être enregistré dans un fichier avec la commande **SAVE** ou **S**.
+
+* **CREATE** -> CREATE chemin_acces\nom_fichier => La commande CREATE peut être remplacé par SAVE et dans ce cas si aucun fichier du même nom n'existe, il sera automatiquement créé ;
+
+![Reader](images/SQLPLUS/buffer_creation_fichier.JPG)
+
+* **REPLACE** -> SAVE chemin_acces\nom_fichier REPLACE => L'option REPLACE permet de remplacer un fichier déjà existant ;
+
+![Reader](images/SQLPLUS/buffer_remplacement_fichier.JPG)
+
+* **APPEND** -> SAVE chemin_acces\nom_fichier APPEND => L'option APPEND permet d'ajouter du contenu à un fichier déjà existant.
+
+## 6. Sources :
+
+<https://zestedesavoir.com/tutoriels/297/petit-guide-de-sql-plus/>
