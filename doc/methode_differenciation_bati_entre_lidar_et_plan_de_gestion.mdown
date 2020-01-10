@@ -4,10 +4,6 @@
 	* meldig/sql/schema/plangestion/creation_ta_diff_carto_lidar.sql ;
 	* meldig/sql/modification/insertion_sous_elements_bati_ds_ta_diff_carto_lidar.sql ;
 
-# Les données utilisées ici se trouvent dans les répertoires/base de données suivants :
-	* Bâti issu du plan de gestion -> Oracle : geo.ta_sur_topo_g ;
-	* Bâti issu du lidar -> \\batzella\lidar\2018\aerodata\vecteurs\bati.gpkg
-
 1. Insertion du bâti issu du LIDAR différencié de celui issu du Plan de Gestion :
 	1. Réparation des géométries dans QGIS et enregistrement du résultat dans un shape en local -> Boîte à outils de traitements / Réparer les géométries ;
 	1. Différenciation des deux bâtis et export du résultat dans un shape enregistré en local -> Vecteur / Outils de géotraitement / Différence ;

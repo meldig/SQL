@@ -1,6 +1,5 @@
 /*
 La vue métarialisée vm_mel_actuelle_carto permet à l'utilisateur d'utiliser les contours de la MEL dont les communes sont encore en cours de validité.
-Cette vue affiche uniquement le contour de la MEL et non celui des communes.
 */
 
 -- 1. Création de la vue matérialisée
@@ -16,7 +15,12 @@ DISABLE QUERY REWRITE AS
 SELECT
 	a.insee,
 	a.nom,
-	SDO_AGGR_UNION(SDOAGGRTYPE(a.geom,0.005)) AS geom
+	SDO_AGGR_UNION(
+		SDOAGGRTYPE(
+			a.geom,
+			0.005
+		)
+	) AS geom
 	
 FROM
 	ta_commune a

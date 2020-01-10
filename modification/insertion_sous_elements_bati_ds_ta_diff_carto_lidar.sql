@@ -89,30 +89,3 @@ BEGIN
     CLOSE C_1; -- Fermeture obligatoire du compteur.
 END;
 
-/*
-Suppression des données du bâti issu du lidar situées en-dehors de la MEL.
-*/
-
-DELETE
-FROM
-    temp_diff_carto_lidar a
-WHERE
-    a.objectid = ANY
-        (
-        SELECT
-            a.objectid
-        FROM
-            temp_diff_carto_lidar a
-        WHERE
-            a.fid_libelle = 22
-        MINUS
-        SELECT
-            b.objectid
-        FROM
-            temp_diff_carto_lidar b,
-            ebm_lille_metropole c
-        WHERE
-            b.fid_libelle = 22
-            AND SDO_ANYINTERACT (b.GEOM, c.GEOM) = 'TRUE'
-        )
-;
