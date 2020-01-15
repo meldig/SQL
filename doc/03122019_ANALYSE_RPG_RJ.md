@@ -24,9 +24,14 @@ l’État.
 #### Article L 300-2 du CRPA
 Sont considérés comme documents administratifs, au sens des titres Ier, III et IV du présent livre, quels que soient leur date, leur lieu de conservation, leur forme et leur support, les documents produits ou reçus, dans le cadre de leur mission de service public, par l'Etat, les collectivités territoriales ainsi que par les autres personnes de droit public ou les personnes de droit privé chargées d'une telle mission. Constituent de tels documents notamment les dossiers, rapports, études, comptes rendus, procès-verbaux, statistiques, instructions, circulaires, notes et réponses ministérielles, correspondances, avis, prévisions, codes sources et décisions.
 
+### Numéro PACAGE
+
+Il s'agit de l'identifiant de l'exploitation. Associée à ce numéro se trouve la fiche d’identité de l'exploitation (Nom, Adresses, Téléphones, Références bancaires, Associés dans le cadre de société…). Il est indispensable dans toutes les démarches auprès de la DDT.
+
 ### Format des données
 
 Les données sont délivrées au format *shapefile*
+Les données sont délivrées au format *shapefile* et *excel*
 
 ## ARCHITECTURE DES DONNEES AU SEIN DE LA BASE
 
@@ -87,3 +92,91 @@ Limite d'usage: Le RPG doit être manié avec prudence pour les analyses du fonc
 * il manque des surfaces agricoles (surface des exploitations non aidées par exemple);
 * ces manques ne sont pas les mêmes d'une année sur l'autre (évolution des aides, surfaces non déclarées pour une raison relative à la vie d'une exploitation, projet d'aménagement commencé puis différé,...);
 * le dessin d'un îlot donné peut être modifié par l'exploitant alors même qu'il n'y a aucun changement sur le terrain.
+
+## Reception des données
+
+Les données ont été réceptionnées le 3 janvier 2020.
+
+Celles-ci sont composées de plusieurs tables:
+* aides1erpilier2018: table excel sans clé primaire qui nous renseigne sur les droits de paiement de base ainsi que le montant unitaire des des paiement de base par année. Par rapport au formulaire de demande des données de la DRAAF il manque le montant net payé total numérique.
+* aides2018_2ndpilier: table excel sans clé primaire nous renseignant sur le financeur de l'aide, le montant net payé dans le cadre de l'assurance récolte,
+et le montant net total. Contrairement au formulaire de demande des données de la DRAAF il manque les montants nets payés des ICHN(indemnité compensatoire de handicaps naturels)
+* ilots2018_description: table excel sans clé primaire conforme au formulaire de demande de la DRAAF. Table excel contenant les colonnes *pacage*, *num_ilot* et *COMMUNE_ILOT*
+* pacage2018_formejuridique: table excel sans clé primaire qui nous renseigne sur la forme juridique de l'exploitation par numéro de pacage. Conforme à la table *exploitants* du formulaire de demande des données de la DRAAF.
+* parcelles_instruites_2018: table excel sans clé primaire. Contrairement au formulaire de demande des données de la DRAAF il manque les deux colonnes *catégorie culture principale* et la colonne *commercialisation culture*.
+* rpg2018_mel: reprend les informations de la table parcelles_instruites_2018. Ajoute la géométrie à ces informations. Une différence est à notée dans cette table nous avons dep_ilot alors que dans la table parcelles_instruites_2018 nous avons commune_ilot.
+* maec2018_graphiques_surfaciques: manque le référentiel national et les caractéristiques des mesures agro-environnementales et climatiques et le montant des aides correspondantes.
+
+## Analyse des données
+
+sont liés entre eux par la clé pacage. Cepentant celle-ci ne peut pas servir de clef primaire. La clé pacage est en effet redondante dans les différentes tables et il n'y a pas le même nombre de pacages suivant les tables.
+
+### Analyse des numéros de pacage
+
+* aides1erpilier2018: 750 numéros de pacage différents
+* aides2018_2ndpilier: 154 numéros de pacage différents
+* ilots2018_description: 756 numéros de pacage différents
+* maec2018_graphiques_surfaciques: 6 numéros de pacage différents
+* pacage2018_formejuridique: 750 numéros de pacage différents
+* parcelles_instruites_2018: 756 parcelles_instruites_2018
+* rpg2018_mel: 756 parcelles_instruites_2018
+
+il n'y a pas de différence de numéro de pacage entre les tables parcelles_instruites_2018 et rpg2018_mel.
+6 numéro de pacage ne sont pas concernés par les aides 1er pilier.
+pacage
+059023425
+059023605
+059161659
+059165925
+059165928
+059166518
+
+6 numéro de pacage n'ont pas de forme juridique
+pacage
+059023425
+059023605
+059161659
+059165925
+059165928
+059166518
+
+ces 6 numéros de pacage totalisent 55 ilots réparties sur 29 parcelles réparties sur 7 communes:59339,59611,59090,59352,59482,59317,59252
+
+### Reflexion sur les tables des aides piliers
+
+#### Aides premier pilier:
+
+Les aides liées au premier pilier sont depuis 2014 versée en trois parties:  le paiement de base, appelé DPB (droit au
+paiement de base), le paiement vert et le paiement redistributif.
+
+* Le paiement "de base" est versé en fonction des surfaces détenues pas les agriculteurs.
+* Le «  paiement vert  », ou verdissement, est un paiement
+direct aux exploitants agricoles de métropole* qui vise à
+rémunérer des actions spéciȴques en faveur de l’environnement et contribue à soutenir leurs revenus. Il impose
+le respect par un grand nombre d’exploitants de mesures
+similaires, contribuant par leur e΍ort de masse globale à
+améliorer la performance environnementale de l’agriculture
+en termes de biodiversité, de protection de la ressource en
+eau et de lutte contre le changement climatique.
+* Le paiement redistributif est un paiement découplé, d’un
+montant ȴxe au niveau national, payé en complément
+des DPB de l’exploitation, dans la limite de 52 hectares
+par exploitation.
+Il permet de valoriser les productions à forte valeur ajoutée
+ou génératrices d’emploi, qui se font sur des exploitations
+de taille inférieure à la moyenne (typiquement l’élevage en
+général et en particulier l’élevage laitier, ou encore les fruits
+et légumes).
+* 750 pacages différents dans la table.
+* Certain pacage apparaisse plusieurs fois dans la table.
+
+#### Aides deuxième pilier
+
+* 154 pacages
+
+#### Mesures agro-environnementales et climatiques (MAEC) et aides pour l'agriculture biologique
+
+Il s’agit de mesures permettant d’accompagner les exploitations agricoles qui s’engagent dans le développement de
+pratiques combinant performance économique et performance environnementale ou dans le maintien de telles pratiques lorsqu’elles sont menacées de disparition. C’est un
+outil clé pour la mise en œuvre du projet agro-écologique
+pour la France.
