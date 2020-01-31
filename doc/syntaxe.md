@@ -55,7 +55,7 @@
 * Il ne doit pas y avoir d'espace, d'accent ou de caractères spéciaux
 * Un nom doit commencer par une lettre et ne pas finir avec un underscore
 * La séparation entre mots doit être faite avec un caractère underscore *_*
- * Il ne doit pas y avoir d'underscores successifs
+* Il ne doit pas y avoir d'underscores successifs
 
 ### Tables et Vues
 
@@ -143,10 +143,44 @@ WHERE
 
 ## Clés
 
+### Nommage
+
+* Champ de la clé primaire : objectid
+* Champ de la clé étrangère : fid_mot_clé_de_la_table_parent
+
 ## Contraintes
 
+### Nommage
+
+* Clé primaire : nomtable_PK
+* Clé étrangère : nomtable_nomchamp_FK
+	* Si le nom est > 30 caractères supprimez les marques du pluriel, puis abrégez les noms tout en gardant leur sens
+
 ## Types
+
+### Nommage
+
+* Les types s'écrivent toujours en majuscule
 
 ### Mise à jour
 
 merge ... using
+
+## Déclencheurs
+
+### Nommage
+
+* Déclencheur de l'auto-incrémentation d'une clé primaire : BEF_nomtable
+
+## Séquence
+
+### Nommage
+
+* Séquence d'auto-incrémentation de clé primaire : SEQ_nomtable 
+
+## Index
+
+### Nommage
+
+* Index spatial : nomtable_SIDX
+* Index autre : nomtable_nomchamp_IDX
