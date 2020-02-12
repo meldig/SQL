@@ -52,10 +52,10 @@ COMMIT;
 --Le code porte pour l'instant sur la table ta_test_limites_communes, puisque la géométrie des objets y a été corrigée.
 --Méthode : 
 --	4.1. Intersection des buffers de chaque municipalités avec celui de toute la MEL afin d'obtenir les parties à rajouter aux municipalité belges ;
---	4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges ;
+--	4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges (pour supprimer les partie des buffers intra-municipalités belges) ;
 --	4.3. Union des résultats de l'étape 4.2 avec leur municipalité respective ;
 --	4.4. Différence entre les résultats des unions et la MEL toute entière ;
---	4.5. Remplissage de la table temporaire avec touts les éléments de type polygone résultants de l'étape 4.4 ;
+--	4.5. Remplissage de la table temporaire avec tous les éléments de type polygone résultants de l'étape 4.4 ;
 --	4.6. Conservation du plus grand élément de chaque ensemble d'éléments catégorisé par les noms des municipalités ;
 --	4.7. Suppression des éléments de construction de la table temporaire ;
 --	4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
@@ -569,7 +569,7 @@ DECLARE
     FROM
         TA_MODIF_MUNICIPALITES_BELGES a
     WHERE
-        SUBSTR(a.nom, 0, 6) = '57081_'
+        SUBSTR(a.nom, 0, 1) = '57081_'
     GROUP BY
         a.nom
     ),
