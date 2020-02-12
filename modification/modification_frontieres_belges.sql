@@ -462,7 +462,7 @@ DECLARE
     v_union_tournai AS (
     SELECT
     SDO_AGGR_UNION(
-            SDOAGGRTYPE(a.geom, 6)
+            SDOAGGRTYPE(a.geom, 1)
         ) AS geom
     FROM
         ta_commune a
@@ -569,7 +569,7 @@ DECLARE
     FROM
         TA_MODIF_MUNICIPALITES_BELGES a
     WHERE
-        SUBSTR(a.nom, 0, 1) = '57081_'
+        SUBSTR(a.nom, 0, 6) = '57081_'
     GROUP BY
         a.nom
     ),
