@@ -519,7 +519,7 @@ La table TA_ZONE_ADMINISTRATIVE permet de recenser tous les noms des zones supra
 -- 1. Création de la table ta_zone_administrative
 CREATE TABLE ta_zone_administrative(
     objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY,
-    fid_nom VARCHAR2(4000),
+    fid_nom NUMBER(38,0),
     fid_libelle Number(38,0),
     fid_metadonnee NUMBER(38,0)
 );
@@ -555,7 +555,7 @@ FOREIGN KEY (fid_metadonnee)
 REFERENCES ta_metadonnee(objectid);
 
 -- 5. Création des index sur les clés étrangères
-CREATE INDEX ta_zone_administrative_fid_libelle_IDX ON ta_zone_administrative(fid_nom)
+CREATE INDEX ta_zone_administrative_fid_nom_IDX ON ta_zone_administrative(fid_nom)
     TABLESPACE G_ADT_INDX;
 
 CREATE INDEX ta_zone_administrative_fid_libelle_IDX ON ta_zone_administrative(fid_libelle)
