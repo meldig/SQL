@@ -379,9 +379,9 @@ CREATE TABLE ta_nom(
 
 -- 2. Création des commentaires sur la table et les champs
 COMMENT ON TABLE g_geo.ta_nom IS 'Table rassemblant tous les noms des objets du schéma.';
-COMMENT ON COLUMN g_geo.ta_commune.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_geo.ta_commune.acronyme IS 'Acronyme de chaque nom - Exemple : MEL pour la Métropole Européenne de Lille.';
-COMMENT ON COLUMN g_geo.ta_commune.nom IS 'Nom de chaque objet.';
+COMMENT ON COLUMN g_geo.ta_nom.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_nom.acronyme IS 'Acronyme de chaque nom - Exemple : MEL pour la Métropole Européenne de Lille.';
+COMMENT ON COLUMN g_geo.ta_nom.nom IS 'Nom de chaque objet.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_nom 
