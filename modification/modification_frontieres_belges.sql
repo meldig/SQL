@@ -610,10 +610,31 @@ END;
 DELETE FROM ta_modif_municipalites_belges a WHERE SUBSTR(a.nom, 0, 6) = '57081_';
 COMMIT;
 
-UPDATE TA_COMMUNE b
-SET geom = (SELECT a.geom FROM ta_modif_municipalites_belges a)
-WHERE b.nom = b.nom;
+-- Suppression de la table temporaire ta_modif_municipalites_belges et suppression de la métadonnée spatiale correspondante.
+DROP table ta_modif_municipalites_belges CASCADE CONSTRAINTS;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TA_MODIF_MUNICIPALITES_BELGES';
 COMMIT;
+
+-- Création de la vue matérialisée
+-- 1. Création de la vue matérialisée
+CREATE MATERIALIZED VIEW vm_mel_actuelle_carto (
+    nom,
+    code,
+    geom
+)
+
+REFRESH ON DEMAND
+FORCE
+DISABLE QUERY REWRITE AS
+SELECT
+    a.nom,
+    c.code_insee,
+    c.code_postal,
+    a.geom
+FROM
+    ta_commune a
+    INNER JOIN ta_code b
+    ON a.fid_code = 
 
 -- Inconvénient de la méthode :
 -- Si cette méthode règle 95% des problèmes de géométries jointives, il existe 5 cas qui restent incorects.
