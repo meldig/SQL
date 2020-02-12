@@ -610,7 +610,10 @@ END;
 DELETE FROM ta_modif_municipalites_belges a WHERE SUBSTR(a.nom, 0, 6) = '57081_';
 COMMIT;
 
-
+UPDATE TA_COMMUNE b
+SET geom = (SELECT a.geom FROM ta_modif_municipalites_belges a)
+WHERE b.nom = b.nom;
+COMMIT;
 
 -- Inconvénient de la méthode :
 -- Si cette méthode règle 95% des problèmes de géométries jointives, il existe 5 cas qui restent incorects.
