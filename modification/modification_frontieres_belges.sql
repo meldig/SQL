@@ -1,13 +1,13 @@
-/*
-Objectif : Modification des fontières belges par rapport aux frontières françaises.
 
-Contexte : Les frontières des municipalités belges et des communes françaises de la MEL, ne sont pas toujours jointives. 
-Il a donc été décidé par le groupe de travail "Socle de Données de Référence" de conserver les frontières françaises et de modifier celles de la MEL, car ces dernières ne seront pas utilisée à des fins juridiques.
+--Objectif : Modification des fontières belges par rapport aux frontières françaises.
 
-Sources :
-	- Communes françaises -> IGN ;
-	- Municipalités belges -> IGN belge ;  
-*/
+--Contexte : Les frontières des municipalités belges et des communes françaises de la MEL, ne sont pas toujours jointives. 
+--Il a donc été décidé par le groupe de travail "Socle de Données de Référence" de conserver les frontières françaises et de modifier celles de la MEL, car ces dernières ne seront pas utilisée à des fins juridiques.
+
+--Sources :
+--	- Communes françaises -> IGN ;
+--	- Municipalités belges -> IGN belge ;  
+
 
 -- Suppression de la table temporaire ta_modif_municipalites_belges et suppression de la métadonnée spatiale correspondante.
 DROP table ta_modif_municipalites_belges CASCADE CONSTRAINTS;
@@ -49,18 +49,18 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, wo
 COMMIT;
 
 -- 4. Modification des frontières belges par rapport aux frontières françaises
-/*Le code porte pour l'instant sur la table ta_test_limites_communes, puisque la géométrie des objets y a été corrigée.
-Méthode : 
-	4.1. Intersection des buffers de chaque municipalités avec celui de toute la MEL afin d'obtenir les parties à rajouter aux municipalité belges ;
-	4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges ;
-	4.3. Union des résultats de l'étape 4.2 avec leur municipalité respective ;
-	4.4. Différence entre les résultats des unions et la MEL toute entière ;
-	4.5. Remplissage de la table temporaire avec touts les éléments de type polygone résultants de l'étape 4.4 ;
-	4.6. Conservation du plus grand élément de chaque ensemble d'éléments catégorisé par les noms des municipalités ;
-	4.7. Suppression des éléments de construction de la table temporaire ;
-	4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
-	4.9. Suppression de la partie extérieure du buffer de Tournai ;
-*/
+--Le code porte pour l'instant sur la table ta_test_limites_communes, puisque la géométrie des objets y a été corrigée.
+--Méthode : 
+--	4.1. Intersection des buffers de chaque municipalités avec celui de toute la MEL afin d'obtenir les parties à rajouter aux municipalité belges ;
+--	4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges ;
+--	4.3. Union des résultats de l'étape 4.2 avec leur municipalité respective ;
+--	4.4. Différence entre les résultats des unions et la MEL toute entière ;
+--	4.5. Remplissage de la table temporaire avec touts les éléments de type polygone résultants de l'étape 4.4 ;
+--	4.6. Conservation du plus grand élément de chaque ensemble d'éléments catégorisé par les noms des municipalités ;
+--	4.7. Suppression des éléments de construction de la table temporaire ;
+--	4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
+--	4.9. Suppression de la partie extérieure du buffer de Tournai ;
+
 
 SET SERVEROUTPUT ON
 DECLARE   -- L.2
@@ -611,7 +611,6 @@ DELETE FROM ta_modif_municipalites_belges a WHERE SUBSTR(a.nom, 0, 6) = '57081_'
 COMMIT;
 
 
-/*
-Inconvénient de la méthode :
-Si cette méthode règle 95% des problèmes de géométries jointives, il existe 5 cas qui restent incorects.
-*/
+
+-- Inconvénient de la méthode :
+-- Si cette méthode règle 95% des problèmes de géométries jointives, il existe 5 cas qui restent incorects.
