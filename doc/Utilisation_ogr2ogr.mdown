@@ -17,3 +17,22 @@
 ### Exemple :
 
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+
+## Les erreurs et leurs solutions :
+
+	* ERROR : “PROJ: proj_create_from_wkt: Cannot find proj.db”
+
+	-> Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
+	-> Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db
+
+	Exemple : setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
+
+## Manipulation des systèmes de projection
+
+### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
+
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Documents\Projets\test\test_communes.shp C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+
+## Insertion de données (type shapefile) dans une base de données Oracle
+
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
