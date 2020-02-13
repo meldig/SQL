@@ -2,7 +2,18 @@
 
 ## Utilisation via l'invite de commande
 
+### Pré-requis - construire son environnement :
 	1. Dans la barre de recherche windows, tapez "cmd" et cliquez sur "invite de commande" ;
-	2. Paramétrez votre environnement (à ne faire qu'une fois) : tapez "cd C:\Program Files\QGIS 3.10", puis tapez : C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe
-	3. Appelez votre environnement ogr2ogr : C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe
-	4. Tappez vos commandes ;
+	2. Tapez c: (afin de se mettre sur le lecteur c) ;
+	3. Tapez "cd C:\Program Files\QGIS 3.10";
+
+
+### Utilisation courante :
+
+	1. Tapez c: ;
+	2. Une nouvelle ligne apparaît avec l'invite suivante : "C:\Program Files\QGIS 3.10>", rajoutez "bin\ogr2ogr.exe" ;
+	3. Sur la même ligne, faites un espace et écrivez votre commande ;
+
+### Exemple :
+
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
