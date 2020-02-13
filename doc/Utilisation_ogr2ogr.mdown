@@ -15,8 +15,9 @@
 	3. Sur la même ligne, faites un espace et écrivez votre commande ;
 
 ### Exemple :
-
+```
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
 
 ## Les erreurs et leurs solutions :
 
@@ -25,14 +26,35 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 	-> Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
 	-> Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db
 
-	Exemple : setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
+```
+setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
+```
 
 ## Manipulation des systèmes de projection
 
 ### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
 
+```
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Documents\Projets\test\test_communes.shp C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
 
 ## Insertion de données (type shapefile) dans une base de données Oracle
 
+### Insertion des données brutes en base dans une nouvelle table :
+```
+-- Mots clés : bin\ogr2ogr.exe -f OCI OCI:
+
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
+```
+
+### Insertion de certains champs dans une nouvelle table en base
+```
+-- Mots clés : bin\ogr2ogr.exe -f OCI -sql "SELECT champ1, champ2 FROM nom_table WHERE condition" OCI:
+
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
+
+## Liens - Documentation :
+
+	* [Commandes ogr2ogr ;](https://gdal.org/programs/ogr2ogr.html#c-api)
+	* [Options Oracle Spatial driver ;](https://gdal.org/drivers/vector/oci.html?highlight=oracle)
