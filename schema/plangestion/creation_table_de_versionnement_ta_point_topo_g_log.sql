@@ -31,7 +31,7 @@ CREATE TABLE GEO.TA_POINT_TOPO_G_LOG(
 );
 
 -- 1.2. Création des commentaires pour la table et ses attributs
-   COMMENT ON TABLE GEO.TA_POINT_TOPO_G_LOG  IS 'Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.';
+   COMMENT ON TABLE GEO.TA_POINT_TOPO_G_LOG  IS 'Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.';
    COMMENT ON COLUMN GEO.TA_POINT_TOPO_G_LOG.OBJECTID IS 'Identifiant interne de l''objet geographique';
    COMMENT ON COLUMN GEO.TA_POINT_TOPO_G_LOG.FID_IDENTIFIANT IS 'Identifiant de l''objet qui est/était présent dans la table de production.';
    COMMENT ON COLUMN GEO.TA_POINT_TOPO_G_LOG.CLA_INU IS 'Reference a la classe a laquelle appartient l''objet';
