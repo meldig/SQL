@@ -72,7 +72,7 @@ VALUES(
 );
 COMMIT;
 
--- 1.5. Création de l'index spatial sur le champ geom. Le type de géométrie n'est pas ici précisé car la table TA_POINT_TOPO_G dipose de 3 types de géométries (2006, 2000, 2003, 2002).
+-- 1.5. Création de l'index spatial sur le champ geom. Le type de géométrie est : point en 2D.
 CREATE INDEX TA_POINT_TOPO_G_LOG_SIDX
 ON TA_POINT_TOPO_G_LOG(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX;
