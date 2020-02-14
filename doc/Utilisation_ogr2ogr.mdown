@@ -1,4 +1,4 @@
-# Fiche Techinque d'Utilisation d'Ogr2ogr
+# Fiche Technique d'Utilisation d'Ogr2ogr
 
 ## Utilisation via l'invite de commande
 
