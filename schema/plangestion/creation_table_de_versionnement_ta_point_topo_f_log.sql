@@ -67,15 +67,15 @@ INSERT INTO USER_SDO_GEOM_METADATA(
 VALUES(
     'TA_POINT_TOPO_F_LOG',
     'geom',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684000, 721000, 0.005),SDO_DIM_ELEMENT('Y', 7044000, 7079000, 0.005),MDSYS.SDO_DIM_ELEMENT('Z', -1000, 10000, 0.005)), 
     2154
 );
 COMMIT;
 
--- 1.5. Création de l'index spatial sur le champ geom. Le type de géométrie n'est pas ici précisé car la table TA_POINT_TOPO_F dipose de 3 types de géométries (2006, 2000, 2003, 2002).
+-- 1.5. Création de l'index spatial sur le champ geom. Le type de géométrie est : point en 3D.
 CREATE INDEX TA_POINT_TOPO_F_LOG_SIDX
 ON TA_POINT_TOPO_F_LOG(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS (' LAYER_GTYPE = MULTIPOINT WORK_TABLESPACE=DATA_TEMP TABLESPACE=INDX_GEO');
 
 -- 1.6. Création de la séquence d'auto-incrémentation
 CREATE SEQUENCE SEQ_TA_POINT_TOPO_F_LOG
