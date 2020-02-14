@@ -23,7 +23,7 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 
 ## Les erreurs et leurs solutions :
 
-* *ERROR :* “PROJ: proj_create_from_wkt: Cannot find proj.db”
+### * ERROR : “PROJ: proj_create_from_wkt: Cannot find proj.db”
 
 * Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
 * Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db
