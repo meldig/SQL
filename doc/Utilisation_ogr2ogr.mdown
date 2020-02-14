@@ -57,6 +57,13 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
 
+### Insertion de données dans une table dont le nom diffère du nom d'origine
+
+```
+-- Mots clés : : -nln
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp -nln COMMUNE_FRANCAISE
+```
+
 ## Liens - Documentation :
 
 * [Commandes ogr2ogr ;](https://gdal.org/programs/ogr2ogr.html#c-api)
