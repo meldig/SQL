@@ -507,7 +507,7 @@ REFERENCES ta_commune(objectid);
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_identifiant_FK 
 FOREIGN KEY (fid_identifiant)
-REFERENCES ta_identifiant_commune(objectid);
+REFERENCES ta_code(objectid);
 
 /*-- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADT_DSIG_ADM;*/
