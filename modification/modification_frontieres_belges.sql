@@ -49,17 +49,17 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, wo
 COMMIT;
 
 -- 4. Modification des frontières belges par rapport aux frontières françaises
---Le code porte pour l'instant sur la table ta_test_limites_communes, puisque la géométrie des objets y a été corrigée.
+--Le code porte pour l'instant sur la table ta_commune, puisque la géométrie des objets y a été corrigée.
 --Méthode : 
---	4.1. Intersection des buffers de chaque municipalités avec celui de toute la MEL afin d'obtenir les parties à rajouter aux municipalité belges ;
---	4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges (pour supprimer les partie des buffers intra-municipalités belges) ;
---	4.3. Union des résultats de l'étape 4.2 avec leur municipalité respective ;
---	4.4. Différence entre les résultats des unions et la MEL toute entière ;
---	4.5. Remplissage de la table temporaire avec tous les éléments de type polygone résultants de l'étape 4.4 ;
---	4.6. Conservation du plus grand élément de chaque ensemble d'éléments catégorisé par les noms des municipalités ;
---	4.7. Suppression des éléments de construction de la table temporaire ;
---	4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
---	4.9. Suppression de la partie extérieure du buffer de Tournai ;
+--  4.1. Intersection des buffers de chaque municipalités avec celui de toute la MEL afin d'obtenir les parties à rajouter aux municipalité belges ;
+--  4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges (pour supprimer les partie des buffers intra-municipalités belges) ;
+--  4.3. Union des résultats de l'étape 4.2 avec leur municipalité respective ;
+--  4.4. Différence entre les résultats des unions et la MEL toute entière ;
+--  4.5. Remplissage de la table temporaire avec tous les éléments de type polygone résultants de l'étape 4.4 ;
+--  4.6. Conservation du plus grand élément de chaque ensemble d'éléments catégorisé par les noms des municipalités ;
+--  4.7. Suppression des éléments de construction de la table temporaire ;
+--  4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
+--  4.9. Suppression de la partie extérieure du buffer de Tournai ;
 
 
 SET SERVEROUTPUT ON
@@ -74,22 +74,23 @@ DECLARE   -- L.2
             SDOAGGRTYPE(a.geom, 0.001)
         ) AS geom
     FROM
-        ta_test_limites_communes a
+        ta_commune a
     WHERE
         a.geom IS NOT NULL
-        AND a.fid_source = 3
+        AND a.fid_metadonnee = 1
     ),
   
 -- Buffer de chaque municipalité à ajouter - L. 18
     v_buffer_6com AS (
     SELECT
-        a.nom,
+        b.nom,
         SDO_GEOM.SDO_BUFFER(a.geom, 50, 0.001) AS geom
     FROM
-        ta_test_limites_communes a
+        ta_commune a
+        INNER JOIN ta_nom b ON a.fid_nom = b.objectid
     WHERE
         a.geom IS NOT NULL
-        AND a.fid_source = 25
+        AND a.fid_metadonnee = 22
     ),
 
 -- Suppression des arcs pouvant occasionner des décalages entre la France et la Belgique - L. 30
@@ -134,10 +135,10 @@ DECLARE   -- L.2
             SDOAGGRTYPE(a.geom, 0.001)
         ) AS geom
     FROM
-        ta_test_limites_communes a
+        ta_commune a
     WHERE
         a.geom IS NOT NULL
-        AND a.fid_source = 25
+        AND a.fid_metadonnee = 22
     ),
 
 -- 4.2. Découpage des résultats de l'étape 4.1 avec l'union des 6 municipalités belges ;
@@ -164,14 +165,15 @@ DECLARE   -- L.2
 -- Union entre les communes à ajouter et le résultat de la différence_v1 - L. 97
     v_union AS (
     SELECT
-        a.nom,
+        c.nom,
         SDO_GEOM.SDO_UNION(a.geom, b.geom, 0.001) AS geom
     FROM
-        ta_test_limites_communes a,
+        ta_commune a
+        INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
         v_correction_arcs_v3 b
     WHERE
-        a.nom = b.nom
-        AND a.fid_source = 25
+        c.nom = b.nom
+        AND a.fid_metadonnee = 22
     ),
      
 -- Suppression des arcs pouvant occasionner des décalages entre la France et la Belgique. L. 109
@@ -205,7 +207,7 @@ DECLARE   -- L.2
         EXIT WHEN C_1%NOTFOUND; -- Fin de la première boucle : quand il n'y a plus de ligne dans le curseur, on sort de la boucle.
         V_compteur := 0;
         V_numelem := SDO_UTIL.GETNUMELEM(V_multipolygon.geom); -- Décompte du nombre total de sous-élément de chaque géométrie.
-        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_test_limites_communes.
+        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_commune.
             V_compteur := V_compteur + 1;
             EXIT WHEN V_compteur > V_numelem; -- Quand le compteur excède V_numelem, cela veut dire que tous les sous-éléments ont été traités.
             IF V_numelem > 1 THEN
@@ -322,8 +324,8 @@ DECLARE   -- L.2
     WHERE
         SUBSTR(a.nom, -4, 4)  <> '_sub';
 
-        v_nom G_REFERENTIEL.TA_MODIF_MUNICIPALITES_BELGES.nom%TYPE;
-        v_geom G_REFERENTIEL.TA_MODIF_MUNICIPALITES_BELGES.geom%TYPE;
+        v_nom G_GEO.TA_MODIF_MUNICIPALITES_BELGES.nom%TYPE;
+        v_geom G_GEO.TA_MODIF_MUNICIPALITES_BELGES.geom%TYPE;
 BEGIN
     OPEN C_1; -- ouverture du curseur
     LOOP -- ouverture de la boucle 
@@ -346,6 +348,7 @@ UPDATE ta_modif_municipalites_belges a SET a.nom = SUBSTR(a.nom, 3) WHERE SUBSTR
 COMMIT;
 
 /
+
 --4.8. Suppression de la partie extérieure du buffer de Comines-Warneton ;
 SET SERVEROUTPUT ON
 DECLARE 
@@ -358,9 +361,11 @@ DECLARE
         ) AS geom
     FROM
         ta_commune a
+        INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+        INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
     WHERE
-        a.fid_source IN(3, 25)
-        AND a.insee IN (59017, 57097)
+        a.fid_metadonnee IN(1, 22)
+        AND c.code IN (59017, 57097)
     )
     SELECT
         a.nom,
@@ -386,7 +391,7 @@ BEGIN
         EXIT WHEN C_1%NOTFOUND; -- Fin de la première boucle : quand il n'y a plus de ligne dans le curseur, on sort de la boucle.
         V_compteur := 0;
         V_numelem := SDO_UTIL.GETNUMELEM(V_multipolygon.geom); -- Décompte du nombre total de sous-élément de chaque géométrie.
-        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_test_limites_communes.
+        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_commune.
             V_compteur := V_compteur + 1;
             EXIT WHEN V_compteur > V_numelem; -- Quand le compteur excède V_numelem, cela veut dire que tous les sous-éléments ont été traités.
                 V_singlepolygon := SDO_UTIL.EXTRACT(V_multipolygon.geom, V_compteur);
@@ -466,9 +471,11 @@ DECLARE
         ) AS geom
     FROM
         ta_commune a
+        INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+        INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
     WHERE
-        a.fid_source IN(3, 25)
-        AND a.insee IN (5944, 57081)
+        a.fid_metadonnee IN(1, 22)
+        AND c.code IN (59044, 57081)
     )
     SELECT
         a.nom,
@@ -494,7 +501,7 @@ BEGIN
         EXIT WHEN C_1%NOTFOUND; -- Fin de la première boucle : quand il n'y a plus de ligne dans le curseur, on sort de la boucle.
         V_compteur := 0;
         V_numelem := SDO_UTIL.GETNUMELEM(V_multipolygon.geom); -- Décompte du nombre total de sous-élément de chaque géométrie.
-        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_test_limites_communes.
+        LOOP -- Deuxième boucle : extraction de chaque sous-élément de la géométrie dans la table ta_commune.
             V_compteur := V_compteur + 1;
             EXIT WHEN V_compteur > V_numelem; -- Quand le compteur excède V_numelem, cela veut dire que tous les sous-éléments ont été traités.
                 V_singlepolygon := SDO_UTIL.EXTRACT(V_multipolygon.geom, V_compteur);
