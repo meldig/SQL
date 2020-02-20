@@ -1,33 +1,28 @@
 /*
-La vue matérialisée vm_unite_territoriale permet à l'utilisateur d'utiliser les unités territoriales dont les communes qui les composent sont en core en cours de validité. 
+Création de la table matérialisée des Unités Territoriales (faite à partir de l'aggrégation des communes)
 */
 
--- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW vm_unite_territoriale(
-	id_ut,
-	nom_ut,
-	geom
-)
-SELECT
-	a.objectid,
-	a.nom_ut,
-	SDO_AGGR_UNION(
-		SDOAGGRTYPE(
-			b.geom,
-			0.005
-		)
-	) AS geom
+DROP MATERIALIZED VIEW g_referentiel.vm_unite_territoriale;
 
+-- 1. Création de la vue matérialisée
+CREATE MATERIALIZED VIEW g_referentiel.vm_unite_territoriale(
+	nom,
+    geom
+)
+REFRESH ON DEMAND
+FORCE
+DISABLE QUERY REWRITE AS
+SELECT 
+    d.nom,
+    SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS nom
 FROM
-	ta_ut_communes c
-	INNER JOIN ta_commune b
-	ON b.objectid = c.fid_commune
-	INNER JOIN ta_unite_territoriale a
-	ON a.objectid = c.fid_unite_territoriale
-	INNER JOIN ta_validite d
-	ON d.objectid = a.fid_validite
+    g_geo.ta_commune a
+    INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
+    INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
+    INNER JOIN g_geo.ta_nom d ON c.fid_nom = d.objectid
 WHERE
-	sysdate BETWEEN d.debut_validite AND d.fin_validite;
+    d.nom IN('TOURCOING-ARMENTIERES', 'ROUBAIX-VILLENEUVE D''ASCQ', 'LILLE-SECLIN', 'LA BASSEE-MARCQ EN BAROEUL')
+GROUP BY d.nom;
 
 -- 2. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -43,19 +38,21 @@ VALUES(
     2154
 );
 
+-- 3. Création de la clé primaire
 ALTER MATERIALIZED VIEW 
   vm_unite_territoriale 
 ADD CONSTRAINT 
   vm_unite_territoriale_PK 
-PRIMARY KEY (INSEE)
+PRIMARY KEY (NOM)
 DISABLE;
 
+-- 4. Création de l'index spatial
 CREATE INDEX vm_unite_territoriale_SIDX
 ON vm_unite_territoriale(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS(
   'sdo_indx_dims=2, 
   layer_gtype=POLYGON, 
-  tablespace=INDX_GEO, 
+  tablespace=G_ADT_INDX, 
   work_tablespace=DATA_TEMP'
 );
