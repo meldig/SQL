@@ -33,6 +33,19 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 ```
 
+### Erreurs d'encodage des caratères
+
+* Explication : Si lorsque vous importez des données dans Oracle et que vous obtenez des noms comme ceci "De��l��mont", cela signifie qu'il y a un problème d'encodage dans l'environnement Oracle d'Ogr2ogr. En effet, votre shapefile et votre base peuvent être encodés en UTF-8, mais si ce n'est pas le cas d'Ogr2ogr qui s'occupe de la transition entr les deux, cela ne servira à rien puisque Ogr2ogr ré-encodera les données suivant son propre encodage.
+* Solution : Modifiez la variable NLS_LANG AVANT de lancer ogr2ogr.
+
+```
+c: \> SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+
+OU
+
+C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+```
+
 ## Manipulation des systèmes de projection
 
 ### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
