@@ -18,7 +18,7 @@ AS
 SELECT
         ROWNUM AS objectid,
         b.code AS identifiant_unique,
-        d.nom AS nom_minuscule,
+        LOWER(d.nom) AS nom_minuscule,
         UPPER(d.nom) AS nom_majuscule,
         c.geom,
         ROUND(SDO_GEOM.SDO_AREA(c.geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS aire_km2,
