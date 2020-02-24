@@ -114,3 +114,43 @@ ALTER TABLE #TABLE# DROP COLUMN #COL#;
 DROP TABLE #TABLE# CASCADE CONSTRAINTS;
 DROP SEQUENCE S_#TABLE#;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = '#TABLE#';
+
+-----------------------------------------------------------------------------------------------
+------------------------------- Création de  Trigger-------------------------------------------
+-----------------------------------------------------------------------------------------------
+
+--Règles de nommage :
+	-- Si le trigger se déclenche avant l'insertion (BEFORE INSERT), alors utilisez le préfixe 'B_' ;
+	CREATE OR REPLACE TRIGGER NOM_SCHEMA.A_IXX_TABLE_NAME
+    BEFORE INSERT ON TABLE_NAME
+    FOR EACH ROW
+
+	DECLARE
+		...
+
+	BEGIN
+	    ...
+	END;
+
+	-- Si le trigger se déclenche après l'insertion (AFTER INSERT), alors utilisez le préfixe 'A_' ;
+	CREATE OR REPLACE TRIGGER NOM_SCHEMA.A_IXX_TABLE_NAME
+    AFTER INSERT ON TABLE_NAME
+    FOR EACH ROW
+
+	DECLARE
+		...
+
+	BEGIN
+	    ...
+	END;
+	
+	- S'il s'agit d'une insertion seule, rajoutez 'IXX' -> 'B_IXX_TABLE_NAME' ;
+	- S'il s'agit d'une mise à jour seule, rajoutez 'UXX' -> 'B_UXX_' ;
+	- S'il s'agit d'une Suppression seule, rajoutez 'DXX' -> 'B_DXX_' ;
+	==> Les deux 'XX' placés derrière l'initiale d'insertion/mise à jour/suppression signifie que le trigger marche UNIQUEMENT pour une action ;
+	- Si un trigger peut être déclenché par deux actions, alors, vous pouvez mélanger les préfixes -> 'B_IUX_TABLE_NAME' signifie que le trigger se déclenche avant l'insertion ou la mise de la table dont le nom figure dans le nom du trigger ;
+*/
+
+-- Trigger BEFORE INSERT 
+
+
