@@ -6,15 +6,17 @@ DROP MATERIALIZED VIEW g_referentiel.vm_unite_territoriale;
 
 -- 1. Création de la vue matérialisée
 CREATE MATERIALIZED VIEW g_referentiel.vm_unite_territoriale(
-	nom,
+	nom_minuscule,
     geom
 )
 REFRESH ON DEMAND
 FORCE
 DISABLE QUERY REWRITE AS
 SELECT 
-    d.nom,
-    SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS nom
+    LOWER(d.nom)AS nom_minuscule,
+    UPPER(d.nom) AS nom_majuscule,
+    SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom,
+    ROUND(SDO_GEOM.SDO_AREA(geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS aire_km2,
 FROM
     g_geo.ta_commune a
     INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
