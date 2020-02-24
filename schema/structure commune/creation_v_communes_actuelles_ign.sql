@@ -68,5 +68,5 @@ COMMENT ON COLUMN adm_communes_mel_actuelles_ign.NOM IS 'Nom de chaque commune d
 COMMENT ON COLUMN adm_communes_mel_actuelles_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
 COMMENT ON COLUMN adm_communes_mel_actuelles_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
 COMMENT ON COLUMN adm_communes_mel_actuelles_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur de la source, la source en elle-même et son millésime.';
+COMMENT ON COLUMN adm_communes_mel_actuelles_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
 COMMENT ON COLUMN adm_communes_mel_actuelles_ign.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
