@@ -81,3 +81,4 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_P
 
 * [Commandes ogr2ogr ;](https://gdal.org/programs/ogr2ogr.html#c-api)
 * [Options Oracle Spatial driver ;](https://gdal.org/drivers/vector/oci.html?highlight=oracle)
+* [Correction de l'erreur d'encodage ;](https://gis.stackovernet.com/fr/q/39273)
