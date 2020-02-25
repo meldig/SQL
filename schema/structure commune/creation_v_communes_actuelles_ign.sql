@@ -2,13 +2,14 @@
 Création de la vue des communes actuelles de la BdTopo de l'IGN 
 */
 CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_actuelles_mel_ign (
-    OBJECTID,
-    nom,
+    objectid,
+    nom_minuscule,
+    nom_majuscule,
     code_insee,
     code_postal,
     geom,
-    source,
     aire_km2,
+    source,
     CONSTRAINT "adm_communes_actuelles_mel_ign_PK" PRIMARY KEY("OBJECTID") DISABLE
 )
 AS
@@ -19,8 +20,8 @@ AS
         b.code AS code_insee,
         d.nom,
         c.geom,
-        CONCAT(CONCAT(CONCAT(CONCAT(h.acronyme, ' - '), f.nom_source), ' - '),  EXTRACT(YEAR FROM j.millesime))AS source,
-        ROUND(SDO_GEOM.SDO_AREA(c.geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS aire_km2
+        ROUND(SDO_GEOM.SDO_AREA(c.geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS aire_km2,
+        CONCAT(CONCAT(CONCAT(CONCAT(h.acronyme, ' - '), f.nom_source), ' - '),  EXTRACT(YEAR FROM j.millesime))AS source
     FROM
         g_geo.ta_identifiant_commune a
         INNER JOIN g_geo.ta_code b ON a.fid_identifiant = b.objectid
@@ -49,12 +50,13 @@ AS
     )
     SELECT
         rownum AS objectid,
-        a.nom,
+        LOWER(a.nom) AS nom_minuscule,
+        UPPER(a.nom) AS nom_majuscule,
         a.code_insee,
         b.code_postal,
         a.geom,
-        a.source,
-        a.aire_km2
+        a.aire_km2,
+        a.source
     FROM
         v_main_selection a,
         v_code_postal b 
@@ -62,11 +64,11 @@ AS
         a.fid_commune = b.fid_commune;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE adm_communes_actuelles_mel_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.OBJECTID IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.NOM IS 'Nom de chaque commune de la MEL.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
-COMMENT ON COLUMN adm_communes_actuelles_mel_ign.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
+COMMENT ON TABLE g_referentiel.adm_communes_actuelles_mel_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.OBJECTID IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.NOM IS 'Nom de chaque commune de la MEL.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_ign.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
