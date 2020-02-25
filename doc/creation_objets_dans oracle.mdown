@@ -119,6 +119,7 @@ ALTER TABLE TABLE_NAME DROP COLUMN_NAME;
 
 * ### Création d'une table :
 
+```
 -- 1. Création de la table
 CREATE TABLE schema_name.table_name (
     champ1,
@@ -154,6 +155,7 @@ CREATE INDEX #TABLE#_SIDX
 ON TABLE_NAME(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_..., work_tablespace=DATA_TEMP');
+```
 
 * ### Suppression d'une table :
 
@@ -196,6 +198,7 @@ DROP VIEW view_name;
 * ### Création d'une vue matérialisée :
 
 ```
+-- 1. Création de la vue matérialisée (VM)
 CREATE MATERIALIZED VIEW schema_name.vm_materialized_view_name 
 USING INDEX 
 TABLESPACE tablespace_name 
@@ -215,6 +218,18 @@ COMMENT ON MATERIALIZED VIEW materialized_view_name IS '...';
 COMMENT ON COLUMN materialized_view_name.champ1 IS '...';
 COMMENT ON COLUMN materialized_view_name.champ2 IS '...';
 COMMENT ON COLUMN materialized_view_name.champ3 IS '...';
+
+-- 2. Création des métadonnées spatiales de la VM
+INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES ('MATERIALIZED_VIEW_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
+COMMIT;
+```
+
+* ### Suppression d'une vue matérialisée :
+
+```
+DROP MATERIALIZED VIEW materialized_view_name;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'MATERIALIZED_VIEW_NAME';
 ```
 
 ## Création de trigger :
@@ -268,7 +283,7 @@ CREATE OR REPLACE TRIGGER #NOM_SCHEMA#.#B_DXX_TABLE_NAME#
 BEFORE INSERT ON TABLE_NAME
 ```
 
-*** Les deux 'XX' placés derrière l'initiale d'insertion/mise à jour/suppression signifie que le trigger marche UNIQUEMENT pour une action. ***
+**Les deux 'XX' placés derrière l'initiale d'insertion/mise à jour/suppression signifie que le trigger marche UNIQUEMENT pour une action.**
 
 * Si un trigger peut être déclenché par deux actions, alors, vous pouvez mélanger les préfixes -> 'B_IUX_TABLE_NAME' signifie que le trigger se déclenche avant l'insertion ou la mise de la table dont le nom figure dans le nom du trigger ;
 
