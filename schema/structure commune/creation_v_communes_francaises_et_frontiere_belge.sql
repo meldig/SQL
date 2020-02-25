@@ -4,15 +4,16 @@ Création de la vue des communes françaises avec les municipalités frontalièr
 DROP VIEW adm_communes_mel_actuelles_et_belgique;
 
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_actuelles_et_belgique (
-    OBJECTID,
+CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_actuelles_mel_belgique_ign
+ (
+    objectid,
     identifiant_unique,
     nom_minuscule,
     nom_majuscule,
     geom,
     aire_km2,
     source,
-    CONSTRAINT "adm_communes_mel_actuelles_ign_PK" PRIMARY KEY("OBJECTID") DISABLE
+    CONSTRAINT "adm_communes_actuelles_mel_belgique_ign_PK" PRIMARY KEY("OBJECTID") DISABLE
 )
 AS
 SELECT
@@ -40,10 +41,10 @@ SELECT
 ;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE adm_communes_mel_actuelles_et_belgique IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN avec les municipalités belges frontalières.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.OBJECTID IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.IDENTIFIANT_UNIQUE IS 'Code INSEE pour les communes / Code INS pour les municipalités.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.NOM IS 'Nom de chaque commune de la MEL et de chaque municipalités belges frontalières.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.GEOM IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.aire_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_et_belgique.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON TABLE g_referentiel.adm_communes_actuelles_mel_belgique_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN avec les municipalités belges frontalières.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.OBJECTID IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.IDENTIFIANT_UNIQUE IS 'Code INSEE pour les communes / Code INS pour les municipalités.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.NOM IS 'Nom de chaque commune de la MEL et de chaque municipalités belges frontalières.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.aire_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel_belgique_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
