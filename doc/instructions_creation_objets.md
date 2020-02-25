@@ -2,27 +2,29 @@
 
 ## Connaître les tablespaces accessibles depuis un schéma
 
-```
-SELECT * FROM USER_TABLESPACES;
+``` SQL
+SELECT *
+FROM USER_TABLESPACES;
 ```
 
 ## Création d'une clé primaire
 
-* ### Pour une table :
+### Pour une table
 
-```
-ALTER TABLE TABLE ADD CONSTRAINT TABLE_PK PRIMARY KEY("OBJECTID") USING INDEX TABLESPACE "INDX_...";
+``` SQL
+ALTER TABLE TABLE_NAME
+  ADD CONSTRAINT TABLE_PK PRIMARY KEY("OBJECTID") USING INDEX TABLESPACE "INDX_...";
 ```
 
-* ### Pour une vue :
+### Pour une vue
 
-```
+``` SQL
 ALTER VIEW TABLE ADD (CONSTRAINT TABLE_PK PRIMARY KEY (OBJECTID) DISABLE);
 ```
 
 ## Création de Métadonnées spatiales
 
-```
+``` SQL
 INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
 VALUES ('TABLE_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
 
@@ -31,95 +33,100 @@ COMMIT;
 
 ## Création des index spatiaux
 
-```
+``` SQL
 CREATE INDEX #TABLE#_SIDX
 ON TABLE_NAME(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_..., work_tablespace=DATA_TEMP');
+    INDEXTYPE IS MDSYS.SPATIAL_INDEX
+    PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_..., work_tablespace=DATA_TEMP');
 ```
 
 ## Création des index (non-spatiaux)
 
-```
+``` SQL
 CREATE UNIQUE INDEX TABLE_NAME_CHAMP_IDX ON TABLE_NAME("CHAMP") TABLESPACE "INDX_...";
-``` 
-
-## Ajout d'un commmentaire
-
-* ### Commentaire de table/vue matérialisée :
-
 ```
+
+## Ajout de commmentaires
+
+### Commentaire de table/vue matérialisée :
+
+``` SQL
 COMMENT ON TABLE TABLE_NAME IS 'COMMENT';
 ```
 
-* ### Commentaire de vue :
+### Commentaire de vue :
 
-```
+``` SQL
 COMMENT ON VIEW VIEW_NAME IS 'COMMENT';
 ```
 
-* ### Commentaire de champ :
+### Commentaire de champ :
 
-```
+``` SQL
 COMMENT ON COLUMN TABLE_NAME.COLUMN_NAME IS 'COMMENT';
 ```
 
 ## Gestion des droits
 
-Exemple : donner un droit de lecture aux administrateurs
-```
+Exemple : pour donner un droit de lecture aux administrateurs
+
+``` SQL
 GRANT SELECT ON TABLE_NAME TO G_ADT_DSIG_ADM;
 ```
 
 ## Incrémentation de clé primaire
 
-* ### Création de la séquence d'incrémentation :
+### Création de la séquence d'incrémentation :
 
-```
+``` SQL
 CREATE SEQUENCE S_TABLE_NAME INCREMENT BY 1 START WITH 1 NOCACHE;
 ```
 
-* ### Création du trigger d'incrémentation :
+### Création du trigger d'incrémentation :
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER B_IXX_TABLE_NAME
-BEFORE INSERT ON TABLE_NAME FOR EACH ROW
-BEGIN
-  :new.OBJECTID := S_TABLE_NAME.nextval;
-END;
+  BEFORE INSERT ON TABLE_NAME FOR EACH ROW
+  BEGIN
+    :new.OBJECTID := S_TABLE_NAME.nextval;
+  END;
 ```
 
 ## Création de contraintes
 
-* ### Ajout d'une clé étrangère :
+### Ajout d'une clé étrangère :
 
-```
-ALTER TABLE TABLE_NAME ADD CONSTRAINT TABLE_NAME_CHAMP_FK FOREIGN KEY ("COLUMN_NAME") REFERENCES TABLE_NAME_REF("COLUMN_NAME") --ON DELETE CASCADE/SET NULL;
+``` SQL
+ALTER TABLE TABLE_NAME
+  ADD CONSTRAINT TABLE_NAME_CHAMP_FK FOREIGN KEY ("COLUMN_NAME") REFERENCES TABLE_NAME_REF("COLUMN_NAME") --ON DELETE CASCADE/SET NULL;
 ```
 
-* ### Ajout d'une contrainte d'unicité :
+### Ajout d'une contrainte d'unicité :
 
-```
-ALTER TABLE TABLE_NAME ADD CONSTRAINT TABLE_NAME_CHAMP_UQ UNIQUE ("COLUMN_NAME");
+``` SQL
+ALTER TABLE TABLE_NAME
+  ADD CONSTRAINT TABLE_NAME_CHAMP_UQ UNIQUE ("COLUMN_NAME");
 ```
 
 ## Ajout d'une colonne dans une table
 
-```
-ALTER TABLE TABLE_NAME ADD COLUMN_NAME DATA_TYPE;
+``` SQL
+ALTER TABLE TABLE_NAME
+  ADD COLUMN_NAME DATA_TYPE;
 ```
 
 ## Suppression d'une colonne dans une table
 
-```
-ALTER TABLE TABLE_NAME DROP COLUMN_NAME;
+``` SQL
+ALTER TABLE TABLE_NAME
+  DROP COLUMN_NAME;
 ```
 
 ## Création/suppresion d'objets
 
-* ### Création d'une table :
+### Création d'une table :
 
-```
+``` SQL
 -- 1. Création de la table
 CREATE TABLE schema_name.table_name (
     champ1,
@@ -128,7 +135,7 @@ CREATE TABLE schema_name.table_name (
 );
 
 -- 2. Commentaires de la tables
-COMMENT ON TABLE table_name IS '...';
+COMMENT ON TABLE TABLE_NAME IS '...';
 COMMENT ON COLUMN table_name.champ1 IS '...';
 COMMENT ON COLUMN table_name.champ2 IS '...';
 COMMENT ON COLUMN table_name.champ3 IS '...';
@@ -160,17 +167,17 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_..., work
 GRANT SELECT ON TABLE_NAME TO G_ADT_DSIG_ADM;
 ```
 
-* ### Suppression d'une table :
+### Suppression d'une table :
 
-```
+``` SQL
 DROP TABLE TABLE_NAME CASCADE CONSTRAINTS;
 DROP SEQUENCE S_TABLE_NAME;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TABLE_NAME';
 ```
 
-* ### Création d'une vue :
+### Création d'une vue :
 
-```
+``` SQL
 CREATE OR REPLACE FORCE VIEW schema_name.view_name (
     champ1,
     champ2,
@@ -192,22 +199,22 @@ COMMENT ON COLUMN view_name.champ2 IS '...';
 COMMENT ON COLUMN view_name.champ3 IS '...';
 ```
 
-* ### Suppression d'une vue :
+### Suppression d'une vue :
 
-```
+``` SQL
 DROP VIEW view_name;
 ```
 
-* ### Création d'une vue matérialisée :
+### Création d'une vue matérialisée :
 
-```
+``` SQL
 -- 1. Création de la vue matérialisée (VM)
-CREATE MATERIALIZED VIEW schema_name.vm_materialized_view_name 
-USING INDEX 
-TABLESPACE tablespace_name 
-REFRESH ON DEMAND 
+CREATE MATERIALIZED VIEW schema_name.vm_materialized_view_name
+USING INDEX
+TABLESPACE tablespace_name
+REFRESH ON DEMAND
 FORCE  
-DISABLE QUERY REWRITE 
+DISABLE QUERY REWRITE
 AS
 
 SELECT
@@ -228,16 +235,16 @@ VALUES ('MATERIALIZED_VIEW_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594
 COMMIT;
 ```
 
-* ### Suppression d'une vue matérialisée :
+### Suppression d'une vue matérialisée :
 
-```
+``` SQL
 DROP MATERIALIZED VIEW materialized_view_name;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'MATERIALIZED_VIEW_NAME';
 ```
 
 ## Création de trigger :
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_IUD_TABLE_NAME
     BEFORE INSERT ON TABLE_NAME
     FOR EACH ROW
@@ -252,45 +259,45 @@ CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_IUD_TABLE_NAME
 
 ### Règles de nommage :
 
-* Si le trigger se déclenche avant l'insertion (BEFORE INSERT), alors utilisez le préfixe 'B_' ;
+Si le trigger se déclenche avant l'insertion (BEFORE INSERT), alors utilisez le préfixe 'B_' ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_..._TABLE_NAME
 BEFORE INSERT ON TABLE_NAME
 ```
-* Si le trigger se déclenche après l'insertion (AFTER INSERT), alors utilisez le préfixe 'A_' ;
+Si le trigger se déclenche après l'insertion (AFTER INSERT), alors utilisez le préfixe 'A_' ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.A_..._TABLE_NAME
 AFTER INSERT ON TABLE_NAME
 ```
 
-* S'il s'agit d'une insertion seule, rajoutez 'IXX' -> 'B_IXX_TABLE_NAME' ;
+S'il s'agit d'une insertion seule, rajoutez 'IXX' -> 'B_IXX_TABLE_NAME' ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_IXX_TABLE_NAME
 BEFORE INSERT ON TABLE_NAME
 ```
 
-* S'il s'agit d'une mise à jour seule, rajoutez 'UXX' -> 'B_UXX_' ;
+S'il s'agit d'une mise à jour seule, rajoutez 'UXX' -> 'B_UXX_' ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_UXX_TABLE_NAME
 BEFORE INSERT ON TABLE_NAME
 ```
 
-* S'il s'agit d'une Suppression seule, rajoutez 'DXX' -> 'B_DXX_' ;
+S'il s'agit d'une Suppression seule, rajoutez 'DXX' -> 'B_DXX_' ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_DXX_TABLE_NAME
 BEFORE INSERT ON TABLE_NAME
 ```
 
 **Les deux 'XX' placés derrière l'initiale d'insertion/mise à jour/suppression signifie que le trigger marche UNIQUEMENT pour une action.**
 
-* Si un trigger peut être déclenché par deux actions, alors, vous pouvez mélanger les préfixes -> 'B_IUX_TABLE_NAME' signifie que le trigger se déclenche avant l'insertion ou la mise de la table dont le nom figure dans le nom du trigger ;
+Si un trigger peut être déclenché par deux actions, alors, vous pouvez mélanger les préfixes -> 'B_IUX_TABLE_NAME' signifie que le trigger se déclenche avant l'insertion ou la mise de la table dont le nom figure dans le nom du trigger ;
 
-```
+``` SQL
 CREATE OR REPLACE TRIGGER SCHEMA_NAME.B_IUX_TABLE_NAME
 BEFORE INSERT ON TABLE_NAME
 ```
