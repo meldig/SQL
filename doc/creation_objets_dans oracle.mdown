@@ -151,10 +151,13 @@ VALUES ('TABLE_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000,
 COMMIT;
 
 -- 6. Création de l'index spatial
-CREATE INDEX #TABLE#_SIDX
+CREATE INDEX TABLE_SIDX
 ON TABLE_NAME(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_..., work_tablespace=DATA_TEMP');
+
+-- 7. Droit de lecture de la table aux administrateurs
+GRANT SELECT ON TABLE_NAME TO G_ADT_DSIG_ADM;
 ```
 
 * ### Suppression d'une table :
