@@ -1,7 +1,7 @@
 /*
 Création de la vue des communes actuelles de la BdTopo de l'IGN 
 */
-CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_actuelles_ign (
+CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_actuelles_mel_ign (
     OBJECTID,
     nom,
     code_insee,
@@ -9,7 +9,7 @@ CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_actuelles_ign (
     geom,
     source,
     aire_km2,
-    CONSTRAINT "adm_communes_mel_actuelles_ign_PK" PRIMARY KEY("OBJECTID") DISABLE
+    CONSTRAINT "adm_communes_actuelles_mel_ign_PK" PRIMARY KEY("OBJECTID") DISABLE
 )
 AS
  WITH
@@ -62,11 +62,11 @@ AS
         a.fid_commune = b.fid_commune;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE adm_communes_mel_actuelles_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.OBJECTID IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.NOM IS 'Nom de chaque commune de la MEL.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
-COMMENT ON COLUMN adm_communes_mel_actuelles_ign.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
+COMMENT ON TABLE adm_communes_actuelles_mel_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.OBJECTID IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.NOM IS 'Nom de chaque commune de la MEL.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON COLUMN adm_communes_actuelles_mel_ign.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
