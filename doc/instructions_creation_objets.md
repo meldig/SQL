@@ -18,6 +18,8 @@ ALTER TABLE TABLE_NAME
 
 ### Pour une vue
 
+Créer une clé primaire sur une vue est une règle de bonne pratique qui permet à des outils tiers (GEO, DynMap, Elyx) utilisant la vue de trouver quel champ contient la clé. Quand un utilisateur charge une vue dans QGIS, il doit indiquer lui-même quel champ constitue la clé primaire pour pouvoir afficher la vue. 
+
 ``` SQL
 ALTER VIEW VIEW_NAME
   ADD CONSTRAINT VIEW_PK PRIMARY KEY (OBJECTID) DISABLE);
