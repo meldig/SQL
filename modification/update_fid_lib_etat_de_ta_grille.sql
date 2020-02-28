@@ -4,6 +4,8 @@ fid_thematique = 41 -> 'Vérification du bati issu du lidar et du plan de gestio
 fid_thematique = 61 -> 'grille en cours de transition' (valable pour l'ancienne grille 600*600)
 */
 
+
+
 --OPERATION REALISEE EN DEUX TEMPS POUR LIMITER LA DUREE DU TRAITEMENT
 --1. INITIALISATION DE LA VALEUR DE FID_LIB_ETAT A 1 POUR TOUTE LA GRILLE 300*300(FID_THEMATIQUE 41)
 
@@ -23,4 +25,6 @@ SET a.FID_LIB_ETAT =
 	AND SDO_GEOM.RELATE(a.geom, 'coveredby', b.geom,0.05) = 'COVEREDBY')
 WHERE 
     a.FID_THEMATIQUE = 41 
+
 ;
+
