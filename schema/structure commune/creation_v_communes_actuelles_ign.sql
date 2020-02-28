@@ -1,7 +1,7 @@
 /*
 Création de la vue des communes actuelles de la BdTopo de l'IGN 
 */
-CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_actuelles_mel (
+CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_actuelles (
     objectid,
     nom_minuscule,
     nom_majuscule,
@@ -74,3 +74,4 @@ COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.CODE_POSTAL IS 'Code 
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.GEOM IS 'Géométrie de chaque commune - de type polygone.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.SOURCE IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.aire_km2 IS 'Surface de chaque commune en km² arrondie à deux decimales.';
+
