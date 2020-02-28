@@ -1,10 +1,10 @@
 /*
 Création de la vue des 90 communes de la BdTopo de l'IGN 
 */
-DROP VIEW adm_90_communes_mel_ign;
+DROP VIEW adm_communes_mel_90;
 
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW g_referentiel.adm_90_communes_mel_ign (
+CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_90 (
     objectid,
     nom_minuscule,
     nom_majuscule,
@@ -13,7 +13,7 @@ CREATE OR REPLACE FORCE VIEW g_referentiel.adm_90_communes_mel_ign (
     geom,
     aire_km2,
     source,
-    CONSTRAINT "adm_90_communes_mel_ign_PK" PRIMARY KEY ("CODE_INSEE") DISABLE
+    CONSTRAINT "adm_communes_mel_90_PK" PRIMARY KEY ("CODE_INSEE") DISABLE
 )
 AS
  WITH
@@ -35,8 +35,9 @@ AS
         INNER JOIN g_geo.ta_za_communes g ON c.objectid = g.fid_commune
         INNER JOIN g_geo.ta_organisme h ON e.fid_organisme = h.objectid
         INNER JOIN g_geo.ta_date_acquisition j ON e.fid_acquisition = j.objectid
+        INNER JOIN g_geo.ta_libelle k ON b.fid_libelle = k.objectid
     WHERE
-        b.fid_libelle = 1
+        k.libelle = 'code insee'
         AND g.fid_zone_administrative = 1
         AND g.debut_validite = '01/01/2017'
         AND g.fin_validite = '31/12/2019'
@@ -49,11 +50,12 @@ AS
     FROM
         g_geo.ta_identifiant_commune a
         INNER JOIN g_geo.ta_code b ON a.fid_identifiant = b.objectid
+        INNER JOIN g_geo.ta_libelle c ON b.fid_libelle = c.objectid
     WHERE
-        b.fid_libelle = 2
+        c.libelle = 'code postal'
     )
     SELECT
-    	rownum AS objectid,
+        rownum AS objectid,
         LOWER(a.nom) AS nom_minuscule,
         UPPER(a.nom) AS nom_majuscule,
         a.code_insee,
@@ -68,9 +70,10 @@ AS
         a.fid_commune = b.fid_commune;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE g_referentiel.adm_90_communes_mel_ign IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
-COMMENT ON COLUMN g_referentiel.adm_90_communes_mel_ign.NOM IS 'Nom de chaque commune de la MEL.';
-COMMENT ON COLUMN g_referentiel.adm_90_communes_mel_ign.CODE_INSEE IS 'Code INSEE de chaque commune.';
-COMMENT ON COLUMN g_referentiel.adm_90_communes_mel_ign.CODE_POSTAL IS 'Code Postal de chaque commune.';
-COMMENT ON COLUMN g_referentiel.adm_90_communes_mel_ign.GEOM IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN g_referentiel.adm_90_communes_mel_ign.SOURCE IS 'Source de la donnée avec l''organisme créateur de la source.';
+COMMENT ON TABLE g_referentiel.adm_communes_mel_90 IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.NOM_MINUSCULE IS 'Nom de chaque commune de la MEL en minuscule.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.NOM_MAJUSCULE IS 'Nom de chaque commune de la MEL en majuscule.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.CODE_INSEE IS 'Code INSEE de chaque commune.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.CODE_POSTAL IS 'Code Postal de chaque commune.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.GEOM IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON COLUMN g_referentiel.adm_communes_mel_90.SOURCE IS 'Source de la donnée avec l''organisme créateur de la source.';
