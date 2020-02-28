@@ -59,7 +59,7 @@ SELECT DISTINCT
   voie,
   COMMENTAIRE
 FROM
-  GEO.TA_ACQ_GG_ZONAGE zone,
+  GEO.V_ACQ_GG_ZONAGE2 zone,
   source
 LEFT JOIN source_pop ON source_pop.CODPOP = source.USER_ID
 WHERE

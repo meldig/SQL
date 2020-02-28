@@ -132,11 +132,11 @@ WITH
 		valeur_b
 	FROM table_b
 	)
-	SELECT
-	 valeur_a
-	FROM table_a
-	WHERE
-		table_a.id = cte.
+SELECT
+ valeur_a
+FROM table_a
+WHERE
+	table_a.id = cte.
 ```
 
 ## Création

@@ -18,6 +18,7 @@ La base permanente des équipements (BPE) est une source statistique qui fournit
 
 * Forme de la donnée:
   
+
 	* 3 fichiers de points sous format CSV
   
 	* ensemble des équipements: rassemble la totalité des équipements.
@@ -60,6 +61,7 @@ La base permanente des équipements (BPE) est une source statistique qui fournit
 		* NB_SALLES :Nombre de salles par théâtre ou cinéma
 		* REG :Région d’implantation de l’équipement
 		* TYPEQU: Type d’équipement
+
 
 * Nomenclature: 187 codes 
 
@@ -178,8 +180,10 @@ Remarques :
 * Les lieux COM ont été importés d'une base sirène à un moment t. Désormais ces lieux ne sont plus à jour. les commerces sont maintenant affiché à partir de la table SIRENE.
 * Les points TRA sont a garder. Ces lieux sont des gares et des haltes de la MEL qui ne sont pas dans la table G_transport. Ils sont encore utilisés car ils ont été vérifié au sein de l'équipe(Danièle Clément).
 * Les données issues de l'origine SCO sont de deux types:
+
 	* Certains ont été importés suite à des traitements sur une base issue de l’éducation nationale. C’était un import ancien sans matricule éducation nationale. Aujourd’hui on lit de préférence une table (à jour) issue de l’éducation nationale.
 	* D’autres résultent de la saisie au sein de l'équipe. Ils sont à garder. Ils ont le symbole_lieu « scolaire_3u.geo »  et contiennent les universités (absentes des données éducation nationale :maternelle à lycée)
+
 
 ## OpenSreetMap(OSM):
 
