@@ -6,14 +6,14 @@
 
 1. Dans la barre de recherche windows, tapez "cmd" et cliquez sur "invite de commande" ;
 2. Tapez c: (afin de se mettre sur le lecteur c) ;
-3. Tapez "cd C:\Program Files\QGIS 3.10";
+3. Tapez "cd C:\Program Files\QGIS 3.10" (afin de se mettre dans l'environnement de QGIS);
 
 
 ### Utilisation courante :
 
 1. Chaque nouvelle invite de commande doit commencer par C:\Program Files\QGIS 3.10> ;
 2. Sur la même ligne, faites un espace, écrivez le nom de l'exécutable que vous voulez utiliser Exemple : bin\ogr2ogr.exe ;
-3. Toujours sur la même ligne, écrivez votre commande et appuyez sur "Entrée" pour la lancer ;
+3. Toujours sur la même ligne, écrivez votre commande et appuyez sur "Entrée" pour la lancer (sans paramétrage les commandes multilignes ne fonctionnent pas car un saut ligne est alors considéré comme une nouvelle commande);
 
 ### Exemple :
 
@@ -26,7 +26,7 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 ### ERROR : “PROJ: proj_create_from_wkt: Cannot find proj.db”
 
 * Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
-* Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db
+* Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db (à ne faire qu'une fois)
 
 ```
 -- Revalorisation de la variable PROJ_LIB :
@@ -39,10 +39,6 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 * Solution : Modifiez la variable NLS_LANG AVANT de lancer ogr2ogr.
 
 ```
-c: \> SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
-
-OU
-
 C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 ```
 
