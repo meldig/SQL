@@ -17,7 +17,7 @@
 
 ### Exemple :
 
-``` SQL
+```
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
 
@@ -28,7 +28,7 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe
 * Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
 * Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db (à ne faire qu'une fois)
 
-``` SQL
+```
 -- Revalorisation de la variable PROJ_LIB :
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 ```
@@ -38,7 +38,7 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 * Explication : Si lorsque vous importez des données dans Oracle et que vous obtenez des noms comme ceci "De��l��mont", cela signifie qu'il y a un problème d'encodage dans l'environnement Oracle d'Ogr2ogr. En effet, votre shapefile et votre base peuvent être encodés en UTF-8, mais si ce n'est pas le cas d'Ogr2ogr qui s'occupe de la transition entr les deux, cela ne servira à rien puisque Ogr2ogr ré-encodera les données suivant son propre encodage.
 * Solution : Modifiez la variable NLS_LANG AVANT de lancer ogr2ogr.
 
-``` SQL
+```
 C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 ```
 
@@ -46,7 +46,7 @@ C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 ### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
 
-``` SQL
+```
 -- Mots clés : -t_srs
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Documents\Projets\test\test_communes.shp C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
@@ -55,21 +55,21 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Doc
 
 ### Insertion des données brutes en base dans une nouvelle table :
 
-``` SQL
+```
 -- Mots clés : -f OCI:
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
 ```
 
 ### Insertion de certains champs dans une nouvelle table en base
 
-``` SQL
+```
 -- Mots clés : -f OCI -sql "SELECT champ1, champ2 FROM nom_table WHERE condition" OCI:
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
 
 ### Insertion de données dans une table dont le nom diffère du nom d'origine
 
-``` SQL
+```
 -- Mots clés : : -nln
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp -nln COMMUNE_FRANCAISE
 ```
