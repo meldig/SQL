@@ -1,7 +1,6 @@
 /*
 Création de la vue des 90 communes de la BdTopo de l'IGN 
 */
-DROP VIEW adm_communes_mel_90;
 
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_90 (
