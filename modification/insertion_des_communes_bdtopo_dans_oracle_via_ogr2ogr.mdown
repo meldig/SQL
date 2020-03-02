@@ -1,0 +1,31 @@
+# 1. Insertion des données dans la base Oracle
+
+### 1.1. Insertion des 95 communes actuelles de la MEL provenant de la BDTOPO de l'IGN français dans une table temporaire de la base oracle (G_GEO) :
+
+#### Attention : il faut écrire les bons identifiants du schéma en base !!!
+
+```
+bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE INSEE_COM IN('59670', '59202', '59275', '59279', '59320', '59356', '59009', '59609', '59458', '59017', '59056', '59146', '59173', '59278', '59332', '59339', '59367', '59368', '59437', '59550', '59560', '59602', '59611', '59650', '59025', '59220', '59281', '59286', '59386', '59507', '59512', '59522', '59598', '59371', '59051', '59106', '59128', '59201', '59250', '59299', '59346', '59421', '59585', '59599', '59636', '59643', '59660', '59257', '59487', '59196', '59247', '59252', '59352', '59426', '59457', '59524', '59553', '59656', '59088', '59013', '59163', '59303', '59316', '59317', '59378', '59388', '59410', '59566', '59098', '59143', '59208', '59256', '59328', '59470', '59527', '59646', '59653', '59044', '59090', '59152', '59193', '59195', '59343', '59350', '59360', '59482', '59508', '59523', '59648', '59658', '59524', '59011', '59005', '59052', '59133', '59477')" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp -lco SRID=2154 
+```
+
+### 1.2. Insertion des 6 municipalités belges provenant de la BDTOPO de l'IGN belge dans une table temporaire de la base oracle (G_GEO) :
+
+#### Attention : il faut écrire les bons identifiants du schéma en base !!!
+
+```
+bin\ogr2ogr.exe -f OCI -sql "SELECT NISCode AS code_ins, NameFre AS nom, NameDut FROM AD_2_Municipality WHERE NISCODE IN('57081', '57027', '57096', '57097', '33029', '34027')" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\AD_2_Municipality.shp -nln municipalite_belge -lco SRID=2154 -dim 2
+```
+
+#### 1.2.1. Insertion de tous les noms des municipalités belges dans une seule colonne
+
+```
+-- Insertion de tous les noms belges dans la colonne nom
+UPDATE MUNICIPALITE_BELGE
+SET "nom" = "NameDut"
+WHERE "nom" IS NULL;
+COMMIT;
+
+-- Suppression de la colonne NameDut contenant les noms belges
+ALTER TABLE MUNICIPALITE_BELGE DROP COLUMN "NameDut";
+```
+
