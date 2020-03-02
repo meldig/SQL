@@ -32,10 +32,9 @@ AS
         INNER JOIN g_geo.ta_za_communes g ON c.objectid = g.fid_commune
         INNER JOIN g_geo.ta_organisme h ON e.fid_organisme = h.objectid
         INNER JOIN g_geo.ta_date_acquisition j ON e.fid_acquisition = j.objectid
-        INNER JOIN g_geo.ta_libelle p ON c.fid_lib_type_commune = p.objectid
+        INNER JOIN g_geo.ta_libelle p ON b.fid_libelle = p.objectid
     WHERE
-        p.libelle = 'commune simple'
-        AND b.fid_libelle = 3
+        p.libelle = 'code insee'
         AND g.fid_zone_administrative = 1
         AND sysdate BETWEEN g.debut_validite AND g.fin_validite   
     ),
