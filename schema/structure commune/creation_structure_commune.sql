@@ -22,7 +22,7 @@ USING INDEX
 TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_famille TO G_ADT_DSIG_ADM;*/
+GRANT SELECT ON g_geo.ta_famille TO G_ADMIN_SIG;
 
 /*
 La table ta_libelle regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
@@ -49,7 +49,7 @@ USING INDEX
 TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_libelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_libelle TO G_ADMIN_SIG;
 
 /*
 La table ta_famille_libelle sert à faire la liaison entre les tables ta_libelle et ta_famille.
@@ -101,7 +101,7 @@ CREATE INDEX ta_famille_libelle_fid_libelle_IDX ON ta_famille_libelle(fid_libell
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADMIN_SIG;
 
 /*
 La table TA_CODE regroupe tous les codes du schéma. 
@@ -140,7 +140,7 @@ CREATE INDEX ta_code_fid_libelle_IDX ON ta_code(fid_libelle)
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_code TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_code TO G_ADMIN_SIG;
 
 /*
 La table ta_organisme recense tous les organismes créateurs de données desquels proviennent les données source de la table ta_source.
@@ -165,7 +165,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_organisme TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_organisme TO G_ADMIN_SIG;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -209,7 +209,7 @@ BEGIN
 
 END;*/
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADMIN_SIG;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -235,7 +235,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_source TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_source TO G_ADMIN_SIG;
 
 /*
 La table ta_provenance regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
@@ -261,7 +261,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.provenance TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.provenance TO G_ADMIN_SIG;
 
 /*
 La table ta_echelle regroupe toutes les échelles d'affichage des données source.
@@ -285,7 +285,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_echelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_echelle TO G_ADMIN_SIG;
 
 /*
 La table ta_metadonnee regroupe toutes les informations relatives aux différentes donnees du schemas.
@@ -364,7 +364,7 @@ TABLESPACE G_ADT_INDX;
 
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_metadonnee TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_metadonnee TO G_ADMIN_SIG;
 
 /*
 La table Ta_NOM regroupe le nom de tous les objets du référentiel (les zones administratives)
@@ -390,7 +390,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_nom TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_nom TO G_ADMIN_SIG;
 
 /*
 La table ta_commune regroupe toutes les communes de la MEL.
@@ -468,7 +468,7 @@ CREATE INDEX ta_commune_fid_metadonnee_IDX ON ta_commune(fid_metadonnee)
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_commune TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_commune TO G_ADMIN_SIG;
 
 /*
 La table TA_IDENTIFIANT_COMMUNE permet de regrouper tous les codes par commune. 
@@ -508,7 +508,7 @@ FOREIGN KEY (fid_identifiant)
 REFERENCES ta_code(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADMIN_SIG;
 
 /* 
 La table TA_ZONE_ADMINISTRATIVE permet de recenser tous les noms des zones supra-communales.
@@ -563,7 +563,7 @@ CREATE INDEX ta_zone_administrative_fid_metadonnee_IDX ON ta_zone_administrative
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADMIN_SIG;
 
 /* 
 La table TA_IDENTIFIANT_ZONE_ADMINISTRATIVE permet de lier les zones supra-communales avec leurs codes.
@@ -608,7 +608,7 @@ CREATE INDEX ta_identifiant_zone_administrative_fid_identifiant_IDX ON ta_identi
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADMIN_SIG;
 
 /* 
 La table ta_za_communes sert de table de liaison entre les tables ta_commune et ta_zone_administrative.
@@ -658,7 +658,7 @@ CREATE INDEX ta_za_communes_fid_zone_administrative_IDX ON ta_za_communes(fid_zo
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_za_communes TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_za_communes TO G_ADMIN_SIG;
 
 /*
 Creation de la table TA_BPE qui recense les equipement de la Base Permanente des Equipements.
@@ -721,7 +721,7 @@ CREATE INDEX ta_bpe_fid_metadonnee_IDX ON ta_bpe_relation_libelle(fid_libelle_fi
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_bpe TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_bpe TO G_ADMIN_SIG;
 
 /*
 Creation de la table TA_BPE_CARACTERISTIQUE_NOMBRE pour faire la liaison entre un equipement de la BPE vers ses caractéristiques numerique.
@@ -778,7 +778,7 @@ CREATE INDEX ta_bpe_caracteristique_nombre_fid_libelle_IDX ON ta_bpe_caracterist
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_bpe_caracteristique_nombre TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_bpe_caracteristique_nombre TO G_ADMIN_SIG;
 
 /*
 La table ta_bpe_relation_libelle sert à acceuillir les relations qui existent entre les libelles et des libelles court issus de la Base Permanente des Equipements.
@@ -831,7 +831,7 @@ CREATE INDEX ta_bpe_relation_libelle_fid_relation_parent_IDX ON ta_bpe_relation_
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_bpe_relation_libelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_bpe_relation_libelle TO G_ADMIN_SIG;
 
 /*
 Creation de la table TA_BPE_CARACTERISTIQUE pour faire la liaison entre un equipement de la BPE vers ses caractéristique.
@@ -899,7 +899,7 @@ CREATE INDEX ta_bpe_caracteristique_fid_libelle_parent_IDX ON ta_bpe_caracterist
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_bpe_caracteristique TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_bpe_caracteristique TO G_ADMIN_SIG;
 
 /*
 La table ta_libelle_court sert à acceuillir les différentes modalites qui peuvent prendre les données issues de la Base Permanente des Equipement 
@@ -926,7 +926,7 @@ USING INDEX
 TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_libelle_court TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_libelle_court TO G_ADMIN_SIG;
 
 /*
 Creation de la table ta_correspondance_libelle
@@ -985,4 +985,4 @@ CREATE INDEX ta_correspondance_libelle_fid_libelle_court_IDX ON ta_correspondanc
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
--- GRANT SELECT ON g_geo.ta_correspondance_libelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_correspondance_libelle TO G_ADMIN_SIG;
