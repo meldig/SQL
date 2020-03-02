@@ -35,6 +35,7 @@ AS
         INNER JOIN g_geo.ta_libelle p ON c.fid_lib_type_commune = p.objectid
     WHERE
         p.libelle = 'commune simple'
+        AND b.fid_libelle = 3
         AND g.fid_zone_administrative = 1
         AND sysdate BETWEEN g.debut_validite AND g.fin_validite   
     ),
@@ -68,7 +69,8 @@ AS
 -- 2. Création des commentaires de table et de colonnes
 COMMENT ON TABLE g_referentiel.adm_communes_actuelles_mel IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.OBJECTID IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.NOM IS 'Nom de chaque commune de la MEL.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.NOM_MINUSCULE IS 'Nom de chaque commune de la MEL en minuscule.';
+COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.NOM_MAJUSCULE IS 'Nom de chaque commune de la MEL en majuscule.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.CODE_INSEE IS 'Code INSEE de chaque commune.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.CODE_POSTAL IS 'Code Postal de chaque commune.';
 COMMENT ON COLUMN g_referentiel.adm_communes_actuelles_mel.GEOM IS 'Géométrie de chaque commune - de type polygone.';
