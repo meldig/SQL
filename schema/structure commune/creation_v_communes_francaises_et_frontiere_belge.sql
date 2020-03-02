@@ -4,7 +4,7 @@ Création de la vue des communes françaises avec les municipalités frontalièr
 DROP VIEW adm_communes_mel_actuelles_et_belgique;
 
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_actuelles_mel_belgique_ign
+CREATE OR REPLACE FORCE VIEW g_referentiel.adm_communes_mel_belgique
  (
     objectid,
     identifiant_unique,
