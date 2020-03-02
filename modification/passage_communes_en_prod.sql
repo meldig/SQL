@@ -58,7 +58,7 @@ SELECT
 	a.insee_com,
 	b.objectid
 FROM
-	communes a,
+	commune a,
 	ta_libelle b
 WHERE
 	b.libelle = 'code insee';
