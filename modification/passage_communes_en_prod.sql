@@ -2,7 +2,7 @@
 INSERT INTO ta_organisme(acronyme, nom_organisme)
 VALUES('IGN', 'Institut National de l''Information Geographie et Forestiere');
 INSERT INTO ta_source(nom_source, description)
-VALUES('BDTOPO', 'Description vectorielle des elements du territoire francais et de ses infrastructures avec une precision metrique.')
+VALUES('BDTOPO', 'Description vectorielle des elements du territoire francais et de ses infrastructures avec une precision metrique.');
 INSERT INTO ta_provenance(url, methode_acquisition)
 VALUES('https://geoservices.ign.fr/documentation/diffusion/index.html', 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.');
 INSERT INTO ta_date_acquisition(date_acquisition, millesime, nom_obtenteur)
@@ -98,7 +98,7 @@ FROM
 	INNER JOIN ta_nom d ON a.nom = d.nom
 WHERE
 	b.libelle = 'commune simple';
-	
+COMMIT;
 
 -- insertion des fid_commune / fid_code dans ta_identifiant_commune pour les codes postaux
 INSERT INTO ta_identifiant_commune(fid_commune, fid_identifiant)
