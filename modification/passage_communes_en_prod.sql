@@ -168,7 +168,7 @@ SELECT
 	'01/01/2017',
 	'31/12/2019'
 FROM
-	ta_zone_administrative b
+	ta_zone_administrative b,
 	ta_commune a
 	INNER JOIN ta_identifiant_commune c ON a.objectid = c.fid_commune
 	INNER JOIN ta_code d ON c.fid_identifiant = d.objectid
