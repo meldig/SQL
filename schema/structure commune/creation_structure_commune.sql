@@ -678,13 +678,10 @@ COMMENT ON COLUMN g_geo.ta_bpe.fid_metadonnee IS 'Clef étrangère vers la table
 COMMENT ON COLUMN g_geo.ta_bpe.geom IS 'Geometrie de la table';
 
 -- 3. Création de la clé primaire
-ALTER TABLE 
-	ta_bpe
-ADD CONSTRAINT 
-	ta_bpe_PK 
+ALTER TABLE ta_bpe
+ADD CONSTRAINT ta_bpe_PK 
 PRIMARY KEY("OBJECTID")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -709,11 +706,9 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=POINT, tablespace=G_ADT_DATA, work_tabl
 --6 Création de la clef étrangère vers la table ta_metadonnée
 
 ALTER TABLE ta_bpe
-ADD
-CONSTRAINT  "TA_METADONNE_OBJECTID_FK"
-FOREIGN KEY
-("FID_METADONNEE")
-REFERENCES  "G_GEO"."TA_METADONNEE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT  TA_METADONNE_OBJECTID_FK
+FOREIGN KEY (FID_METADONNEE)
+REFERENCES  TA_METADONNEE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 7. Création des index sur les cléfs étrangères.
 
@@ -743,31 +738,24 @@ COMMENT ON COLUMN g_geo.ta_bpe_caracteristique_nombre.fid_libelle IS 'Clef étra
 COMMENT ON COLUMN g_geo.ta_bpe_caracteristique_nombre.nombre IS 'nombre de salles de théatre par cinéma, théatre ou nombre d''aires de pratique d''un même type au sein de l''équipement';
 
 --3. Création de la clef primaire
-ALTER TABLE 
-	ta_bpe_caracteristique_nombre
-ADD CONSTRAINT 
-	ta_bpe_caracteristique_nombre_PK 
+ALTER TABLE ta_bpe_caracteristique_nombre
+ADD CONSTRAINT ta_bpe_caracteristique_nombre_PK 
 PRIMARY KEY("OBJECTID")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clefs étrangères
 
 -- clef étrangère vers la table TA_BPE
 ALTER TABLE ta_bpe_caracteristique_nombre
-ADD
-CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_BPE_OBJECTID_FK"
-FOREIGN KEY
-("FID_BPE")
-REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT  TA_BPE_CARACTERISTIQUE_NOMBRE_TA_BPE_OBJECTID_FK
+FOREIGN KEY (FID_BPE)
+REFERENCES  TA_BPE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique_nombre
-ADD
-CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_LIBELLE_OBJECTID_FK"
-FOREIGN KEY
-("FID_LIBELLE")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_BPE_CARACTERISTIQUE_NOMBRE_TA_LIBELLE_OBJECTID_FK
+FOREIGN KEY (FID_LIBELLE)
+REFERENCES  TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clefs étrangères.
 
@@ -797,30 +785,23 @@ COMMENT ON COLUMN ta_bpe_relation_libelle.fid_libelle_fils IS 'Composante de la 
 COMMENT ON COLUMN ta_bpe_relation_libelle.fid_libelle_parent IS 'Composante de la clef primaire. Clef étrangère vers la table TA_LIBELLE pour connaitre le libelle parent.';
 
 -- 3. Création de la clé primaire composée.
-ALTER TABLE 
-	ta_bpe_relation_libelle
-ADD CONSTRAINT 
-	ta_bpe_relation_libelle_PK 
+ALTER TABLE ta_bpe_relation_libelle
+ADD CONSTRAINT ta_bpe_relation_libelle_PK 
 PRIMARY KEY("FID_LIBELLE_FILS","FID_LIBELLE_PARENT")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clefs etrangères
 
 ALTER TABLE ta_bpe_relation_libelle
-ADD
-CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK"
-FOREIGN KEY
-("FID_LIBELLE_FILS")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT  TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK
+FOREIGN KEY (FID_LIBELLE_FILS)
+REFERENCES  TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 
 ALTER TABLE ta_bpe_relation_libelle
-ADD
-CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK"
-FOREIGN KEY
-("FID_LIBELLE_PARENT")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK
+FOREIGN KEY (FID_LIBELLE_PARENT)
+REFERENCES  TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les cléfs étrangères.
 
@@ -853,39 +834,30 @@ COMMENT ON COLUMN ta_bpe_caracteristique.fid_libelle_fils IS 'Clef étrangère v
 COMMENT ON COLUMN ta_bpe_caracteristique.fid_libelle_parent IS 'Clef étrangère vers la table TA_LIBELLE pour connaitre la caractéristique parent de l''equipement';
 
 --3. Création de la clef primaire
-ALTER TABLE 
-	ta_bpe_caracteristique
-ADD CONSTRAINT 
-	ta_bpe_caracteristique_PK 
+ALTER TABLE ta_bpe_caracteristique
+ADD CONSTRAINT ta_bpe_caracteristique_PK 
 PRIMARY KEY("OBJECTID")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clefs etrangères
 
 -- clef étrangère vers la table TA_BPE
 ALTER TABLE ta_bpe_caracteristique
-ADD
-CONSTRAINT  "TA_BPE_OBJECTID_FK"
-FOREIGN KEY
-("FID_BPE")
-REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_BPE_OBJECTID_FK
+FOREIGN KEY (FID_BPE)
+REFERENCES TA_BPE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique
-ADD
-CONSTRAINT  "TA_LIBELLE_FILS_OBJECTID_FK"
-FOREIGN KEY
-("FID_LIBELLE_FILS")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT  TA_LIBELLE_FILS_OBJECTID_FK
+FOREIGN KEY (FID_LIBELLE_FILS)
+REFERENCES TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre le libelle parent de la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique
-ADD
-CONSTRAINT  "TA_LIBELLE_PARENT_OBJECTID_FK"
-FOREIGN KEY
-("FID_LIBELLE_PARENT")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_LIBELLE_PARENT_OBJECTID_FK
+FOREIGN KEY (FID_LIBELLE_PARENT)
+REFERENCES TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clefs étrangères.
 
@@ -917,13 +889,10 @@ COMMENT ON COLUMN g_geo.ta_libelle_court.objectid IS 'Clef primaire de la table 
 COMMENT ON COLUMN g_geo.ta_libelle_court.libelle_court IS 'Valeur pouvant être prises par les variables exemple A101 ou 1 ou 0 ou x.';
 
 -- 3. Création de la clé primaire
-ALTER TABLE 
-	ta_libelle_court
-ADD CONSTRAINT 
-	ta_libelle_court 
+ALTER TABLE ta_libelle_court
+ADD CONSTRAINT ta_libelle_court 
 PRIMARY KEY("OBJECTID")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_libelle_court TO G_ADMIN_SIG;
@@ -949,31 +918,24 @@ COMMENT ON COLUMN g_geo.ta_correspondance_libelle.fid_libelle_court IS 'Clef etr
 
 -- 3. Création de la clef primaire
 
-ALTER TABLE 
-  ta_correspondance_libelle
-ADD CONSTRAINT 
-  ta_correspondance_libelle_PK 
+ALTER TABLE ta_correspondance_libelle
+ADD CONSTRAINT ta_correspondance_libelle_PK 
 PRIMARY KEY("OBJECTID")
-USING INDEX
-TABLESPACE "G_ADT_INDX";
+USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clefs étrangères
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre le libelle
 ALTER TABLE ta_correspondance_libelle
-ADD
-CONSTRAINT  "TA_CORRESPONDANCE_FID_LIBELLE_FK"
-FOREIGN KEY
-("FID_LIBELLE")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_CORRESPONDANCE_FID_LIBELLE_FK
+FOREIGN KEY (FID_LIBELLE)
+REFERENCES TA_LIBELLE (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table ta_libelle_court pour connaitre le libelle court
 ALTER TABLE ta_correspondance_libelle
-ADD
-CONSTRAINT "TA_CORRESPONDANCE_FID_LIBELLE_COURT_FK"
-FOREIGN KEY
-("FID_LIBELLE_COURT")
-REFERENCES "G_GEO"."TA_LIBELLE_COURT" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
+ADD CONSTRAINT TA_CORRESPONDANCE_FID_LIBELLE_COURT_FK
+FOREIGN KEY (FID_LIBELLE_COURT)
+REFERENCES TA_LIBELLE_COURT (OBJECTID)INITIALLY IMMEDIATE DEFERRABLE;
 
 
 --5. Creation des index
