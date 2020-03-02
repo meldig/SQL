@@ -47,6 +47,7 @@ C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 ### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
 
 ```
+-- Mots clés : -t_srs
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Documents\Projets\test\test_communes.shp C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
 
@@ -55,14 +56,14 @@ C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Doc
 ### Insertion des données brutes en base dans une nouvelle table :
 
 ```
--- Mots clés : bin\ogr2ogr.exe -f OCI OCI:
-C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
+-- Mots clés : -f OCI:
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
 ```
 
 ### Insertion de certains champs dans une nouvelle table en base
 
 ```
--- Mots clés : bin\ogr2ogr.exe -f OCI -sql "SELECT champ1, champ2 FROM nom_table WHERE condition" OCI:
+-- Mots clés : -f OCI -sql "SELECT champ1, champ2 FROM nom_table WHERE condition" OCI:
 C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
 ```
 
