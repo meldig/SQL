@@ -21,8 +21,8 @@ PRIMARY KEY("OBJECTID")
 USING INDEX
 TABLESPACE "G_ADT_INDX";
 
-/*-- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_famille TO G_ADT_DSIG_ADM;*/
+-- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
+-- GRANT SELECT ON g_geo.ta_famille TO G_ADT_DSIG_ADM;*/
 
 /*
 La table ta_libelle regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
@@ -49,7 +49,7 @@ USING INDEX
 TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_libelle TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_libelle TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_famille_libelle sert à faire la liaison entre les tables ta_libelle et ta_famille.
@@ -91,7 +91,7 @@ ADD CONSTRAINT
 	ta_famille_libelle_fid_libelle_FK
 FOREIGN KEY(fid_libelle)
 REFERENCES
-	ta_libelle(objectid);
+	ta_libelle(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création de l'index de la clé étrangère
 CREATE INDEX ta_famille_libelle_fid_famille_IDX ON ta_famille_libelle(fid_famille)
@@ -101,7 +101,7 @@ CREATE INDEX ta_famille_libelle_fid_libelle_IDX ON ta_famille_libelle(fid_libell
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADT_DSIG_ADM;
 
 /*
 La table TA_CODE regroupe tous les codes du schéma. 
@@ -133,14 +133,14 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_code
 ADD CONSTRAINT ta_code_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
-REFERENCES ta_libelle(objectid);
+REFERENCES ta_libelle(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création de l'index de la clé étrangère
 CREATE INDEX ta_code_fid_libelle_IDX ON ta_code(fid_libelle)
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_code TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_code TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_organisme recense tous les organismes créateurs de données desquels proviennent les données source de la table ta_source.
@@ -165,7 +165,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_organisme TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_organisme TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -209,7 +209,7 @@ BEGIN
 
 END;*/
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -235,7 +235,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_source TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_source TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_provenance regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
@@ -261,7 +261,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.provenance TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.provenance TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_echelle regroupe toutes les échelles d'affichage des données source.
@@ -285,7 +285,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_echelle TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_echelle TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_metadonnee regroupe toutes les informations relatives aux différentes donnees du schemas.
@@ -324,27 +324,27 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_source_FK
 FOREIGN KEY (fid_source)
-REFERENCES ta_source(objectid);
+REFERENCES ta_source(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_acquisition_FK
 FOREIGN KEY (fid_acquisition)
-REFERENCES ta_date_acquisition(objectid);
+REFERENCES ta_date_acquisition(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_provenance_FK
 FOREIGN KEY (fid_provenance)
-REFERENCES ta_provenance(objectid);
+REFERENCES ta_provenance(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_organisme_FK
 FOREIGN KEY (fid_organisme)
-REFERENCES ta_organisme(objectid);
+REFERENCES ta_organisme(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_echelle_FK
 FOREIGN KEY (fid_echelle)
-REFERENCES ta_echelle(objectid);
+REFERENCES ta_echelle(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 7. Création de l'index de la clé étrangère
 CREATE INDEX ta_metadonnee_fid_source_IDX ON ta_metadonnee(fid_source)
@@ -364,7 +364,7 @@ TABLESPACE G_ADT_INDX;
 
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_metadonnee TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_metadonnee TO G_ADT_DSIG_ADM;
 
 /*
 La table Ta_NOM regroupe le nom de tous les objets du référentiel (les zones administratives)
@@ -390,7 +390,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_nom TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_nom TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_commune regroupe toutes les communes de la MEL.
@@ -445,17 +445,17 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_ta
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_lib_type_commune_FK 
 FOREIGN KEY (fid_lib_type_commune)
-REFERENCES ta_libelle(objectid);
+REFERENCES ta_libelle(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_nom_FK 
 FOREIGN KEY (fid_nom)
-REFERENCES ta_nom(objectid);
+REFERENCES ta_nom(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_metadonnee_FK 
 FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid);
+REFERENCES ta_metadonnee(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 7. Création des index sur les clés étrangères
 CREATE INDEX ta_commune_fid_lib_type_commune_IDX ON ta_commune(fid_lib_type_commune)
@@ -468,7 +468,7 @@ CREATE INDEX ta_commune_fid_metadonnee_IDX ON ta_commune(fid_metadonnee)
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_commune TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_commune TO G_ADT_DSIG_ADM;
 
 /*
 La table TA_IDENTIFIANT_COMMUNE permet de regrouper tous les codes par commune. 
@@ -500,15 +500,15 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_commune_FK 
 FOREIGN KEY (fid_commune)
-REFERENCES ta_commune(objectid);
+REFERENCES ta_commune(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_identifiant_FK 
 FOREIGN KEY (fid_identifiant)
-REFERENCES ta_code(objectid);
+REFERENCES ta_code(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADT_DSIG_ADM;
 
 /* 
 La table TA_ZONE_ADMINISTRATIVE permet de recenser tous les noms des zones supra-communales.
@@ -540,17 +540,17 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_nom_FK
 FOREIGN KEY (fid_nom)
-REFERENCES ta_nom(objectid);
+REFERENCES ta_nom(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
-REFERENCES ta_libelle(objectid);
+REFERENCES ta_libelle(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_metadonnee_FK
 FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid);
+REFERENCES ta_metadonnee(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clés étrangères
 CREATE INDEX ta_zone_administrative_fid_nom_IDX ON ta_zone_administrative(fid_nom)
@@ -563,7 +563,7 @@ CREATE INDEX ta_zone_administrative_fid_metadonnee_IDX ON ta_zone_administrative
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADT_DSIG_ADM;
 
 /* 
 La table TA_IDENTIFIANT_ZONE_ADMINISTRATIVE permet de lier les zones supra-communales avec leurs codes.
@@ -593,12 +593,12 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
-REFERENCES ta_zone_administrative(objectid);
+REFERENCES ta_zone_administrative(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_identifiant_FK
 FOREIGN KEY (fid_identifiant)
-REFERENCES ta_code(objectid);
+REFERENCES ta_code(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clés étrangères
 CREATE INDEX ta_identifiant_zone_administrative_fid_zone_administrative_IDX ON ta_identifiant_zone_administrative(fid_zone_administrative)
@@ -608,7 +608,7 @@ CREATE INDEX ta_identifiant_zone_administrative_fid_identifiant_IDX ON ta_identi
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADT_DSIG_ADM;
 
 /* 
 La table ta_za_communes sert de table de liaison entre les tables ta_commune et ta_zone_administrative.
@@ -643,12 +643,12 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_commune_FK
 FOREIGN KEY (fid_commune)
-REFERENCES ta_commune(objectid);
+REFERENCES ta_commune(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
-REFERENCES ta_zone_administrative(objectid);
+REFERENCES ta_zone_administrative(objectid)INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 7. Création des index sur les clés étrangères
 CREATE INDEX ta_za_communes_fid_commune_IDX ON ta_za_communes(fid_commune)
@@ -658,7 +658,7 @@ CREATE INDEX ta_za_communes_fid_zone_administrative_IDX ON ta_za_communes(fid_zo
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_za_communes TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_za_communes TO G_ADT_DSIG_ADM;
 
 /*
 Creation de la table TA_BPE qui recense les equipement de la Base Permanente des Equipements.
@@ -713,7 +713,7 @@ ADD
 CONSTRAINT  "TA_METADONNE_OBJECTID_FK"
 FOREIGN KEY
 ("FID_METADONNEE")
-REFERENCES  "G_GEO"."TA_METADONNEE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_METADONNEE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 7. Création des index sur les cléfs étrangères.
 
@@ -721,7 +721,7 @@ CREATE INDEX ta_bpe_fid_metadonnee_IDX ON ta_bpe_relation_libelle(fid_libelle_fi
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_bpe TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_bpe TO G_ADT_DSIG_ADM;
 
 /*
 Creation de la table TA_BPE_CARACTERISTIQUE_NOMBRE pour faire la liaison entre un equipement de la BPE vers ses caractéristiques numerique.
@@ -759,7 +759,7 @@ ADD
 CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_BPE_OBJECTID_FK"
 FOREIGN KEY
 ("FID_BPE")
-REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique_nombre
@@ -767,7 +767,7 @@ ADD
 CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_LIBELLE_OBJECTID_FK"
 FOREIGN KEY
 ("FID_LIBELLE")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clefs étrangères.
 
@@ -778,7 +778,7 @@ CREATE INDEX ta_bpe_caracteristique_nombre_fid_libelle_IDX ON ta_bpe_caracterist
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_bpe_caracteristique_nombre TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_bpe_caracteristique_nombre TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_bpe_relation_libelle sert à acceuillir les relations qui existent entre les libelles et des libelles court issus de la Base Permanente des Equipements.
@@ -812,7 +812,7 @@ ADD
 CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK"
 FOREIGN KEY
 ("FID_LIBELLE_FILS")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 
 ALTER TABLE ta_bpe_relation_libelle
@@ -820,7 +820,7 @@ ADD
 CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK"
 FOREIGN KEY
 ("FID_LIBELLE_PARENT")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les cléfs étrangères.
 
@@ -831,7 +831,7 @@ CREATE INDEX ta_bpe_relation_libelle_fid_relation_parent_IDX ON ta_bpe_relation_
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_bpe_relation_libelle TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_bpe_relation_libelle TO G_ADT_DSIG_ADM;
 
 /*
 Creation de la table TA_BPE_CARACTERISTIQUE pour faire la liaison entre un equipement de la BPE vers ses caractéristique.
@@ -869,7 +869,7 @@ ADD
 CONSTRAINT  "TA_BPE_OBJECTID_FK"
 FOREIGN KEY
 ("FID_BPE")
-REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique
@@ -877,7 +877,7 @@ ADD
 CONSTRAINT  "TA_LIBELLE_FILS_OBJECTID_FK"
 FOREIGN KEY
 ("FID_LIBELLE_FILS")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table TA_LIBELLE pour connaitre le libelle parent de la caractéristique de l'equipement
 ALTER TABLE ta_bpe_caracteristique
@@ -885,7 +885,7 @@ ADD
 CONSTRAINT  "TA_LIBELLE_PARENT_OBJECTID_FK"
 FOREIGN KEY
 ("FID_LIBELLE_PARENT")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- 5. Création des index sur les clefs étrangères.
 
@@ -899,7 +899,7 @@ CREATE INDEX ta_bpe_caracteristique_fid_libelle_parent_IDX ON ta_bpe_caracterist
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_bpe_caracteristique TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_bpe_caracteristique TO G_ADT_DSIG_ADM;
 
 /*
 La table ta_libelle_court sert à acceuillir les différentes modalites qui peuvent prendre les données issues de la Base Permanente des Equipement 
@@ -926,7 +926,7 @@ USING INDEX
 TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_libelle_court TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_libelle_court TO G_ADT_DSIG_ADM;
 
 /*
 Creation de la table ta_correspondance_libelle
@@ -965,7 +965,7 @@ ADD
 CONSTRAINT  "TA_CORRESPONDANCE_FID_LIBELLE_FK"
 FOREIGN KEY
 ("FID_LIBELLE")
-REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
+REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 -- clef étrangère vers la table ta_libelle_court pour connaitre le libelle court
 ALTER TABLE ta_correspondance_libelle
@@ -973,7 +973,7 @@ ADD
 CONSTRAINT "TA_CORRESPONDANCE_FID_LIBELLE_COURT_FK"
 FOREIGN KEY
 ("FID_LIBELLE_COURT")
-REFERENCES "G_GEO"."TA_LIBELLE_COURT" ("OBJECTID")
+REFERENCES "G_GEO"."TA_LIBELLE_COURT" ("OBJECTID")INITIALLY IMMEDIATE DEFERRABLE;
 
 
 --5. Creation des index
@@ -985,4 +985,4 @@ CREATE INDEX ta_correspondance_libelle_fid_libelle_court_IDX ON ta_correspondanc
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_correspondance_libelle TO G_ADT_DSIG_ADM;
+-- GRANT SELECT ON g_geo.ta_correspondance_libelle TO G_ADT_DSIG_ADM;
