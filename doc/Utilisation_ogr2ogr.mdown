@@ -1,0 +1,81 @@
+# Fiche Technique d'Utilisation d'Ogr2ogr
+
+## Utilisation via l'invite de commande
+
+### Pré-requis - construire son environnement :
+
+1. Dans la barre de recherche windows, tapez "cmd" et cliquez sur "invite de commande" ;
+2. Tapez c: (afin de se mettre sur le lecteur c) ;
+3. Tapez "cd C:\Program Files\QGIS 3.10" (afin de se mettre dans l'environnement de QGIS);
+
+
+### Utilisation courante :
+
+1. Chaque nouvelle invite de commande doit commencer par C:\Program Files\QGIS 3.10> ;
+2. Sur la même ligne, faites un espace, écrivez le nom de l'exécutable que vous voulez utiliser Exemple : bin\ogr2ogr.exe ;
+3. Toujours sur la même ligne, écrivez votre commande et appuyez sur "Entrée" pour la lancer (sans paramétrage les commandes multilignes ne fonctionnent pas car un saut ligne est alors considéré comme une nouvelle commande);
+
+### Exemple :
+
+```
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
+
+## Les erreurs et leurs solutions :
+
+### ERROR : “PROJ: proj_create_from_wkt: Cannot find proj.db”
+
+* Explication : la variable PROJ_LIB n'arrive pas à trouver le fichier proj.db qui contient toutes les projections.
+* Solution : il faut mettre à jour la variable avec le bon chemin d'accès au fichier proj.db (à ne faire qu'une fois)
+
+```
+-- Revalorisation de la variable PROJ_LIB :
+setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
+```
+
+### Erreurs d'encodage des caratères
+
+* Explication : Si lorsque vous importez des données dans Oracle et que vous obtenez des noms comme ceci "De��l��mont", cela signifie qu'il y a un problème d'encodage dans l'environnement Oracle d'Ogr2ogr. En effet, votre shapefile et votre base peuvent être encodés en UTF-8, mais si ce n'est pas le cas d'Ogr2ogr qui s'occupe de la transition entr les deux, cela ne servira à rien puisque Ogr2ogr ré-encodera les données suivant son propre encodage.
+* Solution : Modifiez la variable NLS_LANG AVANT de lancer ogr2ogr.
+
+```
+C:\Program Files\QGIS 3.10>SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+```
+
+## Manipulation des systèmes de projection
+
+### Reprojeter une table d'un système de projection à un autre dans une autre table (hors base de données)
+
+```
+-- Mots clés : -t_srs
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -t_srs "EPSG:2154" C:\Users\bjacq\Documents\Projets\test\test_communes.shp C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
+
+## Insertion de données (type shapefile) dans une base de données Oracle
+
+### Insertion des données brutes en base dans une nouvelle table :
+
+```
+-- Mots clés : -f OCI:
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\test_communes.shp
+```
+
+### Insertion de certains champs dans une nouvelle table en base
+
+```
+-- Mots clés : -f OCI -sql "SELECT champ1, champ2 FROM nom_table WHERE condition" OCI:
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp
+```
+
+### Insertion de données dans une table dont le nom diffère du nom d'origine
+
+```
+-- Mots clés : : -nln
+C:\Program Files\QGIS 3.10>bin\ogr2ogr.exe -f OCI -sql "SELECT INSEE_COM, CODE_POST, NOM FROM COMMUNE WHERE SUBSTR(INSEE_COM, 1, 2) = '59'" OCI:*nom_schema*/*mot_de_passe*@*instance* C:\Users\bjacq\Documents\Projets\test\COMMUNE.shp -nln COMMUNE_FRANCAISE
+```
+
+## Liens - Documentation :
+
+* [Commandes ogr2ogr ;](https://gdal.org/programs/ogr2ogr.html#c-api)
+* [Options Oracle Spatial driver ;](https://gdal.org/drivers/vector/oci.html?highlight=oracle)
+* [Correction de l'erreur d'encodage ;](https://gis.stackovernet.com/fr/q/39273)
