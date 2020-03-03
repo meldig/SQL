@@ -1,8 +1,10 @@
 # Fiche Technique : désactivation des contraintes lors d'insertion dans les tables du schéma G_GEO
 
-## Objectif : Pouvoir désactiver les contraintes, effectuer sa transaction, réactiver les contraintes. Si une erreur se produit, alors la transaction est annulée.
+## Objectif : 
+Pouvoir désactiver les contraintes, effectuer sa transaction, réactiver les contraintes. Si une erreur se produit, alors la transaction est annulée.
 
-## Solution : désactivation des contraintes de toutes les tables et vues matérialisées.
+## Solution : 
+désactivation des contraintes de toutes les tables et vues matérialisées.
 
 ## Méthode :
 
@@ -50,7 +52,7 @@ LOOP
 END LOOP;
 ```
 
-** Attention : Si une erreur se produit durant l'exécution de la transaction, alors la requête ne sera pas effectuée. Le Rollback se déclenchera automatiquement pour revenir à l'état d'avant le lancement de la transaction. **
+**Attention :** Si une erreur se produit durant l'exécution de la transaction, alors la requête ne sera pas effectuée. Le Rollback se déclenchera automatiquement pour revenir à l'état d'avant le lancement de la transaction.
 
 ### 4. Affichage des possibles messages d'erreur
 
