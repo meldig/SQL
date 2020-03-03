@@ -3,9 +3,6 @@
 ## Objectif : 
 Pouvoir désactiver les contraintes, effectuer sa transaction, réactiver les contraintes. Si une erreur se produit, alors la transaction est annulée.
 
-## Solution : 
-désactivation des contraintes de toutes les tables et vues matérialisées.
-
 ## Méthode :
 
 La désactivation des contraintes lors de transactions et leur réactivation passe par une requête PL/SQL.
