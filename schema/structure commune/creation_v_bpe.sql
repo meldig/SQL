@@ -43,7 +43,7 @@ AS
             INNER JOIN g_geo.ta_commune commune ON tc.fid_commune = commune.objectid
         WHERE
             commune.fid_metadONnee = 1
-            AND SDO_RELATE(bpe.geom,commune.geom,'mASk=inside') = 'TRUE'
+            AND SDO_RELATE(bpe.geom,commune.geom,'mask=inside') = 'TRUE'
             AND code.fid_libelle = 1
         ),
 -- sous selection de la colonne TYPEQU
@@ -249,7 +249,7 @@ AS
             eclaire.ECLAIRE,
             nbairejeu.NB_AIREJEU,
             nbsalles.NB_SALLES,
-            CONCAT(CONCAT(f.nom_source, ' - '), h.acrONyme) AS source,
+            CONCAT(CONCAT(f.nom_source, ' - '), h.acronyme) AS source,
             tbpe.geom
         FROM
             bpe tc
