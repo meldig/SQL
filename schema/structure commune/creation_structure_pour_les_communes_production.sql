@@ -161,27 +161,27 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_source_FK
 FOREIGN KEY (fid_source)
-REFERENCES ta_source(objectid) INITIALLY IMMEDIATE  DEFERRABLE;
+REFERENCES ta_source(objectid);
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_acquisition_FK
 FOREIGN KEY (fid_acquisition)
-REFERENCES ta_date_acquisition(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_date_acquisition(objectid);
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_provenance_FK
 FOREIGN KEY (fid_provenance)
-REFERENCES ta_provenance(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_provenance(objectid);
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_organisme_FK
 FOREIGN KEY (fid_organisme)
-REFERENCES ta_organisme(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_organisme(objectid);
 
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_echelle_FK
 FOREIGN KEY (fid_echelle)
-REFERENCES ta_echelle(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_echelle(objectid);
 
 -- 7. Création de l'index de la clé étrangère
 CREATE INDEX ta_metadonnee_fid_source_IDX ON ta_metadonnee(fid_source)
@@ -311,7 +311,7 @@ ADD CONSTRAINT
 	ta_famille_libelle_fid_famille_FK
 FOREIGN KEY(fid_famille)
 REFERENCES
-	ta_famille(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+	ta_famille(objectid);
 
 ALTER TABLE 
 	ta_famille_libelle
@@ -319,7 +319,7 @@ ADD CONSTRAINT
 	ta_famille_libelle_fid_libelle_FK
 FOREIGN KEY(fid_libelle)
 REFERENCES
-	ta_libelle(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+	ta_libelle(objectid);
 
 -- 5. Création de l'index de la clé étrangère
 CREATE INDEX ta_famille_libelle_fid_famille_IDX ON ta_famille_libelle(fid_famille)
@@ -361,7 +361,7 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_code
 ADD CONSTRAINT ta_code_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
-REFERENCES ta_libelle(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_libelle(objectid);
 
 -- 5. Création de l'index de la clé étrangère
 CREATE INDEX ta_code_fid_libelle_IDX ON ta_code(fid_libelle)
@@ -423,17 +423,17 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_ta
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_lib_type_commune_FK 
 FOREIGN KEY (fid_lib_type_commune)
-REFERENCES ta_libelle(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_libelle(objectid);
 
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_nom_FK 
 FOREIGN KEY (fid_nom)
-REFERENCES ta_nom(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_nom(objectid);
 
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_metadonnee_FK 
 FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_metadonnee(objectid);
 
 -- 7. Création des index sur les clés étrangères
 CREATE INDEX ta_commune_fid_lib_type_commune_IDX ON ta_commune(fid_lib_type_commune)
@@ -478,12 +478,12 @@ TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_commune_FK 
 FOREIGN KEY (fid_commune)
-REFERENCES ta_commune(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_commune(objectid);
 
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_identifiant_FK 
 FOREIGN KEY (fid_identifiant)
-REFERENCES ta_code(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_code(objectid);
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADMIN_SIG;
@@ -518,17 +518,17 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_nom_FK
 FOREIGN KEY (fid_nom)
-REFERENCES ta_nom(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_nom(objectid);
 
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
-REFERENCES ta_libelle(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_libelle(objectid);
 
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_metadonnee_FK
 FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_metadonnee(objectid);
 
 -- 5. Création des index sur les clés étrangères
 CREATE INDEX ta_zone_administrative_fid_nom_IDX ON ta_zone_administrative(fid_nom)
@@ -571,12 +571,12 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
-REFERENCES ta_zone_administrative(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_zone_administrative(objectid);
 
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_identifiant_FK
 FOREIGN KEY (fid_identifiant)
-REFERENCES ta_code(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_code(objectid);
 
 -- 5. Création des index sur les clés étrangères
 CREATE INDEX ta_identifiant_zone_administrative_fid_zone_administrative_IDX ON ta_identifiant_zone_administrative(fid_zone_administrative)
@@ -621,12 +621,12 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_commune_FK
 FOREIGN KEY (fid_commune)
-REFERENCES ta_commune(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_commune(objectid);
 
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
-REFERENCES ta_zone_administrative(objectid) INITIALLY IMMEDIATE DEFERRABLE;
+REFERENCES ta_zone_administrative(objectid);
 
 -- 7. Création des index sur les clés étrangères
 CREATE INDEX ta_za_communes_fid_commune_IDX ON ta_za_communes(fid_commune)
