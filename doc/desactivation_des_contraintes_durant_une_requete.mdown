@@ -1,0 +1,101 @@
+# Fiche Technique : désactivation des contraintes lors d'insertion dans les tables du schéma G_GEO
+
+## Objectif : 
+Pouvoir désactiver les contraintes, effectuer sa transaction, réactiver les contraintes. Si une erreur se produit, alors la transaction est annulée.
+
+## Méthode :
+
+La désactivation des contraintes lors de transactions et leur réactivation passe par une requête PL/SQL.
+
+### 1. Désactivation des contraintes
+
+Rappel : une contrainte NOT NULL sur une colonne d'identité ne peut pas être modifiée.
+
+``` SQL
+-- Désactivation de toutes les contraintes, sauf celles de non nullité présentes sur une colonne d'identité (clé primaire), de toutes les tables (vues matérialisées comprises) du schéma
+FOR I IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE <> 'C')
+LOOP
+    EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || i.table_name || ' ' || 'DISABLE CONSTRAINT' || ' ' || i.constraint_name;
+END LOOP;
+```
+
+### 2. Réalisation de la requête d'insertion
+
+``` SQL
+-- Le champ fid_id est la clé étrangère de la clé primaire (objectid) de ta_test.
+INSERT INTO test_disable_constraint(nom, fid_id) 
+    VALUES('toto', 28);
+
+-- La clé primaire de ta_test est incrémentée automatiquement et dans cet exemple l'incrémentation de 1 amène le nouvel objectid à 28.
+INSERT INTO ta_test(nom) 
+    VALUES('titi');
+```
+
+### 3. Réactivation des contraintes
+
+Il faut réactiver les clés primaires en premier, sinon la réactivation des clés étrangères qui en sont dépendantes ne fonctionnera pas.
+
+``` SQL
+-- Réactivation des contraintes de clé primaire.
+FOR C IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE = 'P') 
+LOOP
+    EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || c.table_name || ' ' || 'ENABLE CONSTRAINT' || ' ' || c.constraint_name;
+END LOOP;
+
+-- Réactivation des autres contraintes.
+FOR C IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE NOT IN ('P', 'C')) 
+LOOP
+    EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || c.table_name || ' ' || 'ENABLE CONSTRAINT' || ' ' || c.constraint_name;
+END LOOP;
+```
+
+**Attention :** Si une erreur se produit durant l'exécution de la transaction, alors la requête ne sera pas effectuée. Le Rollback se déclenchera automatiquement pour revenir à l'état d'avant le lancement de la transaction.
+
+### 4. Affichage des possibles messages d'erreur
+
+L'affichage des messages d'erreur permet de savoir quelle erreur a empêché la requête de s'effectuer. Il n'est pas obligatoire, mais permet de savoir rapidement ce qui a causé une erreur et donc de la corriger.
+
+``` SQL
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE ('Error : '||SQLERRM);
+```
+
+
+
+## Exemple :
+
+Insertion de données dans une table disposant d'une clé étrangère, puis insertion de données dans la table dont la clé primaire est référencée dans la clé étrangère de la table précédente.
+
+``` SQL
+SET SERVEROUTPUT ON
+BEGIN
+    -- Désactivation des contraintes de toutes les tables, sauf les clés primaires et les contraintes de non nullité.
+    FOR I IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE <> 'C')
+    LOOP
+        EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || i.table_name || ' ' || 'DISABLE CONSTRAINT' || ' ' || i.constraint_name;
+    END LOOP;
+    
+    -- Requête -> insertion de la clé étrangère avant la clé primaire de laquelle elle dépend.
+    INSERT INTO test_disable_constraint(nom, fid_id)
+    VALUES('mon_test', 34);
+
+    INSERT INTO ta_test(nom)
+    VALUES('marsu');
+    
+    -- Réactivation des contraintes de clé primaire
+    FOR C IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE = 'P') 
+    LOOP
+        EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || c.table_name || ' ' || 'ENABLE CONSTRAINT' || ' ' || c.constraint_name;
+    END LOOP;
+
+    FOR C IN(SELECT CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS WHERE OWNER = 'G_REFERENTIEL' AND VIEW_RELATED IS NULL AND CONSTRAINT_TYPE NOT IN ('P', 'C')) 
+    LOOP
+        EXECUTE IMMEDIATE 'ALTER TABLE' || ' ' || c.table_name || ' ' || 'ENABLE CONSTRAINT' || ' ' || c.constraint_name;
+    END LOOP;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE ('Error : '||SQLERRM);
+END;
+```
