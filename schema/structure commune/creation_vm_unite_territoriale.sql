@@ -3,15 +3,17 @@ Création de la vue matérialisée des Unités Territoriales (faite à partir de
 */
 
 /*
-DROP MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90;
-DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'admin_unite_territoriale_mel90';
+DROP MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel90;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'adm_unite_territoriale_mel90';
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90(
-    objectid,
+CREATE MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel90(
+    identifiant,
     entite,
-    nom_minuscule,
+    nom_a,
+    nom_b,
+    nom_c,
     geom,
     surf_km2,
     source
@@ -22,8 +24,7 @@ DISABLE QUERY REWRITE AS
 WITH
     v_fusion_ut AS( -- Sélection de toutes les données relatives aux unités territoriales
     SELECT
-        LOWER(e.nom)AS nom_minuscule,
-        UPPER(e.nom) AS nom_majuscule,
+        LOWER(e.nom)AS nom_a,
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom,
         ROUND(SDO_GEOM.SDO_AREA(SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)), 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2
     FROM
@@ -59,9 +60,11 @@ WITH
     )
 
 SELECT -- Regroupement des précédentes sélections dans une seule sélection + création d'une clé primaire + type d'entité
-    rownum AS objectid,
+    rownum AS identifiant,
     b.entite,
-    a.nom_minuscule,
+    a.nom_a,
+    '' AS nom_b,
+    '' AS nom_c,
     a.geom,
     a.surf_km2,
     b.source
@@ -78,20 +81,20 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'admin_unite_territoriale_mel90',
+    'adm_unite_territoriale_mel90',
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
 
 -- 3. Création de la clé primaire
-ALTER MATERIALIZED VIEW admin_unite_territoriale_mel90 
-ADD CONSTRAINT admin_unite_territoriale_mel90_PK 
-PRIMARY KEY (OBJECTID);
+ALTER MATERIALIZED VIEW adm_unite_territoriale_mel90 
+ADD CONSTRAINT adm_unite_territoriale_mel90_PK 
+PRIMARY KEY (IDENTIFIANT);
 
 -- 4. Création de l'index spatial
-CREATE INDEX admin_unite_territoriale_mel90_SIDX
-ON admin_unite_territoriale_mel90(GEOM)
+CREATE INDEX adm_unite_territoriale_mel90_SIDX
+ON adm_unite_territoriale_mel90(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS(
   'sdo_indx_dims=2, 
@@ -101,28 +104,35 @@ PARAMETERS(
 );
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90 IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.objectid IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.entite IS 'Type d''entité de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.nom_minuscule IS 'Libellé long des Unités Territoriales en minuscule.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.geom IS 'Géométrie de chaque Unités Territoriales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel90 IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.entite IS 'Type d''entité de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.nom_a IS 'Libellé long des Unités Territoriales en minuscule.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.nom_b IS 'Etiquette format intermédiaire.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.nom_c IS 'Etiquette format court.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.geom IS 'Géométrie de chaque Unités Territoriales.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel90.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+
+-- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC
+GRANT SELECT ON adm_unite_territoriale_mel90 TO G_REFERENTIEL_LEC;
 
 /*
 Création de la vue matérialisée des Unités Territoriales (faite à partir de l'aggrégation des communes) actuelles.
 */
 
 /*
-DROP MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel;
-DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'admin_unite_territoriale_mel';
+DROP MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'adm_unite_territoriale_mel';
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel(
-    objectid,
+CREATE MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel(
+    identifiant,
     entite,
-    nom_minuscule,
+    nom_a,
+    nom_b,
+    nom_c,
     geom,
     surf_km2,
     source
@@ -133,7 +143,7 @@ DISABLE QUERY REWRITE AS
 WITH
     v_fusion_ut AS( -- Sélection de toutes les données relatives aux unités territoriales
 SELECT 
-    LOWER(e.nom)AS nom_minuscule,
+    LOWER(e.nom)AS nom_a,
     SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom,
     ROUND(SDO_GEOM.SDO_AREA(SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)), 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2
 FROM
@@ -170,9 +180,11 @@ WHERE
 )
 
 SELECT -- Regroupement des précédentes sélections dans une seule sélection + création d'une clé primaire 
-    rownum AS objectid,
+    rownum AS identifiant,
     b.entite,
-    a.nom_minuscule,
+    a.nom_a,
+    '' AS nom_b,
+    '' AS nom_c,
     a.geom,
     a.surf_km2,
     b.source
@@ -188,20 +200,20 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'admin_unite_territoriale_mel',
+    'adm_unite_territoriale_mel',
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
 
 -- 3. Création de la clé primaire
-ALTER MATERIALIZED VIEW admin_unite_territoriale_mel 
-ADD CONSTRAINT admin_unite_territoriale_mel_PK 
-PRIMARY KEY (OBJECTID);
+ALTER MATERIALIZED VIEW adm_unite_territoriale_mel 
+ADD CONSTRAINT adm_unite_territoriale_mel_PK 
+PRIMARY KEY (IDENTIFIANT);
 
 -- 4. Création de l'index spatial
-CREATE INDEX admin_unite_territoriale_mel_SIDX
-ON admin_unite_territoriale_mel(GEOM)
+CREATE INDEX adm_unite_territoriale_mel_SIDX
+ON adm_unite_territoriale_mel(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS(
   'sdo_indx_dims=2, 
@@ -211,10 +223,15 @@ PARAMETERS(
 );
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.objectid IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.entite IS 'Type d''entité de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.nom_minuscule IS 'Libellé long des Unités Territoriales en minuscule.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.geom IS 'Géométrie de chaque Unités Territoriales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON MATERIALIZED VIEW g_referentiel.adm_unite_territoriale_mel IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.entite IS 'Type d''entité de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.nom_a IS 'Libellé long des Unités Territoriales en minuscule.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.nom_b IS 'Etiquette format intermédiaire.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.nom_c IS 'Etiquette format court.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.geom IS 'Géométrie de chaque Unités Territoriales.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux decimales.';
+COMMENT ON COLUMN g_referentiel.adm_unite_territoriale_mel.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+
+-- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC
+GRANT SELECT ON adm_unite_territoriale_mel TO G_REFERENTIEL_LEC;
