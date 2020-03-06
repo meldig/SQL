@@ -17,7 +17,7 @@ AS
  WITH
  v_main_selection AS(
     SELECT
-        a.fid_commune,
+        c.objectid,
         b.code AS code_adm,
         d.nom,
         c.geom,
@@ -63,7 +63,7 @@ AS
         v_main_selection a,
         v_selection_entite_adm b 
     WHERE
-        a.fid_commune = b.objectid;
+        a.objectid = b.objectid;
 
 -- 2. Création des commentaires de table et de colonnes
 COMMENT ON TABLE g_referentiel.adm_communes_mel IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
@@ -101,7 +101,7 @@ AS
  WITH
  v_main_selection AS(
     SELECT
-        a.fid_commune,
+        c.objectid,
         b.code AS code_adm,
         d.nom,
         c.geom,
@@ -135,7 +135,7 @@ AS
     )
     
     SELECT
-        rownum AS identifiant,
+        a.objectid AS identifiant,
         b.entite_adm,
         a.code_adm,
         LOWER(a.nom) AS nom_a,
@@ -148,7 +148,7 @@ AS
         v_main_selection a,
         v_selection_entite_adm b 
     WHERE
-        a.fid_commune = b.objectid;
+        a.objectid = b.objectid;
 
 -- 2. Création des commentaires de table et de colonnes
 COMMENT ON TABLE g_referentiel.adm_communes_mel90 IS 'Vue proposant les communes de la MEL - quand elle se composait de 90 communes - extraites de la BdTopo de l''IGN.';
@@ -190,7 +190,7 @@ WITH
  v_main_selection AS(
     SELECT
         b.code AS code_adm,
-        a.fid_commune,
+        c.objectid,
         d.nom,
         c.geom,
         ROUND(SDO_GEOM.SDO_AREA(c.geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2,
@@ -222,7 +222,7 @@ WITH
     )
     
     SELECT
-        rownum AS identifiant,
+        a.objectid AS identifiant,
         REPLACE(b.entite_adm, 'aux contours frontaliers modifiés', '') AS entite_adm,
         a.code_adm,
         LOWER(a.nom) AS nom_a,
@@ -235,7 +235,7 @@ WITH
         v_main_selection a,
         v_selection_entite_adm b 
     WHERE
-        a.fid_commune = b.objectid;
+        a.objectid = b.objectid;
 
 -- 2. Création des commentaires de table et de colonnes
 COMMENT ON TABLE g_referentiel.adm_communes_mel_belgique IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN avec les municipalités belges frontalières issues de l''IGN belge dont les frontières ont été modifiées afin d''obtenir une frontière jointive avec les communes françaises.';
