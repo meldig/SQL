@@ -24,6 +24,7 @@ DISABLE QUERY REWRITE AS
 WITH
     v_fusion_ut AS( -- Sélection de toutes les données relatives aux unités territoriales
     SELECT
+        c.objectid,
         LOWER(e.nom)AS nom_a,
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom,
         ROUND(SDO_GEOM.SDO_AREA(SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)), 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2
@@ -38,7 +39,7 @@ WITH
         d.libelle = 'Unité Territoriale'
         AND b.debut_validite = '01/01/2017'
         AND b.fin_validite = '31/12/2019'
-    GROUP BY e.nom
+    GROUP BY e.nom, c.objectid
         ),
     
     v_selection_source AS( --Sélection de la source des communes utilisées pour faire les unités territoriales et des types d'entités
@@ -60,11 +61,11 @@ WITH
     )
 
 SELECT -- Regroupement des précédentes sélections dans une seule sélection + création d'une clé primaire + type d'entité
-    rownum AS identifiant,
+    a.objectid AS identifiant,
     b.entite,
     a.nom_a,
-    '' AS nom_b,
-    '' AS nom_c,
+    ' ' AS nom_b,
+    ' ' AS nom_c,
     a.geom,
     a.surf_km2,
     b.source
@@ -142,7 +143,8 @@ FORCE
 DISABLE QUERY REWRITE AS
 WITH
     v_fusion_ut AS( -- Sélection de toutes les données relatives aux unités territoriales
-SELECT 
+SELECT
+    c.objectid, 
     LOWER(e.nom)AS nom_a,
     SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom,
     ROUND(SDO_GEOM.SDO_AREA(SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)), 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2
@@ -155,7 +157,7 @@ FROM
 WHERE
     d.libelle = 'Unité Territoriale'
     AND sysdate BETWEEN b.debut_validite AND b.fin_validite
-GROUP BY e.nom
+GROUP BY e.nom, c.objectid
     ),
 
 v_selection_source AS( --Sélection de la source des communes utilisées pour faire les unités territoriales
@@ -180,11 +182,11 @@ WHERE
 )
 
 SELECT -- Regroupement des précédentes sélections dans une seule sélection + création d'une clé primaire 
-    rownum AS identifiant,
+    a.objectid AS identifiant,
     b.entite,
     a.nom_a,
-    '' AS nom_b,
-    '' AS nom_c,
+    ' ' AS nom_b,
+    ' ' AS nom_c,
     a.geom,
     a.surf_km2,
     b.source
