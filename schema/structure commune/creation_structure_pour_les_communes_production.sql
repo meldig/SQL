@@ -98,7 +98,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.provenance TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_provenance TO G_ADMIN_SIG;
 
 /*
 La table ta_echelle regroupe toutes les échelles d'affichage des données source.
