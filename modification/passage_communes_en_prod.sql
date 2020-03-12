@@ -225,11 +225,16 @@ DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'COMMUNE';
 
 -- 6. Création des Unité Territoriales
 -- 6.1. Insertion dans la table ta_libelle
+INSERT INTO ta_famille(famille)
+VALUES('Division territoriale de la MEL');
+COMMIT;
+
+-- 6.2. Insertion dans la table ta_libelle
 INSERT INTO ta_libelle(libelle)
 VALUES('Unité Territoriale');
 COMMIT;
 
--- 6.2. Insertion dans ta_famille_libelle (table de liaison entre ta_famille et ta_libelle)
+-- 6.3. Insertion dans ta_famille_libelle (table de liaison entre ta_famille et ta_libelle)
 INSERT INTO ta_famille_libelle(fid_libelle, fid_famille)
 SELECT
 	a.objectid,
@@ -242,7 +247,7 @@ WHERE
 	AND b.libelle = 'Unité Territoriale'
 COMMIT;
 
--- 6.3. Insertion dans la table ta_nom 
+-- 6.4. Insertion dans la table ta_nom 
 INSERT INTO ta_nom(nom)
 VALUES('TOURCOING-ARMENTIERES');
 INSERT INTO ta_nom(nom)
@@ -253,7 +258,7 @@ INSERT INTO ta_nom(nom)
 VALUES('LA BASSEE-MARCQ EN BAROEUL');
 COMMIT;
 
--- 6.4. Insertion dans la table ta_zone_administrative
+-- 6.5. Insertion dans la table ta_zone_administrative
 INSERT INTO ta_zone_administrative(fid_nom, fid_libelle)
 SELECT
     a.objectid,
@@ -265,7 +270,7 @@ WHERE
     a.nom IN ('TOURCOING-ARMENTIERES', 'ROUBAIX-VILLENEUVE D''ASCQ', 'LILLE-SECLIN', 'LA BASSEE-MARCQ EN BAROEUL')
     AND b.libelle = 'Unité Territoriale';
 
--- 6.5. Insertion dans la table ta_za_communes
+-- 6.6. Insertion dans la table ta_za_communes
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
