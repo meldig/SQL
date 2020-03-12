@@ -249,13 +249,13 @@ COMMIT;
 
 -- 6.4. Insertion dans la table ta_nom 
 INSERT INTO ta_nom(nom)
-VALUES('TOURCOING-ARMENTIERES');
+VALUES('Tourcoing-Armentières');
 INSERT INTO ta_nom(nom)
-VALUES('ROUBAIX-VILLENEUVE D''ASCQ');
+VALUES('Roubaix-Villeneuve d''Ascq');
 INSERT INTO ta_nom(nom)
-VALUES('LILLE-SECLIN');
+VALUES('Lille-Seclin');
 INSERT INTO ta_nom(nom)
-VALUES('LA BASSEE-MARCQ EN BAROEUL');
+VALUES('La Basse-Marcq en Baroeul');
 COMMIT;
 
 -- 6.5. Insertion dans la table ta_zone_administrative
@@ -325,21 +325,21 @@ COMMIT;
 
 -- 7.4. Insertion des noms des territoires dans la table TA_NOM  
 INSERT INTO ta_nom(nom)
-VALUES('TERRITOIRE  EST');
+VALUES('Territoire Est');
 INSERT INTO ta_nom(nom)
-VALUES('TERRITOIRE TOURQUENNOIS');
+VALUES('Territoire Tourquennois');
 INSERT INTO ta_nom(nom)
-VALUES('TERRITOIRE DES  WEPPES');
+VALUES('Territoire des Weppes');
 INSERT INTO ta_nom(nom)
-VALUES('COURONNE NORD DE LILLE');
+VALUES('Couronne Nord de Lille');
 INSERT INTO ta_nom(nom)
-VALUES('TERRITOIRE DE LA LYS');
+VALUES('Territoire de la Lys');
 INSERT INTO ta_nom(nom)
-VALUES('TERRITOIRE ROUBAISIEN');
+VALUES('Territoire Roubaisien');
 INSERT INTO ta_nom(nom)
-VALUES('LILLE-LOMME-HELLEMMES');
+VALUES('Lille-Lomme-Hellemmes');
 INSERT INTO ta_nom(nom)
-VALUES('COURONNE SUD DE LILLE');
+VALUES('Couronne Sud de Lille');
 COMMIT;
 
 -- 7.5. Insertion dans la table ta_zone_administrative
@@ -352,7 +352,7 @@ FROM
     ta_nom b
 WHERE
     a.libelle = 'Territoire'
-    AND b.nom IN('TERRITOIRE  EST', 'TERRITOIRE TOURQUENNOIS', 'TERRITOIRE DES  WEPPES', 'COURONNE NORD DE LILLE', 'TERRITOIRE DE LA LYS', 'TERRITOIRE ROUBAISIEN', 'LILLE-LOMME-HELLEMMES', 'COURONNE SUD DE LILLE');
+    AND b.nom IN('Territoire Est', 'Territoire Tourquennois', 'Territoire des Weppes', 'Couronne Nord de Lille', 'Territoire de la Lys', 'Territoire Roubaisien', 'Lille-Lomme-Hellemmes', 'Couronne Sud de Lille');
 COMMIT;
 
 -- 7.6. Insertion dans la table ta_za_communes
@@ -371,20 +371,20 @@ FROM
     INNER JOIN ta_nom f ON e.fid_nom = f.objectid
 WHERE
     d.libelle = 'code insee'
-    AND f.nom = 'TERRITOIRE  EST'
+    AND f.nom = 'Territoire Est'
     AND c.code IN('59013','59044','59106','59146','59247','59275','59410','59522','59523','59602','59009','59660','59458');
-    --AND f.nom = 'TERRITOIRE TOURQUENNOIS'
+    --AND f.nom = 'Territoire Tourquennois'
     --AND c.code IN('59090','59279','59421','59426','59508','59599');
-    --AND f.nom = 'TERRITOIRE DES  WEPPES'
+    --AND f.nom = 'Territoire des Weppes'
     --AND c.code IN('59051','59056','59670','59195','59196','59201','59208','59250','59278','59281','59286','59303','59320','59388','59524','59550','59553','59566','59653','59658','59088','59025','59257','59487','59371');
-    --AND f.nom = 'COURONNE NORD DE LILLE'
+    --AND f.nom = 'Couronne Nord de Lille'
     --AND c.code IN('59128','59328','59356','59368','59378','59386','59457','59470','59527','59611','59636');
-    --AND f.nom = 'TERRITOIRE DE LA LYS'
+    --AND f.nom = 'Territoire de la Lys'
     --AND c.code IN('59017', '59098', '59143', '59152', '59173', '59202', '59252', '59317', '59352', '59482', '59643', '59656');
-    --AND f.nom = 'TERRITOIRE ROUBAISIEN'
+    --AND f.nom = 'Territoire Roubaisien'
     --AND c.code IN('59163','59299','59332','59339','59367','59512','59598','59646','59650');
-    --AND f.nom = 'LILLE-LOMME-HELLEMMES'
+    --AND f.nom = 'Lille-Lomme-Hellemmes'
     --AND c.code IN('59350');
-    --AND f.nom = 'COURONNE SUD DE LILLE'
+    --AND f.nom = 'Couronne Sud de Lille'
     --AND c.code IN('59193','59220','59256','59316','59343','59346','59360','59437','59507','59560','59585','59648','59609', '59185', '59112', '59221', '59251', '59112');
 COMMIT;
