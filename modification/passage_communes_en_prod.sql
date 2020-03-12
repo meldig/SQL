@@ -241,10 +241,10 @@ SELECT
 	b.objectid
 FROM
 	ta_famille a,
-	ta_libelle b,	
+	ta_libelle b	
 WHERE
 	a.famille = 'Division territoriale de la MEL'
-	AND b.libelle = 'Unité Territoriale'
+	AND b.libelle = 'Unité Territoriale';
 COMMIT;
 
 -- 6.4. Insertion dans la table ta_nom 
