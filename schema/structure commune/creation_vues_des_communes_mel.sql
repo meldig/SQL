@@ -37,7 +37,21 @@ COMMENT ON COLUMN g_referentiel.admin_communes_mel.code_insee IS 'Code INSEE de 
 COMMENT ON COLUMN g_referentiel.admin_communes_mel.nom IS 'Nom de chaque commune de la MEL.';
 COMMENT ON COLUMN g_referentiel.admin_communes_mel.geom IS 'Géométrie de chaque commune - de type polygone.';
 
--- 3. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
+-- 3. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'admin_communes_mel',
+    'geom',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+
+-- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON admin_communes_mel TO G_REFERENTIEL_LEC;
 GRANT SELECT ON admin_communes_mel TO G_ADMIN_SIG;
 
@@ -83,7 +97,21 @@ COMMENT ON COLUMN g_referentiel.admin_communes_mel90.code_insee IS 'Code INSEE d
 COMMENT ON COLUMN g_referentiel.admin_communes_mel90.nom IS 'Nom de chaque commune de la MEL.';
 COMMENT ON COLUMN g_referentiel.admin_communes_mel90.geom IS 'Géométrie de chaque commune - de type polygone.';
 
--- 3. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
+-- 3. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'admin_communes_mel90',
+    'geom',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+
+-- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON admin_communes_mel90 TO G_REFERENTIEL_LEC;
 GRANT SELECT ON admin_communes_mel90 TO G_ADMIN_SIG;
 
@@ -171,5 +199,20 @@ COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.geom IS 'Géométrie
 COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux décimales.';
 COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
 
--- 3. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC
+-- 3. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'admin_communes_mel_belgique',
+    'geom',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+
+-- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC
 GRANT SELECT ON admin_communes_mel_belgique TO G_REFERENTIEL_LEC;
+GRANT SELECT ON admin_communes_mel_belgique TO G_ADMIN_SIG;
