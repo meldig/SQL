@@ -515,8 +515,6 @@ COMMENT ON TABLE g_geo.ta_zone_administrative IS 'Table regroupant tous les noms
 COMMENT ON COLUMN g_geo.ta_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
 COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de la zone supra-communale.';
 COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_libelle IS 'Clé étrangère de la table TA_LIBELLE permettant de catégoriser les zones administratives.';
-COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_metadonnee IS 'Clé étrangère de la table TA_METADONNEE.';
-
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_zone_administrative 
@@ -535,19 +533,11 @@ ADD CONSTRAINT ta_zone_administrative_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
 REFERENCES ta_libelle(objectid);
 
-ALTER TABLE ta_zone_administrative
-ADD CONSTRAINT ta_zone_administrative_fid_metadonnee_FK
-FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid);
-
 -- 5. Création des index sur les clés étrangères
 CREATE INDEX ta_zone_administrative_fid_nom_IDX ON ta_zone_administrative(fid_nom)
     TABLESPACE G_ADT_INDX;
 
 CREATE INDEX ta_zone_administrative_fid_libelle_IDX ON ta_zone_administrative(fid_libelle)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX ta_zone_administrative_fid_metadonnee_IDX ON ta_zone_administrative(fid_metadonnee)
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
@@ -570,7 +560,6 @@ COMMENT ON TABLE g_geo.ta_identifiant_zone_administrative IS 'Table permettant d
 COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
 COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
 COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.fid_identifiant IS 'Clé étrangère de la table TA_CODE.';
-
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_identifiant_zone_administrative 
