@@ -70,5 +70,5 @@ COMMENT ON COLUMN g_referentiel.admin_territoire_mel.nom IS 'Nom des Territoires
 COMMENT ON COLUMN g_referentiel.admin_territoire_mel.geom IS 'Géométrie de chaque Territoire.';
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
-GRANT SELECT ON admin_unite_territoriale_mel TO G_REFERENTIEL_LEC;
-GRANT SELECT ON admin_unite_territoriale_mel TO G_ADMIN_SIG;
+GRANT SELECT ON admin_territoire_mel TO G_REFERENTIEL_LEC;
+GRANT SELECT ON admin_territoire_mel TO G_ADMIN_SIG;
