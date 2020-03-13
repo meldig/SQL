@@ -243,6 +243,7 @@ COMMIT;
 -- 6.8. Suppression de la table temporaire "COMMUNE"
 DROP TABLE COMMUNE CASCADE CONSTRAINTS;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'COMMUNE';
+COMMIT;
 
 -- 7. Création des Unité Territoriales
 -- 7.1. Insertion dans la table ta_libelle
@@ -270,13 +271,16 @@ COMMIT;
 
 -- 7.4. Insertion dans la table ta_nom 
 INSERT INTO ta_nom(nom)
-VALUES('Tourcoing-Armentières');
+VALUES ('Tourcoing-Armentières');
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Roubaix-Villeneuve d''Ascq');
+VALUES ('Roubaix-Villeneuve d''Ascq');
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Lille-Seclin');
+VALUES ('Lille-Seclin');
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('La Basse-Marcq en Baroeul');
+VALUES ('La Basse-Marcq en Baroeul');
 COMMIT;
 
 -- 7.5. Insertion dans la table ta_zone_administrative
@@ -292,7 +296,8 @@ WHERE
     AND b.libelle = 'Unité Territoriale';
 COMMIT;
 
--- 7.6. Insertion dans la table ta_za_communes
+-- 7.6. Insertion dans la table ta_za_communes des objectid des communes et ceux des Unités Territoriales correspondantes
+-- 7.6.1. La Basse-Marcq en Baroeul
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -313,12 +318,75 @@ WHERE
     AND f.fin_validite = '01/01/2999'
     AND h.nom = 'La Basse-Marcq en Baroeul'
     AND c.code IN ('59051', '59056', '59128', '59670', '59195', '59196', '59201', '59208', '59250', '59278', '59281', '59286', '59303', '59320', '59328', '59356', '59378', '59386', '59388', '59457', '59470', '59524', '59527', '59550', '59553', '59566', '59611', '59636', '59653', '59658', '59088', '59025', '59257', '59487', '59371');
-    --AND h.nom = 'Lille-Seclin'
-    --AND c.code IN ('59011','59346','59368','59648','59256','59609','59350','59360','59477','59005','59193','59220','59437','59133','59052','59585','59316','59507','59560','59343');
-    --AND h.nom = 'Roubaix-Villeneuve d''Ascq'
-    --AND c.code IN ('59275','59339','59523','59522','59044','59367','59163','59512','59299','59146','59410','59650','59106','59247','59602','59013','59458','59332','59009','59646','59598','59660');
-    --AND h.nom = 'Tourcoing-Armentières'
-    --AND c.code IN ('59017','59252','59656','59508','59352','59482','59173','59143','59090','59317','59098','59643','59152','59599','59421','59202','59279','59426');
+COMMIT;
+
+-- 7.6.2. Lille-Seclin
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    g.objectid,
+    f.debut_validite,
+    f.fin_validite
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_za_communes f ON a.objectid = f.fid_commune
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative g
+    INNER JOIN ta_nom h ON g.fid_nom = h.objectid
+WHERE
+    a.fid_metadonnee = 1
+    AND d.libelle = 'code insee'
+    AND f.fin_validite = '01/01/2999'
+    AND h.nom = 'Lille-Seclin'
+    AND c.code IN ('59011','59346','59368','59648','59256','59609','59350','59360','59477','59005','59193','59220','59437','59133','59052','59585','59316','59507','59560','59343');
+COMMIT;
+    
+-- 7.6.3. Roubaix-Villeneuve d'Ascq
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    g.objectid,
+    f.debut_validite,
+    f.fin_validite
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_za_communes f ON a.objectid = f.fid_commune
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative g
+    INNER JOIN ta_nom h ON g.fid_nom = h.objectid
+WHERE
+    a.fid_metadonnee = 1
+    AND d.libelle = 'code insee'
+    AND f.fin_validite = '01/01/2999'
+    AND h.nom = 'Roubaix-Villeneuve d''Ascq'
+    AND c.code IN ('59275','59339','59523','59522','59044','59367','59163','59512','59299','59146','59410','59650','59106','59247','59602','59013','59458','59332','59009','59646','59598','59660');
+COMMIT;
+
+-- 7.6.4. Tourcoing-Armentières
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    g.objectid,
+    f.debut_validite,
+    f.fin_validite
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_za_communes f ON a.objectid = f.fid_commune
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative g
+    INNER JOIN ta_nom h ON g.fid_nom = h.objectid
+WHERE
+    a.fid_metadonnee = 1
+    AND d.libelle = 'code insee'
+    AND f.fin_validite = '01/01/2999'
+    AND h.nom = 'Tourcoing-Armentières'
+    AND c.code IN ('59017','59252','59656','59508','59352','59482','59173','59143','59090','59317','59098','59643','59152','59599','59421','59202','59279','59426');
 COMMIT;
 
 -- 8. Insertion des territoires
@@ -342,21 +410,28 @@ COMMIT;
 
 -- 8.3. Insertion des noms des territoires dans la table TA_NOM  
 INSERT INTO ta_nom(nom)
-VALUES('Territoire Est');
+VALUES ('Territoire Est')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Territoire Tourquennois');
+VALUES ('Territoire Tourquennois')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Territoire des Weppes');
+VALUES ('Territoire des Weppes')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Couronne Nord de Lille');
+VALUES ('Couronne Nord de Lille')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Territoire de la Lys');
+VALUES ('Territoire de la Lys')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Territoire Roubaisien');
+VALUES ('Territoire Roubaisien')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Lille-Lomme-Hellemmes');
+VALUES ('Lille-Lomme-Hellemmes')
+COMMIT;
 INSERT INTO ta_nom(nom)
-VALUES('Couronne Sud de Lille');
+VALUES ('Couronne Sud de Lille');
 COMMIT;
 
 -- 8.4. Insertion dans la table ta_zone_administrative
@@ -372,7 +447,8 @@ WHERE
     AND b.nom IN('Territoire Est', 'Territoire Tourquennois', 'Territoire des Weppes', 'Couronne Nord de Lille', 'Territoire de la Lys', 'Territoire Roubaisien', 'Lille-Lomme-Hellemmes', 'Couronne Sud de Lille');
 COMMIT;
 
--- 8.5. Insertion dans la table ta_za_communes
+-- 8.5. Insertion dans la table ta_za_communes des objectid des communes et ceux des Territoires correspondants
+-- 8.5.1 Territoire Est
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -390,18 +466,144 @@ WHERE
     d.libelle = 'code insee'
     AND f.nom = 'Territoire Est'
     AND c.code IN('59013','59044','59106','59146','59247','59275','59410','59522','59523','59602','59009','59660','59458');
-    --AND f.nom = 'Territoire Tourquennois'
-    --AND c.code IN('59090','59279','59421','59426','59508','59599');
-    --AND f.nom = 'Territoire des Weppes'
-    --AND c.code IN('59051','59056','59670','59195','59196','59201','59208','59250','59278','59281','59286','59303','59320','59388','59524','59550','59553','59566','59653','59658','59088','59025','59257','59487','59371');
-    --AND f.nom = 'Couronne Nord de Lille'
-    --AND c.code IN('59128','59328','59356','59368','59378','59386','59457','59470','59527','59611','59636');
-    --AND f.nom = 'Territoire de la Lys'
-    --AND c.code IN('59017', '59098', '59143', '59152', '59173', '59202', '59252', '59317', '59352', '59482', '59643', '59656');
-    --AND f.nom = 'Territoire Roubaisien'
-    --AND c.code IN('59163','59299','59332','59339','59367','59512','59598','59646','59650');
-    --AND f.nom = 'Lille-Lomme-Hellemmes'
-    --AND c.code IN('59350');
-    --AND f.nom = 'Couronne Sud de Lille'
-    --AND c.code IN('59193','59220','59256','59316','59343','59346','59360','59437','59507','59560','59585','59648','59609', '59185', '59112', '59221', '59251', '59112', '59011', '59005', '59052', '59133', '59477');
+COMMIT;
+
+-- 8.5.2 Territoire Tourquennois
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Territoire Tourquennois'
+    AND c.code IN('59090','59279','59421','59426','59508','59599');
+COMMIT;
+
+-- 8.5.2 Territoire des Weppes
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Territoire des Weppes'
+    AND c.code IN('59051','59056','59670','59195','59196','59201','59208','59250','59278','59281','59286','59303','59320','59388','59524','59550','59553','59566','59653','59658','59088','59025','59257','59487','59371');
+COMMIT;
+
+-- 8.5.3 Couronne Nord de Lille
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Couronne Nord de Lille'
+    AND c.code IN('59128','59328','59356','59368','59378','59386','59457','59470','59527','59611','59636');
+COMMIT;
+
+-- 8.5.4 Territoire de la Lys
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Territoire de la Lys'
+    AND c.code IN('59017', '59098', '59143', '59152', '59173', '59202', '59252', '59317', '59352', '59482', '59643', '59656');
+COMMIT;
+
+-- 8.5.5 Territoire Roubaisien
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Territoire Roubaisien'
+    AND c.code IN('59163','59299','59332','59339','59367','59512','59598','59646','59650');
+COMMIT;
+
+-- 8.5.6 Lille-Lomme-Hellemmes
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Lille-Lomme-Hellemmes'
+    AND c.code IN('59350');
+COMMIT;
+
+-- 8.5.7 Couronne Sud de Lille
+INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
+SELECT
+    a.objectid,
+    e.objectid,
+    '01/01/2020',
+    '31/12/2999'
+FROM
+    ta_commune a
+    INNER JOIN ta_identifiant_commune b ON a.objectid = b.fid_commune
+    INNER JOIN ta_code c ON b.fid_identifiant = c.objectid
+    INNER JOIN ta_libelle d ON c.fid_libelle = d.objectid,
+    ta_zone_administrative e
+    INNER JOIN ta_nom f ON e.fid_nom = f.objectid
+WHERE
+    d.libelle = 'code insee'
+    AND f.nom = 'Couronne Sud de Lille'
+    AND c.code IN('59193','59220','59256','59316','59343','59346','59360','59437','59507','59560','59585','59648','59609', '59185', '59112', '59221', '59251', '59112', '59011', '59005', '59052', '59133', '59477');
 COMMIT;
