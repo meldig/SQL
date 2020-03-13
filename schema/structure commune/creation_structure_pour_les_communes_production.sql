@@ -22,7 +22,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_organisme TO G_ADMIN_SIG;
-
+GRANT SELECT ON g_geo.ta_organisme TO G_REFERENTIEL WITH GRANT OPTION;
 /*
 La table ta_date_acquisition permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
 */
@@ -73,6 +73,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_source TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_source TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_provenance regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
@@ -99,6 +100,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_provenance TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_provenance TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_echelle regroupe toutes les échelles d'affichage des données source.
@@ -123,6 +125,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_echelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_echelle TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_metadonnee regroupe toutes les informations relatives aux différentes donnees du schemas.
@@ -202,6 +205,7 @@ TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_metadonnee TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_metadonnee TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table Ta_NOM regroupe le nom de tous les objets du référentiel (les zones administratives)
@@ -249,8 +253,9 @@ PRIMARY KEY("OBJECTID")
 USING INDEX
 TABLESPACE "G_ADT_INDX";
 
-/*-- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_famille TO G_ADMIN_SIG;*/
+-- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
+GRANT SELECT ON g_geo.ta_famille TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_famille TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_libelle regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
@@ -278,6 +283,7 @@ TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_libelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_famille_libelle sert à faire la liaison entre les tables ta_libelle et ta_famille.
@@ -330,6 +336,7 @@ TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_famille_libelle TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table TA_CODE regroupe tous les codes du schéma. 
@@ -369,6 +376,7 @@ TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_code TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_code TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table ta_commune regroupe toutes les communes de la MEL.
@@ -447,6 +455,7 @@ CREATE INDEX ta_commune_fid_metadonnee_IDX ON ta_commune(fid_metadonnee)
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_commune TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_commune TO G_REFERENTIEL WITH GRANT OPTION;
 
 /*
 La table TA_IDENTIFIANT_COMMUNE permet de regrouper tous les codes par commune. 
@@ -487,6 +496,7 @@ REFERENCES ta_code(objectid);
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_REFERENTIEL WITH GRANT OPTION;
 
 /* 
 La table TA_ZONE_ADMINISTRATIVE permet de recenser tous les noms des zones supra-communales.
@@ -542,6 +552,7 @@ CREATE INDEX ta_zone_administrative_fid_metadonnee_IDX ON ta_zone_administrative
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_zone_administrative TO G_REFERENTIEL WITH GRANT OPTION;
 
 /* 
 La table TA_IDENTIFIANT_ZONE_ADMINISTRATIVE permet de lier les zones supra-communales avec leurs codes.
@@ -587,6 +598,7 @@ CREATE INDEX ta_identifiant_zone_administrative_fid_identifiant_IDX ON ta_identi
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_REFERENTIEL WITH GRANT OPTION;
 
 /* 
 La table ta_za_communes sert de table de liaison entre les tables ta_commune et ta_zone_administrative.
@@ -637,3 +649,4 @@ CREATE INDEX ta_za_communes_fid_zone_administrative_IDX ON ta_za_communes(fid_zo
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_za_communes TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_za_communes TO G_REFERENTIEL WITH GRANT OPTION;
