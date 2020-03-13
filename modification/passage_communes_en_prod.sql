@@ -62,6 +62,8 @@ COMMIT;
 -- 3.2. Insertion dans ta_famille
 INSERT INTO ta_libelle(libelle)
 VALUES('commune simple');
+COMMIT;
+
 INSERT INTO ta_libelle(libelle)
 VALUES('commune associée');
 COMMIT;
@@ -170,9 +172,9 @@ WHERE
 COMMIT;
 
 -- 6. Création des zones supra-communales
--- 6.1. Insertion dans la table ta_nom
-INSERT INTO ta_nom(acronyme, nom)
-VALUES('MEL', 'Métropole Européenne de Lille');
+-- 6.1. Insertion dans la table ta_famille
+INSERT INTO ta_famille(famille)
+VALUES('Etablissements de Coopération Intercommunale (EPCI)');
 COMMIT;
 
 -- 6.2. Insertion dans la table ta_libelle
@@ -180,7 +182,25 @@ INSERT INTO ta_libelle(libelle)
 VALUES('Etablissements de Coopération Intercommunale (EPCI)');
 COMMIT;
 
--- 6.3. Insertion dans la table ta_zone_administrative
+-- 6.3. Insertion dans la table ta_famille_libelle
+INSERT INTO ta_famille_libelle(fid_famille, fid_libelle)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_famille a,
+    ta_libelle b
+WHERE
+    a.famille = 'Etablissements de Coopération Intercommunale (EPCI)'
+    AND b.libelle = 'Métropole';
+COMMIT;
+
+-- 6.4. Insertion dans la table ta_nom
+INSERT INTO ta_nom(acronyme, nom)
+VALUES('MEL', 'Métropole Européenne de Lille');
+COMMIT;
+
+-- 6.5. Insertion dans la table ta_zone_administrative
 INSERT INTO ta_zone_administrative(fid_nom, fid_libelle)
 SELECT
 	MAX(a.objectid),
@@ -190,9 +210,7 @@ FROM
 	ta_libelle b;
 COMMIT;
 
--- 6.4. Insertion dans la table de liaison ta_za_communes
-
--- 6.5. Pour les 95 communes de la MEL
+-- 6.6. Insertion dans la table de liaison ta_za_communes pour les 95 communes de la MEL
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
 	a.objectid,
@@ -204,7 +222,7 @@ FROM
 	ta_zone_administrative b;
 COMMIT;
 
--- 6.6. Pour les 90 communes de la MEL
+-- 6.7. Insertion dans la table de liaison ta_za_communes pour les 90 communes de la MEL
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
 	a.objectid,
@@ -222,7 +240,7 @@ WHERE
 	AND d.code NOT IN('59011', '59005', '59052', '59133', '59477');
 COMMIT;
 
--- 6.7. Suppression de la table temporaire "COMMUNE"
+-- 6.8. Suppression de la table temporaire "COMMUNE"
 DROP TABLE COMMUNE CASCADE CONSTRAINTS;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'COMMUNE';
 
@@ -272,6 +290,7 @@ FROM
 WHERE
     a.nom IN ('Tourcoing-Armentières', 'Roubaix-Villeneuve d''Ascq', 'Lille-Seclin', 'La Basse-Marcq en Baroeul')
     AND b.libelle = 'Unité Territoriale';
+COMMIT;
 
 -- 7.6. Insertion dans la table ta_za_communes
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
