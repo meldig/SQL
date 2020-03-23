@@ -181,6 +181,7 @@ DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TABLE_NAME';
 ### Création d'une vue :
 
 ``` SQL
+-- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW schema_name.view_name (
     champ1,
     champ2,
@@ -195,11 +196,17 @@ SELECT
 	champ3
 FROM
 	schema_name.table_name;
-
+    
+-- 2. Création des commentaires de la vue
 COMMENT ON TABLE view_name IS '...';
 COMMENT ON COLUMN view_name.champ1 IS '...';
 COMMENT ON COLUMN view_name.champ2 IS '...';
 COMMENT ON COLUMN view_name.champ3 IS '...';
+
+-- 3. Création des métadonnées spatiales de la vue
+INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES ('VIEW_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
+COMMIT;
 ```
 
 ### Suppression d'une vue :
@@ -226,13 +233,14 @@ SELECT
 	champ3
 FROM
 	schema_name.table_name;
-
+    
+-- 2. Création des commentaires de la vue matérialisée
 COMMENT ON MATERIALIZED VIEW materialized_view_name IS '...';
 COMMENT ON COLUMN materialized_view_name.champ1 IS '...';
 COMMENT ON COLUMN materialized_view_name.champ2 IS '...';
 COMMENT ON COLUMN materialized_view_name.champ3 IS '...';
 
--- 2. Création des métadonnées spatiales de la VM
+-- 3. Création des métadonnées spatiales de la VM
 INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
 VALUES ('MATERIALIZED_VIEW_NAME', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
 COMMIT;
