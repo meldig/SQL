@@ -13,5 +13,6 @@ La nomenclature des fichiers doit être sans majuscule, accentuation ou espace. 
 * analyse : regroupe le code permettant d'obtenir des indicateurs statistiques sur les bases
 * doc : documente les procédures et méthodes générales
 * export : regroupe le code destiné à extraire les données
+* integration : regroupe le code et la documentation liés à l'intégration de données externes
 * modification : regroupe le code utilisant *update*
 * schema : regroupe le code DDL permettant de créer l'intégralité d'un schéma
