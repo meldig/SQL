@@ -1,0 +1,99 @@
+# Fiche technique sur l'import/export de base de données dans Oracle
+
+## Introduction :
+* L'import/export d'une base de données permet d'exporter une base de données vers une autre, d'exporter les données d'un schéma dans un autre ou d'exporter/importer seulement quelques tables.
+* La différence avec une simple extraction est que cette méthode permet de recréer une base de donnée identique à ce qui a été sauvegardé, sans différence d'encodage, ni de géométrie.
+
+* En d'autres termes, les exports/imports sont des utilitaires de transfert logique de données, pouvant être utilisés pour :
+	* l'archivage logique de la base ;
+	* le changement de version d'Oracle ;
+	* Les sauvegardes logiques ;
+	* Le déplacement de données (d'une base vers une autre, d'un schéma vers un autre) ;
+	* La réorganisation physique de la base ;
+
+* Dans Oracle, il existe deux méthodes d'import/export de base de données :
+	* Les utilitaires EXP et IMP (en cours de suppression depuis la version 10g - uniquement maintenus afin de faire la transition) ;
+	* Le DATADUMP introduit avec la version 10g
+
+* Caractéristiques principales :
+	* Stockage des données dans un fichier d'un format propriétaire d'Oracle, c'est-à-dire que seul oracle peut ouvrir un fichier dump issu d'oracle ;
+	* Stockage de la définition des données ;
+	* Format logique des données ;
+	* Possibilité d'export "cumulatif" ou "incrémental" ;
+	* Plusieurs niveaux de finesse(full, user, table)
+
+## I. Utilitaires EXP/IMP
+
+Ces utilitaires, appelés Export et Import originaux (original export and import) dans la documentation Oracle,  sont compatibles avec toutes les versions jusqu'à la 12c, mais il est vivement conseillé de ne l'utiliser qu'avec les versions antérieures à la 10g. Par ailleurs, un import "IMP" ne peut être fait qu'à partir d'un export fait avec l'utilitaire "EXP" et non avec l'utilitaire "EXPDP". Les deux types d'utilitaire ne sont pas compatibles.
+
+### 1.1. Caractéristiques :
+
+* Quand l'export d'une base de données est fait, les tables et tous les objets qui en dépendent sont extraits (tels que les indexes, les commentaires et les privilèges) ;
+
+* Le fichier de sortie issu de l'export est au format dump (.dmp) qui est un type de format binaire ;
+* Le fichier source d'un import doit être au format dump (.dmp) ;
+* Le fichier dump d'export peut uniquement être lu par l'utilitaire d'import d'Oracle ;
+* La version de l'utilitaire d'import ne peut pas être plus ancienne que la version de l'utilitaire d'export utilisé pour créer le fichier d'export ;
+
+### 1.2. L'Export :
+
+* L'utilitaire EXP permet d'exporter d'une base Oracle soit une table, soit plusieurs tables, soit un schéma. Il est également vivement conseillé de préparer **avant** l'export deux dossiers : l'un qui recevra les données/objets exportés de la base et l'autre qui recevra les logs ;
+* L'utilitaire s'utilise dans le terminal SQLPLUS et suit toujours la syntaxe suivante :
+
+``` SQL
+<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
+```
+
+* **Export d'une table :**
+
+``` SQL
+exp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= table_1 file='D:\chemin_acces\Export_Table_NomTable_1.dmp' log='D:\chemin_acces\Export_Log_NomTable_1.dmp'
+```
+
+* **Export de plusieurs tables :**
+
+``` SQL
+exp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= (table_1, table_2, table_3) file='D:\chemin_acces\Export_Tables_NomThematique.dmp' log='D:\chemin_acces\Export_Log_NomThematique.dmp'
+```
+
+* **Export d'un schéma :**
+
+``` SQL
+exp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes consistent=yes file='D:\chemin_acces\Export_Schema_NomSchema.dmp' log='D:\chemin_acces\Export_Log_NomSchema.dmp'
+```
+
+### 1.3. L'Import :
+
+* L'utilitaire d'IMP permet d'importer dans une base Oracle soit une table, soit plusieurs tables soit un schéma ;
+* Il utilise le fichier .dmp créé par l'export et créé un log spécifique à l'import qu'il faudra sauvegarder. Il peut être sauvegardé dans le même dossier que celui qui contient les logs d'export ;
+* Les paramètres "FROMUSER" et "TOUSER" permettent d'identifier les schémas de provenance et d'arrivée des données et de leurs objets. Le "FROMUSER" identifie le schéma duquel les données/objets ont été exportés et le "TOUSER" identifie le schéma dans lequel les données/objets vont être importées. Les noms des deux schémas peuvent différer ;
+* L'utilitaire s'utilise dans le terminal SQLPLUS et suit toujours la syntaxe suivante :
+
+``` SQL
+<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
+```
+
+* **Import d'une table :**
+
+``` SQL
+imp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= table_1 file='D:\chemin_acces\Export_Table_NomTable_1.dmp' log='D:\exports\Import_Table_NomTable_1.dmp' FROMUSER=NomSchema TOUSER=NomSchema
+```
+
+* **Import de plusieurs tables :**
+
+``` SQL
+imp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= (table_1, table_2, table_3) file='D:\chemin_acces\Export_Tables_NomThématique.dmp' log='D:\exports\Import_Tables_NomThématique.dmp' FROMUSER=NomSchema TOUSER=NomSchema
+```
+
+* **Import d'un schéma :**
+
+``` SQL
+imp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes file='D:\chemin_acces\Export_Schema_NomSchema.dmp' log='D:\exports\Import_Schema_NomSchema.dmp' FROMUSER=NomSchema TOUSER=NomSchema
+```
+
+## Sources : 
+
+- [Original Export and Import ;](https://docs.oracle.com/cd/B28359_01/server.111/b28319/exp_imp.htm#i1004670)
+- [Syntaxe d'export/import originaux ;](http://www.desmoulins.fr/index.php?pg=informatique!bdd!oracle!import_export!export) 
+- [Documentation sur le DataPump ;](https://jaouad.developpez.com/datapump/)
+- [Les différences entre les deux versions d'import/export de données ;](http://www.dba-oracle.com/t_differences_imp_impdp_import_data_pump.htm)
