@@ -37,26 +37,26 @@ Ces utilitaires, appelés Export et Import originaux (original export and import
 
 ### 1.2. L'Export :
 
-* L'utilitaire EXP permet d'exporter d'une base Oracle soit une table, soit plusieurs tables, soit un schéma. Il est également vivement conseillé de préparer *avant* l'export deux dossiers : l'un qui recevra les données/objets exportés de la base et l'autre qui recevra les logs ;
+* L'utilitaire EXP permet d'exporter d'une base Oracle soit une table, soit plusieurs tables, soit un schéma. Il est également vivement conseillé de préparer **avant** l'export deux dossiers : l'un qui recevra les données/objets exportés de la base et l'autre qui recevra les logs ;
 * L'utilitaire s'utilise dans le terminal SQLPLUS et suit toujours la syntaxe suivante :
 
 ``` SQL
 <nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
 ```
 
-* *Export d'une table :*
+* **Export d'une table :**
 
 ``` SQL
 exp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= table_1 file='D:\chemin_acces\Export_Table_NomTable_1.dmp' log='D:\chemin_acces\Export_Log_NomTable_1.dmp'
 ```
 
-* *Export de plusieurs tables :*
+* **Export de plusieurs tables :**
 
 ``` SQL
 exp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= (table_1, table_2, table_3) file='D:\chemin_acces\Export_Tables_NomThematique.dmp' log='D:\chemin_acces\Export_Log_NomThematique.dmp'
 ```
 
-* *Export d'un schéma :*
+* **Export d'un schéma :**
 
 ``` SQL
 exp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes consistent=yes file='D:\chemin_acces\Export_Schema_NomSchema.dmp' log='D:\chemin_acces\Export_Log_NomSchema.dmp'
@@ -73,19 +73,19 @@ exp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes consistent=yes file='D:\
 <nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
 ```
 
-* *Import d'une table :*
+* **Import d'une table :**
 
 ``` SQL
 imp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= table_1 file='D:\chemin_acces\Export_Table_NomTable_1.dmp' log='D:\exports\Import_Table_NomTable_1.dmp' FROMUSER=NomSchema TOUSER=NomSchema
 ```
 
-* *Import de plusieurs tables :*
+* **Import de plusieurs tables :**
 
 ``` SQL
 imp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= (table_1, table_2, table_3) file='D:\chemin_acces\Export_Tables_NomThématique.dmp' log='D:\exports\Import_Tables_NomThématique.dmp' FROMUSER=NomSchema TOUSER=NomSchema
 ```
 
-* *Import d'un schéma :*
+* **Import d'un schéma :**
 
 ``` SQL
 imp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes file='D:\chemin_acces\Export_Schema_NomSchema.dmp' log='D:\exports\Import_Schema_NomSchema.dmp' FROMUSER=NomSchema TOUSER=NomSchema
