@@ -2,7 +2,6 @@
 
 ## Introduction :
 * L'import/export d'une base de données permet d'exporter une base de données vers une autre, d'exporter les données d'un schéma dans un autre ou d'exporter/importer seulement quelques tables.
-
 * La différence avec une simple extraction est que cette méthode permet de recréer une base de donnée identique à ce qui a été sauvegardé, sans différence d'encodage, ni de géométrie.
 
 * En d'autres termes, les exports/imports sont des utilitaires de transfert logique de données, pouvant être utilisés pour :
@@ -42,7 +41,7 @@ Ces utilitaires, appelés Export et Import originaux (original export and import
 * L'utilitaire s'utilise dans le terminal SQLPLUS et suit toujours la syntaxe suivante :
 
 ``` SQL
-*<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]*
+<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
 ```
 
 * *Export d'une table :*
@@ -63,7 +62,7 @@ exp <nom_schema>/<mot_de_passe>@<nom_instance> TABLES= (table_1, table_2, table_
 exp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes consistent=yes file='D:\chemin_acces\Export_Schema_NomSchema.dmp' log='D:\chemin_acces\Export_Log_NomSchema.dmp'
 ```
 
-### 1.3. L'import :
+### 1.3. L'Import :
 
 * L'utilitaire d'IMP permet d'importer dans une base Oracle soit une table, soit plusieurs tables soit un schéma ;
 * Il utilise le fichier .dmp créé par l'export et créé un log spécifique à l'import qu'il faudra sauvegarder. Il peut être sauvegardé dans le même dossier que celui qui contient les logs d'export ;
@@ -71,7 +70,7 @@ exp <nom_schema>/<mot_de_passe>@<nom_instance> full=yes consistent=yes file='D:\
 * L'utilitaire s'utilise dans le terminal SQLPLUS et suit toujours la syntaxe suivante :
 
 ``` SQL
-*<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]*
+<nom_schema>/<mot_de_passe>@<nom_instance> [Parametres]
 ```
 
 * *Import d'une table :*
