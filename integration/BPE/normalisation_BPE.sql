@@ -1,4 +1,5 @@
--- 1. Suppression des BPE enseignement de la table des BPE ensemble
+-- 1 Suppression des équipements présents dans la table BPE_ENSEMBLE mais également des les tables BPE_ENSEIGNEMENT et BPE_SPORT_LOISIR
+-- 1.1 suppression des BPE enseignement de la table des BPE ensemble
 
 DELETE
 FROM
@@ -12,7 +13,8 @@ WHERE
 		BPE_ENSEIGNEMENT);
 COMMIT;
 
--- 2. Suppression des BPE SPORT LOISIRS de la table des BPE ensemble
+-- 1.2 suppression des BPE SPORT LOISIRS de la table des BPE ensemble.
+
 DELETE
 FROM
 	BPE_ENSEMBLE
@@ -121,7 +123,21 @@ INCREMENT BY 1
 NOCACHE;
 COMMIT;
 
--- 3.3 Ajout des métadonnées
+-- 3.3 Correction du format des codes IRIS pour permettre une jointure avec TA_CODE afin d'insérer des données dans la table TA_BPE_RELATION_CODE
+-- Les codes IRIS de la base BPE ne sont pas au bon format. Il y a d'une part un underscore entre le code INSEE et le code IRIS
+-- et d'autre part pour les communes non divisés en IRIS le code IRIS est le code INSEE de la commune alors que normalement il s'agit du code INSEE suivi de quatre zéros.
+-- l'instruction CASE permet suivant les cas soit de rajouter quatre zéros si le code IRIS ne comporte que 4 chiffre
+-- ou de supprimer le underscore s'il y en a un.
+
+UPDATE bpe_tout
+SET "DCIRIS" = (
+    CASE
+        WHEN LENGTH("DCIRIS") = '5' THEN "DCIRIS" || '0000'
+        WHEN dciris like '%_%' THEN REPLACE("DCIRIS",'_','')
+    END)
+    ;
+
+-- 3.4 Ajout des métadonnées
 
 INSERT INTO USER_SDO_GEOM_METADATA(
     TABLE_NAME, 
@@ -139,52 +155,92 @@ VALUES(
 COMMIT;
 
 -- 4. Insertion des données geometrique dans la table TA_BPE_GEOMETRIE
+-- le WHERE permet de selectionner uniquement les géométries uniques et non les doublons
+-- le AND permet de ne pas insérer des géométrie déja existante dans la table.
 
 INSERT INTO ta_bpe_geom(geom)
 SELECT 
     ora_geometry
 FROM
-    BPE_TOUT
+    bpe_tout a
 WHERE
-    "IDENTITE" NOT IN
+    identite NOT IN
         (SELECT id_b
             FROM
                 (SELECT
-                        a."IDENTITE" AS id_a,
-                        b."IDENTITE" AS id_b
+                        a.identite AS id_a,
+                        b.identite AS id_b
                     FROM
-                        BPE_TOUT a,
-                        BPE_TOUT b
+                        bpe_tout a,
+                        bpe_tout b
                     WHERE
-                        a."IDENTITE" < b."IDENTITE"
+                        a.identite < b.identite
                     AND
-                        SDO_RELATE(a.ora_geometry, b.ora_geometry,'mASk=equal') = 'TRUE'));
+                        SDO_RELATE(a.ora_geometry, b.ora_geometry,'mask=equal') = 'TRUE'))
+AND
+    identite not IN
+        (SELECT
+            a.identite
+        FROM
+            bpe_tout a,
+            ta_bpe_geom b
+        WHERE
+            SDO_RELATE(a.ora_geometry, b.geom,'mask=equal') = 'TRUE')
+;
 COMMIT;
 
 -- 5. Insertion des données dans la table TA_BPE.
+-- la sous requete permet de mettre le fid_metadonnées de la donnée considéré au dernier millesime.
 
-INSERT INTO ta_bpe(objectid, fid_bpe_geom,fid_metadonnee)
+INSERT INTO ta_bpe(objectid,fid_metadonnee)
 SELECT
-	    a."IDENTITE",
-	    b.objectid,
-	    m.objectid
-	FROM
-	    BPE_TOUT a,
-	    TA_BPE_GEOM b,
-	    TA_METADONNEE m
-	WHERE
-	    SDO_RELATE(a.ora_geometry, b.geom,'mASk=equal') = 'TRUE'
-	AND
-		m.objectid =(SELECT
-                        max(objectid)
-                    FROM
-                        ta_metadonnee)
-	;
+    a.identite,
+    m.objectid
+FROM
+    BPE_TOUT a,
+    TA_METADONNEE m
+WHERE
+    m.objectid IN
+        (
+        SELECT
+            metadonnee_objectid
+        FROM
+            (
+            SELECT
+                max(a.objectid) as metadonnee_objectid,
+                max(c.nom_source) as source,
+                max(b.millesime) as millesime,
+                max(p.url) as url,
+                max(o.acronyme)as acronyme
+            FROM
+                ta_metadonnee a
+                INNER JOIN ta_date_acquisition b ON a.fid_acquisition = b.objectid
+                INNER JOIN ta_source c ON a.fid_source = c.objectid
+                INNER JOIN ta_provenance p ON a.fid_provenance = p.objectid
+                INNER JOIN ta_organisme o ON a.fid_organisme = o.objectid
+            WHERE
+                c.nom_source = ('Base Permanente des Equipements')
+            )
+        )
+;
 COMMIT;
 
--- 6. Insertion des données dans la table ta_bpe_caracteristique nombre
+-- 6. Insertion des données dans la table ta_bpe_relation_geom
 
--- 6.1 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
+INSERT INTO ta_bpe_relation_geom(fid_bpe,fid_bpe_geom)
+SELECT
+    a.identite,
+    b.objectid
+FROM
+    bpe_tout a,
+    ta_bpe_geom b
+WHERE
+    SDO_RELATE(a.ora_geometry, b.geom,'mask=equal') = 'TRUE'
+    ;
+
+-- 7. Insertion des données dans la table ta_bpe_caracteristique nombre
+
+-- 7.1 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
 
 INSERT INTO ta_bpe_caracteristique_nombre(fid_bpe,fid_libelle,nombre)
 (
@@ -202,7 +258,7 @@ WHERE
 ;
 COMMIT;
 
--- 6.2 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
+-- 7.2 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
 
 INSERT INTO ta_bpe_caracteristique_nombre(fid_bpe,fid_libelle,nombre)
 (
@@ -220,9 +276,9 @@ WHERE
 ;
 COMMIT;
 
--- 7. Insertion des données dans la table ta_bpe_caracteristique
+-- 8. Insertion des données dans la table ta_bpe_caracteristique
 
--- 7.1 Insertion des caracteristique TYPEQU.
+-- 8.1 Insertion des caracteristique TYPEQU.
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -248,7 +304,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -267,7 +323,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -287,7 +343,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE '__'
             AND
@@ -308,7 +364,7 @@ FROM(
         cte3.libelle_court_parent  NOT IN ('PR','PU','EP'));
 COMMIT;
 
--- 7.2 INSERTION DES CARACTERISTIQUES LIEES AUX CANT (présence ou absence d'une cantine).
+-- 8.2 INSERTION DES CARACTERISTIQUES LIEES AUX CANT (présence ou absence d'une cantine).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -334,7 +390,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -353,7 +409,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -373,7 +429,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'CANT'
             )
@@ -392,7 +448,7 @@ FROM(
 	;
 COMMIT;
 
--- 7.3 INSERTION DES CARACTERISTIQUES LIEES AUX CL_PELEM (présence ou absence d'une clASse pre_elementaire en ecole primaire).
+-- 8.3 INSERTION DES CARACTERISTIQUES LIEES AUX CL_PELEM (présence ou absence d'une clASse pre_elementaire en ecole primaire).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -418,7 +474,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -437,7 +493,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -457,7 +513,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'CL_PELEM'
             )
@@ -476,7 +532,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.4 INSERTION DES CARACTERISTIQUES LIEES AUX CL_PGE (présence ou absence d'une clASse preparatoire aux grandes ecoles en lycee).
+-- 8.4 INSERTION DES CARACTERISTIQUES LIEES AUX CL_PGE (présence ou absence d'une clASse preparatoire aux grandes ecoles en lycee).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -502,7 +558,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -521,7 +577,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -541,7 +597,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'CL_PGE'
             )
@@ -560,7 +616,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.5 INSERTION DES CARACTERISTIQUES LIEES AUX EP (Appartenance ou non à un dispositif d'education prioritaire).
+-- 8.5 INSERTION DES CARACTERISTIQUES LIEES AUX EP (Appartenance ou non à un dispositif d'education prioritaire).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -586,7 +642,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -605,7 +661,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -625,7 +681,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'EP'
             )
@@ -644,7 +700,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.6 INSERTION DES CARACTERISTIQUES LIEES AUX INT (présence ou absence d'un internat).
+-- 8.6 INSERTION DES CARACTERISTIQUES LIEES AUX INT (présence ou absence d'un internat).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -670,7 +726,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -689,7 +745,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -709,7 +765,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'INT'
             )
@@ -728,7 +784,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.7 INSERTION DES CARACTERISTIQUES LIEES AUX QUALITE XY (qualite d'attribution pour un equipement de ses coordonnees XY).
+-- 8.7 INSERTION DES CARACTERISTIQUES LIEES AUX QUALITE XY (qualite d'attribution pour un equipement de ses coordonnees XY).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -754,7 +810,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -773,7 +829,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -793,7 +849,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'QUALITE_XY'
             )
@@ -812,7 +868,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.8 INSERTION DES CARACTERISTIQUES LIEES AUX RPIC (Presence ou absence d'un regroupement pedagogique intercommunal concentre).
+-- 8.8 INSERTION DES CARACTERISTIQUES LIEES AUX RPIC (Presence ou absence d'un regroupement pedagogique intercommunal concentre).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -838,7 +894,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -857,7 +913,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -877,7 +933,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'RPIC'
             )
@@ -896,7 +952,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.9 INSERTION DES CARACTERISTIQUES LIEES AUX SECT (appartenance au secteur public ou prive d'enseignement).
+-- 8.9 INSERTION DES CARACTERISTIQUES LIEES AUX SECT (appartenance au secteur public ou prive d'enseignement).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -922,7 +978,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -941,7 +997,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -961,7 +1017,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'SECT'
             )
@@ -980,7 +1036,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.10 INSERTION DES CARACTERISTIQUES LIEES AUX COUVERT (equipement couvert ou non).
+-- 8.10 INSERTION DES CARACTERISTIQUES LIEES AUX COUVERT (equipement couvert ou non).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -1006,7 +1062,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -1025,7 +1081,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -1045,7 +1101,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'COUVERT'
             )
@@ -1064,7 +1120,7 @@ FROM(
     ;
 COMMIT;
 
--- 7.11 INSERTION DES CARACTERISTIQUES LIEES AUX ECLAIRE (equipement couvert ou non).
+-- 8.11 INSERTION DES CARACTERISTIQUES LIEES AUX ECLAIRE (equipement couvert ou non).
 
 INSERT INTO ta_bpe_caracteristique (fid_bpe, fid_libelle_fils,fid_libelle_parent)
 SELECT
@@ -1090,7 +1146,7 @@ FROM(
             ON
                 tlp.objectid = tr.fid_libelle_parent
             ),
-    --2. CTE2 pour SELECTionner les correspondances entre les libelles et les libelles courts
+    --2. CTE2 pour selection les correspondances entre les libelles et les libelles courts
             cte2 AS
             (
             SELECT 
@@ -1109,7 +1165,7 @@ FROM(
             ON
                 tc.fid_libelle_court=tlc.objectid
             ),
-    --3. CTE3 SELECTion des des correspondances à partir des cles étrangères.
+    --3. CTE3 selection des des correspondances à partir des cles étrangères.
             cte3 AS
             (
             SELECT 
@@ -1129,7 +1185,7 @@ FROM(
              cte2 cte2p
             ON
                 cte1.libelle_parent_objectid = cte2p.libelle_objectid
-            --4. Possibilite de mettre en filtres sur la SELECTion ex sur le libelle court parent:
+            --4. Possibilite de mettre en filtres sur la selection ex sur le libelle court parent:
             WHERE
                 cte2p.libelle_court LIKE 'ECLAIRE'
             )
@@ -1148,9 +1204,39 @@ FROM(
     ;
 COMMIT;
 
--- 13. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci. 
+
+--9 Insertion des données dans la table TA_BPE_RELATION_CODE
+-- 9.1 Insertion des relations BPE IRIS
+
+INSERT INTO ta_bpe_relation_code(fid_bpe,fid_code)
+SELECT
+    a.identite,
+    b.objectid
+FROM
+    bpe_tout a
+    INNER JOIN ta_code b ON a.dciris = b.code
+    INNER JOIN ta_libelle c ON b.fid_libelle = c.objectid
+WHERE
+    c.libelle ='code iris';
+
+-- 9.2 Insertion des relations BPE Communes
+
+INSERT INTO ta_bpe_relation_code(fid_bpe,fid_code)
+SELECT
+    a.identite,
+    b.objectid
+FROM
+    bpe_tout a
+    INNER JOIN ta_code b ON a.depcom = b.code
+    INNER JOIN ta_libelle c ON b.fid_libelle = c.objectid
+WHERE
+    c.libelle ='code insee';
+
+-- 10. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci. 
+-- 10.1 Suppression de la table
 DROP TABLE bpe_tout CASCADE CONSTRAINTS;
 
+-- 10.2 Suppresion des metadonnées spatiales
 DELETE
 FROM
     user_sdo_geom_metadata

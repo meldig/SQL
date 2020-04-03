@@ -1,516 +1,533 @@
 -- 1. Insertion des données dans la table TA_LIBELLE_COURT
 
-insert into ta_libelle_court(libelle_court) values ('COUVERT');
-insert into ta_libelle_court(libelle_court) values ('1');
-insert into ta_libelle_court(libelle_court) values ('0');
-insert into ta_libelle_court(libelle_court) values ('X');
-insert into ta_libelle_court(libelle_court) values ('ECLAIRE');
-insert into ta_libelle_court(libelle_court) values ('NB_AIREJEU');
-insert into ta_libelle_court(libelle_court) values ('NB_EQUIP');
-insert into ta_libelle_court(libelle_court) values ('NB_SALLES');
-insert into ta_libelle_court(libelle_court) values ('CANT');
-insert into ta_libelle_court(libelle_court) values ('CL_PELEM');
-insert into ta_libelle_court(libelle_court) values ('CL_PGE');
-insert into ta_libelle_court(libelle_court) values ('EP');
-insert into ta_libelle_court(libelle_court) values ('INT');
-insert into ta_libelle_court(libelle_court) values ('RPIC');
-insert into ta_libelle_court(libelle_court) values ('SECT');
-insert into ta_libelle_court(libelle_court) values ('PR');
-insert into ta_libelle_court(libelle_court) values ('PU');
-insert into ta_libelle_court(libelle_court) values ('A101');
-insert into ta_libelle_court(libelle_court) values ('A104');
-insert into ta_libelle_court(libelle_court) values ('A105');
-insert into ta_libelle_court(libelle_court) values ('A106');
-insert into ta_libelle_court(libelle_court) values ('A107');
-insert into ta_libelle_court(libelle_court) values ('A108');
-insert into ta_libelle_court(libelle_court) values ('A109');
-insert into ta_libelle_court(libelle_court) values ('A115');
-insert into ta_libelle_court(libelle_court) values ('A119');
-insert into ta_libelle_court(libelle_court) values ('A120');
-insert into ta_libelle_court(libelle_court) values ('A121');
-insert into ta_libelle_court(libelle_court) values ('A122');
-insert into ta_libelle_court(libelle_court) values ('A123');
-insert into ta_libelle_court(libelle_court) values ('A124');
-insert into ta_libelle_court(libelle_court) values ('A125');
-insert into ta_libelle_court(libelle_court) values ('A126');
-insert into ta_libelle_court(libelle_court) values ('A203');
-insert into ta_libelle_court(libelle_court) values ('A205');
-insert into ta_libelle_court(libelle_court) values ('A206');
-insert into ta_libelle_court(libelle_court) values ('A207');
-insert into ta_libelle_court(libelle_court) values ('A208');
-insert into ta_libelle_court(libelle_court) values ('A301');
-insert into ta_libelle_court(libelle_court) values ('A302');
-insert into ta_libelle_court(libelle_court) values ('A303');
-insert into ta_libelle_court(libelle_court) values ('A304');
-insert into ta_libelle_court(libelle_court) values ('A401');
-insert into ta_libelle_court(libelle_court) values ('A402');
-insert into ta_libelle_court(libelle_court) values ('A403');
-insert into ta_libelle_court(libelle_court) values ('A404');
-insert into ta_libelle_court(libelle_court) values ('A405');
-insert into ta_libelle_court(libelle_court) values ('A406');
-insert into ta_libelle_court(libelle_court) values ('A501');
-insert into ta_libelle_court(libelle_court) values ('A502');
-insert into ta_libelle_court(libelle_court) values ('A503');
-insert into ta_libelle_court(libelle_court) values ('A504');
-insert into ta_libelle_court(libelle_court) values ('A505');
-insert into ta_libelle_court(libelle_court) values ('A506');
-insert into ta_libelle_court(libelle_court) values ('A507');
-insert into ta_libelle_court(libelle_court) values ('B101');
-insert into ta_libelle_court(libelle_court) values ('B102');
-insert into ta_libelle_court(libelle_court) values ('B103');
-insert into ta_libelle_court(libelle_court) values ('B201');
-insert into ta_libelle_court(libelle_court) values ('B202');
-insert into ta_libelle_court(libelle_court) values ('B203');
-insert into ta_libelle_court(libelle_court) values ('B204');
-insert into ta_libelle_court(libelle_court) values ('B205');
-insert into ta_libelle_court(libelle_court) values ('B206');
-insert into ta_libelle_court(libelle_court) values ('B301');
-insert into ta_libelle_court(libelle_court) values ('B302');
-insert into ta_libelle_court(libelle_court) values ('B303');
-insert into ta_libelle_court(libelle_court) values ('B304');
-insert into ta_libelle_court(libelle_court) values ('B305');
-insert into ta_libelle_court(libelle_court) values ('B306');
-insert into ta_libelle_court(libelle_court) values ('B307');
-insert into ta_libelle_court(libelle_court) values ('B308');
-insert into ta_libelle_court(libelle_court) values ('B309');
-insert into ta_libelle_court(libelle_court) values ('B310');
-insert into ta_libelle_court(libelle_court) values ('B311');
-insert into ta_libelle_court(libelle_court) values ('B312');
-insert into ta_libelle_court(libelle_court) values ('B313');
-insert into ta_libelle_court(libelle_court) values ('B315');
-insert into ta_libelle_court(libelle_court) values ('B316');
-insert into ta_libelle_court(libelle_court) values ('C101');
-insert into ta_libelle_court(libelle_court) values ('C102');
-insert into ta_libelle_court(libelle_court) values ('C104');
-insert into ta_libelle_court(libelle_court) values ('C105');
-insert into ta_libelle_court(libelle_court) values ('C201');
-insert into ta_libelle_court(libelle_court) values ('C301');
-insert into ta_libelle_court(libelle_court) values ('C302');
-insert into ta_libelle_court(libelle_court) values ('C303');
-insert into ta_libelle_court(libelle_court) values ('C304');
-insert into ta_libelle_court(libelle_court) values ('C305');
-insert into ta_libelle_court(libelle_court) values ('C401');
-insert into ta_libelle_court(libelle_court) values ('C402');
-insert into ta_libelle_court(libelle_court) values ('C403');
-insert into ta_libelle_court(libelle_court) values ('C409');
-insert into ta_libelle_court(libelle_court) values ('C501');
-insert into ta_libelle_court(libelle_court) values ('C502');
-insert into ta_libelle_court(libelle_court) values ('C503');
-insert into ta_libelle_court(libelle_court) values ('C504');
-insert into ta_libelle_court(libelle_court) values ('C505');
-insert into ta_libelle_court(libelle_court) values ('C509');
-insert into ta_libelle_court(libelle_court) values ('C601');
-insert into ta_libelle_court(libelle_court) values ('C602');
-insert into ta_libelle_court(libelle_court) values ('C603');
-insert into ta_libelle_court(libelle_court) values ('C604');
-insert into ta_libelle_court(libelle_court) values ('C605');
-insert into ta_libelle_court(libelle_court) values ('C609');
-insert into ta_libelle_court(libelle_court) values ('C701');
-insert into ta_libelle_court(libelle_court) values ('C702');
-insert into ta_libelle_court(libelle_court) values ('D101');
-insert into ta_libelle_court(libelle_court) values ('D102');
-insert into ta_libelle_court(libelle_court) values ('D103');
-insert into ta_libelle_court(libelle_court) values ('D104');
-insert into ta_libelle_court(libelle_court) values ('D105');
-insert into ta_libelle_court(libelle_court) values ('D106');
-insert into ta_libelle_court(libelle_court) values ('D107');
-insert into ta_libelle_court(libelle_court) values ('D108');
-insert into ta_libelle_court(libelle_court) values ('D109');
-insert into ta_libelle_court(libelle_court) values ('D110');
-insert into ta_libelle_court(libelle_court) values ('D111');
-insert into ta_libelle_court(libelle_court) values ('D112');
-insert into ta_libelle_court(libelle_court) values ('D113');
-insert into ta_libelle_court(libelle_court) values ('D201');
-insert into ta_libelle_court(libelle_court) values ('D202');
-insert into ta_libelle_court(libelle_court) values ('D203');
-insert into ta_libelle_court(libelle_court) values ('D206');
-insert into ta_libelle_court(libelle_court) values ('D207');
-insert into ta_libelle_court(libelle_court) values ('D208');
-insert into ta_libelle_court(libelle_court) values ('D209');
-insert into ta_libelle_court(libelle_court) values ('D210');
-insert into ta_libelle_court(libelle_court) values ('D211');
-insert into ta_libelle_court(libelle_court) values ('D212');
-insert into ta_libelle_court(libelle_court) values ('D213');
-insert into ta_libelle_court(libelle_court) values ('D214');
-insert into ta_libelle_court(libelle_court) values ('D221');
-insert into ta_libelle_court(libelle_court) values ('D231');
-insert into ta_libelle_court(libelle_court) values ('D232');
-insert into ta_libelle_court(libelle_court) values ('D233');
-insert into ta_libelle_court(libelle_court) values ('D235');
-insert into ta_libelle_court(libelle_court) values ('D236');
-insert into ta_libelle_court(libelle_court) values ('D237');
-insert into ta_libelle_court(libelle_court) values ('D238');
-insert into ta_libelle_court(libelle_court) values ('D239');
-insert into ta_libelle_court(libelle_court) values ('D240');
-insert into ta_libelle_court(libelle_court) values ('D241');
-insert into ta_libelle_court(libelle_court) values ('D242');
-insert into ta_libelle_court(libelle_court) values ('D243');
-insert into ta_libelle_court(libelle_court) values ('D301');
-insert into ta_libelle_court(libelle_court) values ('D302');
-insert into ta_libelle_court(libelle_court) values ('D303');
-insert into ta_libelle_court(libelle_court) values ('D304');
-insert into ta_libelle_court(libelle_court) values ('D305');
-insert into ta_libelle_court(libelle_court) values ('D401');
-insert into ta_libelle_court(libelle_court) values ('D402');
-insert into ta_libelle_court(libelle_court) values ('D403');
-insert into ta_libelle_court(libelle_court) values ('D404');
-insert into ta_libelle_court(libelle_court) values ('D405');
-insert into ta_libelle_court(libelle_court) values ('D502');
-insert into ta_libelle_court(libelle_court) values ('D601');
-insert into ta_libelle_court(libelle_court) values ('D602');
-insert into ta_libelle_court(libelle_court) values ('D603');
-insert into ta_libelle_court(libelle_court) values ('D604');
-insert into ta_libelle_court(libelle_court) values ('D605');
-insert into ta_libelle_court(libelle_court) values ('D606');
-insert into ta_libelle_court(libelle_court) values ('D701');
-insert into ta_libelle_court(libelle_court) values ('D702');
-insert into ta_libelle_court(libelle_court) values ('D703');
-insert into ta_libelle_court(libelle_court) values ('D704');
-insert into ta_libelle_court(libelle_court) values ('D705');
-insert into ta_libelle_court(libelle_court) values ('D709');
-insert into ta_libelle_court(libelle_court) values ('E101');
-insert into ta_libelle_court(libelle_court) values ('E102');
-insert into ta_libelle_court(libelle_court) values ('E107');
-insert into ta_libelle_court(libelle_court) values ('E108');
-insert into ta_libelle_court(libelle_court) values ('E109');
-insert into ta_libelle_court(libelle_court) values ('F101');
-insert into ta_libelle_court(libelle_court) values ('F102');
-insert into ta_libelle_court(libelle_court) values ('F103');
-insert into ta_libelle_court(libelle_court) values ('F104');
-insert into ta_libelle_court(libelle_court) values ('F105');
-insert into ta_libelle_court(libelle_court) values ('F106');
-insert into ta_libelle_court(libelle_court) values ('F107');
-insert into ta_libelle_court(libelle_court) values ('F108');
-insert into ta_libelle_court(libelle_court) values ('F109');
-insert into ta_libelle_court(libelle_court) values ('F110');
-insert into ta_libelle_court(libelle_court) values ('F111');
-insert into ta_libelle_court(libelle_court) values ('F112');
-insert into ta_libelle_court(libelle_court) values ('F113');
-insert into ta_libelle_court(libelle_court) values ('F114');
-insert into ta_libelle_court(libelle_court) values ('F116');
-insert into ta_libelle_court(libelle_court) values ('F117');
-insert into ta_libelle_court(libelle_court) values ('F118');
-insert into ta_libelle_court(libelle_court) values ('F119');
-insert into ta_libelle_court(libelle_court) values ('F120');
-insert into ta_libelle_court(libelle_court) values ('F121');
-insert into ta_libelle_court(libelle_court) values ('F201');
-insert into ta_libelle_court(libelle_court) values ('F202');
-insert into ta_libelle_court(libelle_court) values ('F203');
-insert into ta_libelle_court(libelle_court) values ('F303');
-insert into ta_libelle_court(libelle_court) values ('F304');
-insert into ta_libelle_court(libelle_court) values ('F305');
-insert into ta_libelle_court(libelle_court) values ('F306');
-insert into ta_libelle_court(libelle_court) values ('G101');
-insert into ta_libelle_court(libelle_court) values ('G102');
-insert into ta_libelle_court(libelle_court) values ('G103');
-insert into ta_libelle_court(libelle_court) values ('G104');
-insert into ta_libelle_court(libelle_court) values ('A');
-insert into ta_libelle_court(libelle_court) values ('A1');
-insert into ta_libelle_court(libelle_court) values ('A2');
-insert into ta_libelle_court(libelle_court) values ('A3');
-insert into ta_libelle_court(libelle_court) values ('A4');
-insert into ta_libelle_court(libelle_court) values ('A5');
-insert into ta_libelle_court(libelle_court) values ('B');
-insert into ta_libelle_court(libelle_court) values ('B1');
-insert into ta_libelle_court(libelle_court) values ('B2');
-insert into ta_libelle_court(libelle_court) values ('B3');
-insert into ta_libelle_court(libelle_court) values ('C');
-insert into ta_libelle_court(libelle_court) values ('C1');
-insert into ta_libelle_court(libelle_court) values ('C2');
-insert into ta_libelle_court(libelle_court) values ('C3');
-insert into ta_libelle_court(libelle_court) values ('C4');
-insert into ta_libelle_court(libelle_court) values ('C5');
-insert into ta_libelle_court(libelle_court) values ('C6');
-insert into ta_libelle_court(libelle_court) values ('C7');
-insert into ta_libelle_court(libelle_court) values ('D');
-insert into ta_libelle_court(libelle_court) values ('D1');
-insert into ta_libelle_court(libelle_court) values ('D2');
-insert into ta_libelle_court(libelle_court) values ('D3');
-insert into ta_libelle_court(libelle_court) values ('D4');
-insert into ta_libelle_court(libelle_court) values ('D5');
-insert into ta_libelle_court(libelle_court) values ('D6');
-insert into ta_libelle_court(libelle_court) values ('D7');
-insert into ta_libelle_court(libelle_court) values ('E');
-insert into ta_libelle_court(libelle_court) values ('E1');
-insert into ta_libelle_court(libelle_court) values ('F');
-insert into ta_libelle_court(libelle_court) values ('F1');
-insert into ta_libelle_court(libelle_court) values ('F2');
-insert into ta_libelle_court(libelle_court) values ('F3');
-insert into ta_libelle_court(libelle_court) values ('G');
-insert into ta_libelle_court(libelle_court) values ('G1');
-insert into ta_libelle_court(libelle_court) values ('TYPEQU');
-insert into ta_libelle_court(libelle_court) values ('QUALITE_XY');
-insert into ta_libelle_court(libelle_court) values ('Bonne');
-insert into ta_libelle_court(libelle_court) values ('Acceptable');
-insert into ta_libelle_court(libelle_court) values ('Mauvaise');
-insert into ta_libelle_court(libelle_court) values ('Non géolocalisé');
-insert into ta_libelle_court(libelle_court) values ('type_équipement_non_géocalisé_cette_année');
-commit;
+MERGE INTO ta_libelle_court tl
+USING
+	(
+	SELECT 'COUVERT' AS LIBELLE FROM DUAL UNION
+	SELECT '1' AS LIBELLE FROM DUAL UNION
+	SELECT '0' AS LIBELLE FROM DUAL UNION
+	SELECT 'X' AS LIBELLE FROM DUAL UNION
+	SELECT 'ECLAIRE' AS LIBELLE FROM DUAL UNION
+	SELECT 'NB_AIREJEU' AS LIBELLE FROM DUAL UNION
+	SELECT 'NB_EQUIP' AS LIBELLE FROM DUAL UNION
+	SELECT 'NB_SALLES' AS LIBELLE FROM DUAL UNION
+	SELECT 'CANT' AS LIBELLE FROM DUAL UNION
+	SELECT 'CL_PELEM' AS LIBELLE FROM DUAL UNION
+	SELECT 'CL_PGE' AS LIBELLE FROM DUAL UNION
+	SELECT 'EP' AS LIBELLE FROM DUAL UNION
+	SELECT 'INT' AS LIBELLE FROM DUAL UNION
+	SELECT 'RPIC' AS LIBELLE FROM DUAL UNION
+	SELECT 'SECT' AS LIBELLE FROM DUAL UNION
+	SELECT 'PR' AS LIBELLE FROM DUAL UNION
+	SELECT 'PU' AS LIBELLE FROM DUAL UNION
+	SELECT 'A101' AS LIBELLE FROM DUAL UNION
+	SELECT 'A104' AS LIBELLE FROM DUAL UNION
+	SELECT 'A105' AS LIBELLE FROM DUAL UNION
+	SELECT 'A106' AS LIBELLE FROM DUAL UNION
+	SELECT 'A107' AS LIBELLE FROM DUAL UNION
+	SELECT 'A108' AS LIBELLE FROM DUAL UNION
+	SELECT 'A109' AS LIBELLE FROM DUAL UNION
+	SELECT 'A115' AS LIBELLE FROM DUAL UNION
+	SELECT 'A119' AS LIBELLE FROM DUAL UNION
+	SELECT 'A120' AS LIBELLE FROM DUAL UNION
+	SELECT 'A121' AS LIBELLE FROM DUAL UNION
+	SELECT 'A122' AS LIBELLE FROM DUAL UNION
+	SELECT 'A123' AS LIBELLE FROM DUAL UNION
+	SELECT 'A124' AS LIBELLE FROM DUAL UNION
+	SELECT 'A125' AS LIBELLE FROM DUAL UNION
+	SELECT 'A126' AS LIBELLE FROM DUAL UNION
+	SELECT 'A203' AS LIBELLE FROM DUAL UNION
+	SELECT 'A205' AS LIBELLE FROM DUAL UNION
+	SELECT 'A206' AS LIBELLE FROM DUAL UNION
+	SELECT 'A207' AS LIBELLE FROM DUAL UNION
+	SELECT 'A208' AS LIBELLE FROM DUAL UNION
+	SELECT 'A301' AS LIBELLE FROM DUAL UNION
+	SELECT 'A302' AS LIBELLE FROM DUAL UNION
+	SELECT 'A303' AS LIBELLE FROM DUAL UNION
+	SELECT 'A304' AS LIBELLE FROM DUAL UNION
+	SELECT 'A401' AS LIBELLE FROM DUAL UNION
+	SELECT 'A402' AS LIBELLE FROM DUAL UNION
+	SELECT 'A403' AS LIBELLE FROM DUAL UNION
+	SELECT 'A404' AS LIBELLE FROM DUAL UNION
+	SELECT 'A405' AS LIBELLE FROM DUAL UNION
+	SELECT 'A406' AS LIBELLE FROM DUAL UNION
+	SELECT 'A501' AS LIBELLE FROM DUAL UNION
+	SELECT 'A502' AS LIBELLE FROM DUAL UNION
+	SELECT 'A503' AS LIBELLE FROM DUAL UNION
+	SELECT 'A504' AS LIBELLE FROM DUAL UNION
+	SELECT 'A505' AS LIBELLE FROM DUAL UNION
+	SELECT 'A506' AS LIBELLE FROM DUAL UNION
+	SELECT 'A507' AS LIBELLE FROM DUAL UNION
+	SELECT 'B101' AS LIBELLE FROM DUAL UNION
+	SELECT 'B102' AS LIBELLE FROM DUAL UNION
+	SELECT 'B103' AS LIBELLE FROM DUAL UNION
+	SELECT 'B201' AS LIBELLE FROM DUAL UNION
+	SELECT 'B202' AS LIBELLE FROM DUAL UNION
+	SELECT 'B203' AS LIBELLE FROM DUAL UNION
+	SELECT 'B204' AS LIBELLE FROM DUAL UNION
+	SELECT 'B205' AS LIBELLE FROM DUAL UNION
+	SELECT 'B206' AS LIBELLE FROM DUAL UNION
+	SELECT 'B301' AS LIBELLE FROM DUAL UNION
+	SELECT 'B302' AS LIBELLE FROM DUAL UNION
+	SELECT 'B303' AS LIBELLE FROM DUAL UNION
+	SELECT 'B304' AS LIBELLE FROM DUAL UNION
+	SELECT 'B305' AS LIBELLE FROM DUAL UNION
+	SELECT 'B306' AS LIBELLE FROM DUAL UNION
+	SELECT 'B307' AS LIBELLE FROM DUAL UNION
+	SELECT 'B308' AS LIBELLE FROM DUAL UNION
+	SELECT 'B309' AS LIBELLE FROM DUAL UNION
+	SELECT 'B310' AS LIBELLE FROM DUAL UNION
+	SELECT 'B311' AS LIBELLE FROM DUAL UNION
+	SELECT 'B312' AS LIBELLE FROM DUAL UNION
+	SELECT 'B313' AS LIBELLE FROM DUAL UNION
+	SELECT 'B315' AS LIBELLE FROM DUAL UNION
+	SELECT 'B316' AS LIBELLE FROM DUAL UNION
+	SELECT 'C101' AS LIBELLE FROM DUAL UNION
+	SELECT 'C102' AS LIBELLE FROM DUAL UNION
+	SELECT 'C104' AS LIBELLE FROM DUAL UNION
+	SELECT 'C105' AS LIBELLE FROM DUAL UNION
+	SELECT 'C201' AS LIBELLE FROM DUAL UNION
+	SELECT 'C301' AS LIBELLE FROM DUAL UNION
+	SELECT 'C302' AS LIBELLE FROM DUAL UNION
+	SELECT 'C303' AS LIBELLE FROM DUAL UNION
+	SELECT 'C304' AS LIBELLE FROM DUAL UNION
+	SELECT 'C305' AS LIBELLE FROM DUAL UNION
+	SELECT 'C401' AS LIBELLE FROM DUAL UNION
+	SELECT 'C402' AS LIBELLE FROM DUAL UNION
+	SELECT 'C403' AS LIBELLE FROM DUAL UNION
+	SELECT 'C409' AS LIBELLE FROM DUAL UNION
+	SELECT 'C501' AS LIBELLE FROM DUAL UNION
+	SELECT 'C502' AS LIBELLE FROM DUAL UNION
+	SELECT 'C503' AS LIBELLE FROM DUAL UNION
+	SELECT 'C504' AS LIBELLE FROM DUAL UNION
+	SELECT 'C505' AS LIBELLE FROM DUAL UNION
+	SELECT 'C509' AS LIBELLE FROM DUAL UNION
+	SELECT 'C601' AS LIBELLE FROM DUAL UNION
+	SELECT 'C602' AS LIBELLE FROM DUAL UNION
+	SELECT 'C603' AS LIBELLE FROM DUAL UNION
+	SELECT 'C604' AS LIBELLE FROM DUAL UNION
+	SELECT 'C605' AS LIBELLE FROM DUAL UNION
+	SELECT 'C609' AS LIBELLE FROM DUAL UNION
+	SELECT 'C701' AS LIBELLE FROM DUAL UNION
+	SELECT 'C702' AS LIBELLE FROM DUAL UNION
+	SELECT 'D101' AS LIBELLE FROM DUAL UNION
+	SELECT 'D102' AS LIBELLE FROM DUAL UNION
+	SELECT 'D103' AS LIBELLE FROM DUAL UNION
+	SELECT 'D104' AS LIBELLE FROM DUAL UNION
+	SELECT 'D105' AS LIBELLE FROM DUAL UNION
+	SELECT 'D106' AS LIBELLE FROM DUAL UNION
+	SELECT 'D107' AS LIBELLE FROM DUAL UNION
+	SELECT 'D108' AS LIBELLE FROM DUAL UNION
+	SELECT 'D109' AS LIBELLE FROM DUAL UNION
+	SELECT 'D110' AS LIBELLE FROM DUAL UNION
+	SELECT 'D111' AS LIBELLE FROM DUAL UNION
+	SELECT 'D112' AS LIBELLE FROM DUAL UNION
+	SELECT 'D113' AS LIBELLE FROM DUAL UNION
+	SELECT 'D201' AS LIBELLE FROM DUAL UNION
+	SELECT 'D202' AS LIBELLE FROM DUAL UNION
+	SELECT 'D203' AS LIBELLE FROM DUAL UNION
+	SELECT 'D206' AS LIBELLE FROM DUAL UNION
+	SELECT 'D207' AS LIBELLE FROM DUAL UNION
+	SELECT 'D208' AS LIBELLE FROM DUAL UNION
+	SELECT 'D209' AS LIBELLE FROM DUAL UNION
+	SELECT 'D210' AS LIBELLE FROM DUAL UNION
+	SELECT 'D211' AS LIBELLE FROM DUAL UNION
+	SELECT 'D212' AS LIBELLE FROM DUAL UNION
+	SELECT 'D213' AS LIBELLE FROM DUAL UNION
+	SELECT 'D214' AS LIBELLE FROM DUAL UNION
+	SELECT 'D221' AS LIBELLE FROM DUAL UNION
+	SELECT 'D231' AS LIBELLE FROM DUAL UNION
+	SELECT 'D232' AS LIBELLE FROM DUAL UNION
+	SELECT 'D233' AS LIBELLE FROM DUAL UNION
+	SELECT 'D235' AS LIBELLE FROM DUAL UNION
+	SELECT 'D236' AS LIBELLE FROM DUAL UNION
+	SELECT 'D237' AS LIBELLE FROM DUAL UNION
+	SELECT 'D238' AS LIBELLE FROM DUAL UNION
+	SELECT 'D239' AS LIBELLE FROM DUAL UNION
+	SELECT 'D240' AS LIBELLE FROM DUAL UNION
+	SELECT 'D241' AS LIBELLE FROM DUAL UNION
+	SELECT 'D242' AS LIBELLE FROM DUAL UNION
+	SELECT 'D243' AS LIBELLE FROM DUAL UNION
+	SELECT 'D301' AS LIBELLE FROM DUAL UNION
+	SELECT 'D302' AS LIBELLE FROM DUAL UNION
+	SELECT 'D303' AS LIBELLE FROM DUAL UNION
+	SELECT 'D304' AS LIBELLE FROM DUAL UNION
+	SELECT 'D305' AS LIBELLE FROM DUAL UNION
+	SELECT 'D401' AS LIBELLE FROM DUAL UNION
+	SELECT 'D402' AS LIBELLE FROM DUAL UNION
+	SELECT 'D403' AS LIBELLE FROM DUAL UNION
+	SELECT 'D404' AS LIBELLE FROM DUAL UNION
+	SELECT 'D405' AS LIBELLE FROM DUAL UNION
+	SELECT 'D502' AS LIBELLE FROM DUAL UNION
+	SELECT 'D601' AS LIBELLE FROM DUAL UNION
+	SELECT 'D602' AS LIBELLE FROM DUAL UNION
+	SELECT 'D603' AS LIBELLE FROM DUAL UNION
+	SELECT 'D604' AS LIBELLE FROM DUAL UNION
+	SELECT 'D605' AS LIBELLE FROM DUAL UNION
+	SELECT 'D606' AS LIBELLE FROM DUAL UNION
+	SELECT 'D701' AS LIBELLE FROM DUAL UNION
+	SELECT 'D702' AS LIBELLE FROM DUAL UNION
+	SELECT 'D703' AS LIBELLE FROM DUAL UNION
+	SELECT 'D704' AS LIBELLE FROM DUAL UNION
+	SELECT 'D705' AS LIBELLE FROM DUAL UNION
+	SELECT 'D709' AS LIBELLE FROM DUAL UNION
+	SELECT 'E101' AS LIBELLE FROM DUAL UNION
+	SELECT 'E102' AS LIBELLE FROM DUAL UNION
+	SELECT 'E107' AS LIBELLE FROM DUAL UNION
+	SELECT 'E108' AS LIBELLE FROM DUAL UNION
+	SELECT 'E109' AS LIBELLE FROM DUAL UNION
+	SELECT 'F101' AS LIBELLE FROM DUAL UNION
+	SELECT 'F102' AS LIBELLE FROM DUAL UNION
+	SELECT 'F103' AS LIBELLE FROM DUAL UNION
+	SELECT 'F104' AS LIBELLE FROM DUAL UNION
+	SELECT 'F105' AS LIBELLE FROM DUAL UNION
+	SELECT 'F106' AS LIBELLE FROM DUAL UNION
+	SELECT 'F107' AS LIBELLE FROM DUAL UNION
+	SELECT 'F108' AS LIBELLE FROM DUAL UNION
+	SELECT 'F109' AS LIBELLE FROM DUAL UNION
+	SELECT 'F110' AS LIBELLE FROM DUAL UNION
+	SELECT 'F111' AS LIBELLE FROM DUAL UNION
+	SELECT 'F112' AS LIBELLE FROM DUAL UNION
+	SELECT 'F113' AS LIBELLE FROM DUAL UNION
+	SELECT 'F114' AS LIBELLE FROM DUAL UNION
+	SELECT 'F116' AS LIBELLE FROM DUAL UNION
+	SELECT 'F117' AS LIBELLE FROM DUAL UNION
+	SELECT 'F118' AS LIBELLE FROM DUAL UNION
+	SELECT 'F119' AS LIBELLE FROM DUAL UNION
+	SELECT 'F120' AS LIBELLE FROM DUAL UNION
+	SELECT 'F121' AS LIBELLE FROM DUAL UNION
+	SELECT 'F201' AS LIBELLE FROM DUAL UNION
+	SELECT 'F202' AS LIBELLE FROM DUAL UNION
+	SELECT 'F203' AS LIBELLE FROM DUAL UNION
+	SELECT 'F303' AS LIBELLE FROM DUAL UNION
+	SELECT 'F304' AS LIBELLE FROM DUAL UNION
+	SELECT 'F305' AS LIBELLE FROM DUAL UNION
+	SELECT 'F306' AS LIBELLE FROM DUAL UNION
+	SELECT 'G101' AS LIBELLE FROM DUAL UNION
+	SELECT 'G102' AS LIBELLE FROM DUAL UNION
+	SELECT 'G103' AS LIBELLE FROM DUAL UNION
+	SELECT 'G104' AS LIBELLE FROM DUAL UNION
+	SELECT 'A' AS LIBELLE FROM DUAL UNION
+	SELECT 'A1' AS LIBELLE FROM DUAL UNION
+	SELECT 'A2' AS LIBELLE FROM DUAL UNION
+	SELECT 'A3' AS LIBELLE FROM DUAL UNION
+	SELECT 'A4' AS LIBELLE FROM DUAL UNION
+	SELECT 'A5' AS LIBELLE FROM DUAL UNION
+	SELECT 'B' AS LIBELLE FROM DUAL UNION
+	SELECT 'B1' AS LIBELLE FROM DUAL UNION
+	SELECT 'B2' AS LIBELLE FROM DUAL UNION
+	SELECT 'B3' AS LIBELLE FROM DUAL UNION
+	SELECT 'C' AS LIBELLE FROM DUAL UNION
+	SELECT 'C1' AS LIBELLE FROM DUAL UNION
+	SELECT 'C2' AS LIBELLE FROM DUAL UNION
+	SELECT 'C3' AS LIBELLE FROM DUAL UNION
+	SELECT 'C4' AS LIBELLE FROM DUAL UNION
+	SELECT 'C5' AS LIBELLE FROM DUAL UNION
+	SELECT 'C6' AS LIBELLE FROM DUAL UNION
+	SELECT 'C7' AS LIBELLE FROM DUAL UNION
+	SELECT 'D' AS LIBELLE FROM DUAL UNION
+	SELECT 'D1' AS LIBELLE FROM DUAL UNION
+	SELECT 'D2' AS LIBELLE FROM DUAL UNION
+	SELECT 'D3' AS LIBELLE FROM DUAL UNION
+	SELECT 'D4' AS LIBELLE FROM DUAL UNION
+	SELECT 'D5' AS LIBELLE FROM DUAL UNION
+	SELECT 'D6' AS LIBELLE FROM DUAL UNION
+	SELECT 'D7' AS LIBELLE FROM DUAL UNION
+	SELECT 'E' AS LIBELLE FROM DUAL UNION
+	SELECT 'E1' AS LIBELLE FROM DUAL UNION
+	SELECT 'F' AS LIBELLE FROM DUAL UNION
+	SELECT 'F1' AS LIBELLE FROM DUAL UNION
+	SELECT 'F2' AS LIBELLE FROM DUAL UNION
+	SELECT 'F3' AS LIBELLE FROM DUAL UNION
+	SELECT 'G' AS LIBELLE FROM DUAL UNION
+	SELECT 'G1' AS LIBELLE FROM DUAL UNION
+	SELECT 'TYPEQU' AS LIBELLE FROM DUAL UNION
+	SELECT 'QUALITE_XY' AS LIBELLE FROM DUAL UNION
+	SELECT 'Bonne' AS LIBELLE FROM DUAL UNION
+	SELECT 'Acceptable' AS LIBELLE FROM DUAL UNION
+	SELECT 'Mauvaise' AS LIBELLE FROM DUAL UNION
+	SELECT 'Non géolocalisé' AS LIBELLE FROM DUAL UNION
+	SELECT 'type_équipement_non_géocalisé_cette_année' AS LIBELLE FROM DUAL
+	) temp
+ON (temp.LIBELLE = tl.libelle_court)
+WHEN NOT MATCHED THEN
+INSERT (tl.libelle_court)
+VALUES (temp.LIBELLE)
+;
+
 
 -- 2. Insertion des données dans la table TA_LIBELLE
-
-insert into ta_libelle(libelle) values ('Contenu du fichier Base Permanente des Equipements');
-insert into ta_libelle(libelle) values ('Equipement couvert ou non');
-insert into ta_libelle(libelle) values ('Equipement avec au moin une partie couverte');
-insert into ta_libelle(libelle) values ('Equipement non couvert');
-insert into ta_libelle(libelle) values ('Sans objet');
-insert into ta_libelle(libelle) values ('Equipement eclaire ou non');
-insert into ta_libelle(libelle) values ('Equipement avec au moins une partie eclairée');
-insert into ta_libelle(libelle) values ('Equipement non éclairé');
-insert into ta_libelle(libelle) values ('Nombre d''aires de pratique d''un même type au sein de l''équipement');
-insert into ta_libelle(libelle) values ('Nombre d''équipement');
-insert into ta_libelle(libelle) values ('Nombre de salles par théatre ou cinéma');
-insert into ta_libelle(libelle) values ('Présence ou absence d''un cantine');
-insert into ta_libelle(libelle) values ('Présence d''une cantine');
-insert into ta_libelle(libelle) values ('Absence d''une cantine');
-insert into ta_libelle(libelle) values ('Présence ou absence d''une classe pré-élémentaire');
-insert into ta_libelle(libelle) values ('Présence d''une classe pré-élémentaire');
-insert into ta_libelle(libelle) values ('Absence d''une classe pré-élémentaire');
-insert into ta_libelle(libelle) values ('Présence ou absence d''un classe préparatoire aux grandes écoles en lycée');
-insert into ta_libelle(libelle) values ('Présence d''une classe préparatoire aux grandes écoles');
-insert into ta_libelle(libelle) values ('absence d''une classe préparatoire aux grandes écoles');
-insert into ta_libelle(libelle) values ('Appartenance ou non à un dispositif d''éducation prioritaire');
-insert into ta_libelle(libelle) values ('Appartenance à un EP');
-insert into ta_libelle(libelle) values ('Non appartenance à un EP');
-insert into ta_libelle(libelle) values ('Présence ou absence d''un internat');
-insert into ta_libelle(libelle) values ('Présence  d''un internat');
-insert into ta_libelle(libelle) values ('absence d''un internat');
-insert into ta_libelle(libelle) values ('Présence ou absence d''un regroupement pédagogique intercommunal concentré');
-insert into ta_libelle(libelle) values ('Regroupement pédagogique');
-insert into ta_libelle(libelle) values ('pas de regroupement pédagogique');
-insert into ta_libelle(libelle) values ('Appartenance au Secteur public ou privé d''enseignement');
-insert into ta_libelle(libelle) values ('Secteur privé');
-insert into ta_libelle(libelle) values ('Secteur public');
-insert into ta_libelle(libelle) values ('Police');
-insert into ta_libelle(libelle) values ('Gendarmerie');
-insert into ta_libelle(libelle) values ('Cour d’appel (CA)');
-insert into ta_libelle(libelle) values ('Tribunal de grande instance (TGI)');
-insert into ta_libelle(libelle) values ('Tribunal d’instance (TI)');
-insert into ta_libelle(libelle) values ('Conseil des prud’hommes (CPH)');
-insert into ta_libelle(libelle) values ('Tribunal de commerce (TCO)');
-insert into ta_libelle(libelle) values ('Réseau spécialisé Pôle Emploi');
-insert into ta_libelle(libelle) values ('Direction Générale des Finances Publiques (DGFIP)');
-insert into ta_libelle(libelle) values ('Direction Régionale des Finances Publiques (DRFIP)');
-insert into ta_libelle(libelle) values ('Direction Départementale des Finances Publiques (DDFIP)');
-insert into ta_libelle(libelle) values ('Réseau de proximité Pôle Emploi');
-insert into ta_libelle(libelle) values ('Réseau partenarial Pôle Emploi');
-insert into ta_libelle(libelle) values ('Maison de justice et du droit');
-insert into ta_libelle(libelle) values ('Antenne de justice');
-insert into ta_libelle(libelle) values ('Conseil départemental d''accès au droit (CDAD)');
-insert into ta_libelle(libelle) values ('Banque, Caisse d’Épargne');
-insert into ta_libelle(libelle) values ('Pompes funèbres');
-insert into ta_libelle(libelle) values ('Bureau de poste');
-insert into ta_libelle(libelle) values ('Relais poste');
-insert into ta_libelle(libelle) values ('Agence postale');
-insert into ta_libelle(libelle) values ('Réparation auto et de matériel agricole');
-insert into ta_libelle(libelle) values ('Contrôle technique automobile');
-insert into ta_libelle(libelle) values ('Location auto-utilitaires légers');
-insert into ta_libelle(libelle) values ('École de conduite');
-insert into ta_libelle(libelle) values ('Maçon');
-insert into ta_libelle(libelle) values ('Plâtrier peintre');
-insert into ta_libelle(libelle) values ('Menuisier, charpentier, serrurier');
-insert into ta_libelle(libelle) values ('Plombier, couvreur, chauffagiste');
-insert into ta_libelle(libelle) values ('Électricien');
-insert into ta_libelle(libelle) values ('Entreprise générale du bâtiment');
-insert into ta_libelle(libelle) values ('Coiffure');
-insert into ta_libelle(libelle) values ('Vétérinaire');
-insert into ta_libelle(libelle) values ('Agence de travail temporaire');
-insert into ta_libelle(libelle) values ('Restaurant - Restauration rapide');
-insert into ta_libelle(libelle) values ('Agence immobilière');
-insert into ta_libelle(libelle) values ('A506 – Pressing - Laverie automatique');
-insert into ta_libelle(libelle) values ('Institut de beauté - Onglerie');
-insert into ta_libelle(libelle) values ('Hypermarché');
-insert into ta_libelle(libelle) values ('Supermarché');
-insert into ta_libelle(libelle) values ('Grande surface de bricolage');
-insert into ta_libelle(libelle) values ('Supérette');
-insert into ta_libelle(libelle) values ('Épicerie');
-insert into ta_libelle(libelle) values ('Boulangerie');
-insert into ta_libelle(libelle) values ('Boucherie charcuterie');
-insert into ta_libelle(libelle) values ('Produits surgelés');
-insert into ta_libelle(libelle) values ('Poissonnerie');
-insert into ta_libelle(libelle) values ('Librairie papeterie journaux');
-insert into ta_libelle(libelle) values ('Magasin de vêtements');
-insert into ta_libelle(libelle) values ('Magasin d''équipements du foyer');
-insert into ta_libelle(libelle) values ('Magasin de chaussures');
-insert into ta_libelle(libelle) values ('Magasin d''électroménager, audio vidéo');
-insert into ta_libelle(libelle) values ('Magasin de meubles');
-insert into ta_libelle(libelle) values ('Magasin d''art. de sports et de loisirs');
-insert into ta_libelle(libelle) values ('Magasin de revêtements murs et sols');
-insert into ta_libelle(libelle) values ('Droguerie quincaillerie bricolage');
-insert into ta_libelle(libelle) values ('Parfumerie - Cosmétique');
-insert into ta_libelle(libelle) values ('Horlogerie Bijouterie');
-insert into ta_libelle(libelle) values ('Fleuriste - Jardinerie - Animalerie');
-insert into ta_libelle(libelle) values ('Magasin d’optique');
-insert into ta_libelle(libelle) values ('Magasin de matériel médical et orthopédique');
-insert into ta_libelle(libelle) values ('Station service');
-insert into ta_libelle(libelle) values ('École maternelle');
-insert into ta_libelle(libelle) values ('École maternelle de RPI dispersé');
-insert into ta_libelle(libelle) values ('École élémentaire');
-insert into ta_libelle(libelle) values ('École élémentaire de RPI dispersé');
-insert into ta_libelle(libelle) values ('Collège');
-insert into ta_libelle(libelle) values ('Lycée d''enseignement général et/ou techno.');
-insert into ta_libelle(libelle) values ('Lycée d''enseignement professionnel');
-insert into ta_libelle(libelle) values ('Lycée technique et/ou professionnel agricole');
-insert into ta_libelle(libelle) values ('SGT : SECTion enseignement général et techno.');
-insert into ta_libelle(libelle) values ('SEP : SECTion enseignement professionnel');
-insert into ta_libelle(libelle) values ('STS CPGE');
-insert into ta_libelle(libelle) values ('Formation santé');
-insert into ta_libelle(libelle) values ('Formation commerce');
-insert into ta_libelle(libelle) values ('Autre formation post bac non universitaire');
-insert into ta_libelle(libelle) values ('UFR');
-insert into ta_libelle(libelle) values ('Institut universitaire');
-insert into ta_libelle(libelle) values ('École d''ingénieurs');
-insert into ta_libelle(libelle) values ('Enseignement général supérieur privé');
-insert into ta_libelle(libelle) values ('Écoles d’’enseignement supérieur agricole');
-insert into ta_libelle(libelle) values ('Autre enseignement supérieur');
-insert into ta_libelle(libelle) values ('Centre de formation d''apprentis (hors agriculture)');
-insert into ta_libelle(libelle) values ('GRETA');
-insert into ta_libelle(libelle) values ('Centre dispensant de la formation continue agricole');
-insert into ta_libelle(libelle) values ('Formation aux métiers du sport');
-insert into ta_libelle(libelle) values ('Centre dispensant des formations d’apprentissage agricole');
-insert into ta_libelle(libelle) values ('Autre formation continue');
-insert into ta_libelle(libelle) values ('Résidence universitaire');
-insert into ta_libelle(libelle) values ('Restaurant universitaire');
-insert into ta_libelle(libelle) values ('Établissement santé court séjour');
-insert into ta_libelle(libelle) values ('Établissement santé moyen séjour');
-insert into ta_libelle(libelle) values ('Établissement santé long séjour');
-insert into ta_libelle(libelle) values ('Établissement psychiatrique avec hébergement');
-insert into ta_libelle(libelle) values ('Centre lutte cancer');
-insert into ta_libelle(libelle) values ('Urgences');
-insert into ta_libelle(libelle) values ('Maternité');
-insert into ta_libelle(libelle) values ('Centre de santé');
-insert into ta_libelle(libelle) values ('Structure psychiatrique en ambulatoire');
-insert into ta_libelle(libelle) values ('Centre médecine préventive');
-insert into ta_libelle(libelle) values ('Dialyse');
-insert into ta_libelle(libelle) values ('Hospitalisation à domicile');
-insert into ta_libelle(libelle) values ('Maison de santé pluridisciplinaire');
-insert into ta_libelle(libelle) values ('Médecin généraliste');
-insert into ta_libelle(libelle) values ('Spécialiste en cardiologie');
-insert into ta_libelle(libelle) values ('Spécialiste en dermatologie vénéréologie');
-insert into ta_libelle(libelle) values ('Spécialiste en gastro-entérologie');
-insert into ta_libelle(libelle) values ('Spécialiste en psychiatrie');
-insert into ta_libelle(libelle) values ('Spécialiste en ophtalmologie');
-insert into ta_libelle(libelle) values ('Spécialiste en oto-rhino-laryngologie');
-insert into ta_libelle(libelle) values ('Spécialiste en pédiatrie');
-insert into ta_libelle(libelle) values ('Spécialiste en pneumologie');
-insert into ta_libelle(libelle) values ('Spéc. en radiodiagnostic et imagerie médicale');
-insert into ta_libelle(libelle) values ('Spécialiste en stomatologie');
-insert into ta_libelle(libelle) values ('Spécialiste en gynécologie (médicale et/ou obstétrique)');
-insert into ta_libelle(libelle) values ('Chirurgien dentiste');
-insert into ta_libelle(libelle) values ('Sage-femme');
-insert into ta_libelle(libelle) values ('Infirmier');
-insert into ta_libelle(libelle) values ('Masseur kinésithérapeute');
-insert into ta_libelle(libelle) values ('Orthophoniste');
-insert into ta_libelle(libelle) values ('Orthoptiste');
-insert into ta_libelle(libelle) values ('Pédicure-podologue');
-insert into ta_libelle(libelle) values ('Audio prothésiste');
-insert into ta_libelle(libelle) values ('Ergothérapeute');
-insert into ta_libelle(libelle) values ('Psychomotricien');
-insert into ta_libelle(libelle) values ('Manipulateur ERM');
-insert into ta_libelle(libelle) values ('Diététicien');
-insert into ta_libelle(libelle) values ('Psychologue');
-insert into ta_libelle(libelle) values ('Pharmacie');
-insert into ta_libelle(libelle) values ('Laboratoire d''analyses et de biologie médicales');
-insert into ta_libelle(libelle) values ('Ambulance');
-insert into ta_libelle(libelle) values ('Transfusion sanguine');
-insert into ta_libelle(libelle) values ('Établissement thermal');
-insert into ta_libelle(libelle) values ('Personnes âgées : hébergement');
-insert into ta_libelle(libelle) values ('Personnes âgées : soins à domicile');
-insert into ta_libelle(libelle) values ('Personnes âgées : services d''aide');
-insert into ta_libelle(libelle) values ('Personnes âgées : foyers restaurants');
-insert into ta_libelle(libelle) values ('Personnes âgées : services de repas à domicile');
-insert into ta_libelle(libelle) values ('Crèche');
-insert into ta_libelle(libelle) values ('Enfants handicapés : hébergement');
-insert into ta_libelle(libelle) values ('Enfants handicapés.: soins à domicile');
-insert into ta_libelle(libelle) values ('Adultes handicapés : hébergement');
-insert into ta_libelle(libelle) values ('Adultes handicapés : services d’aide');
-insert into ta_libelle(libelle) values ('Travail protégé');
-insert into ta_libelle(libelle) values ('Adultes handicapés : services de soins à domicile');
-insert into ta_libelle(libelle) values ('Aide sociale à l''enfance : hébergement');
-insert into ta_libelle(libelle) values ('Aide sociale à l''enfance : action éduc.');
-insert into ta_libelle(libelle) values ('CHRS Centre d''héberg. et de réadapt. sociale');
-insert into ta_libelle(libelle) values ('Centre provisoire d''hébergement');
-insert into ta_libelle(libelle) values ('Centre accueil demandeur d''asile');
-insert into ta_libelle(libelle) values ('Autres établissements pour adultes et familles en difficulté');
-insert into ta_libelle(libelle) values ('Taxi - VTC');
-insert into ta_libelle(libelle) values ('Aéroport');
-insert into ta_libelle(libelle) values ('Gare de voyageurs d’intérêt national');
-insert into ta_libelle(libelle) values ('Gare de voyageurs d’intérêt régional');
-insert into ta_libelle(libelle) values ('Gare de voyageurs d’intérêt local');
-insert into ta_libelle(libelle) values ('Bassin de natation');
-insert into ta_libelle(libelle) values ('Boulodrome');
-insert into ta_libelle(libelle) values ('Tennis');
-insert into ta_libelle(libelle) values ('Équipement de cyclisme');
-insert into ta_libelle(libelle) values ('Domaine skiable');
-insert into ta_libelle(libelle) values ('Centre équestre');
-insert into ta_libelle(libelle) values ('Athlétisme');
-insert into ta_libelle(libelle) values ('Terrain de golf');
-insert into ta_libelle(libelle) values ('Parcours sportif/santé');
-insert into ta_libelle(libelle) values ('Sports de glace');
-insert into ta_libelle(libelle) values ('Plateaux et terrains de jeux extérieurs');
-insert into ta_libelle(libelle) values ('Salles spécialisées');
-insert into ta_libelle(libelle) values ('Terrain de grands jeux');
-insert into ta_libelle(libelle) values ('Salles de combat');
-insert into ta_libelle(libelle) values ('Salles non spécialisées');
-insert into ta_libelle(libelle) values ('Roller-Skate-Vélo bicross ou freestyle');
-insert into ta_libelle(libelle) values ('Sports nautiques');
-insert into ta_libelle(libelle) values ('Bowling');
-insert into ta_libelle(libelle) values ('Salles de remise en forme');
-insert into ta_libelle(libelle) values ('Salles multisports (gymnase)');
-insert into ta_libelle(libelle) values ('Baignade aménagée');
-insert into ta_libelle(libelle) values ('Port de plaisance - Mouillage');
-insert into ta_libelle(libelle) values ('Boucle de randonnée');
-insert into ta_libelle(libelle) values ('Cinéma');
-insert into ta_libelle(libelle) values ('Musée');
-insert into ta_libelle(libelle) values ('Conservatoire');
-insert into ta_libelle(libelle) values ('Théâtre - Art de rue - Pôle cirque');
-insert into ta_libelle(libelle) values ('Agence de voyages');
-insert into ta_libelle(libelle) values ('Hôtel');
-insert into ta_libelle(libelle) values ('Camping');
-insert into ta_libelle(libelle) values ('Information touristique');
-insert into ta_libelle(libelle) values ('Services aux particuliers');
-insert into ta_libelle(libelle) values ('Services publics');
-insert into ta_libelle(libelle) values ('Services généraux');
-insert into ta_libelle(libelle) values ('Services automobiles');
-insert into ta_libelle(libelle) values ('Artisanat du bâtiment');
-insert into ta_libelle(libelle) values ('Autres services à la population');
-insert into ta_libelle(libelle) values ('Commerces');
-insert into ta_libelle(libelle) values ('Grandes surfaces');
-insert into ta_libelle(libelle) values ('Commerces alimentaires');
-insert into ta_libelle(libelle) values ('Commerces spécialisés non alimentaires');
-insert into ta_libelle(libelle) values ('Enseignement');
-insert into ta_libelle(libelle) values ('Enseignement du premier degré');
-insert into ta_libelle(libelle) values ('Enseignement du second degré premier cycle');
-insert into ta_libelle(libelle) values ('Enseignement du second degré second cycle');
-insert into ta_libelle(libelle) values ('Enseignement supérieur non universitaire');
-insert into ta_libelle(libelle) values ('Enseignement supérieur universitaire');
-insert into ta_libelle(libelle) values ('Formation continue');
-insert into ta_libelle(libelle) values ('Autres services de l''éducation');
-insert into ta_libelle(libelle) values ('Santé');
-insert into ta_libelle(libelle) values ('Etablissements et services de santé');
-insert into ta_libelle(libelle) values ('Fonctions médicales et para-médicales');
-insert into ta_libelle(libelle) values ('autres établissements et services à caractère sanitaire');
-insert into ta_libelle(libelle) values ('Action sociale pour personnes agées');
-insert into ta_libelle(libelle) values ('Action sociale pour enfants en bas-âge');
-insert into ta_libelle(libelle) values ('Action sociale pour handicapés');
-insert into ta_libelle(libelle) values ('Autres services d''action sociale');
-insert into ta_libelle(libelle) values ('Transports et déplacements');
-insert into ta_libelle(libelle) values ('Infrastructures de transports');
-insert into ta_libelle(libelle) values ('Sports, loisirs et culture');
-insert into ta_libelle(libelle) values ('Equipements sportifs');
-insert into ta_libelle(libelle) values ('Equipements de loisirs');
-insert into ta_libelle(libelle) values ('Equipements culturels et socioculturels');
-insert into ta_libelle(libelle) values ('Tourisme');
-insert into ta_libelle(libelle) values ('Type d''équipement');
-insert into ta_libelle(libelle) values ('Indicateur de la qualité de la géolocalisation de l''équipement');
-insert into ta_libelle(libelle) values ('l''écart des coordonées (x,y) fournies avec la réalité du terrain est inférieur à 100m');
-insert into ta_libelle(libelle) values ('l''écart des coordonées (x,y) fournies avec la réalité du terrain est compris entre 100 m et 500 m');
-insert into ta_libelle(libelle) values ('l''écart maximum des coordonnées (x,y) fournies avec la réalité du terrain est supérieur à 500 m et des imputations aléatoires ont pu être effectuées');
-insert into ta_libelle(libelle) values ('pas de coordonnées (x,y) fournies dans les domaines disponibles cette année en géolocalisation car cette dernière a été impossible à réaliser au regard des adresses contenues dans les référentiels géographiques actuels de l''Insee.');
-insert into ta_libelle(libelle) values ('pas de coordonnées (x,y) fournies car les équipements concernés appartiennent à des domaines d''équipements dont la géolocalisation n''est pas mise à disposition cette année.');
-insert into ta_libelle(libelle) values ('fichier Sport-Loisir');
-insert into ta_libelle(libelle) values ('fichier Enseignement');
-insert into ta_libelle(libelle) values ('fichier Ensemble');
+MERGE INTO ta_libelle l
+USING
+	(
+	SELECT 'Contenu du fichier Base Permanente des Equipements' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement couvert ou non' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement avec au moin une partie couverte' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement non couvert' AS LIBELLE FROM DUAL UNION
+	SELECT 'Sans objet' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement eclaire ou non' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement avec au moins une partie eclairée' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipement non éclairé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Nombre d''aires de pratique d''un même type au sein de l''équipement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Nombre d''équipement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Nombre de salles par théatre ou cinéma' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence ou absence d''un cantine' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence d''une cantine' AS LIBELLE FROM DUAL UNION
+	SELECT 'Absence d''une cantine' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence ou absence d''une classe pré-élémentaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence d''une classe pré-élémentaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Absence d''une classe pré-élémentaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence ou absence d''un classe préparatoire aux grandes écoles en lycée' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence d''une classe préparatoire aux grandes écoles' AS LIBELLE FROM DUAL UNION
+	SELECT 'absence d''une classe préparatoire aux grandes écoles' AS LIBELLE FROM DUAL UNION
+	SELECT 'Appartenance ou non à un dispositif d''éducation prioritaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Appartenance à un EP' AS LIBELLE FROM DUAL UNION
+	SELECT 'Non appartenance à un EP' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence ou absence d''un internat' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence  d''un internat' AS LIBELLE FROM DUAL UNION
+	SELECT 'absence d''un internat' AS LIBELLE FROM DUAL UNION
+	SELECT 'Présence ou absence d''un regroupement pédagogique intercommunal concentré' AS LIBELLE FROM DUAL UNION
+	SELECT 'Regroupement pédagogique' AS LIBELLE FROM DUAL UNION
+	SELECT 'pas de regroupement pédagogique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Appartenance au Secteur public ou privé d''enseignement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Secteur privé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Secteur public' AS LIBELLE FROM DUAL UNION
+	SELECT 'Police' AS LIBELLE FROM DUAL UNION
+	SELECT 'Gendarmerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Cour d’appel (CA)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Tribunal de grande instance (TGI)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Tribunal d’instance (TI)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Conseil des prud’hommes (CPH)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Tribunal de commerce (TCO)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Réseau spécialisé Pôle Emploi' AS LIBELLE FROM DUAL UNION
+	SELECT 'Direction Générale des Finances Publiques (DGFIP)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Direction Régionale des Finances Publiques (DRFIP)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Direction Départementale des Finances Publiques (DDFIP)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Réseau de proximité Pôle Emploi' AS LIBELLE FROM DUAL UNION
+	SELECT 'Réseau partenarial Pôle Emploi' AS LIBELLE FROM DUAL UNION
+	SELECT 'Maison de justice et du droit' AS LIBELLE FROM DUAL UNION
+	SELECT 'Antenne de justice' AS LIBELLE FROM DUAL UNION
+	SELECT 'Conseil départemental d''accès au droit (CDAD)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Banque, Caisse d’Épargne' AS LIBELLE FROM DUAL UNION
+	SELECT 'Pompes funèbres' AS LIBELLE FROM DUAL UNION
+	SELECT 'Bureau de poste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Relais poste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Agence postale' AS LIBELLE FROM DUAL UNION
+	SELECT 'Réparation auto et de matériel agricole' AS LIBELLE FROM DUAL UNION
+	SELECT 'Contrôle technique automobile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Location auto-utilitaires légers' AS LIBELLE FROM DUAL UNION
+	SELECT 'École de conduite' AS LIBELLE FROM DUAL UNION
+	SELECT 'Maçon' AS LIBELLE FROM DUAL UNION
+	SELECT 'Plâtrier peintre' AS LIBELLE FROM DUAL UNION
+	SELECT 'Menuisier, charpentier, serrurier' AS LIBELLE FROM DUAL UNION
+	SELECT 'Plombier, couvreur, chauffagiste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Électricien' AS LIBELLE FROM DUAL UNION
+	SELECT 'Entreprise générale du bâtiment' AS LIBELLE FROM DUAL UNION
+	SELECT 'Coiffure' AS LIBELLE FROM DUAL UNION
+	SELECT 'Vétérinaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Agence de travail temporaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Restaurant - Restauration rapide' AS LIBELLE FROM DUAL UNION
+	SELECT 'Agence immobilière' AS LIBELLE FROM DUAL UNION
+	SELECT 'A506 – Pressing - Laverie automatique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Institut de beauté - Onglerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Hypermarché' AS LIBELLE FROM DUAL UNION
+	SELECT 'Supermarché' AS LIBELLE FROM DUAL UNION
+	SELECT 'Grande surface de bricolage' AS LIBELLE FROM DUAL UNION
+	SELECT 'Supérette' AS LIBELLE FROM DUAL UNION
+	SELECT 'Épicerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Boulangerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Boucherie charcuterie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Produits surgelés' AS LIBELLE FROM DUAL UNION
+	SELECT 'Poissonnerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Librairie papeterie journaux' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin de vêtements' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin d''équipements du foyer' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin de chaussures' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin d''électroménager, audio vidéo' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin de meubles' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin d''art. de sports et de loisirs' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin de revêtements murs et sols' AS LIBELLE FROM DUAL UNION
+	SELECT 'Droguerie quincaillerie bricolage' AS LIBELLE FROM DUAL UNION
+	SELECT 'Parfumerie - Cosmétique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Horlogerie Bijouterie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Fleuriste - Jardinerie - Animalerie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin d’optique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Magasin de matériel médical et orthopédique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Station service' AS LIBELLE FROM DUAL UNION
+	SELECT 'École maternelle' AS LIBELLE FROM DUAL UNION
+	SELECT 'École maternelle de RPI dispersé' AS LIBELLE FROM DUAL UNION
+	SELECT 'École élémentaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'École élémentaire de RPI dispersé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Collège' AS LIBELLE FROM DUAL UNION
+	SELECT 'Lycée d''enseignement général et/ou techno.' AS LIBELLE FROM DUAL UNION
+	SELECT 'Lycée d''enseignement professionnel' AS LIBELLE FROM DUAL UNION
+	SELECT 'Lycée technique et/ou professionnel agricole' AS LIBELLE FROM DUAL UNION
+	SELECT 'SGT : SECTion enseignement général et techno.' AS LIBELLE FROM DUAL UNION
+	SELECT 'SEP : SECTion enseignement professionnel' AS LIBELLE FROM DUAL UNION
+	SELECT 'STS CPGE' AS LIBELLE FROM DUAL UNION
+	SELECT 'Formation santé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Formation commerce' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autre formation post bac non universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'UFR' AS LIBELLE FROM DUAL UNION
+	SELECT 'Institut universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'École d''ingénieurs' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement général supérieur privé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Écoles d’’enseignement supérieur agricole' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autre enseignement supérieur' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre de formation d''apprentis (hors agriculture)' AS LIBELLE FROM DUAL UNION
+	SELECT 'GRETA' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre dispensant de la formation continue agricole' AS LIBELLE FROM DUAL UNION
+	SELECT 'Formation aux métiers du sport' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre dispensant des formations d’apprentissage agricole' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autre formation continue' AS LIBELLE FROM DUAL UNION
+	SELECT 'Résidence universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Restaurant universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Établissement santé court séjour' AS LIBELLE FROM DUAL UNION
+	SELECT 'Établissement santé moyen séjour' AS LIBELLE FROM DUAL UNION
+	SELECT 'Établissement santé long séjour' AS LIBELLE FROM DUAL UNION
+	SELECT 'Établissement psychiatrique avec hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre lutte cancer' AS LIBELLE FROM DUAL UNION
+	SELECT 'Urgences' AS LIBELLE FROM DUAL UNION
+	SELECT 'Maternité' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre de santé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Structure psychiatrique en ambulatoire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre médecine préventive' AS LIBELLE FROM DUAL UNION
+	SELECT 'Dialyse' AS LIBELLE FROM DUAL UNION
+	SELECT 'Hospitalisation à domicile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Maison de santé pluridisciplinaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Médecin généraliste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en cardiologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en dermatologie vénéréologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en gastro-entérologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en psychiatrie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en ophtalmologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en oto-rhino-laryngologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en pédiatrie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en pneumologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spéc. en radiodiagnostic et imagerie médicale' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en stomatologie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Spécialiste en gynécologie (médicale et/ou obstétrique)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Chirurgien dentiste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Sage-femme' AS LIBELLE FROM DUAL UNION
+	SELECT 'Infirmier' AS LIBELLE FROM DUAL UNION
+	SELECT 'Masseur kinésithérapeute' AS LIBELLE FROM DUAL UNION
+	SELECT 'Orthophoniste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Orthoptiste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Pédicure-podologue' AS LIBELLE FROM DUAL UNION
+	SELECT 'Audio prothésiste' AS LIBELLE FROM DUAL UNION
+	SELECT 'Ergothérapeute' AS LIBELLE FROM DUAL UNION
+	SELECT 'Psychomotricien' AS LIBELLE FROM DUAL UNION
+	SELECT 'Manipulateur ERM' AS LIBELLE FROM DUAL UNION
+	SELECT 'Diététicien' AS LIBELLE FROM DUAL UNION
+	SELECT 'Psychologue' AS LIBELLE FROM DUAL UNION
+	SELECT 'Pharmacie' AS LIBELLE FROM DUAL UNION
+	SELECT 'Laboratoire d''analyses et de biologie médicales' AS LIBELLE FROM DUAL UNION
+	SELECT 'Ambulance' AS LIBELLE FROM DUAL UNION
+	SELECT 'Transfusion sanguine' AS LIBELLE FROM DUAL UNION
+	SELECT 'Établissement thermal' AS LIBELLE FROM DUAL UNION
+	SELECT 'Personnes âgées : hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Personnes âgées : soins à domicile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Personnes âgées : services d''aide' AS LIBELLE FROM DUAL UNION
+	SELECT 'Personnes âgées : foyers restaurants' AS LIBELLE FROM DUAL UNION
+	SELECT 'Personnes âgées : services de repas à domicile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Crèche' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enfants handicapés : hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enfants handicapés.: soins à domicile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Adultes handicapés : hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Adultes handicapés : services d’aide' AS LIBELLE FROM DUAL UNION
+	SELECT 'Travail protégé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Adultes handicapés : services de soins à domicile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Aide sociale à l''enfance : hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Aide sociale à l''enfance : action éduc.' AS LIBELLE FROM DUAL UNION
+	SELECT 'CHRS Centre d''héberg. et de réadapt. sociale' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre provisoire d''hébergement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre accueil demandeur d''asile' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autres établissements pour adultes et familles en difficulté' AS LIBELLE FROM DUAL UNION
+	SELECT 'Taxi - VTC' AS LIBELLE FROM DUAL UNION
+	SELECT 'Aéroport' AS LIBELLE FROM DUAL UNION
+	SELECT 'Gare de voyageurs d’intérêt national' AS LIBELLE FROM DUAL UNION
+	SELECT 'Gare de voyageurs d’intérêt régional' AS LIBELLE FROM DUAL UNION
+	SELECT 'Gare de voyageurs d’intérêt local' AS LIBELLE FROM DUAL UNION
+	SELECT 'Bassin de natation' AS LIBELLE FROM DUAL UNION
+	SELECT 'Boulodrome' AS LIBELLE FROM DUAL UNION
+	SELECT 'Tennis' AS LIBELLE FROM DUAL UNION
+	SELECT 'Équipement de cyclisme' AS LIBELLE FROM DUAL UNION
+	SELECT 'Domaine skiable' AS LIBELLE FROM DUAL UNION
+	SELECT 'Centre équestre' AS LIBELLE FROM DUAL UNION
+	SELECT 'Athlétisme' AS LIBELLE FROM DUAL UNION
+	SELECT 'Terrain de golf' AS LIBELLE FROM DUAL UNION
+	SELECT 'Parcours sportif/santé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Sports de glace' AS LIBELLE FROM DUAL UNION
+	SELECT 'Plateaux et terrains de jeux extérieurs' AS LIBELLE FROM DUAL UNION
+	SELECT 'Salles spécialisées' AS LIBELLE FROM DUAL UNION
+	SELECT 'Terrain de grands jeux' AS LIBELLE FROM DUAL UNION
+	SELECT 'Salles de combat' AS LIBELLE FROM DUAL UNION
+	SELECT 'Salles non spécialisées' AS LIBELLE FROM DUAL UNION
+	SELECT 'Roller-Skate-Vélo bicross ou freestyle' AS LIBELLE FROM DUAL UNION
+	SELECT 'Sports nautiques' AS LIBELLE FROM DUAL UNION
+	SELECT 'Bowling' AS LIBELLE FROM DUAL UNION
+	SELECT 'Salles de remise en forme' AS LIBELLE FROM DUAL UNION
+	SELECT 'Salles multisports (gymnase)' AS LIBELLE FROM DUAL UNION
+	SELECT 'Baignade aménagée' AS LIBELLE FROM DUAL UNION
+	SELECT 'Port de plaisance - Mouillage' AS LIBELLE FROM DUAL UNION
+	SELECT 'Boucle de randonnée' AS LIBELLE FROM DUAL UNION
+	SELECT 'Cinéma' AS LIBELLE FROM DUAL UNION
+	SELECT 'Musée' AS LIBELLE FROM DUAL UNION
+	SELECT 'Conservatoire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Théâtre - Art de rue - Pôle cirque' AS LIBELLE FROM DUAL UNION
+	SELECT 'Agence de voyages' AS LIBELLE FROM DUAL UNION
+	SELECT 'Hôtel' AS LIBELLE FROM DUAL UNION
+	SELECT 'Camping' AS LIBELLE FROM DUAL UNION
+	SELECT 'Information touristique' AS LIBELLE FROM DUAL UNION
+	SELECT 'Services aux particuliers' AS LIBELLE FROM DUAL UNION
+	SELECT 'Services publics' AS LIBELLE FROM DUAL UNION
+	SELECT 'Services généraux' AS LIBELLE FROM DUAL UNION
+	SELECT 'Services automobiles' AS LIBELLE FROM DUAL UNION
+	SELECT 'Artisanat du bâtiment' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autres services à la population' AS LIBELLE FROM DUAL UNION
+	SELECT 'Commerces' AS LIBELLE FROM DUAL UNION
+	SELECT 'Grandes surfaces' AS LIBELLE FROM DUAL UNION
+	SELECT 'Commerces alimentaires' AS LIBELLE FROM DUAL UNION
+	SELECT 'Commerces spécialisés non alimentaires' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement du premier degré' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement du second degré premier cycle' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement du second degré second cycle' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement supérieur non universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Enseignement supérieur universitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Formation continue' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autres services de l''éducation' AS LIBELLE FROM DUAL UNION
+	SELECT 'Santé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Etablissements et services de santé' AS LIBELLE FROM DUAL UNION
+	SELECT 'Fonctions médicales et para-médicales' AS LIBELLE FROM DUAL UNION
+	SELECT 'autres établissements et services à caractère sanitaire' AS LIBELLE FROM DUAL UNION
+	SELECT 'Action sociale pour personnes agées' AS LIBELLE FROM DUAL UNION
+	SELECT 'Action sociale pour enfants en bas-âge' AS LIBELLE FROM DUAL UNION
+	SELECT 'Action sociale pour handicapés' AS LIBELLE FROM DUAL UNION
+	SELECT 'Autres services d''action sociale' AS LIBELLE FROM DUAL UNION
+	SELECT 'Transports et déplacements' AS LIBELLE FROM DUAL UNION
+	SELECT 'Infrastructures de transports' AS LIBELLE FROM DUAL UNION
+	SELECT 'Sports, loisirs et culture' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipements sportifs' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipements de loisirs' AS LIBELLE FROM DUAL UNION
+	SELECT 'Equipements culturels et socioculturels' AS LIBELLE FROM DUAL UNION
+	SELECT 'Tourisme' AS LIBELLE FROM DUAL UNION
+	SELECT 'Type d''équipement' AS LIBELLE FROM DUAL UNION
+	SELECT 'Indicateur de la qualité de la géolocalisation de l''équipement' AS LIBELLE FROM DUAL UNION
+	SELECT 'l''écart des coordonées (x,y) fournies avec la réalité du terrain est inférieur à 100m' AS LIBELLE FROM DUAL UNION
+	SELECT 'l''écart des coordonées (x,y) fournies avec la réalité du terrain est compris entre 100 m et 500 m' AS LIBELLE FROM DUAL UNION
+	SELECT 'l''écart maximum des coordonnées (x,y) fournies avec la réalité du terrain est supérieur à 500 m et des imputations aléatoires ont pu être effectuées' AS LIBELLE FROM DUAL UNION
+	SELECT 'pas de coordonnées (x,y) fournies dans les domaines disponibles cette année en géolocalisation car cette dernière a été impossible à réaliser au regard des adresses contenues dans les référentiels géographiques actuels de l''Insee.' AS LIBELLE FROM DUAL UNION
+	SELECT 'pas de coordonnées (x,y) fournies car les équipements concernés appartiennent à des domaines d''équipements dont la géolocalisation n''est pas mise à disposition cette année.' AS LIBELLE FROM DUAL UNION
+	SELECT 'fichier Sport-Loisir' AS LIBELLE FROM DUAL UNION
+	SELECT 'fichier Enseignement' AS LIBELLE FROM DUAL UNION
+	SELECT 'fichier Ensemble' AS LIBELLE FROM DUAL
+	) temp
+ON (temp.LIBELLE = l.libelle)
+WHEN NOT MATCHED THEN
+INSERT (l.libelle)
+VALUES (temp.LIBELLE)
+;
 commit;
 
 -- 3. Insertion des données dans la table TA_CORRESPONDANCE_LIBELLE
@@ -5272,3 +5289,284 @@ FROM
 WHERE
     a.libelle = ('fichier Ensemble')and b.libelle =('Contenu du fichier Base Permanente des Equipements');
 commit;
+
+
+-- 5 Insertion des information dans la table TA_FAMILLE
+
+INSERT INTO TA_FAMILLE(famille)
+VALUES ('BPE');
+
+-- 6 Insertion des information dans la table TA_FAMILLE_LIBELLE
+
+INSERT INTO ta_famille_libelle (fid_libelle,fid_famille)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_libelle a,
+    ta_famille b
+WHERE
+    a.libelle IN (
+    	'Contenu du fichier Base Permanente des Equipements',
+		'Equipement couvert ou non',
+		'Equipement avec au moin une partie couverte',
+		'Equipement non couvert',
+		'Sans objet',
+		'Equipement eclaire ou non',
+		'Equipement avec au moins une partie eclairée',
+		'Equipement non éclairé',
+		'Nombre d''aires de pratique d''un même type au sein de l''équipement',
+		'Nombre d''équipement',
+		'Nombre de salles par théatre ou cinéma',
+		'Présence ou absence d''un cantine',
+		'Présence d''une cantine',
+		'Absence d''une cantine',
+		'Présence ou absence d''une classe pré-élémentaire',
+		'Présence d''une classe pré-élémentaire',
+		'Absence d''une classe pré-élémentaire',
+		'Présence ou absence d''un classe préparatoire aux grandes écoles en lycée',
+		'Présence d''une classe préparatoire aux grandes écoles',
+		'absence d''une classe préparatoire aux grandes écoles',
+		'Appartenance ou non à un dispositif d''éducation prioritaire',
+		'Appartenance à un EP',
+		'Non appartenance à un EP',
+		'Présence ou absence d''un internat',
+		'Présence  d''un internat',
+		'absence d''un internat',
+		'Présence ou absence d''un regroupement pédagogique intercommunal concentré',
+		'Regroupement pédagogique',
+		'pas de regroupement pédagogique',
+		'Appartenance au Secteur public ou privé d''enseignement',
+		'Secteur privé',
+		'Secteur public',
+		'Police',
+		'Gendarmerie',
+		'Cour d’appel (CA)',
+		'Tribunal de grande instance (TGI)',
+		'Tribunal d’instance (TI)',
+		'Conseil des prud’hommes (CPH)',
+		'Tribunal de commerce (TCO)',
+		'Réseau spécialisé Pôle Emploi',
+		'Direction Générale des Finances Publiques (DGFIP)',
+		'Direction Régionale des Finances Publiques (DRFIP)',
+		'Direction Départementale des Finances Publiques (DDFIP)',
+		'Réseau de proximité Pôle Emploi',
+		'Réseau partenarial Pôle Emploi',
+		'Maison de justice et du droit',
+		'Antenne de justice',
+		'Conseil départemental d''accès au droit (CDAD)',
+		'Banque, Caisse d’Épargne',
+		'Pompes funèbres',
+		'Bureau de poste',
+		'Relais poste',
+		'Agence postale',
+		'Réparation auto et de matériel agricole',
+		'Contrôle technique automobile',
+		'Location auto-utilitaires légers',
+		'École de conduite',
+		'Maçon',
+		'Plâtrier peintre',
+		'Menuisier, charpentier, serrurier',
+		'Plombier, couvreur, chauffagiste',
+		'Électricien',
+		'Entreprise générale du bâtiment',
+		'Coiffure',
+		'Vétérinaire',
+		'Agence de travail temporaire',
+		'Restaurant - Restauration rapide',
+		'Agence immobilière',
+		'A506 – Pressing - Laverie automatique',
+		'Institut de beauté - Onglerie',
+		'Hypermarché',
+		'Supermarché',
+		'Grande surface de bricolage',
+		'Supérette',
+		'Épicerie',
+		'Boulangerie',
+		'Boucherie charcuterie',
+		'Produits surgelés',
+		'Poissonnerie',
+		'Librairie papeterie journaux',
+		'Magasin de vêtements',
+		'Magasin d''équipements du foyer',
+		'Magasin de chaussures',
+		'Magasin d''électroménager, audio vidéo',
+		'Magasin de meubles',
+		'Magasin d''art. de sports et de loisirs',
+		'Magasin de revêtements murs et sols',
+		'Droguerie quincaillerie bricolage',
+		'Parfumerie - Cosmétique',
+		'Horlogerie Bijouterie',
+		'Fleuriste - Jardinerie - Animalerie',
+		'Magasin d’optique',
+		'Magasin de matériel médical et orthopédique',
+		'Station service',
+		'École maternelle',
+		'École maternelle de RPI dispersé',
+		'École élémentaire',
+		'École élémentaire de RPI dispersé',
+		'Collège',
+		'Lycée d''enseignement général et/ou techno.',
+		'Lycée d''enseignement professionnel',
+		'Lycée technique et/ou professionnel agricole',
+		'SGT : SECTion enseignement général et techno.',
+		'SEP : SECTion enseignement professionnel',
+		'STS CPGE',
+		'Formation santé',
+		'Formation commerce',
+		'Autre formation post bac non universitaire',
+		'UFR',
+		'Institut universitaire',
+		'École d''ingénieurs',
+		'Enseignement général supérieur privé',
+		'Écoles d’’enseignement supérieur agricole',
+		'Autre enseignement supérieur',
+		'Centre de formation d''apprentis (hors agriculture)',
+		'GRETA',
+		'Centre dispensant de la formation continue agricole',
+		'Formation aux métiers du sport',
+		'Centre dispensant des formations d’apprentissage agricole',
+		'Autre formation continue',
+		'Résidence universitaire',
+		'Restaurant universitaire',
+		'Établissement santé court séjour',
+		'Établissement santé moyen séjour',
+		'Établissement santé long séjour',
+		'Établissement psychiatrique avec hébergement',
+		'Centre lutte cancer',
+		'Urgences',
+		'Maternité',
+		'Centre de santé',
+		'Structure psychiatrique en ambulatoire',
+		'Centre médecine préventive',
+		'Dialyse',
+		'Hospitalisation à domicile',
+		'Maison de santé pluridisciplinaire',
+		'Médecin généraliste',
+		'Spécialiste en cardiologie',
+		'Spécialiste en dermatologie vénéréologie',
+		'Spécialiste en gastro-entérologie',
+		'Spécialiste en psychiatrie',
+		'Spécialiste en ophtalmologie',
+		'Spécialiste en oto-rhino-laryngologie',
+		'Spécialiste en pédiatrie',
+		'Spécialiste en pneumologie',
+		'Spéc. en radiodiagnostic et imagerie médicale',
+		'Spécialiste en stomatologie',
+		'Spécialiste en gynécologie (médicale et/ou obstétrique)',
+		'Chirurgien dentiste',
+		'Sage-femme',
+		'Infirmier',
+		'Masseur kinésithérapeute',
+		'Orthophoniste',
+		'Orthoptiste',
+		'Pédicure-podologue',
+		'Audio prothésiste',
+		'Ergothérapeute',
+		'Psychomotricien',
+		'Manipulateur ERM',
+		'Diététicien',
+		'Psychologue',
+		'Pharmacie',
+		'Laboratoire d''analyses et de biologie médicales',
+		'Ambulance',
+		'Transfusion sanguine',
+		'Établissement thermal',
+		'Personnes âgées : hébergement',
+		'Personnes âgées : soins à domicile',
+		'Personnes âgées : services d''aide',
+		'Personnes âgées : foyers restaurants',
+		'Personnes âgées : services de repas à domicile',
+		'Crèche',
+		'Enfants handicapés : hébergement',
+		'Enfants handicapés.: soins à domicile',
+		'Adultes handicapés : hébergement',
+		'Adultes handicapés : services d’aide',
+		'Travail protégé',
+		'Adultes handicapés : services de soins à domicile',
+		'Aide sociale à l''enfance : hébergement',
+		'Aide sociale à l''enfance : action éduc.',
+		'CHRS Centre d''héberg. et de réadapt. sociale',
+		'Centre provisoire d''hébergement',
+		'Centre accueil demandeur d''asile',
+		'Autres établissements pour adultes et familles en difficulté',
+		'Taxi - VTC',
+		'Aéroport',
+		'Gare de voyageurs d’intérêt national',
+		'Gare de voyageurs d’intérêt régional',
+		'Gare de voyageurs d’intérêt local',
+		'Bassin de natation',
+		'Boulodrome',
+		'Tennis',
+		'Équipement de cyclisme',
+		'Domaine skiable',
+		'Centre équestre',
+		'Athlétisme',
+		'Terrain de golf',
+		'Parcours sportif/santé',
+		'Sports de glace',
+		'Plateaux et terrains de jeux extérieurs',
+		'Salles spécialisées',
+		'Terrain de grands jeux',
+		'Salles de combat',
+		'Salles non spécialisées',
+		'Roller-Skate-Vélo bicross ou freestyle',
+		'Sports nautiques',
+		'Bowling',
+		'Salles de remise en forme',
+		'Salles multisports (gymnase)',
+		'Baignade aménagée',
+		'Port de plaisance - Mouillage',
+		'Boucle de randonnée',
+		'Cinéma',
+		'Musée',
+		'Conservatoire',
+		'Théâtre - Art de rue - Pôle cirque',
+		'Agence de voyages',
+		'Hôtel',
+		'Camping',
+		'Information touristique',
+		'Services aux particuliers',
+		'Services publics',
+		'Services généraux',
+		'Services automobiles',
+		'Artisanat du bâtiment',
+		'Autres services à la population',
+		'Commerces',
+		'Grandes surfaces',
+		'Commerces alimentaires',
+		'Commerces spécialisés non alimentaires',
+		'Enseignement',
+		'Enseignement du premier degré',
+		'Enseignement du second degré premier cycle',
+		'Enseignement du second degré second cycle',
+		'Enseignement supérieur non universitaire',
+		'Enseignement supérieur universitaire',
+		'Formation continue',
+		'Autres services de l''éducation',
+		'Santé',
+		'Etablissements et services de santé',
+		'Fonctions médicales et para-médicales',
+		'autres établissements et services à caractère sanitaire',
+		'Action sociale pour personnes agées',
+		'Action sociale pour enfants en bas-âge',
+		'Action sociale pour handicapés',
+		'Autres services d''action sociale',
+		'Transports et déplacements',
+		'Infrastructures de transports',
+		'Sports, loisirs et culture',
+		'Equipements sportifs',
+		'Equipements de loisirs',
+		'Equipements culturels et socioculturels',
+		'Tourisme',
+		'Type d''équipement',
+		'Indicateur de la qualité de la géolocalisation de l''équipement',
+		'l''écart des coordonées (x,y) fournies avec la réalité du terrain est inférieur à 100m',
+		'l''écart des coordonées (x,y) fournies avec la réalité du terrain est compris entre 100 m et 500 m',
+		'l''écart maximum des coordonnées (x,y) fournies avec la réalité du terrain est supérieur à 500 m et des imputations aléatoires ont pu être effectuées',
+		'pas de coordonnées (x,y) fournies dans les domaines disponibles cette année en géolocalisation car cette dernière a été impossible à réaliser au regard des adresses contenues dans les référentiels géographiques actuels de l''Insee.',
+		'pas de coordonnées (x,y) fournies car les équipements concernés appartiennent à des domaines d''équipements dont la géolocalisation n''est pas mise à disposition cette année.',
+		'fichier Sport-Loisir',
+		'fichier Enseignement',
+		'fichier Ensemble'
+	)and b.famille =('BPE');
