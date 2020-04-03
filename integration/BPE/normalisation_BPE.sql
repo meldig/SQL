@@ -162,7 +162,7 @@ INSERT INTO ta_bpe_geom(geom)
 SELECT 
     ora_geometry
 FROM
-    bpe_tout a
+    bpe_tout
 WHERE
     identite NOT IN
         (SELECT id_b
