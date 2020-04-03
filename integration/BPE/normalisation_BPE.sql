@@ -1204,28 +1204,28 @@ COMMIT;
 --9 Insertion des données dans la table TA_BPE_RELATION_CODE
 -- 9.1 Insertion des relations BPE IRIS
 
-insert into ta_bpe_relation_code(fid_bpe,fid_code)
-select
+INSERT INTO ta_bpe_relation_code(fid_bpe,fid_code)
+SELECT
     a.identite,
     b.objectid
-from
+FROM
     bpe_tout a
-    inner join ta_code b on a.dciris = b.code
-    inner join ta_libelle c on b.fid_libelle = c.objectid
-where
+    INNER JOIN ta_code b ON a.dciris = b.code
+    INNER JOIN ta_libelle c ON b.fid_libelle = c.objectid
+WHERE
     c.libelle ='code iris';
 
 -- 9.2 Insertion des relations BPE Communes
 
-insert into ta_bpe_relation_code(fid_bpe,fid_code)
-select
+INSERT INTO ta_bpe_relation_code(fid_bpe,fid_code)
+SELECT
     a.identite,
     b.objectid
-from
+FROM
     bpe_tout a
-    inner join ta_code b on a.depcom = b.code
-    inner join ta_libelle c on b.fid_libelle = c.objectid
-where
+    INNER JOIN ta_code b ON a.depcom = b.code
+    INNER JOIN ta_libelle c ON b.fid_libelle = c.objectid
+WHERE
     c.libelle ='code insee';
 
 -- 10. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci. 
