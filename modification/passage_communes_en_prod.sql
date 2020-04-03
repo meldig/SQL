@@ -2,13 +2,14 @@
 Insertion des données relatives aux communes en base.
 
 Organisation du fichier :
-1. Insertion dans les tables de métadonnées, versionnement, provenance... ;
-2. Insertion des familles et des libelles des communes ;
-3. Insertion des types de codes dans ta_famille et ta_libelle ;
-4. Insertion des communes ;
-5. Création des zones supra-communales ;
-6. Création des Unité Territoriales ;
-7. Insertion des territoires ;
+1. Insertion des communes ;
+2. Insertion dans les tables de métadonnées, versionnement, provenance... ;
+3. Insertion des familles et des libelles des communes ;
+4. Insertion des types de codes dans ta_famille et ta_libelle ;
+5. Insertion des communes ;
+6. Création des zones supra-communales ;
+7. Création des Unité Territoriales ;
+8. Création des Territoires ;
 */
 
 -- 1. Insertion des communes
@@ -245,18 +246,25 @@ DROP TABLE COMMUNE CASCADE CONSTRAINTS;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'COMMUNE';
 COMMIT;
 
--- 7. Création des Unité Territoriales
--- 7.1. Insertion dans la table ta_libelle
+-- 7. Création des Unités Territoriales
+-- 7.1. Insertion dans la table ta_famille
 INSERT INTO ta_famille(famille)
 VALUES('Division territoriale de la MEL');
+COMMIT;
+INSERT INTO ta_famille(famille)
+VALUES('Identifiants des divisions territoriales de la MEL');
 COMMIT;
 
 -- 7.2. Insertion dans la table ta_libelle
 INSERT INTO ta_libelle(libelle)
 VALUES('Unité Territoriale');
 COMMIT;
+INSERT INTO ta_libelle(libelle)
+VALUES('Code Unité Territoriale');
+COMMIT;
 
 -- 7.3. Insertion dans ta_famille_libelle (table de liaison entre ta_famille et ta_libelle)
+-- 7.3.1. Liaison des libellés avec la famille 'Division territoriale de la MEL'
 INSERT INTO ta_famille_libelle(fid_famille, fid_libelle)
 SELECT
 	a.objectid,
@@ -269,7 +277,20 @@ WHERE
 	AND b.libelle = 'Unité Territoriale';
 COMMIT;
 
--- 7.4. Insertion dans la table ta_nom 
+-- 7.3.2. Liaison des libellés avec la famille "Identifiants des divisions territoriales de la MEL"
+INSERT INTO ta_famille_libelle(fid_famille, fid_libelle)
+SELECT
+	a.objectid,
+	b.objectid
+FROM
+	ta_famille a,
+	ta_libelle b	
+WHERE
+	a.famille = 'Identifiants des divisions territoriales de la MEL'
+	AND b.libelle = 'Code Unité Territoriale';
+COMMIT;
+
+-- 7.4. Insertion dans la table ta_nom des noms des Unités Territoriales
 INSERT INTO ta_nom(nom)
 VALUES ('Tourcoing-Armentières');
 COMMIT;
@@ -283,7 +304,45 @@ INSERT INTO ta_nom(nom)
 VALUES ('La Basse-Marcq en Baroeul');
 COMMIT;
 
--- 7.5. Insertion dans la table ta_zone_administrative
+-- 7.5. Insertion des codes des Unités Territoriales
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '1',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Unité Territoriale';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '2',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Unité Territoriale';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '3',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Unité Territoriale';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '4',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Unité Territoriale';
+COMMIT;
+
+-- 7.6. Insertion des Unités Territoriales dans la table ta_zone_administrative
 INSERT INTO ta_zone_administrative(fid_nom, fid_libelle)
 SELECT
     a.objectid,
@@ -296,8 +355,81 @@ WHERE
     AND b.libelle = 'Unité Territoriale';
 COMMIT;
 
--- 7.6. Insertion dans la table ta_za_communes des objectid des communes et ceux des Unités Territoriales correspondantes
--- 7.6.1. La Basse-Marcq en Baroeul
+-- 7.8. Insertion dans la table de liaison ta_identifiant_zone_administrative pour faire la liaison entre les Unités Territoriales et leur code
+-- 7.8.1. Lille-Seclin
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Unité Territoriale'
+    AND c.nom = 'Lille-Seclin'
+    AND e.libelle = 'Code Unité Territoriale'
+    AND d.code = '1';
+COMMIT;
+
+-- 7.8.2. La Basse-Marcq en Baroeul
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    d.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Unité Territoriale'
+    AND c.nom = 'La Basse-Marcq en Baroeul'
+    AND e.libelle = 'Code Unité Territoriale'
+    AND d.code = '2';
+COMMIT;   
+
+-- 7.8.3. Roubaix-Villeneuve d'Ascq
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    d.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Unité Territoriale'
+    AND c.nom = 'Roubaix-Villeneuve d''Ascq'
+    AND e.libelle = 'Code Unité Territoriale'
+    AND d.code = '3';
+COMMIT;    
+
+-- 7.8.4. Tourcoing-Armentières
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    d.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Unité Territoriale'
+    AND c.nom = 'Tourcoing-Armentières'
+    AND e.libelle = 'Code Unité Territoriale'
+    AND d.code = '4';
+COMMIT;
+
+-- 7.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Unités Territoriales correspondantes
+-- 7.9.1. La Basse-Marcq en Baroeul
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -320,7 +452,7 @@ WHERE
     AND c.code IN ('59051', '59056', '59128', '59670', '59195', '59196', '59201', '59208', '59250', '59278', '59281', '59286', '59303', '59320', '59328', '59356', '59378', '59386', '59388', '59457', '59470', '59524', '59527', '59550', '59553', '59566', '59611', '59636', '59653', '59658', '59088', '59025', '59257', '59487', '59371');
 COMMIT;
 
--- 7.6.2. Lille-Seclin
+-- 7.9.2. Lille-Seclin
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -343,7 +475,7 @@ WHERE
     AND c.code IN ('59011','59346','59368','59648','59256','59609','59350','59360','59477','59005','59193','59220','59437','59133','59052','59585','59316','59507','59560','59343');
 COMMIT;
     
--- 7.6.3. Roubaix-Villeneuve d'Ascq
+-- 7.9.3. Roubaix-Villeneuve d'Ascq
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -366,7 +498,7 @@ WHERE
     AND c.code IN ('59275','59339','59523','59522','59044','59367','59163','59512','59299','59146','59410','59650','59106','59247','59602','59013','59458','59332','59009','59646','59598','59660');
 COMMIT;
 
--- 7.6.4. Tourcoing-Armentières
+-- 7.9.4. Tourcoing-Armentières
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -389,13 +521,18 @@ WHERE
     AND c.code IN ('59017','59252','59656','59508','59352','59482','59173','59143','59090','59317','59098','59643','59152','59599','59421','59202','59279','59426');
 COMMIT;
 
--- 8. Insertion des territoires
--- 8.1. Insertion dans la table ta_libelle
+-- 8. Création des territoires
+-- 8.1. Insertion du libelle "Territoire" dans la table ta_libelle
 INSERT INTO ta_libelle(libelle)
 VALUES('Territoire');
 COMMIT;
 
--- 8.2. Insertion dans la table de liaison ta_famille_libelle
+-- 8.2. Insertion du libelle "Code Territoire"
+INSERT INTO ta_libelle(libelle)
+VALUES('Code Territoire');
+COMMIT;
+
+-- 8.3. Insertion dans la table de liaison ta_famille_libelle (table de liaison entre ta_famille et ta_libelle) des objectid des familles et des libellés de la MEL
 INSERT INTO ta_famille_libelle(fid_famille, fid_libelle)
 SELECT
     a.objectid,
@@ -408,7 +545,20 @@ WHERE
     AND b.libelle = 'Territoire';
 COMMIT;
 
--- 8.3. Insertion des noms des territoires dans la table TA_NOM  
+-- 8.4. Insertion dans la table de liaison ta_famille_libelle famille / Codes des Territoires
+INSERT INTO ta_famille_libelle(fid_famille, fid_libelle)
+SELECT
+	a.objectid,
+	b.objectid
+FROM
+	ta_famille a,
+	ta_libelle b	
+WHERE
+	a.famille = 'Identifiants des divisions territoriales de la MEL'
+	AND b.libelle = 'Code Territoire';
+COMMIT;
+
+-- 8.5. Insertion des noms des territoires dans la table TA_NOM  
 INSERT INTO ta_nom(nom)
 VALUES ('Territoire Est')
 COMMIT;
@@ -434,7 +584,81 @@ INSERT INTO ta_nom(nom)
 VALUES ('Couronne Sud de Lille');
 COMMIT;
 
--- 8.4. Insertion dans la table ta_zone_administrative
+-- 8.6. Insertion des codes des Territoires dans TA_CODE
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '1',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '2',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '3',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '4',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '5',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '6',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '7',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+INSERT INTO ta_code(code, fid_libelle)
+SELECT
+    '8',
+    a.objectid
+FROM
+    ta_libelle a
+WHERE
+    a.libelle = 'Code Territoire';
+COMMIT;
+
+-- 8.7. Insertion des Territoires dans la table ta_zone_administrative
 INSERT INTO ta_zone_administrative(fid_libelle, fid_nom)
 SELECT
     a.objectid,
@@ -447,8 +671,138 @@ WHERE
     AND b.nom IN('Territoire Est', 'Territoire Tourquennois', 'Territoire des Weppes', 'Couronne Nord de Lille', 'Territoire de la Lys', 'Territoire Roubaisien', 'Lille-Lomme-Hellemmes', 'Couronne Sud de Lille');
 COMMIT;
 
--- 8.5. Insertion dans la table ta_za_communes des objectid des communes et ceux des Territoires correspondants
--- 8.5.1 Territoire Est
+-- 8.8. Insertion dans la table de liaison ta_identifiant_zone_administrative pour faire la liaison entre les territoires et leur code
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Territoire des Weppes'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '1';
+COMMIT;    
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Territoire Tourquennois'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '2';
+COMMIT;    
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Territoire Roubaisien'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '3';
+COMMIT;
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Territoire de la Lys'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '4';
+COMMIT;
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Territoire Est'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '5';
+COMMIT;
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Couronne Nord de Lille'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '6';
+COMMIT;
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Couronne Sud de Lille'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '7';
+COMMIT;
+INSERT INTO TA_IDENTIFIANT_ZONE_ADMINISTRATIVE(fid_zone_administrative, fid_identifiant)
+SELECT
+    a.objectid,
+    b.objectid
+FROM
+    ta_zone_administrative a
+    INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
+    INNER JOIN ta_nom c ON a.fid_nom = c.objectid,
+    ta_code d
+    INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+WHERE
+    b.libelle = 'Territoire'
+    AND c.nom = 'Lille-Lomme-Hellemmes'
+    AND e.libelle = 'Code Territoire'
+    AND d.code = '8';
+COMMIT;
+    
+-- 8.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Territoires correspondants
+-- 8.9.1. Territoire Est
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -468,7 +822,7 @@ WHERE
     AND c.code IN('59013','59044','59106','59146','59247','59275','59410','59522','59523','59602','59009','59660','59458');
 COMMIT;
 
--- 8.5.2 Territoire Tourquennois
+-- 8.9.2 Territoire Tourquennois
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -488,7 +842,7 @@ WHERE
     AND c.code IN('59090','59279','59421','59426','59508','59599');
 COMMIT;
 
--- 8.5.2 Territoire des Weppes
+-- 8.9.3. Territoire des Weppes
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -508,7 +862,7 @@ WHERE
     AND c.code IN('59051','59056','59670','59195','59196','59201','59208','59250','59278','59281','59286','59303','59320','59388','59524','59550','59553','59566','59653','59658','59088','59025','59257','59487','59371');
 COMMIT;
 
--- 8.5.3 Couronne Nord de Lille
+-- 8.9.4. Couronne Nord de Lille
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -528,7 +882,7 @@ WHERE
     AND c.code IN('59128','59328','59356','59368','59378','59386','59457','59470','59527','59611','59636');
 COMMIT;
 
--- 8.5.4 Territoire de la Lys
+-- 8.9.5. Territoire de la Lys
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -548,7 +902,7 @@ WHERE
     AND c.code IN('59017', '59098', '59143', '59152', '59173', '59202', '59252', '59317', '59352', '59482', '59643', '59656');
 COMMIT;
 
--- 8.5.5 Territoire Roubaisien
+-- 8.9.6. Territoire Roubaisien
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -568,7 +922,7 @@ WHERE
     AND c.code IN('59163','59299','59332','59339','59367','59512','59598','59646','59650');
 COMMIT;
 
--- 8.5.6 Lille-Lomme-Hellemmes
+-- 8.9.7. Lille-Lomme-Hellemmes
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
@@ -588,7 +942,7 @@ WHERE
     AND c.code IN('59350');
 COMMIT;
 
--- 8.5.7 Couronne Sud de Lille
+-- 8.9.8. Couronne Sud de Lille
 INSERT INTO ta_za_communes(fid_commune, fid_zone_administrative, debut_validite, fin_validite)
 SELECT
     a.objectid,
