@@ -123,13 +123,17 @@ INCREMENT BY 1
 NOCACHE;
 COMMIT;
 
--- 3.3 Correction du format des codes IRIS pour permettre une jointure avec TA_CODE pour permettre d'insérer des données dans la table TA_BPE_RELATION_CODE
+-- 3.3 Correction du format des codes IRIS pour permettre une jointure avec TA_CODE afin d'insérer des données dans la table TA_BPE_RELATION_CODE
+-- Les codes IRIS de la base BPE ne sont pas au bon format. Il y a d'une part un underscore entre le code INSEE et le code IRIS
+-- et d'autre part pour les communes non divisés en IRIS le code IRIS est le code INSEE de la commune alors que normalement il s'agit du code INSEE suivi de quatre zéros.
+-- l'instruction CASE permet suivant les cas soit de rajouter quatre zéros si le code IRIS ne comporte que 4 chiffre
+-- ou de supprimer le underscore s'il y en a un.
 
-update bpe_tout
+UPDATE bpe_tout
 SET "DCIRIS" = (
     CASE
         WHEN LENGTH("DCIRIS") = '5' THEN "DCIRIS" || '0000'
-        WHEN LENGTH("DCIRIS") = '10' THEN REPLACE("DCIRIS",'_','')
+        WHEN dciris like '%_%' THEN REPLACE("DCIRIS",'_','')
     END)
     ;
 
