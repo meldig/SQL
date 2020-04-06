@@ -12,7 +12,7 @@ CREATE TABLE ta_bpe(
 
 -- 1.2 Création des commentaires
 COMMENT ON TABLE ta_bpe IS 'Table regroupant les equipements de la Base Permanente des Equipements.';
-COMMENT ON COLUMN ta_bpe.objectid IS 'clé primare de la table TA_BPE.';
+COMMENT ON COLUMN ta_bpe.objectid IS 'clé primaire de la table TA_BPE.';
 COMMENT ON COLUMN ta_bpe.fid_metadonnee IS 'Clé étrangère vers la table TA_METADONNEE  pour connaitre la source de la données.';
 
 
@@ -36,7 +36,7 @@ TABLESPACE G_ADT_INDX;
 
 
 -- 2. Création de la table TA_BPE_GEOM
--- Creation de la table TA_BPE_GEOM qui recense les géométrie que peuvent prendre les equipements de la Base Permanente des Equipements.
+-- Creation de la table TA_BPE_GEOM qui recense les géométries que peuvent prendre les equipements de la Base Permanente des Equipements.
 
 -- 2.1 Création de la table
 CREATE TABLE ta_bpe_geom(
@@ -118,11 +118,11 @@ CREATE INDEX ta_bpe_relation_geom_fid_bpe_geom_IDX ON ta_bpe_relation_geom(fid_b
     TABLESPACE G_ADT_INDX;
 
 
--- 4. Création de la table TA_BPE_CARACTERISTIQUE NOMBRE
--- Creation de la table TA_BPE_CARACTERISTIQUE_NOMBRE pour faire la liaison entre un equipement de la BPE vers ses caractéristiques numerique.
+-- 4. Création de la table TA_BPE_CARACTERISTIQUE QUANTITATIVE
+-- Creation de la table TA_BPE_CARACTERISTIQUE_QUANTITATIVE pour faire la liaison entre un equipement de la BPE vers ses caractéristiques numerique.
 
 -- 4.1 Création de la table
-CREATE TABLE ta_bpe_caracteristique_nombre(
+CREATE TABLE ta_bpe_caracteristique_quantitative(
 	objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY START WITH 1 INCREMENT BY 1,
     fid_bpe NUMBER(38,0),
     fid_libelle NUMBER(38,0),
@@ -130,43 +130,43 @@ CREATE TABLE ta_bpe_caracteristique_nombre(
 	);
 
 -- 4.2 Création des commentaires
-COMMENT ON TABLE ta_bpe_caracteristique_nombre IS 'Table de relation entre les equipements et les libelles ou l''information et sous la forme d''un nombre: exemple NB_SALLES: 4. L''équipement dispose de 4 salles';
-COMMENT ON COLUMN ta_bpe_caracteristique_nombre.objectid IS 'clé primaire de la table TA_BPE_CARACTERISTIQUE_NOMBRE.';
-COMMENT ON COLUMN ta_bpe_caracteristique_nombre.fid_bpe IS 'clé étrangère vers la table TA_BPE';
-COMMENT ON COLUMN ta_bpe_caracteristique_nombre.fid_libelle IS 'clé étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l''équipement';
-COMMENT ON COLUMN ta_bpe_caracteristique_nombre.nombre IS 'nombre de salles de théatre par cinéma, théatre ou nombre d''aires de pratique d''un même type au sein de l''équipement';
+COMMENT ON TABLE ta_bpe_caracteristique_quantitative IS 'Table de relation entre les equipements et les libelles ou l''information et sous la forme d''un nombre: exemple NB_SALLES: 4. L''équipement dispose de 4 salles';
+COMMENT ON COLUMN ta_bpe_caracteristique_quantitative.objectid IS 'clé primaire de la table ta_bpe_caracteristique_quantitative.';
+COMMENT ON COLUMN ta_bpe_caracteristique_quantitative.fid_bpe IS 'clé étrangère vers la table TA_BPE';
+COMMENT ON COLUMN ta_bpe_caracteristique_quantitative.fid_libelle IS 'clé étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l''équipement';
+COMMENT ON COLUMN ta_bpe_caracteristique_quantitative.nombre IS 'nombre de salles de théatre par cinéma, théatre ou nombre d''aires de pratique d''un même type au sein de l''équipement';
 
 -- 4.3 Création de la clé primaire
-ALTER TABLE ta_bpe_caracteristique_nombre
-ADD CONSTRAINT ta_bpe_caracteristique_nombre_PK 
+ALTER TABLE ta_bpe_caracteristique_quantitative
+ADD CONSTRAINT ta_bpe_caracteristique_quantitative_PK 
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4.5 clé étrangère
 
 -- 4.5.1 clé étrangère vers la table TA_BPE
-ALTER TABLE ta_bpe_caracteristique_nombre
-ADD CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_BPE_OBJECTID_FK"
+ALTER TABLE ta_bpe_caracteristique_quantitative
+ADD CONSTRAINT  "TA_BPE_CARACTERISTIQUE_QUANTITATIVE_TA_BPE_OBJECTID_FK"
 FOREIGN KEY ("FID_BPE")
 REFERENCES  "G_GEO"."TA_BPE" ("OBJECTID");
 
 -- 4.5.2 clé étrangère vers la table TA_LIBELLE pour connaitre la caractéristique de l'equipement
-ALTER TABLE ta_bpe_caracteristique_nombre
-ADD CONSTRAINT  "TA_BPE_CARACTERISTIQUE_NOMBRE_TA_LIBELLE_OBJECTID_FK"
+ALTER TABLE ta_bpe_caracteristique_quantitative
+ADD CONSTRAINT  "TA_BPE_CARACTERISTIQUE_QUANTITATIVE_TA_LIBELLE_OBJECTID_FK"
 FOREIGN KEY ("FID_LIBELLE")
 REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
 
 -- 4.5 Création des index sur les cléfs étrangères.
 
-CREATE INDEX ta_bpe_caracteristique_nombre_fid_bpe_IDX ON ta_bpe_caracteristique_nombre(fid_bpe)
+CREATE INDEX ta_bpe_caracteristique_quantitative_fid_bpe_IDX ON ta_bpe_caracteristique_quantitative(fid_bpe)
     TABLESPACE G_ADT_INDX;
 
-CREATE INDEX ta_bpe_caracteristique_nombre_fid_libelle_IDX ON ta_bpe_caracteristique_nombre(fid_libelle)
+CREATE INDEX ta_bpe_caracteristique_quantitative_fid_libelle_IDX ON ta_bpe_caracteristique_quantitative(fid_libelle)
     TABLESPACE G_ADT_INDX;
 
 
 -- 5 Création de la table TA_BPE_CARACTERISTIQUE
--- Creation de la table TA_BPE_CARACTERISTIQUE pour faire la liaison entre un equipement de la BPE vers ses caractéristique.
+-- Creation de la table TA_BPE_CARACTERISTIQUE pour faire la liaison entre un equipement de la BPE vers ses caractéristiques.
 
 -- 5.1 Création de la table
 CREATE TABLE ta_bpe_caracteristique(
