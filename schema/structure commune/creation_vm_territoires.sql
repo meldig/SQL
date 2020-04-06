@@ -10,6 +10,7 @@ DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'ADMIN_TERRITOIRE_MEL';
 -- 1. Création de la vue matérialisée
 CREATE MATERIALIZED VIEW g_referentiel.admin_territoire_mel(
     identifiant,
+    code_adm,
     nom,
     geom
 )
@@ -18,6 +19,7 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
         c.objectid AS identifiant,
+        g.code_adm,
         e.nom AS nom_a,
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
     FROM
@@ -26,7 +28,8 @@ SELECT
         INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
         INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
         INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-    
+        INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
+        INNER JOIN g_geo.ta_code g ON f.fid_identifiant = g.objectid
     WHERE
         d.libelle = 'Territoire'
         AND sysdate BETWEEN b.debut_validite AND b.fin_validite
@@ -66,6 +69,7 @@ PARAMETERS(
 -- 5. Création des commentaires de table et de colonnes
 COMMENT ON MATERIALIZED VIEW g_referentiel.admin_territoire_mel IS 'Vue matérialisée proposant les Territoires de la MEL.';
 COMMENT ON COLUMN g_referentiel.admin_territoire_mel.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_referentiel.admin_territoire_mel.code_adm IS 'Code unique de chaque territoire (CODTER).';
 COMMENT ON COLUMN g_referentiel.admin_territoire_mel.nom IS 'Nom des Territoires.';
 COMMENT ON COLUMN g_referentiel.admin_territoire_mel.geom IS 'Géométrie de chaque Territoire.';
 
