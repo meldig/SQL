@@ -8,19 +8,19 @@ Ce document a pour but d'expliciter la méthode utilisée pour intégrer les don
 
 ## Phasage:
 
-* 1. Création des tables du schéma nécessaire à l'insertion des données BPE.
-* 2. Insertion de la nomenclature propre aux BPE.
-* 3. Import des données brutes dans le schéma via ogr2ogr.
+1. Création des tables du schéma nécessaire à l'insertion des données BPE.
+2. Insertion de la nomenclature propre aux BPE.
+3. Import des données brutes dans le schéma via ogr2ogr.
 	* 3 couches sont importées:
 		* la couche BPE ensembles.
 		* la couche BPE enseignement.
 		* la couche BPE sport et loisir.
-* 4. Suppression dans la couche BPE ensemble des équipements dont la valeur dans le champ "TYPEQU"  est aussi présent dans la couche BPE enseignement ou BPE sport et loisir.
-* 5. Création d'une table synthétisant l'ensemble des informations contenues dans les trois tables des équipements.
+4. Suppression dans la couche BPE ensemble des équipements dont la valeur dans le champ "TYPEQU"  est aussi présent dans la couche BPE enseignement ou BPE sport et loisir.
+5. Création d'une table synthétisant l'ensemble des informations contenues dans les trois tables des équipements.
 	* Ajout d'une colonne identity dans la table précédemment créée pour affecter des identifiants uniques aux équipements.
 	* Correction des codes IRIS.
 	* Ajout des métadonnées spatiales à la table.
-* 6. Normalisation des données dans la table.
+6. Normalisation des données dans la table.
 
 
 ## Description du phasage:
@@ -91,12 +91,12 @@ Pour accueillir les données BPE, 8 tables sont nécessaires:
 ### 2. Insertion de la nomenclature 
 
 L'insertion de la nomenclature BPE se fait à partir des requètes contenues dans le fichier: insertion_nomenclature_bpe.sql. Celle-ci se fait en 6 étapes:
-* 2.1. La première étape consiste à insérer les données dans la table TA_LIBELLE_COURT.
-* 2.2. Ensuite il faut insérer les données dans la table TA_LIBELLE.
-* 2.3. Etablir la correspondance entre les libellés courts et les libellés avec la table TA_CORRESPONDANCE_LIBELLE, car un libellé court peut avoir plusieurs signification
-* 2.4. Définir la relation hiérarchique entre les libellés, car il existe des niveaux entre les libellés utilisé dans la nomenclature BPE. Mais aussi car un libellés peut avoir plusieurs significations suivant sa variables. Par exemple 0 peut signifier équipement non couvert ou équipement non éclairé.
-* 2.5. Insertion de la valeur BPE dans la table TA_FAMILLE.
-* 2.6. Insertion des correspondance famille-libelle dans la table TA_FAMILLE_LIBELLE.
+2.1. La première étape consiste à insérer les données dans la table TA_LIBELLE_COURT.
+2.2. Ensuite il faut insérer les données dans la table TA_LIBELLE.
+2.3. Etablir la correspondance entre les libellés courts et les libellés avec la table TA_CORRESPONDANCE_LIBELLE, car un libellé court peut avoir plusieurs signification
+2.4. Définir la relation hiérarchique entre les libellés, car il existe des niveaux entre les libellés utilisé dans la nomenclature BPE. Mais aussi car un libellés peut avoir plusieurs significations suivant sa variables. Par exemple 0 peut signifier équipement non couvert ou équipement non éclairé.
+2.5. Insertion de la valeur BPE dans la table TA_FAMILLE.
+2.6. Insertion des correspondance famille-libelle dans la table TA_FAMILLE_LIBELLE.
 
 ### 3. Normalisation des donnée
 
@@ -124,16 +124,16 @@ Une requête permet de corriger les codes IRIS dans la base BPE et de tout mettr
 
 
 A parir de cette table, plusieurs requêtes (présentes dans le fichier normalisation_bpe) sont executés pour insérer les données dans les tables:
-* 3.4.1. TA_BPE_GEOM (requête 4)
+3.4.1. TA_BPE_GEOM (requête 4)
 	* Cette requête permet d'insérer dans la table TA_BPE_GEOM les géométries unique des BPE qui ne sont pas déja présente dans la table
-* 3.4.2. TA_BPE (requête 5)
+3.4.2. TA_BPE (requête 5)
 	* Cette requête permet de mettre le fid_metadonnées de la donnée considéré au dernier millésime.
-* 3.4.3. TA_BPE_RELATION_GEOM (requête 6)
-* 3.4.4. TA_BPE_CARACTERISTIQUE_NOMBRE (requête 7)
+3.4.3. TA_BPE_RELATION_GEOM (requête 6)
+3.4.4. TA_BPE_CARACTERISTIQUE_NOMBRE (requête 7)
 	* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
 		* NB_AIREJEU: Nombre d'aires de pratique d'un meme type au sein de l'equipement
 		* NB_SALLES: nombre de salles par theatre ou cinema
-* 3.4.5. TA_BPE_CARACTERISTIQUE (requête 8)
+3.4.5. TA_BPE_CARACTERISTIQUE (requête 8)
 	* un total de 11 requêtes pour inserer les données liées:
 		* TYPEQU: nature de l'équipement.
 		* CANT: présence ou absence d'une cantine.
@@ -151,7 +151,7 @@ A parir de cette table, plusieurs requêtes (présentes dans le fichier normalis
 	* dans la seconde nous sélectionnons les libellés et leurs equivalences courts.
 	* dans la troisième sous requête, nous selectionnons l'ensemble des codes des libellés fils et parent avec un filtre sur l'attribut à renseigner dans la table.
 	* et enfin dans le SELECT de fin on sélectionne les BPE qui ont cette attribut.
-* 3.4.6. TA_BPE_RELATION_CODE (requête 9)
+3.4.6. TA_BPE_RELATION_CODE (requête 9)
 	* il a été décidé de faire une table de relation entres les BPEs et les codes IRIS car certain BPE ne sont pas géolocalisés cette relation permet à minima d'identifier leurs communes d'implantation et si possible leurs IRIS.
 	* Cette insertion se fait en deux fois:
 		* pour les codes IRIS
