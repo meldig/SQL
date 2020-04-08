@@ -1,0 +1,199 @@
+# Fiche Technique : La Topologie dans Oracle
+
+## Table des matières :
+### 1. Définition de la topologie ;
+### 2. Les concepts de la topologie ;
+### 3. Le stockage de la topologie dans Oracle ;
+### 4. Insérer, modifier et supprimer des géométries topologiques ;
+#### 4.1. Insérer des géométries topologiques dans une topologie ;
+#### 4.2. Modifier des géométries topologiques dans une topologie ;
+#### 4.3. Supprimer des géométries topologiques dans une topologie ;
+### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
+
+### 1.1. Définition :
+
+La topologie désigne l'expression des relations entre les objets. Plus précisément, elle s'attache à représenter les objets tels que les nous les voyons à travers nos yeux : les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
+
+*---------*---------*
+|         |         |
+| Carré A | Carré B |
+|         |         |
+*---------*---------*
+
+
+En d'autres termes les logiciels SIG qui gèrent la topologie identifient les objets les uns par rapport aux autres. Ainsi, deux communes adjacentes partagent les tronçons et les sommets sur leur frontière commune. Il n'y a pas de superposition.
+ 
+### 2. Les concepts de la topologie ;
+
+La topologie décompose chaque géométrie jusqu'à atteindre les objets fondamentaux qui les composent, appelés **entités topologiques** ou **primitives topologiques**. Cela permet d'étudier les relations entre géométries et notamment le partage de certains éléments :
+Dans l'exemple du point 1.1., les deux communes adjacentes n'ont pas de sommets ni de tronçons qui se superposent à l'endroit de leur frontière commune, mais ils **partagent** les mêmes sommets et les mêmes tronçons. Ainsi au lieu d'avoir systématiquement des doublons de sommets et de tronçons on obtient un sommet et un tronçon qui appartiennent en même temps à la commune A **ET** à la commune B.
+
+##### Les concepts à retenir :
+
+* La topologie étudie les relations entre objets ;
+* La topologie décompose chaque objet géométrique en primitives topologiques qui le composent ;
+* La topologie repose sur les relations entre primitives topologiques qui permettent de créer des objets géométriques, mais aussi d'étudier les relations de ces objets entre eux ;
+
+### 3. Le stockage de la topologie dans Oracle ;
+
+Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser à l'emboîtement des poupées russes, puis à une toile d'araignée et enfin aux étagères tylko. Je m'explique :
+
+* Emboîtement des objets permettant de stocker des géométries topologiques :
+
+|-----------|
+| Topologie |
+|-----------|
+    |
+    |-------------------------------------------|
+    | Couche d'entités spatiales de points      |
+    |                                           |
+    | Couche d'entités spatiales de lignes      |
+    |                                           |
+    | Couche d'entités spatiales de polygones   |
+    |-------------------------------------------|
+        |
+        |
+        |--------------------|
+        | Couche de noeuds   |
+        | Couche de tronçons |
+        | Couche de surface  |
+        | Couche de relation |
+        |--------------------|
+    
+* Liens entre les objets :
+
+                                                        Topology
+                                                            |
+                                                            |
+                                                            |
+                                                            |
+                                                            |
+
+Tables géométriques (tables "normales") ------> Couches d'entités spatiales <------> Couche de relation <--------> |--------------------|
+                                                                                                                    | Couche de noeuds   |
+                                                                                                                    | Couche de tronçons |
+                                                                                                                    | Couche de surface  |
+                                                                                                                    |--------------------|
+
+#### 3.1. Le stockage de la géométrie topologique
+
+Une géométrie topologique se stocke dans une seule ligne de la manière suivante :
+
+##### Fonction :
+``` SQL
+CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
+    tg_type      NUMBER,
+    tg_id        NUMBER,
+    tg_layer_id  NUMBER,
+    topology_id  NUMBER);
+```
+
+##### Paramètres :
+* **tg_type :** Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet ;
+* **tg_id :** Identifiant de la géométrie topologique à laquelle appartient l'objet ;
+* **tg_layer_id :** Identifiant de la couche de géométries topologiques à laquelle appartient l'objet ;
+* **topology_id :** Identifiant de la topologie à laquelle appartient la couche de géométries topologiques ;
+
+### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
+
+#### 5.1. Connaître les coordonnées d'un tronçon topologique
+
+Un tronçon topologique est une entité topologique aussi appelée "Primitive topologique". C'est l'un des éléments de base d'une topologie avec les noeuds et les surfaces.
+
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_EDGE_COORDS(
+     topology IN VARCHAR2, -- nom de la topologie
+     topo_map IN VARCHAR2,-- nom de l'objet TopoMap s'il en existe un dans la session, dans le cas contraire, mettre "NULL" 
+     edge_id IN NUMBER -- identifiant du tronçon situé dans la table "topologyName_edge$" et le champ "edge_id"
+     );
+```
+
+##### Résultat :
+``` SQL
+SDO_NUMBER_ARRAY(x1, y1, x2, y2, x3, y3)
+```
+
+##### Explications :
+
+La fonction va chercher dans la topologie "ma_topologie" et/ou dans l'objet TopoMap "mon_objet_topomap" toutes les coordonnées du tronçon dont l'identifiant est indiqué dans les paramètres, c'est-à-dire les coordonnées du noeud de départ, des sommets et du noeud d'arrivée.
+
+# FICHE TECHNIQUE SUR LES TOPOLOGIES DANS ORACLE
+
+## Objectifs :
+
+1. Présentation de la topologie et de son utilité ;
+2. Création d'une topologie dans oracle ;
+3. Utilisation des topologies pour modifier des géométries ;
+
+## 1. Présentation de la topologie et de son utilité
+
+### 1.1. Définition :
+
+La topologie désigne l'expression des relations entre les objets. En d'autres termes les logiciels SIG qui gèrent la topologie identifient les objets les uns par rapport aux autres.
+
+### 1.2. Exemple : 
+
+Une ligne se compose de trois types d'éléments, les noeuds (correspondant au startpoint / endpoint), les sommets (points intermédiaires) et les tronçons (lignes situées entre deux points). Pareillement, deux communes adjacentes partagent les tronçons et les sommets sur leur frontière commune. 
+
+## 1.3. Schéma de la topologie géométrique :
+
+|-----------|
+| TOPOLOGIE |
+|-----------|
+    |
+    |
+    | *Entités Spatiales*                             
+    |
+    |------------------------------|                    
+    | Couche de points topologique |                    
+    |------------------------------|                    
+    |
+    |------------------------------|
+    | Couche de lignes topologique |
+    |------------------------------|
+    |
+    |---------------------------------|
+    | Couche de polygones topologique |
+    |---------------------------------|
+    |
+    |
+    | *Entités Topologiques* (toutes les entités spatiales partagent les mêmes coucges d'entités topologiques) aussi appelées *Primitives Topologiques*
+        |
+        |------------------|                    
+        | Couche de noeuds |                    
+        |------------------|                    
+        |
+        |--------------------|
+        | Couche de tronçons |
+        |--------------------|
+        |
+        |--------------------|
+        | Couche de surfaces |
+        |--------------------|
+        |
+        |--------------------|
+        | Couche de relation |
+        |--------------------|
+
+## 2. Création d'une topologie dans oracle ;
+
+### 2.1. Création d'une topologie
+
+* *Fonction :* SDO_TOPO.CREATE_TOPOLOGY
+* *Exemple :* EXECUTE SDO_TOPO.CREATE_TOPOLOGY('communes', 0.05, 2154);
+
+C'est la première étape. Cette fonction va créer une topologie dans laquelle seront rangés tous les types de topologie géométrique d'un ensemble de tables.
+Par défaut, elle créée les tables suivantes :
+
+* topologyname_node$;
+* topologyname_edge$;
+* topologyname_face$;
+* topologyname_relation$;
+* topologyname_history$;
+
+## 3. Utilisation des topologies pour modifier des géométries
+
+## Sources : 
+
+* https://www.notre-planete.info/terre/outils/sig.php#topologie
