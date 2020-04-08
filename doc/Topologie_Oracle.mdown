@@ -18,7 +18,7 @@ La topologie désigne l'expression des relations entre les objets. Plus précis�
 |         |         |
 | Carré A | Carré B |
 |         |         |
-|---------|---------|
+|         |         |
 
 
 En d'autres termes les logiciels SIG qui gèrent la topologie identifient les objets les uns par rapport aux autres. Ainsi, deux communes adjacentes partagent les tronçons et les sommets sur leur frontière commune. Il n'y a pas de superposition.
@@ -43,7 +43,7 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 
 |-----------|
 | Topologie |
-|-----------|
+|           |
     |
     |-------------------------------------------|
     | Couche d'entités spatiales de points      |
