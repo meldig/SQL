@@ -14,7 +14,7 @@
 
 La topologie désigne l'expression des relations entre les objets. Plus précisément, elle s'attache à représenter les objets tels que les nous les voyons à travers nos yeux : les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
 
-![Illustration de la définition](images_topologie/Illustration_1.1.PNG)
+![Illustration de la définition](images_topologie/Illustration_1_1.PNG)
 
 
 En d'autres termes les logiciels SIG qui gèrent la topologie identifient les objets les uns par rapport aux autres. Ainsi, deux communes adjacentes partagent les tronçons et les sommets sur leur frontière commune. Il n'y a pas de superposition.
@@ -36,7 +36,7 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 
 * Emboîtement des objets permettant de stocker des géométries topologiques :
 
-![Illustration des emboitements dans une topologie](images_topologie/Illustration_3..PNG)
+![Illustration des emboitements dans une topologie](images_topologie/Illustration_3.PNG)
 
     
 * Liens entre les objets :
