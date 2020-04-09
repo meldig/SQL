@@ -585,76 +585,73 @@ COMMIT;
 
 -- 8.6. Insertion des codes des Territoires dans TA_CODE
 INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '1',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '2',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '3',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '4',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '5',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '6',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '7',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '8',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Territoire';
+WITH
+    v_1 AS(
+    SELECT 
+        '1',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '2',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '3',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '4',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '5',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '6',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '7',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    UNION
+    SELECT 
+        '8',
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Territoire'
+    )
+SELECT * FROM v_1;
 COMMIT;
 
 -- 8.7. Insertion des Territoires dans la table ta_zone_administrative
