@@ -1,5 +1,78 @@
 -- Insertion de la nomenclature IRIS
--- 1. Insertion de la nomenclature dans la table TA_LIBELLE
+-- 1. Insertion de la source dans TA_SOURCE
+MERGE INTO ta_source s
+USING 
+    (
+        SELECT 'Contours IRIS' AS nom, 'Contours...Iris®, coédition Insee et IGN, est la base de données de référence pour la diffusion infracommunale des résultats du recensement de la population par Iris, de précision décamétrique.' AS description FROM DUAL
+    ) temp
+ON (temp.nom = s.nom_source
+AND temp.desription = s.description)
+WHEN NOT MATCHED THEN
+INSERT (s.nom_source,s.description)
+VALUES (temp.nom,temp.description)
+;
+
+-- 2. Insertion des données dans TA_PROVENANCE
+MERGE INTO ta_provenance p
+USING
+    (
+        SELECT 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris' AS url, 'Donnée à télécharger en libre accès' AS methode_acquisition FROM DUAL
+    ) temp
+ON (p.url = temp.url
+AND p.methode_acquisition = temp.methode_acquisition)
+WHEN NOT MATCHED THEN
+INSERT p.url,p.methode_acquisition)
+VALUES(temp.url,temp.methode_acquisition)
+;
+
+-- 3. Insertion dans TA_DATE_ACQUISITION
+MERGE INTO ta_date_acquisition a
+USING
+    (
+        SELECT TO_DATE('01/04/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2018') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
+    ) temp
+ON (temp.date_acquisition = a.date_acquisition
+AND temp.millesime = a.millesime)
+WHEN NOT MATCHED THEN
+INSERT (a.date_acquisition,a.millesime)
+VALUES (temp.date_acquisition,temp.millesime)
+;
+
+-- 4. Insertion de la source dans TA_ORGANISME
+MERGE INTO ta_organisme a
+USING
+    (SELECT 'IGN' AS ACRONYME, 'Institut National de l''Information Géographique et Forestière' AS NOM_ORGANISME FROM DUAL) temp
+ON (a.acronyme = temp.acronyme)
+WHEN NOT MATCHED THEN
+INSERT (a.acronyme,a.nom_organisme)
+VALUES(temp.acronyme,temp.nom_organisme)
+;
+
+
+-- 5. Insertion des métadonnées dans la table TA_METADONNEE
+INSERT INTO ta_metadonnee (fid_source,fid_acquisition,fid_provenance,fid_organisme)
+    SELECT 
+        s.objectid,
+        a.objectid,
+        p.objectid,
+        o.objectid
+    FROM
+        ta_source s,
+        ta_date_acquisition a,
+        ta_provenance p,
+        ta_organisme o
+    WHERE
+        s.nom_source = 'Contours IRIS'
+    AND
+        a.millesime IN ('01/01/2018')
+    AND
+        a.date_acquisition = '01/04/2020'
+    AND
+        p.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
+    AND
+        o.acronyme = 'IGN'
+;
+-- 6. Insertion de la nomenclature dans la table TA_LIBELLE
 
 MERGE INTO ta_libelle t
 USING 
@@ -20,7 +93,7 @@ USING
   VALUES (temp.TYPE)
   ;
 
--- 2. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
+-- 7. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
 
 MERGE INTO ta_libelle_court tl
 USING 
@@ -40,7 +113,7 @@ VALUES (temp.TYPE)
 ;
 
 
--- 3. Insertion des correspondances dans la table TA_CORRESPONDANCE_LIBELLE
+-- 8. Insertion des correspondances dans la table TA_CORRESPONDANCE_LIBELLE
 
 INSERT INTO TA_CORRESPONDANCE_LIBELLE(fid_libelle, fid_libelle_court)
 SELECT
@@ -57,7 +130,7 @@ WHERE
 ;
 
 
--- 4. Insertion des familles utilisée par les données IRIS.
+-- 9. Insertion des familles utilisée par les données IRIS.
 
 MERGE INTO ta_famille f
 USING 
@@ -72,7 +145,7 @@ INSERT (f.famille)
 VALUES (temp.famille);
 
 
--- 5. Insertion des correspondance familler libelle dans TA_FAMILLE_LIBELLE;
+-- 10. Insertion des correspondance familler libelle dans TA_FAMILLE_LIBELLE;
 
 INSERT INTO TA_FAMILLE_LIBELLE(fid_famille, fid_libelle)
 SELECT
