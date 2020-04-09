@@ -562,28 +562,25 @@ COMMIT;
 
 -- 8.5. Insertion des noms des territoires dans la table TA_NOM  
 INSERT INTO ta_nom(nom)
-VALUES ('Territoire Est')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Territoire Tourquennois')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Territoire des Weppes')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Couronne Nord de Lille')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Territoire de la Lys')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Territoire Roubaisien')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Territoire Lillois')
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Couronne Sud de Lille');
+WITH
+    v_1 AS(
+    SELECT 'Territoire Est' FROM DUAL
+    UNION
+    SELECT 'Territoire Tourquennois' FROM DUAL
+    UNION
+    SELECT 'Territoire des Weppes' FROM DUAL
+    UNION
+    SELECT 'Couronne Nord de Lille' FROM DUAL
+    UNION
+    SELECT 'Territoire de la Lys' FROM DUAL
+    UNION
+    SELECT 'Territoire Roubaisien' FROM DUAL
+    UNION
+    SELECT 'Territoire Lillois' FROM DUAL
+    UNION
+    SELECT 'Couronne Sud de Lille' FROM DUAL
+    )
+SELECT * FROM v_1;
 COMMIT;
 
 -- 8.6. Insertion des codes des Territoires dans TA_CODE
