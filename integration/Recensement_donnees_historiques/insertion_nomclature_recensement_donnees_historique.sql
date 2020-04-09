@@ -2,11 +2,11 @@
 
 -- 1. Insertion de la source dans TA_SOURCE.
 INSERT INTO ta_source (nom_source, description)
-VALUES ('Historique des populations communales - Recensements de la population 1876-2017','Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.');
+VALUES ('Recensements de la population 1876-2017','Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.');
 
 -- 2. Insertion de la provenance dans TA_PROVENANCE
 INSERT INTO ta_provenance(url,methode_acquisition)
-VALUES ('https://www.insee.fr/fr/statistiques/3698339#consulter','la données est proposé en libre accès sous la forme dans tableau xlxs.');
+VALUES ('https://www.insee.fr/fr/statistiques/3698339#consulter','les données sont proposées en libre accès sous la forme d''un tableau xlxs.');
 
 -- 3. Insertion des données dans TA_DATE_ACQUISITION
 MERGE INTO ta_date_acquisition a
@@ -86,7 +86,7 @@ INSERT INTO ta_metadonnee (fid_source,fid_acquisition,fid_provenance,fid_organis
 ;
 
 
--- 6. Insertion des libellés courts dans TA_LIBELLE_COURT
+-- 6. Insertion des libelles courts dans TA_LIBELLE_COURT
 
 MERGE INTO ta_libelle_court tlc
 USING
@@ -130,7 +130,7 @@ VALUES (temp.RECENSEMENT)
 ;
 
 
--- 7. Insertion des libellés courts dans TA_LIBELLE
+-- 7. Insertion des libelles dans TA_LIBELLE
 
 MERGE INTO ta_libelle tl
 USING
