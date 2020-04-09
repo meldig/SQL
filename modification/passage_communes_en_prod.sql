@@ -292,16 +292,17 @@ COMMIT;
 
 -- 7.4. Insertion dans la table ta_nom des noms des Unités Territoriales
 INSERT INTO ta_nom(nom)
-VALUES ('Tourcoing-Armentières');
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Roubaix-Villeneuve d''Ascq');
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Lille-Seclin');
-COMMIT;
-INSERT INTO ta_nom(nom)
-VALUES ('Marcq en Baroeul-la-Bassee');
+WITH
+    v_1 AS(
+    SELECT 'Tourcoing-Armentières' FROM DUAL
+    UNION
+    SELECT 'Roubaix-Villeneuve d''Ascq' FROM DUAL
+    UNION
+    SELECT 'Lille-Seclin' FROM DUAL
+    UNION
+    SELECT 'Marcq en Baroeul-la-Bassee' FROM DUAL
+    )
+SELECT * FROM v_1;
 COMMIT;
 
 -- 7.5. Insertion des codes des Unités Territoriales
