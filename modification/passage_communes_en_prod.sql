@@ -306,40 +306,41 @@ COMMIT;
 
 -- 7.5. Insertion des codes des Unités Territoriales
 INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '1',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Unité Territoriale';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '2',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Unité Territoriale';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '3',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Unité Territoriale';
-COMMIT;
-INSERT INTO ta_code(code, fid_libelle)
-SELECT
-    '4',
-    a.objectid
-FROM
-    ta_libelle a
-WHERE
-    a.libelle = 'Code Unité Territoriale';
+WITH
+    v_1 AS(
+    SELECT 
+        '1' AS code,
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Unité Territoriale'
+    UNION
+    SELECT 
+        '2' AS code,
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Unité Territoriale'
+    UNION
+    SELECT 
+        '3' AS code,
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Unité Territoriale'
+    UNION
+    SELECT 
+        '4' AS code,
+        a.objectid
+    FROM
+        ta_libelle a
+    WHERE
+        a.libelle = 'Code Unité Territoriale'
+    )
+SELECT * FROM v_1;
 COMMIT;
 
 -- 7.6. Insertion des Unités Territoriales dans la table ta_zone_administrative
