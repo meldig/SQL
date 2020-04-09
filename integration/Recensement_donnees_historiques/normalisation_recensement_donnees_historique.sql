@@ -8,12 +8,8 @@ with annee as
         a.millesime
     FROM
         ta_metadonnee m
-    INNER JOIN
-        ta_source s
-    ON m.fid_source = s.objectid
-    INNER JOIN
-        ta_date_acquisition a
-    ON m.fid_acquisition = a.objectid
+    INNER JOIN ta_source s ON m.fid_source = s.objectid
+    INNER JOIN ta_date_acquisition a ON m.fid_acquisition = a.objectid
     WHERE 
         s.nom_source = 'Historique des populations communales - Recensements de la population 1876-2017'
     ),
