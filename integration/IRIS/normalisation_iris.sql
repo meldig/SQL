@@ -95,7 +95,7 @@ AND
                 INNER JOIN ta_provenance p ON a.fid_provenance = p.objectid
                 INNER JOIN ta_organisme o ON a.fid_organisme = o.objectid
             WHERE
-                c.nom_source = ('IRIS')
+                c.nom_source = ('Contours IRIS')
             )
         )
 -- sous requete AND pour insérer le fid_bpe_geom de la bonne géométrie de l'IRIS.
