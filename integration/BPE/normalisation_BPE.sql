@@ -242,7 +242,7 @@ WHERE
 
 -- 7.1 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
 
-INSERT INTO ta_bpe_caracteristique_nombre(fid_bpe,fid_libelle,nombre)
+INSERT INTO ta_bpe_caracteristique_quantitative(fid_bpe,fid_libelle,nombre)
 (
 SELECT 
 	a."IDENTITE",
@@ -260,7 +260,7 @@ COMMIT;
 
 -- 7.2 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
 
-INSERT INTO ta_bpe_caracteristique_nombre(fid_bpe,fid_libelle,nombre)
+INSERT INTO ta_bpe_caracteristique_quantitative(fid_bpe,fid_libelle,nombre)
 (
 SELECT 
 	a."IDENTITE",

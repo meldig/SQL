@@ -93,7 +93,9 @@ USING
   VALUES (temp.TYPE)
   ;
 
+
 -- 7. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
+
 
 MERGE INTO ta_libelle_court tl
 USING 
@@ -113,7 +115,9 @@ VALUES (temp.TYPE)
 ;
 
 
+
 -- 8. Insertion des correspondances dans la table TA_CORRESPONDANCE_LIBELLE
+
 
 INSERT INTO TA_CORRESPONDANCE_LIBELLE(fid_libelle, fid_libelle_court)
 SELECT
@@ -132,6 +136,7 @@ WHERE
 
 -- 9. Insertion des familles utilisée par les données IRIS.
 
+
 MERGE INTO ta_famille f
 USING 
     (
@@ -145,7 +150,9 @@ INSERT (f.famille)
 VALUES (temp.famille);
 
 
+
 -- 10. Insertion des correspondance familler libelle dans TA_FAMILLE_LIBELLE;
+
 
 INSERT INTO TA_FAMILLE_LIBELLE(fid_famille, fid_libelle)
 SELECT

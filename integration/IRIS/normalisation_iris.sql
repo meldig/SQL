@@ -52,6 +52,7 @@ WHERE
 
 
 -- 4. Insertion des IRIS dans TA_IRIS
+
 INSERT INTO ta_iris(fid_libelle_court, fid_code, fid_nom, fid_metadonnee, fid_iris_geom)
 SELECT
     b.objectid AS fid_libelle,
@@ -98,6 +99,7 @@ AND
                 c.nom_source = ('Contours IRIS')
             )
         )
+
 -- sous requete AND pour insérer le fid_bpe_geom de la bonne géométrie de l'IRIS.
 AND
     SDO_RELATE(a.ora_geometry, j.geom,'mask=equal') = 'TRUE'

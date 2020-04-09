@@ -12,6 +12,7 @@ CREATE TABLE TA_IRIS(
 	);
 
 -- 1.2 Création des commentaires des colonnes
+
 COMMENT ON TABLE g_geo.ta_iris IS 'Table regroupant les zones IRIS';
 COMMENT ON COLUMN g_geo.ta_iris.objectid IS 'Clé primaire de la table TA_BPE.';
 COMMENT ON COLUMN g_geo.ta_iris.fid_code IS 'Clé étrangère vers la table TA_CODE pour connaitre le code de la zone IRIS.';
@@ -25,6 +26,7 @@ ALTER TABLE ta_iris
 	ADD CONSTRAINT ta_iris_PK 
 	PRIMARY KEY("OBJECTID")
 	USING INDEX TABLESPACE "G_ADT_INDX";
+
 
 -- 1.4 Création des clés étrangères
 
@@ -58,6 +60,7 @@ ALTER TABLE ta_iris
 	FOREIGN KEY (fid_iris_geom)
 	REFERENCES ta_iris_geom(objectid);
 
+
 -- 1.5 Création des index sur les cléfs étrangères.
 CREATE INDEX ta_iris_fid_code_IDX ON ta_iris(fid_code)
 TABLESPACE G_ADT_INDX;
@@ -85,6 +88,7 @@ CREATE TABLE TA_IRIS_GEOM(
 	);
 
 -- 2.2 Création des commentaires des colonnes
+
 COMMENT ON TABLE g_geo.TA_IRIS_GEOM IS 'Table regroupant les zones IRIS';
 COMMENT ON COLUMN g_geo.TA_IRIS_GEOM.objectid IS 'Clé primaire de la table TA_BPE.';
 COMMENT ON COLUMN g_geo.TA_IRIS_GEOM.geom IS 'Géométrie de la zone IRIS.';
@@ -94,6 +98,7 @@ ALTER TABLE TA_IRIS_GEOM
 	ADD CONSTRAINT TA_IRIS_GEOM_PK 
 	PRIMARY KEY("OBJECTID")
 	USING INDEX TABLESPACE "G_ADT_INDX";
+
 
 -- 2.4 Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
