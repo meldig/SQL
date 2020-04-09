@@ -309,39 +309,22 @@ COMMIT;
 INSERT INTO ta_code(code, fid_libelle)
 WITH
     v_1 AS(
-    SELECT 
-        '1' AS code,
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Unité Territoriale'
+    SELECT '1' AS code FROM DUAL
     UNION
-    SELECT 
-        '2' AS code,
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Unité Territoriale'
+    SELECT '2' AS code FROM DUAL
     UNION
-    SELECT 
-        '3' AS code,
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Unité Territoriale'
+    SELECT '3' AS code FROM DUAL
     UNION
-    SELECT 
-        '4' AS code,
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Unité Territoriale'
+    SELECT '4' AS code FROM DUAL
     )
-SELECT * FROM v_1;
+SELECT 
+    a.code,
+    b.objectid
+FROM 
+    v_1 a,
+    ta_libelle b
+WHERE
+    b.libelle = 'Code Unité Territoriale';
 COMMIT;
 
 -- 7.6. Insertion des Unités Territoriales dans la table ta_zone_administrative
@@ -587,71 +570,30 @@ COMMIT;
 INSERT INTO ta_code(code, fid_libelle)
 WITH
     v_1 AS(
-    SELECT 
-        '1',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '1' AS code FROM DUAL
     UNION
-    SELECT 
-        '2',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '2' AS code FROM DUAL
     UNION
-    SELECT 
-        '3',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '3' AS code FROM DUAL
     UNION
-    SELECT 
-        '4',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '4' AS code FROM DUAL
     UNION
-    SELECT 
-        '5',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '5' AS code FROM DUAL
     UNION
-    SELECT 
-        '6',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '6' AS code FROM DUAL
     UNION
-    SELECT 
-        '7',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '7' AS code FROM DUAL
     UNION
-    SELECT 
-        '8',
-        a.objectid
-    FROM
-        ta_libelle a
-    WHERE
-        a.libelle = 'Code Territoire'
+    SELECT '8' AS code FROM DUAL
     )
-SELECT * FROM v_1;
+SELECT 
+    a.code,
+    b.objectid
+FROM 
+    v_1 a,
+    ta_libelle b
+WHERE
+    b.libelle = 'Code Territoire'
 COMMIT;
 
 -- 8.7. Insertion des Territoires dans la table ta_zone_administrative
