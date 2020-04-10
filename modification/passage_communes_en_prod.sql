@@ -418,16 +418,10 @@ WITH
         v_code_ut b
     WHERE
         b.id_code_ut IS NOT NULL
-        AND(
-        a.nom = 'Lille-Seclin'
-        AND b.code = '1'
-        OR a.nom = 'Marcq en Baroeul-la-Bassee'
-        AND b.code = '2' AND b.id_code_ut IS NOT NULL
-        OR a.nom = 'Roubaix-Villeneuve d''Ascq'
-        AND b.code = '3' AND b.id_code_ut IS NOT NULL
-        OR a.nom = 'Tourcoing-Armentières'
-        AND b.code = '4' AND b.id_code_ut IS NOT NULL
-        );
+        AND((a.nom = 'Lille-Seclin' AND b.code = '1')
+        OR (a.nom = 'Marcq en Baroeul-la-Bassee' AND b.code = '2')
+        OR (a.nom = 'Roubaix-Villeneuve d''Ascq' AND b.code = '3')
+        OR (a.nom = 'Tourcoing-Armentières' AND b.code = '4'));
 
 -- 7.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Unités Territoriales correspondantes
 -- 7.9.1. Marcq en Baroeul-la Bassee
@@ -711,24 +705,14 @@ WITH
         v_code_territoire b
     WHERE
         b.id_code_territoire IS NOT NULL
-        AND(
-        a.nom = 'Territoire des Weppes'
-        AND b.code = '1'
-        OR a.nom = 'Territoire Tourquennois'
-        AND b.code = '2'
-        OR a.nom = 'Territoire Roubaisien'
-        AND b.code = '3'
-        OR a.nom = 'Territoire de la Lys'
-        AND b.code = '4'
-        OR a.nom = 'Territoire Est'
-        AND b.code = '5'
-        OR a.nom = 'Couronne Nord de Lille'
-        AND b.code = '6'
-        OR a.nom = 'Couronne Sud de Lille'
-        AND b.code = '7'
-        OR a.nom = 'Territoire Lillois'
-        AND b.code = '8'
-        );
+        AND((a.nom = 'Territoire des Weppes' AND b.code = '1')
+        OR (a.nom = 'Territoire Tourquennois' AND b.code = '2')
+        OR (a.nom = 'Territoire Roubaisien' AND b.code = '3')
+        OR (a.nom = 'Territoire de la Lys' AND b.code = '4')
+        OR (a.nom = 'Territoire Est' AND b.code = '5')
+        OR (a.nom = 'Couronne Nord de Lille' AND b.code = '6')
+        OR (a.nom = 'Couronne Sud de Lille' AND b.code = '7')
+        OR (a.nom = 'Territoire Lillois' AND b.code = '8'));
 COMMIT;
     
 -- 8.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Territoires correspondants
