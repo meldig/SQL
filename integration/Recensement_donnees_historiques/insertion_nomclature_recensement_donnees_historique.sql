@@ -1,13 +1,30 @@
 -- Insertion de la nomenclature de la base de population historique du recensement entre 1876 et 2017
 
 -- 1. Insertion de la source dans TA_SOURCE.
-INSERT INTO ta_source (nom_source, description)
-VALUES ('Recensements de la population 1876-2017','Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.');
+MERGE INTO ta_source s
+USING 
+    (
+    	SELECT 'Recensements de la population 1876-2017' AS nom,'Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.' AS description FROM DUAL
+    ) temp
+ON (temp.nom = s.nom_source
+AND temp.desription = s.description)
+WHEN NOT MATCHED THEN
+INSERT (s.nom_source,s.description)
+VALUES (temp.nom,temp.description)
+;
 
 -- 2. Insertion de la provenance dans TA_PROVENANCE
-INSERT INTO ta_provenance(url,methode_acquisition)
-VALUES ('https://www.insee.fr/fr/statistiques/3698339#consulter','les données sont proposées en libre accès sous la forme d''un tableau xlxs.');
-
+MERGE INTO ta_provenance p
+USING
+    (
+    	SELECT 'https://www.insee.fr/fr/statistiques/3698339#consulter' AS url,'les données sont proposées en libre accès sous la forme d''un tableau xlxs.'  AS methode_acquisition FROM DUAL
+   	) temp
+ON (p.url = temp.url
+AND p.methode_acquisition = temp.methode_acquisition)
+WHEN NOT MATCHED THEN
+INSERT p.url,p.methode_acquisition)
+VALUES(temp.url,temp.methode_acquisition)
+;
 -- 3. Insertion des données dans TA_DATE_ACQUISITION
 MERGE INTO ta_date_acquisition a
 USING
@@ -74,9 +91,9 @@ INSERT INTO ta_metadonnee (fid_source,fid_acquisition,fid_provenance,fid_organis
 	    ta_provenance p,
 	    ta_organisme o
 	WHERE
-	    s.nom_source = 'Historique des populations communales - Recensements de la population 1876-2017'
+	    s.nom_source = 'Recensements de la population 1876-2017'
 	AND
-	    a.millesime IN ('01/01/2017','01/01/2016','01/01/2015','01/01/2014','01/01/2013','01/01/2012','01/01/2011','01/01/2010','01/01/2009','01/01/2008','01/01/2007','01/01/2006','01/01/1999','01/01/1990','01/01/1982','01/01/1975','01/01/1968','01/01/1962','01/01/1954','01/01/1936','01/01/1931','01/01/1926','01/01/1921','01/01/1911','01/01/1906','01/01/1901','01/01/1896','01/01/1891','01/01/1886','01/01/1881','01/01/1876')
+	    a.millesime BETWEEN '01/01/1876' AND '01/01/2017'
 	AND
 	    a.date_acquisition = '06/04/2020'
 	AND
