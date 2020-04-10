@@ -343,7 +343,8 @@ COMMIT;
 -- 7.8. Insertion dans la table de liaison ta_identifiant_zone_administrative pour faire la liaison entre les Unités Territoriales et leur code
 INSERT INTO ta_identifiant_zone_administrative(fid_zone_administrative, fid_identifiant)
 WITH
-    v_nom AS( -- Sélection des objectid des noms d'Unité Territoriale
+    -- Sélection des objectid des noms d'Unité Territoriale
+    v_nom AS(
     SELECT
         CASE a.nom
             WHEN 'Lille-Seclin' THEN a.objectid
@@ -356,7 +357,8 @@ WITH
         ta_nom a
     ),
     
-    v_za AS( -- Vérification qu'il s'agit de zones administratives
+    -- Vérification qu'il s'agit de zones administratives
+    v_za AS( 
     SELECT
         CASE a.fid_nom
             WHEN b.id_nom THEN a.objectid
@@ -368,7 +370,8 @@ WITH
         INNER JOIN v_nom b ON b.id_nom = a.fid_nom
     ),
 
-    v_ut AS( -- Vérification qu'il s'agit d'Unités Territoriales
+    -- Vérification qu'il s'agit d'Unités Territoriales
+    v_ut AS(
     SELECT
         CASE
             WHEN a.fid_libelle = b.objectid AND b.libelle = 'Unité Territoriale' THEN a.id_za
@@ -379,7 +382,8 @@ WITH
         INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
     ),
 
-    v_code AS( -- Sélection des objectid des codes des Unités Territoriales
+    -- Sélection des objectid des codes des Unités Territoriales
+    v_code AS(
     SELECT
         CASE a.code
             WHEN '1' THEN a.objectid
@@ -393,7 +397,8 @@ WITH
         ta_code a
     ),
 
-    v_code_ut AS(-- vérification qu'il s'agit bien de code d'Unités Territoriales
+    -- vérification qu'il s'agit bien de code d'Unités Territoriales
+    v_code_ut AS(
     SELECT
         CASE 
             WHEN a.objectid = b.fid_libelle AND a.libelle = 'Code Unité Territoriale' THEN b.id_code
@@ -404,21 +409,25 @@ WITH
         INNER JOIN v_code b ON a.objectid = b.fid_libelle
     )
 
-    SELECT -- Sélection des objectids des UT avec leur code correspondant
+    -- Sélection des objectids des UT avec leur code correspondant
+    SELECT
         a.id_ut,
         b.id_code_ut
     FROM
         v_ut a,
         v_code_ut b
     WHERE
+        b.id_code_ut IS NOT NULL
+        AND(
         a.nom = 'Lille-Seclin'
-        AND b.code = '1' AND b.id_code_ut IS NOT NULL
+        AND b.code = '1'
         OR a.nom = 'Marcq en Baroeul-la-Bassee'
         AND b.code = '2' AND b.id_code_ut IS NOT NULL
         OR a.nom = 'Roubaix-Villeneuve d''Ascq'
         AND b.code = '3' AND b.id_code_ut IS NOT NULL
         OR a.nom = 'Tourcoing-Armentières'
-        AND b.code = '4' AND b.id_code_ut IS NOT NULL;
+        AND b.code = '4' AND b.id_code_ut IS NOT NULL
+        );
 
 -- 7.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Unités Territoriales correspondantes
 -- 7.9.1. Marcq en Baroeul-la Bassee
@@ -619,7 +628,8 @@ COMMIT;
 -- 8.8. Insertion dans la table de liaison ta_identifiant_zone_administrative pour faire la liaison entre les territoires et leur code
 INSERT INTO ta_identifiant_zone_administrative(fid_zone_administrative, fid_identifiant)
 WITH
-    v_nom AS( -- Sélection des objectid des noms des Territoires
+    -- Sélection des objectid des noms des Territoires
+    v_nom AS(
     SELECT
         CASE a.nom
             WHEN 'Territoire Est' THEN a.objectid
@@ -636,7 +646,8 @@ WITH
         ta_nom a
     ),
     
-    v_za AS( -- Vérification qu'il s'agit de zones administratives
+    -- Vérification qu'il s'agit de zones administratives
+    v_za AS(
     SELECT
         CASE a.fid_nom
             WHEN b.id_nom THEN a.objectid
@@ -648,7 +659,8 @@ WITH
         INNER JOIN v_nom b ON b.id_nom = a.fid_nom
     ),
 
-    v_territoire AS( -- Vérification qu'il s'agit des Territoires
+    -- Vérification qu'il s'agit des Territoires
+    v_territoire AS(
     SELECT
         CASE
             WHEN a.fid_libelle = b.objectid AND b.libelle = 'Territoire' THEN a.id_za
@@ -659,7 +671,8 @@ WITH
         INNER JOIN ta_libelle b ON a.fid_libelle = b.objectid
     ),
     
-    v_code AS( -- Sélection des objectid des codes des Unités Territoriales
+    -- Sélection des objectid des codes des Unités Territoriales
+    v_code AS(
     SELECT
         CASE a.code
             WHEN '1' THEN a.objectid
@@ -677,7 +690,8 @@ WITH
         ta_code a
     ),
 
-    v_code_territoire AS(-- vérification qu'il s'agit bien de code des Territoires
+    -- vérification qu'il s'agit bien de code des Territoires
+    v_code_territoire AS(
     SELECT
         CASE 
             WHEN a.objectid = b.fid_libelle AND a.libelle = 'Code Territoire' THEN b.id_code
@@ -688,29 +702,33 @@ WITH
         INNER JOIN v_code b ON a.objectid = b.fid_libelle
     )
 
-    SELECT -- Sélection des objectids des Territoires avec leur code correspondant
+    -- Sélection des objectids des Territoires avec leur code correspondant
+    SELECT
         a.id_territoire,
         b.id_code_territoire
     FROM
         v_territoire a,
         v_code_territoire b
     WHERE
+        b.id_code_territoire IS NOT NULL
+        AND(
         a.nom = 'Territoire des Weppes'
-        AND b.code = '1' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '1'
         OR a.nom = 'Territoire Tourquennois'
-        AND b.code = '2' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '2'
         OR a.nom = 'Territoire Roubaisien'
-        AND b.code = '3' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '3'
         OR a.nom = 'Territoire de la Lys'
-        AND b.code = '4' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '4'
         OR a.nom = 'Territoire Est'
-        AND b.code = '5' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '5'
         OR a.nom = 'Couronne Nord de Lille'
-        AND b.code = '6' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '6'
         OR a.nom = 'Couronne Sud de Lille'
-        AND b.code = '7' AND b.id_code_territoire IS NOT NULL
+        AND b.code = '7'
         OR a.nom = 'Territoire Lillois'
-        AND b.code = '8' AND b.id_code_territoire IS NOT NULL;
+        AND b.code = '8'
+        );
 COMMIT;
     
 -- 8.9. Insertion dans la table ta_za_communes des objectid des communes et ceux des Territoires correspondants
