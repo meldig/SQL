@@ -1,7 +1,9 @@
 # Fiche Technique : La Topologie dans Oracle
 
 ## Table des matières :
-### 1. Définition de la topologie ;
+### 1. Présentation de la topologie ;
+#### 1.1. Définition ;
+#### 1.2. Exemple ;
 ### 2. Les concepts de la topologie ;
 ### 3. Le stockage de la topologie dans Oracle ;
 ### 4. Insérer, modifier et supprimer des géométries topologiques ;
@@ -10,9 +12,13 @@
 #### 4.3. Supprimer des géométries topologiques dans une topologie ;
 ### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
 
+### 1. Présentation de la topologie :
 ### 1.1. Définition :
 
-La topologie désigne l'expression des relations entre les objets. Plus précisément, elle s'attache à représenter les objets tels que les nous les voyons à travers nos yeux : les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
+La topologie désigne l'expression des relations entre les objets. Plus précisément, elle s'attache à représenter les objets tels que nous les voyons à travers nos yeux.
+
+### 1.2. Exemple :
+Les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
 
 ![Illustration de la définition](images_topologie/Illustration_1_1.png)
 
@@ -22,13 +28,14 @@ En d'autres termes les logiciels SIG qui gèrent la topologie identifient les ob
 ### 2. Les concepts de la topologie ;
 
 La topologie décompose chaque géométrie jusqu'à atteindre les objets fondamentaux qui les composent, appelés **entités topologiques** ou **primitives topologiques**. Cela permet d'étudier les relations entre géométries et notamment le partage de certains éléments :
-Dans l'exemple du point 1.1., les deux communes adjacentes n'ont pas de sommets ni de tronçons qui se superposent à l'endroit de leur frontière commune, mais ils **partagent** les mêmes sommets et les mêmes tronçons. Ainsi au lieu d'avoir systématiquement des doublons de sommets et de tronçons on obtient un sommet et un tronçon qui appartiennent en même temps à la commune A **ET** à la commune B.
+Dans l'exemple du point 1.2., les deux communes adjacentes n'ont pas de noeuds ni de tronçons qui se superposent à l'endroit de leur frontière commune, mais ils **partagent** les mêmes noeuds et les mêmes tronçons. Ainsi au lieu d'avoir systématiquement des doublons de noeuds et de tronçons on obtient un noeud et un tronçon qui appartiennent en même temps à la commune A **ET** à la commune B. Donc si on bouge un noeud situé sur leur frontière commune, alors on modifie les tronçons frontaliers qui l'utilisent. On peut donc modifier en même temps les communes A et B en bougeant un seul noeud.
 
 ##### Les concepts à retenir :
 
 * La topologie étudie les relations entre objets ;
-* La topologie décompose chaque objet géométrique en primitives topologiques qui le composent ;
-* La topologie repose sur les relations entre primitives topologiques qui permettent de créer des objets géométriques, mais aussi d'étudier les relations de ces objets entre eux ;
+* Il existe trois primitives topologiques : les noeuds, les tronçons et les faces ;
+* La topologie décompose chaque objet géométrique en primitives topologiques ;
+* Les primitives topologiques sont liées entre elles via la table de relation. Donc modifier une primitive topologie induit la modification de **TOUTES** les primitives topologiques qui s'y rattachent ;
 
 ### 3. Le stockage de la topologie dans Oracle ;
 
