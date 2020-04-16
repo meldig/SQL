@@ -6,6 +6,11 @@
 #### 1.2. Exemple ;
 ### 2. Les concepts de la topologie ;
 ### 3. Le stockage de la topologie dans Oracle ;
+#### 3.1. Les paramètres de la table des géométries topologiques ;
+#### 3.2. Les paramètres de la table des relations topologiques ;
+#### 3.3. Les paramètres de la table de noeuds ;
+#### 3.4. Les paramètres de la table de tronçons ;
+#### 3.5. Les paramètres de la table de surfaces ;
 ### 4. Insérer, modifier et supprimer des géométries topologiques ;
 #### 4.1. Insérer des géométries topologiques dans une topologie ;
 #### 4.2. Modifier des géométries topologiques dans une topologie ;
@@ -20,6 +25,7 @@ La topologie désigne l'expression des relations entre les objets. Plus précis�
 ### 1.2. Exemple :
 Les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
 
+###### Figure n°1 : Exemple de ce que voient nos yeux
 ![Illustration de la définition](images_topologie/Illustration_1_1.png)
 
 
@@ -43,20 +49,26 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 
 * Emboîtement des objets permettant de stocker des géométries topologiques :
 
+###### Figure n°2 : Emboîtements des objets d'une topologie
 ![Illustration des emboitements dans une topologie](images_topologie/Illustration_3.png)
 
     
-* Liens entre les objets :
+* Liens entre les objets (toile d'araignée) :
 
+###### Figure n°3 : Les relations entre les objets d'une topologie
 ![Illustration des relations entre les objets d'une topologie](images_topologie/Illustration_3_toile_araignée.png)
-                                                                                                                    | Couche de noeuds   |
-                                                                                                                    | Couche de tronçons |
-                                                                                                                    | Couche de surface  |
-                                                                                                                    |--------------------|
 
-#### 3.1. Le stockage de la géométrie topologique
+* Etagères tylko :
 
-Une géométrie topologique se stocke dans une seule ligne de la manière suivante :
+
+                                                                                                                    
+#### 3.1. Les paramètres de la table des géométries topologiques 
+
+##### Explications :
+Une géométrie topologique de la même façon que tout autre information, dans une table et dans une ligne. Autrement dit une ligne égale un objet. Cependant, le type de donnée *SDO_TOPO_GEOMETRY* ne contient pas de géométrie, mais les identifiants de leurs métadonnées, de leur topologie et de leur table de relation.
+
+###### Figure n°4 : Exemple des données d'une table de géométrie topologique
+![Illustration de stockage des SDO_TOPO_GEOMETRY](images_topologie/́Illustration_3_1_SDO_TOPO_GEOM.png)
 
 ##### Fonction :
 ``` SQL
@@ -68,10 +80,31 @@ CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
 ```
 
 ##### Paramètres :
-* **tg_type :** Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet ;
-* **tg_id :** Identifiant de la géométrie topologique à laquelle appartient l'objet ;
-* **tg_layer_id :** Identifiant de la couche de géométries topologiques à laquelle appartient l'objet ;
-* **topology_id :** Identifiant de la topologie à laquelle appartient la couche de géométries topologiques ;
+
+|Paramètres |Explications                                                                                                   |
+|:---------:|:-------------------------------------------------------------------------------------------------------------:|
+|TG_TYPE    |Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet  |
+|TG_ID      |Identifiant de la géométrie topologique à laquelle appartient la primitive topologique                         |
+|TG_LAYER_ID|Identifiant de la **table** de géométries topologiques à laquelle appartient la primitive topologique          |
+|TOPOLOGY_ID|Identifiant de la topologie à laquelle appartient la couche de géométries topologiques                         |
+
+#### 3.2. Les paramètres de la table des relations topologiques ;
+
+##### Explications :
+Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
+
+###### Figure n°5 : Les données dans une table de relation
+![Illustration de la table de relation](images_topologie/́Illustration_3_2_relations.png)
+
+##### Paramètres :
+
+|Paramètres |Explications                                                                                                   |
+|:---------:|:-------------------------------------------------------------------------------------------------------------:|
+|TG_LAYER_ID|Identifiant de la table de géométrie topologique|
+|TG_ID      |Identifiant de la géométrie topologie présente dans la table de géométrie topologique|
+|TOPO_ID    |Pour les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des primitives topologiques|
+|TOPO_TYPE  |our les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des types de primitives : 1=noeud, 2=tronçon, 3=surface|
+
 
 ### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
 
