@@ -83,7 +83,7 @@ Une géométrie topologique de la même façon que tout autre information, dans 
 #### 3.2. La table des relations topologiques
 
 ##### Explications :
-Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
+Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
 
 ###### Figure n°5 : Les données dans une table de relation
 ![Illustration de la table de relation](images_topologie/́Illustration_3_2_relations.png)
@@ -91,7 +91,7 @@ Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre 
 ##### Paramètres :
 
 |Paramètres |TYPE    |Description                                                                                            |
-|:----------||:------|:------------------------------------------------------------------------------------------------------|
+|:----------|:-------|:------------------------------------------------------------------------------------------------------|
 |TG_LAYER_ID|NUMBER  |Identifiant de la table de géométrie topologique|
 |TG_ID      |NUMBER  |Identifiant de la géométrie topologie présente dans la table de géométrie topologique|
 |TOPO_ID    |NUMBER  |Identifiant des primitives topologiques, pour les topologies qui ne disposent pas de hiérarchie entre les tables de géométrie topologique|
@@ -100,7 +100,7 @@ Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre 
 #### 3.3. La table des noeuds
 
 ##### Explications :
-Cette table, qui par défaut se nomme TopologyName_node$, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°6 : Les données dans une table de noeuds
 ![Illustration de la table de relation](images_topologie/́Illustration_3_3_noeuds.png)
@@ -117,7 +117,7 @@ Cette table, qui par défaut se nomme TopologyName_node$, contient les primitive
 #### 3.4. La table des tronçons
 
 ##### Explications :
-Cette table, qui par défaut se nomme TopologyName_edge$, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°7 : Les données dans une table de tronçons
 ![Illustration de la table de relation](images_topologie/́Illustration_3_4_troncons.png)
@@ -141,7 +141,7 @@ Cette table, qui par défaut se nomme TopologyName_edge$, contient les primitive
 #### 3.4. La table des surfaces
 
 ##### Explications :
-Cette table, qui par défaut se nomme TopologyName_face$, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°8 : Les données dans une table de tronçons
 ![Illustration de la table de relation](images_topologie/́Illustration_3_5_surfaces.png)
