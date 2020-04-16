@@ -73,7 +73,7 @@ Une géométrie topologique de la même façon que tout autre information, dans 
 
 ##### Paramètres :
 
-|Paramètres |TYPE  |Descriptions                                                                                                  |
+|Paramètres |TYPE  |Description                                                                                                   |
 |:----------|:-----|:-------------------------------------------------------------------------------------------------------------|
 |TG_TYPE    |NUMBER|Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
 |TG_ID      |NUMBER|Identifiant de la géométrie topologique à laquelle appartient la primitive topologique                        |
@@ -90,12 +90,12 @@ Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre 
 
 ##### Paramètres :
 
-|Paramètres |TYPE    |Descriptions                                                                                           |
+|Paramètres |TYPE    |Description                                                                                            |
 |:----------||:------|:------------------------------------------------------------------------------------------------------|
 |TG_LAYER_ID|NUMBER  |Identifiant de la table de géométrie topologique|
 |TG_ID      |NUMBER  |Identifiant de la géométrie topologie présente dans la table de géométrie topologique|
-|TOPO_ID    |NUMBER  |Pour les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des primitives topologiques|
-|TOPO_TYPE  |NUMBER  |Pour les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des types de primitives : 1=noeud, 2=tronçon, 3=surface|
+|TOPO_ID    |NUMBER  |Identifiant des primitives topologiques, pour les topologies qui ne disposent pas de hiérarchie entre les tables de géométrie topologique|
+|TOPO_TYPE  |NUMBER  |Identifiant des types de primitives pour les topologies qui ne disposent pas de hiérarchie entre les tables de géométrie topologique (1=noeud, 2=tronçon, 3=surface)|
 
 #### 3.3. La table des noeuds
 
@@ -107,7 +107,7 @@ Cette table, qui par défaut se nomme TopologyName_node$, contient les primitive
 
 ##### Paramètres :
 
-|Paramètres |TYPE        |Descriptions                    |
+|Paramètres |TYPE        |Description                     |
 |:----------|:-----------|:-------------------------------|
 |NODE_ID    |NUMBER      |Identifiant unique du noeud|
 |EDGE_ID    |NUMBER      |Identifiant du tronçon associé au noeud|
@@ -124,7 +124,7 @@ Cette table, qui par défaut se nomme TopologyName_edge$, contient les primitive
 
 ##### Paramètres :
 
-|Paramètres        |TYPE        |Descriptions                    |
+|Paramètres        |TYPE        |Description                     |
 |:-----------------|:-----------|:-------------------------------|
 |EDGE_ID           |NUMBER      |Identifiant unique du tronçon|
 |START_NODE_ID     |NUMBER      |Identifiant du noeud de départ du tronçon|
@@ -148,7 +148,7 @@ Cette table, qui par défaut se nomme TopologyName_face$, contient les primitive
 
 ##### Paramètres :
 
-|Paramètres |Descriptions                           |
+|Paramètres |Description                            |
 |:----------|:--------------------------------------|
 |FACE_ID|Identifiant unique de la surface|
 |BOUNDARY_EDGE_ID|Identifiant du countours de cette surface. Le signe de cet id indique l'orientation du contours : positif = vers la gauche, négatif = vers la droite|
