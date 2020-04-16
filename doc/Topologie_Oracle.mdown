@@ -56,13 +56,13 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 * Liens entre les objets (toile d'araignée) :
 
 ###### Figure n°3 : Les relations entre les objets d'une topologie
-![Illustration des relations entre les objets d'une topologie](images_topologie/Illustration_3_toile_araignée.png)
+![Illustration des relations entre les objets d'une topologie](images_topologie/Illustration_3_liens.png)
 
 * Etagères tylko :
 
 
                                                                                                                     
-#### 3.1. Les paramètres de la table des géométries topologiques 
+#### 3.1. La table des géométries topologiques 
 
 ##### Explications :
 Une géométrie topologique de la même façon que tout autre information, dans une table et dans une ligne. Autrement dit une ligne égale un objet. Cependant, le type de donnée *SDO_TOPO_GEOMETRY* ne contient pas de géométrie, mais les identifiants de leurs métadonnées, de leur topologie et de leur table de relation.
@@ -81,14 +81,14 @@ CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
 
 ##### Paramètres :
 
-|Paramètres |Explications                                                                                                   |
-|:---------:|:-------------------------------------------------------------------------------------------------------------:|
-|TG_TYPE    |Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet  |
-|TG_ID      |Identifiant de la géométrie topologique à laquelle appartient la primitive topologique                         |
-|TG_LAYER_ID|Identifiant de la **table** de géométries topologiques à laquelle appartient la primitive topologique          |
-|TOPOLOGY_ID|Identifiant de la topologie à laquelle appartient la couche de géométries topologiques                         |
+|Paramètres |Explications                                                                                                  |
+|:----------|:-------------------------------------------------------------------------------------------------------------|
+|TG_TYPE    |Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
+|TG_ID      |Identifiant de la géométrie topologique à laquelle appartient la primitive topologique                        |
+|TG_LAYER_ID|Identifiant de la **table** de géométries topologiques à laquelle appartient la primitive topologique         |
+|TOPOLOGY_ID|Identifiant de la topologie à laquelle appartient la couche de géométries topologiques                        |
 
-#### 3.2. Les paramètres de la table des relations topologiques ;
+#### 3.2. La table des relations topologiques
 
 ##### Explications :
 Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
@@ -98,13 +98,71 @@ Cette table, qui par defaut se nomme TopologyName_relation$, fait le lien entre 
 
 ##### Paramètres :
 
-|Paramètres |Explications                                                                                                   |
-|:---------:|:-------------------------------------------------------------------------------------------------------------:|
+|Paramètres |Explications                                                                                                  |
+|:----------|:-------------------------------------------------------------------------------------------------------------|
 |TG_LAYER_ID|Identifiant de la table de géométrie topologique|
 |TG_ID      |Identifiant de la géométrie topologie présente dans la table de géométrie topologique|
 |TOPO_ID    |Pour les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des primitives topologiques|
 |TOPO_TYPE  |our les topologies qui ne pas disposent de hiérarchie entre les tables de géométrie topologique : identifiant des types de primitives : 1=noeud, 2=tronçon, 3=surface|
 
+#### 3.3. La table des noeuds
+
+##### Explications :
+Cette table, qui par défaut se nomme TopologyName_node$, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+
+###### Figure n°6 : Les données dans une table de noeuds
+![Illustration de la table de relation](images_topologie/́Illustration_3_3_noeuds.png)
+
+##### Paramètres :
+
+|Paramètres |Explications                           |
+|:----------|:--------------------------------------|
+|NODE_ID|Identifiant unique du noeud|
+|EDGE_ID|Identifiant du tronçon associé au noeud|
+|FACE_ID|Identifiant de la surface associée au noeud|
+|GEOMETRY|Géométrie du noeud de type SDO_GEOMETRY|
+
+#### 3.4. La table des tronçons
+
+##### Explications :
+Cette table, qui par défaut se nomme TopologyName_edge$, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+
+###### Figure n°7 : Les données dans une table de tronçons
+![Illustration de la table de relation](images_topologie/́Illustration_3_4_troncons.png)
+
+##### Paramètres :
+
+|Paramètres |Explications                           |
+|:----------|:--------------------------------------|
+|EDGE_ID|Identifiant unique du tronçon|
+|START_NODE_ID|Identifiant du noeud de départ du tronçon|
+|END_NODE_ID|Identifiant du noeud d'arrivée du tronçon|
+|NEXT_LEFT_EDGE_ID|Identifiant du prochain tronçon situé à gauche du tronçon actuel|
+|PREV_LEFT_EDGE_ID|Identifiant du précédent tronçon situé à gauche du tronçon actuel|
+|NEXT_RIGHT_EDGE_ID|Identifiant du prochain tronçon situé à droite du tronçon actuel|
+|PREV_RIGHT_EDGE_ID|Identifiant du précédent tronçon situé à droite du tronçon actuel|
+|LEFT_FACE_ID|Identifiant de la surface située à gauche du tronçon|
+|RIGHT_FACE_ID|Identifiant de la surface située à droite du tronçon|
+|GEOMETRY|Géométrie du tronçon de type SDO_GEOMETRY|
+
+
+#### 3.4. La table des surfaces
+
+##### Explications :
+Cette table, qui par défaut se nomme TopologyName_face$, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+
+###### Figure n°8 : Les données dans une table de tronçons
+![Illustration de la table de relation](images_topologie/́Illustration_3_5_surfaces.png)
+
+##### Paramètres :
+
+|Paramètres |Explications                           |
+|:----------|:--------------------------------------|
+|FACE_ID|Identifiant unique de la surface|
+|BOUNDARY_EDGE_ID|Identifiant du countours de cette surface. Le signe de cet id indique l'orientation du contours : positif = vers la gauche, négatif = vers la droite|
+|ISLAND_EDGE_ID_LIST|Identifiant du/des tronçon(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
+|ISLAND_NODE_ID_LIST|Identifiant du/des noeud(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
+|MBR_GEOMETRY|Contours rectangulaire minimum qui entoure cette surface. Ce rectangle est stocké en tant que rectangle optimisé, c'est-à-dire ne nécessitant que les coordoonées des points situés en bas à gauche et en haut à droite du rectangle|
 
 ### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
 
