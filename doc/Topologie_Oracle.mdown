@@ -69,15 +69,15 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 ##### Explications :
 Une géométrie topologique de la même façon que tout autre information, dans une table et dans une ligne. Autrement dit une ligne égale un objet. Cependant, le type de donnée *SDO_TOPO_GEOMETRY* ne contient pas de géométrie, mais les identifiants de leurs métadonnées, de leur topologie et de leur table de relation.
 
-###### Figure n°4 : Exemple des données d'une table de géométrie topologique
+###### Figure n°4 : Exemple des données d'une table d'entité topologique
 ![Illustration de stockage des SDO_TOPO_GEOMETRY](images_topologie/́Illustration_3_1_SDO_TOPO_GEOM.png)
 
 ##### Paramètres :
 
 |Paramètres |TYPE  |Description                                                                                                   |
 |:----------|:-----|:-------------------------------------------------------------------------------------------------------------|
-|TG_TYPE    |NUMBER|Type de géométrie topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
-|TG_ID      |NUMBER|Identifiant de la géométrie topologique à laquelle appartient la primitive topologique                        |
+|TG_TYPE    |NUMBER|Type d'entité topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
+|TG_ID      |NUMBER|Identifiant de l'entité topologique à laquelle appartient la primitive topologique                        |
 |TG_LAYER_ID|NUMBER|Identifiant de la **table** de géométries topologiques à laquelle appartient la primitive topologique         |
 |TOPOLOGY_ID|NUMBER|Identifiant de la topologie à laquelle appartient la couche de géométries topologiques                        |
 
@@ -93,15 +93,15 @@ Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entr
 
 |Paramètres |TYPE    |Description                                                                                            |
 |:----------|:-------|:------------------------------------------------------------------------------------------------------|
-|TG_LAYER_ID|NUMBER  |Identifiant de la table de géométrie topologique|
-|TG_ID      |NUMBER  |Identifiant de la géométrie topologie présente dans la table de géométrie topologique|
-|TOPO_ID    |NUMBER  |Identifiant des primitives topologiques, pour les topologies qui ne disposent pas de hiérarchie entre les tables de géométrie topologique|
-|TOPO_TYPE  |NUMBER  |Identifiant des types de primitives pour les topologies qui ne disposent pas de hiérarchie entre les tables de géométrie topologique (1=noeud, 2=tronçon, 3=surface)|
+|TG_LAYER_ID|NUMBER  |Identifiant de la table d'entité topologique|
+|TG_ID      |NUMBER  |Identifiant de l'entité topologique présente dans la table d'entités topologiques|
+|TOPO_ID    |NUMBER  |Identifiant des primitives topologiques, pour les topologies qui ne disposent pas de hiérarchie entre les tables d'entité topologique|
+|TOPO_TYPE  |NUMBER  |Identifiant des types de primitives pour les topologies qui ne disposent pas de hiérarchie entre les tables d'entité topologique (1=noeud, 2=tronçon, 3=surface)|
 
 #### 3.3. La table des noeuds
 
 ##### Explications :
-Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table d'entité topologique d'appartenance.
 
 ###### Figure n°6 : Les données dans une table de noeuds
 ![Illustration de la table de noeuds](images_topologie/́Illustration_3_3_noeuds.png)
@@ -118,7 +118,7 @@ Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primiti
 #### 3.4. La table des tronçons
 
 ##### Explications :
-Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table d'entité topologique d'appartenance.
 
 ###### Figure n°7 : Les données dans une table de tronçons
 ![Illustration de la table de tronçons](images_topologie/́Illustration_3_4_troncons.png)
@@ -142,7 +142,7 @@ Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primiti
 #### 3.4. La table des surfaces
 
 ##### Explications :
-Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
+Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table d'entité topologique d'appartenance.
 
 ###### Figure n°8 : Les données dans une table de tronçons
 ![Illustration de la table de surfaces](images_topologie/́Illustration_3_5_surfaces.png)
