@@ -193,6 +193,28 @@ SDO_TOPO_MAP.ADD_EDGE(
 ) RETURN NUMBER;
 ```
 
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2    |Nom de la topologie à laquelle appartient le tronçon|
+|NODE_ID1  |NUMBER      |Identifiant du noeud de départ du tronçon|
+|NODE_ID2  |NUMBER      |Identifiant du noeud d'arrivé du tronçon|
+|GEOM      |SDO_GEOMETRY|Géométrie du tronçon|
+
+* Usages
+La fonction *SDO_TOPO_MAP.ADD_EDGE* permet d'insérer un tronçon dans une topologie en utilisant des noeuds déjà présents dans cette même topologie. De plus, si l'insertion de ce nouveau tronçon impacte la surface à laquelle il est associé, alors cette dernière sera automatiquement mise à jour. Enfin, cette fonction retourne l'id du nouveau tronçon.
+
+* Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.ADD_EDGE(
+    'TOPO_RESEAU_ROUTIER', 
+    1, 
+    12,
+    SDO_GEOMETRY(2002, 2154, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1),
+        SDO_ORDINATE_ARRAY(704810.69434039131738245487213134765625, 7058595.73342161066830158233642578125, 704351.811239582835696637630462646484375, 7058976.2695821225643157958984375)
+    )
+)
+INTO :identifiant_troncon
+```
 #### 4.3. Modifier des entités topologiques dans une topologie ;
 
 ##### 4.3.1. Modifier un tronçon
