@@ -2,7 +2,7 @@
 
 -- 1. Insertion de la source dans TA_SOURCE.
 MERGE INTO ta_source s
-USING 
+USING
     (
     	SELECT 'Recensements de la population 1876-2017' AS nom,'Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.' AS description FROM DUAL
     ) temp
@@ -80,28 +80,23 @@ VALUES(temp.acronyme,temp.nom_organisme)
 
 -- 5. Insertion des données dans TA_METADONNEE
 INSERT INTO ta_metadonnee (fid_source,fid_acquisition,fid_provenance,fid_organisme)
-	SELECT 
-	    s.objectid,
-	    a.objectid,
-	    p.objectid,
-	    o.objectid
-	FROM
-	    ta_source s,
-	    ta_date_acquisition a,
-	    ta_provenance p,
-	    ta_organisme o
-	WHERE
-	    s.nom_source = 'Recensements de la population 1876-2017'
-	AND
-	    a.millesime BETWEEN '01/01/1876' AND '01/01/2017'
-	AND
-	    a.date_acquisition = '06/04/2020'
-	AND
-	    p.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
-	AND
-	    o.acronyme = 'INSEE'
+SELECT
+  s.objectid,
+  a.objectid,
+  p.objectid,
+  o.objectid
+FROM
+  ta_source s,
+  ta_date_acquisition a,
+  ta_provenance p,
+  ta_organisme o
+WHERE
+  s.nom_source = 'Recensements de la population 1876-2017'
+  AND a.millesime BETWEEN '01/01/1876' AND '01/01/2017'
+  AND a.date_acquisition = '06/04/2020'
+  AND p.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
+  AND o.acronyme = 'INSEE'
 ;
-
 
 -- 6. Insertion des libelles courts dans TA_LIBELLE_COURT
 
@@ -145,7 +140,6 @@ WHEN NOT MATCHED THEN
 INSERT (tlc.libelle_court)
 VALUES (temp.RECENSEMENT)
 ;
-
 
 -- 7. Insertion des libelles dans TA_LIBELLE
 
@@ -197,55 +191,62 @@ VALUES ('recensement');
 
 -- 9. Insertion des données dans ta_famille_libelle
 INSERT INTO ta_famille_libelle(fid_famille,fid_libelle)
-	SELECT
-		f.objectid,
-		l.objectid
-    FROM
-        ta_famille f,
-        ta_libelle l
-	WHERE 
-		f.famille = 'recensement' AND (l.libelle LIKE 'Population municipale%' OR l.libelle LIKE 'Population sans double compte%' OR l.libelle LIKE 'Population totale%');
+SELECT
+  f.objectid,
+  l.objectid
+FROM
+  ta_famille f,
+  ta_libelle l
+WHERE
+  f.famille = 'recensement'
+  AND (
+    l.libelle LIKE 'Population municipale%'
+    OR l.libelle LIKE 'Population sans double compte%'
+    OR l.libelle LIKE 'Population totale%'
+  );
 
 -- 10. Insertion des correspondances dans la table TA_CORRESPONDANCE LIBELLE
 
 INSERT INTO ta_correspondance_libelle(fid_libelle,fid_libelle_court)
-	SELECT
-		l.objectid,
-		lc.objectid
-    FROM
-        ta_libelle l,
-        ta_libelle_court lc,
-        ta_famille f
-	WHERE 
-	f.famille = 'recensement' AND lc.libelle_court = 'PMUN17' AND l.libelle = 'Population municipale en 2017'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN16' AND l.libelle = 'Population municipale en 2016'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN15' AND l.libelle = 'Population municipale en 2015'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN14' AND l.libelle = 'Population municipale en 2014'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN13' AND l.libelle = 'Population municipale en 2013'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN12' AND l.libelle = 'Population municipale en 2012'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN11' AND l.libelle = 'Population municipale en 2011'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN10' AND l.libelle = 'Population municipale en 2010'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN09' AND l.libelle = 'Population municipale en 2009'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN08' AND l.libelle = 'Population municipale en 2008'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN07' AND l.libelle = 'Population municipale en 2007'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PMUN06' AND l.libelle = 'Population municipale en 2006'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC99' AND l.libelle = 'Population sans double compte en 1999'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC90' AND l.libelle = 'Population sans double compte en 1990'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC82' AND l.libelle = 'Population sans double compte en 1982'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC75' AND l.libelle = 'Population sans double compte en 1975'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC68' AND l.libelle = 'Population sans double compte en 1968'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PSDC62' AND l.libelle = 'Population sans double compte en 1962'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT54' AND l.libelle = 'Population totale en 1954'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT36' AND l.libelle = 'Population totale en 1936'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1931' AND l.libelle = 'Population totale en 1931'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1926' AND l.libelle = 'Population totale en 1926'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1921' AND l.libelle = 'Population totale en 1921'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1911' AND l.libelle = 'Population totale en 1911'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1906' AND l.libelle = 'Population totale en 1906'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1901' AND l.libelle = 'Population totale en 1901'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1896' AND l.libelle = 'Population totale en 1896'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1891' AND l.libelle = 'Population totale en 1891'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1886' AND l.libelle = 'Population totale en 1886'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1881' AND l.libelle = 'Population totale en 1881'
-	OR f.famille = 'recensement' AND lc.libelle_court = 'PTOT1876' AND l.libelle = 'Population totale en 1876'
-	;
+SELECT
+  l.objectid,
+  lc.objectid
+FROM
+  ta_libelle l,
+  ta_libelle_court lc,
+  ta_famille f
+WHERE
+  f.famille = 'recensement'
+  AND (
+    (lc.libelle_court = 'PMUN17' AND l.libelle = 'Population municipale en 2017')
+    OR (lc.libelle_court = 'PMUN16' AND l.libelle = 'Population municipale en 2016')
+    OR (lc.libelle_court = 'PMUN15' AND l.libelle = 'Population municipale en 2015')
+    OR (lc.libelle_court = 'PMUN14' AND l.libelle = 'Population municipale en 2014')
+    OR (lc.libelle_court = 'PMUN13' AND l.libelle = 'Population municipale en 2013')
+    OR (lc.libelle_court = 'PMUN12' AND l.libelle = 'Population municipale en 2012')
+    OR (lc.libelle_court = 'PMUN11' AND l.libelle = 'Population municipale en 2011')
+    OR (lc.libelle_court = 'PMUN10' AND l.libelle = 'Population municipale en 2010')
+    OR (lc.libelle_court = 'PMUN09' AND l.libelle = 'Population municipale en 2009')
+    OR (lc.libelle_court = 'PMUN08' AND l.libelle = 'Population municipale en 2008')
+    OR (lc.libelle_court = 'PMUN07' AND l.libelle = 'Population municipale en 2007')
+    OR (lc.libelle_court = 'PMUN06' AND l.libelle = 'Population municipale en 2006')
+    OR (lc.libelle_court = 'PSDC99' AND l.libelle = 'Population sans double compte en 1999')
+    OR (lc.libelle_court = 'PSDC90' AND l.libelle = 'Population sans double compte en 1990')
+    OR (lc.libelle_court = 'PSDC82' AND l.libelle = 'Population sans double compte en 1982')
+    OR (lc.libelle_court = 'PSDC75' AND l.libelle = 'Population sans double compte en 1975')
+    OR (lc.libelle_court = 'PSDC68' AND l.libelle = 'Population sans double compte en 1968')
+    OR (lc.libelle_court = 'PSDC62' AND l.libelle = 'Population sans double compte en 1962')
+    OR (lc.libelle_court = 'PTOT54' AND l.libelle = 'Population totale en 1954')
+    OR (lc.libelle_court = 'PTOT36' AND l.libelle = 'Population totale en 1936')
+    OR (lc.libelle_court = 'PTOT1931' AND l.libelle = 'Population totale en 1931')
+    OR (lc.libelle_court = 'PTOT1926' AND l.libelle = 'Population totale en 1926')
+    OR (lc.libelle_court = 'PTOT1921' AND l.libelle = 'Population totale en 1921')
+    OR (lc.libelle_court = 'PTOT1911' AND l.libelle = 'Population totale en 1911')
+    OR (lc.libelle_court = 'PTOT1906' AND l.libelle = 'Population totale en 1906')
+    OR (lc.libelle_court = 'PTOT1901' AND l.libelle = 'Population totale en 1901')
+    OR (lc.libelle_court = 'PTOT1896' AND l.libelle = 'Population totale en 1896')
+    OR (lc.libelle_court = 'PTOT1891' AND l.libelle = 'Population totale en 1891')
+    OR (lc.libelle_court = 'PTOT1886' AND l.libelle = 'Population totale en 1886')
+    OR (lc.libelle_court = 'PTOT1881' AND l.libelle = 'Population totale en 1881')
+    OR (lc.libelle_court = 'PTOT1876' AND l.libelle = 'Population totale en 1876')
+    );
