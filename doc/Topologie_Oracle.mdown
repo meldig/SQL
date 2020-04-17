@@ -200,10 +200,10 @@ SDO_TOPO_MAP.ADD_EDGE(
 |NODE_ID2  |NUMBER      |Identifiant du noeud d'arrivé du tronçon|
 |GEOM      |SDO_GEOMETRY|Géométrie du tronçon|
 
-* Usages
+##### Usages :
 La fonction *SDO_TOPO_MAP.ADD_EDGE* permet d'insérer un tronçon dans une topologie en utilisant des noeuds déjà présents dans cette même topologie. De plus, si l'insertion de ce nouveau tronçon impacte la surface à laquelle il est associé, alors cette dernière sera automatiquement mise à jour. Enfin, cette fonction retourne l'id du nouveau tronçon.
 
-* Exemple :
+##### Exemple :
 ``` SQL
 CALL SDO_TOPO_MAP.ADD_EDGE(
     'TOPO_RESEAU_ROUTIER', 
