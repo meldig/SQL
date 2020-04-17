@@ -12,10 +12,11 @@
 #### 3.4. La table de tronçons ;
 #### 3.5. La table de surfaces ;
 ### 4. Insérer, modifier et supprimer des géométries topologiques ;
-#### 4.1. Insérer des géométries topologiques dans une topologie ;
-#### 4.2. Modifier des géométries topologiques dans une topologie ;
-#### 4.3. Supprimer des géométries topologiques dans une topologie ;
-### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
+#### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle ;
+#### 4.2. Insérer des entités topologiques dans une topologie ;
+#### 4.3. Modifier des entités topologiques dans une topologie ;
+#### 4.4. Supprimer des entités topologiques dans une topologie ;
+### 5. Rechercher des informations sur des entités topologiques spécifiques ;
 <!-- -->
 <!-- -->
 ### 1. Présentation de la topologie :
@@ -86,7 +87,7 @@ Une géométrie topologique de la même façon que tout autre information, dans 
 Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
 
 ###### Figure n°5 : Les données dans une table de relation
-![Illustration de la table de relation](images_topologie/́Illustration_3_2_relations.png)
+![Illustration de la table de relations](images_topologie/́Illustration_3_2_relations.png)
 
 ##### Paramètres :
 
@@ -103,7 +104,7 @@ Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entr
 Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°6 : Les données dans une table de noeuds
-![Illustration de la table de relation](images_topologie/́Illustration_3_3_noeuds.png)
+![Illustration de la table de noeuds](images_topologie/́Illustration_3_3_noeuds.png)
 
 ##### Paramètres :
 
@@ -120,7 +121,7 @@ Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primiti
 Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°7 : Les données dans une table de tronçons
-![Illustration de la table de relation](images_topologie/́Illustration_3_4_troncons.png)
+![Illustration de la table de tronçons](images_topologie/́Illustration_3_4_troncons.png)
 
 ##### Paramètres :
 
@@ -144,7 +145,7 @@ Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primiti
 Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table de géométrie topologique d'appartenance.
 
 ###### Figure n°8 : Les données dans une table de tronçons
-![Illustration de la table de relation](images_topologie/́Illustration_3_5_surfaces.png)
+![Illustration de la table de surfaces](images_topologie/́Illustration_3_5_surfaces.png)
 
 ##### Paramètres :
 
@@ -155,6 +156,54 @@ Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primiti
 |ISLAND_EDGE_ID_LIST|Identifiant du/des tronçon(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
 |ISLAND_NODE_ID_LIST|Identifiant du/des noeud(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
 |MBR_GEOMETRY|Contours rectangulaire minimum qui entoure cette surface. Ce rectangle est stocké en tant que rectangle optimisé, c'est-à-dire ne nécessitant que les coordoonées des points situés en bas à gauche et en haut à droite du rectangle Type = SDO_GEOMETRY|
+
+### 4. Insérer, modifier et supprimer des géométries topologiques
+
+#### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle
+La modification de toute entité topologique passe, dans Oracle, par une topologie sauvegardée en cache, c'est-à-dire par un objet TopoMap.
+Cet objet est absolument nécessaire à l'édition des topologies, puisque c'est lui qui rend cette action possible.
+De ce fait, toutes les fonctions utilisées pour modifier les topologies appartiennent au package *SDO_TOPO_MAP*.
+Pour créer et utiliser un objet Topo Map avec PL/SQL APPI, vous pouvez soit le faire explicitement, soit laisser *Spatial And Graph* le faire automatiquement.
+
+#### 4.2. Insérer des entités topologiques dans une topologie ;
+
+##### 4.2.1. Ajouter un noeud
+
+* Ajout d'un noeud isolé
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.ADD_NODE(     
+  topology           IN VARCHAR2,      
+  edge_id            IN NUMBER,      
+  point              IN SDO_GEOMETRY,      
+  coord_index        IN NUMBER,      
+  is_new_shape_point IN VARCHAR2      
+) RETURN NUMBER;
+```
+
+
+#### 4.3. Modifier des entités topologiques dans une topologie ;
+
+##### 4.3.1. Modifier un tronçon
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.CHANGE_EDGE_COORDS(     
+  topology  IN VARCHAR2,      
+  edge_id   IN NUMBER,      
+  geom      IN SDO_GEOMETRY);
+```
+
+##### Paramètres :
+
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2    |Nom de la topologie à laquelle appartient le tronçon|
+|EDGE_ID   |NUMBER      |Identifiant du tronçon|
+|GEOM      |SDO_GEOMETRY|Géométrie du tronçon modifié|
+
+
+#### 4.4. Supprimer des entités topologiques dans une topologie ;
 
 ### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
 
