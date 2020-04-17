@@ -162,14 +162,14 @@ Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primiti
 #### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle
 La modification de toute entité topologique passe, dans Oracle, par une topologie sauvegardée en cache, c'est-à-dire par un objet TopoMap.
 Cet objet est absolument nécessaire à l'édition des topologies, puisque c'est lui qui rend cette action possible.
-De ce fait, toutes les fonctions utilisées pour modifier les topologies appartiennent au package *SDO_TOPO_MAP*.
+De ce fait, toutes les fonctions utilisées pour modifier les topologies appartiennent au package *MDSYS.SDO_TOPO_MAP*.
 Pour créer et utiliser un objet Topo Map avec PL/SQL APPI, vous pouvez soit le faire explicitement, soit laisser *Spatial And Graph* le faire automatiquement.
 
 #### 4.2. Insérer des entités topologiques dans une topologie ;
 
 ##### 4.2.1. Ajouter un noeud
 
-* Ajout d'un noeud isolé
+* Ajout d'un noeud appartenant à un tronçon
 ##### Fonction : 
 ``` SQL
 SDO_TOPO_MAP.ADD_NODE(     
@@ -180,7 +180,18 @@ SDO_TOPO_MAP.ADD_NODE(
   is_new_shape_point IN VARCHAR2      
 ) RETURN NUMBER;
 ```
+##### 4.2.2. Ajouter un tronçon
 
+* Ajout d'un tronçon
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.ADD_EDGE(     
+  topology IN VARCHAR2,      
+  node_id1 IN NUMBER,      
+  node_id2 IN NUMBER,      
+  geom     IN SDO_GEOMETRY      
+) RETURN NUMBER;
+```
 
 #### 4.3. Modifier des entités topologiques dans une topologie ;
 
@@ -230,6 +241,7 @@ SDO_NUMBER_ARRAY(x1, y1, x2, y2, x3, y3)
 La fonction va chercher dans la topologie "ma_topologie" et/ou dans l'objet TopoMap "mon_objet_topomap" toutes les coordonnées du tronçon dont l'identifiant est indiqué dans les paramètres, c'est-à-dire les coordonnées du noeud de départ, des sommets et du noeud d'arrivée.
 
 
+Créer une entité topologique
 ##### Fonction :
 ``` SQL
 CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
@@ -239,8 +251,20 @@ CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
     topology_id  NUMBER);
 ```
 
+Sélectionner tous les tronçons connectés à un noeud spécifique.
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_NODE_STAR(     
+  topology  IN VARCHAR2,      
+  topo_map  IN VARCHAR2,      
+  node_id   IN NUMBER      
+) RETURN SDO_NUMBER_ARRAY;
 
+
+```
 ## Sources : 
 * https://docs.oracle.com/database/121/TOPOL/topology-data-model-overview.htm#TOPOL100
+* https://docs.oracle.com/database/121/TOPOL/editing-topologies.htm#TOPOL150
+* https://docs.oracle.com/database/121/TOPOL/SDO_TOPO_MAP-reference.htm#TOPOL250
 * https://docs.oracle.com/cd/E11882_01/appdev.112/e11831.pdf
 * https://www.notre-planete.info/terre/outils/sig.php#topologie
