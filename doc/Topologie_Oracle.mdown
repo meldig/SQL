@@ -182,7 +182,6 @@ SDO_TOPO_MAP.ADD_NODE(
 ```
 ##### 4.2.2. Ajouter un tronçon
 
-* Ajout d'un tronçon
 ##### Fonction : 
 ``` SQL
 SDO_TOPO_MAP.ADD_EDGE(     
@@ -192,6 +191,7 @@ SDO_TOPO_MAP.ADD_EDGE(
   geom     IN SDO_GEOMETRY      
 ) RETURN NUMBER;
 ```
+##### Paramètres :
 
 |Paramètres|TYPE        |Description                                         |
 |:---------|:-----------|:---------------------------------------------------|
