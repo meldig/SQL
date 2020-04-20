@@ -213,7 +213,7 @@ CALL SDO_TOPO_MAP.ADD_EDGE(
         SDO_ORDINATE_ARRAY(704810.69434039131738245487213134765625, 7058595.73342161066830158233642578125, 704351.811239582835696637630462646484375, 7058976.2695821225643157958984375)
     )
 )
-INTO :identifiant_troncon
+INTO :identifiant_troncon;
 ```
 #### 4.3. Modifier des entités topologiques dans une topologie ;
 
@@ -240,17 +240,70 @@ SDO_TOPO_MAP.CHANGE_EDGE_COORDS(
 
 ### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
 
-#### 5.1. Connaître les coordonnées d'un tronçon topologique
+#### 5.1. Connaître les coordonnées d'une primitive topologique
 
-Un tronçon topologique est une entité topologique aussi appelée "Primitive topologique". C'est l'un des éléments de base d'une topologie avec les noeuds et les surfaces.
-
+* **Les coordonnées d'un tronçon :**
+<!-- -->
 ##### Fonction :
 ``` SQL
 SDO_TOPO_MAP.GET_EDGE_COORDS(
-     topology IN VARCHAR2, -- nom de la topologie
-     topo_map IN VARCHAR2,-- nom de l'objet TopoMap s'il en existe un dans la session, dans le cas contraire, mettre "NULL" 
-     edge_id IN NUMBER -- identifiant du tronçon situé dans la table "topologyName_edge$" et le champ "edge_id"
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2, 
+     edge_id IN NUMBER
      );
+     
+-- RETURN SDO_NUMBER_ARRAY
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                                                    |
+|:---------|:-------|:--------------------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie à laquelle appartient le tronçon           |
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap de la session, ou NULL s'il n'y en a pas|
+|EDGE_ID   |NUMBER  |Identifiant du tronçon situé dans la table des entités topologiques : topologyName_edge$.edge_id|
+
+##### Usages :
+Cette fonction retourne un tableau des coordonnées du noeud de départ, des sommets intermédiaires et du noeud d'arrivée du tronçon, sous la forme SDO_NUMBER_ARRAY().
+
+##### Exemple :
+``` SQL
+-- Requête :
+SELECT SDO_TOPO_MAP.GET_EDGE_COORDS('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- Résultat :
+MDSYS.SDO_NUMBER_ARRAY(703659.850059045, 7060037.47342021, 704309.739551736, 7059480.40298927)
+```
+<!-- -->
+* **Les coordonnées d'un noeud :**
+<!-- -->
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_NODE_COORDS(
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2, 
+     edge_id IN NUMBER
+     );
+     
+-- RETURN SDO_GEOMETRY
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                                                    |
+|:---------|:-------|:--------------------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie à laquelle appartient le noeud           |
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap de la session, ou NULL s'il n'y en a pas|
+|NODE_ID   |NUMBER  |Identifiant du noeud situé dans la table des entités topologiques : topologyName_node$.node_id|
+
+##### Usages :
+Cette fonction retourne la géométrie du noeud sous la forme MDSYS.SDO_GEOMETRY().
+
+##### Exemple :
+``` SQL
+-- Requête :
+SELECT SDO_TOPO_MAP.GET_NODE_COORDS('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- Résultat :
+MDSYS.SDO_GEOMETRY(2001, 2154, MDSYS.SDO_POINT_TYPE(703173.87938449, 7059951.76468729, NULL), NULL, NULL)
 ```
 
 ##### Résultat :
