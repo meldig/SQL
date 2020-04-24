@@ -13,6 +13,9 @@
 #### 3.5. La table de surfaces ;
 ### 4. Insérer, modifier et supprimer des géométries topologiques ;
 #### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle ;
+##### 4.1.1. Création/suppression d'un objet TopoMap ;
+##### 4.1.2. Chargement/suppression/validation des données dans l'objet TopoMap ;
+##### 4.1.3. Exemple concret d'utilisation d'un objet TopoMap ;
 #### 4.2. Insérer des entités topologiques dans une topologie ;
 #### 4.3. Modifier des entités topologiques dans une topologie ;
 #### 4.4. Supprimer des entités topologiques dans une topologie ;
@@ -164,7 +167,171 @@ La modification de toute entité topologique passe, dans Oracle, par une topolog
 Cet objet est absolument nécessaire à l'édition des topologies, puisque c'est lui qui rend cette action possible.
 De ce fait, toutes les fonctions utilisées pour modifier les topologies appartiennent au package *MDSYS.SDO_TOPO_MAP*.
 Pour créer et utiliser un objet Topo Map avec PL/SQL APPI, vous pouvez soit le faire explicitement, soit laisser *Spatial And Graph* le faire automatiquement.
+Il est cependant recommandé de le faire explicitement à des fins d'optimisation des requêtes :
 
+* La création automatique d'un objet TopoMap se fait dans le cadre de l'utilisation d'une fonction du package *MDSYS.SDO_TOPO_MAP*. Autrement dit, quand on utilise une fonction du package *MDSYS.SDO_TOPO_MAP*, Oracle créé automatiquement un objet TopoMap, valide les changements et supprime l'objet une fois la requête effectuée.
+
+* La création explicite d'un objet TopoMap permet d'utiliser ce dernier pour toutes les requêtes que l'on veut, tant que l'on reste dans le package *MDSYS.SDO_TOPO_MAP*. Il n'est donc pas nécessaire d'en créer un à chaque requête. Il faudra simplement valider explicitement les changements apportés à la topologie puis supprimer l'objet TopoMap, après avoir fait toutes vos requêtes.
+
+* Le deuxième avantage de la crétion explicite d'un objet TopoMap est que l'on peut créer cet objet en mode *modifiable* ou en mode *lecture seule*, selon les besoins.
+
+##### 4.1.1. Création/suppression d'un objet TopoMap ;
+
+* **Création d'un objet TopoMap**
+
+##### Fonction : 
+
+``` SQL
+SDO_TOPO_MAP.CREATE_TOPO_MAP(
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2,
+     number_of_edges IN NUMBER DEFAULT 100,
+     number_of_nodes IN NUMBER DEFAULT 80,
+     number_of_faces IN NUMBER DEFAULT 30);
+```  
+##### Paramètres :
+
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie dans laquelle l'utilisateur veut travailler|
+|TOPO_MAP  |VARCHAR2|Nom de l'objet Topo_Map - je préconise cette nomenclature : TopologyName_TOPO_MAP|
+|number_of_edges|NUMBER|Nombre estimé de tronçons chargés dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 100.|
+|number_of_nodes|NUMBER|Nombre estimé de noeuds chargés dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 80.|
+|number_of_faces|NUMBER|Nombre estimé de surfaces chargées dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 30.|
+
+##### Usages :
+Cette fonction associe un objet TopoMap à une topologie pour permettre la modification de cette dernière. Pour faire une modification de la topologie il faut donc créer, au préalable, un objet TopoMap. **Attention** l'objet TopoMap permet de faire plusieurs modifications, il ne s'agit donc pas d'en créer un pour chaque modification.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+<!-- -->
+* **Suppression d'un objet TopoMap**
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.DROP_TOPO_MAP(topo_map IN VARCHAR2);
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                        |
+|:---------|:-------|:----------------------------------|
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap à supprimmer|
+
+##### Usages :
+Cette fonction n'est à  utiliser qu'à la toute fin des manipulations de la topologie car elle effectue trois actions :
+* Un Rollback de tous les changements non validés **si et seulement si** l'objet TopoMap est modifiable,
+* Elle libère la mémoire cache associée à l'objet TopoMap ;
+* La suppression de l'objet TopoMap de la session de l'utilisateur ;
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+
+##### 4.1.2. Chargement/suppression/validation des données dans l'objet TopoMap ;
+* **Chargement des données dans l'objet TopoMap**
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.LOAD_TOPO_MAP(
+     topo_map IN VARCHAR2,
+     allow_updates IN VARCHAR2,
+     build_indexes IN VARCHAR2 DEFAULT 'TRUE'
+     ) RETURN VARCHAR2;
+```
+
+##### Paramètres :
+|Paramètres   |TYPE    |Description                                                 |
+|:------------|:-------|:-----------------------------------------------------------|
+|TOPO_MAP     |VARCHAR2|Nom de l'objet TopoMap à supprimmer                         |
+|ALLOW_UPDATES|VARCHAR2|'TRUE' = objet modifiable ; 'Fasle' = objet en lecture seule|
+|BUILD_INDEXES|VARCHAR2|Permet de créer un index R-Tree en mémoire pour les tronçons et les surfaces. Par défaut la valeur de ce paramètre est 'TRUE', mais elle peut être changée en 'FALSE', si vous ne voulez pas de l'index|
+
+##### Usages :
+Cette fonction est obligatoire pour modifier ou interroger la topologie dans l'objet TopoMap car elle permet d'y charger les primitives topologiques d'une topologie et d'indiquer si cette dernière est modifiable ou non. Ainsi elle peut être utilisée pour identifier des coordonnées ou des noeuds spécifiques, comme pour modifier/ajouter/supprimer des tronçons, noeuds ou des faces.
+L'utilisation de cette fonction succède celle de la fonction SDO_TOPO_MAP.CREATE_TOPO_MAP(), qui permet de faire le lien entre la topologie et l'objet topologique.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP', 'TRUE', 'TRUE');
+```
+<!-- -->
+* **Suppression des données dans l'objet TopoMap**
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.CLEAR_TOPO_MAP(topo_map IN VARCHAR2);
+```
+
+##### Paramètres :
+|Paramètres   |TYPE    |Description                   |
+|:------------|:-------|:-----------------------------|
+|TOPO_MAP     |VARCHAR2|Nom de l'objet TopoMap à vider|
+
+##### Usages :
+Cette fonction permet de vider le cache associé à l'objet TopoMap. L'utilisation de cette fonction sur un objet TopoMap *modifiable* le passe automatiquement en *lecture seule*.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.CLEAR_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+<!-- -->
+* **Validation des modifications topologiques**
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.COMMIT_TOPO_MAP;
+```
+##### Usages :
+Cette fonction valide toutes les modifications faites dans l'objet TopoMap et les passe en base. Cette fonction n'est à utiliser qu'à la toute fin des modifications topologiques, puisque son utilisation passe automatiquement l'objet TopoMap en lecture seule. Si vous voulez faire de nouvelles modifications, il faudra donc supprimer l'objet TopoMap, créer un nouvel objet et y charger les primitives topologiques.
+
+##### 4.1.3. Exemple concret d'utilisation d'un objet TopoMap ;
+Dans cet exemple, nous allons sélectionner l'id d'un tronçon du boulevard de la liberté, créer un objet TopoMap afin de connaître les coordonnées des noeuds du tronçon spécifique, puis le supprimer.
+``` SQL
+-- 1.1. Sélection des tronçons du Boulevard de la Liberté
+SELECT
+    a.edge_id,
+    b.tg_id,
+    c.nom_rue
+FROM
+    topo_reseau_routier_edge$ a
+    INNER JOIN topo_reseau_routier_relation$ b ON a.edge_id = b.topo_id
+    INNER JOIN topo_voirie c ON b.tg_id = c.geom.tg_id
+WHERE
+    c.nom_rue = 'Boulevard de la Liberté';
+    
+-- 1.2. Résultat de la sélection :
+EDGE_ID  TG_ID          NOM_RUE
+    2	   4	Boulevard de la Liberté
+    9	   4	Boulevard de la Liberté
+    14	   4	Boulevard de la Liberté
+    33     4	Boulevard de la Liberté
+    
+-- 2. Création de l'objet TopoMap
+CALL SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP');
+
+-- 3. Chargement des primitives topologiques dans l'objet TopoMap
+CALL SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP', 'TRUE', 'TRUE');
+
+-- 4.1. Sélection des id de tous les noeuds du tronçon dont l'id = 2
+SELECT SDO_TOPO_MAP.GET_EDGE_NODES(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- 4.2. Résultats de la sélection :
+MDSYS.SDO_NUMBER_ARRAY(3, 26)
+
+-- 5.1. Sélection des coordonnées des noeuds du segement 2
+SELECT 
+    SDO_TOPO_MAP.GET_EDGE_NODES(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) AS start_end_node,
+    SDO_TOPO_MAP.GET_EDGE_COORDS(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) AS coordonnees
+FROM DUAL;
+
+-- 5.2. Résultats :
+        START_END_NODE                      COORDONNEES
+MDSYS.SDO_NUMBER_ARRAY(3, 26)	MDSYS.SDO_NUMBER_ARRAY(703659.850059045, 7060037.47342021, 704309.739551736, 7059480.40298927)
+
+-- 6. Suppression de l'objet TopoMap
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
 #### 4.2. Insérer des entités topologiques dans une topologie ;
 
 ##### 4.2.1. Ajouter un noeud
@@ -173,10 +340,10 @@ Pour créer et utiliser un objet Topo Map avec PL/SQL APPI, vous pouvez soit le 
 ##### Fonction : 
 ``` SQL
 SDO_TOPO_MAP.ADD_NODE(     
-  topology           IN VARCHAR2,      
-  edge_id            IN NUMBER,      
-  point              IN SDO_GEOMETRY,      
-  coord_index        IN NUMBER,      
+  topology IN VARCHAR2,      
+  edge_id IN NUMBER,      
+  point IN SDO_GEOMETRY,      
+  coord_index IN NUMBER,      
   is_new_shape_point IN VARCHAR2      
 ) RETURN NUMBER;
 ```
@@ -188,7 +355,7 @@ SDO_TOPO_MAP.ADD_EDGE(
   topology IN VARCHAR2,      
   node_id1 IN NUMBER,      
   node_id2 IN NUMBER,      
-  geom     IN SDO_GEOMETRY      
+  geom IN SDO_GEOMETRY      
 ) RETURN NUMBER;
 ```
 ##### Paramètres :
@@ -222,9 +389,9 @@ INTO :identifiant_troncon;
 ##### Fonction : 
 ``` SQL
 SDO_TOPO_MAP.CHANGE_EDGE_COORDS(     
-  topology  IN VARCHAR2,      
-  edge_id   IN NUMBER,      
-  geom      IN SDO_GEOMETRY);
+  topology IN VARCHAR2,      
+  edge_id IN NUMBER,      
+  geom IN SDO_GEOMETRY);
 ```
 
 ##### Paramètres :
@@ -249,8 +416,7 @@ SDO_TOPO_MAP.CHANGE_EDGE_COORDS(
 SDO_TOPO_MAP.GET_EDGE_COORDS(
      topology IN VARCHAR2,
      topo_map IN VARCHAR2, 
-     edge_id IN NUMBER
-     );
+     edge_id IN NUMBER);
      
 -- RETURN SDO_NUMBER_ARRAY
 ```
@@ -265,6 +431,7 @@ SDO_TOPO_MAP.GET_EDGE_COORDS(
 ##### Usages :
 Cette fonction retourne un tableau des coordonnées du noeud de départ, des sommets intermédiaires et du noeud d'arrivée du tronçon, sous la forme SDO_NUMBER_ARRAY().
 
+
 ##### Exemple :
 ``` SQL
 -- Requête :
@@ -275,7 +442,7 @@ MDSYS.SDO_NUMBER_ARRAY(703659.850059045, 7060037.47342021, 704309.739551736, 705
 ```
 <!-- -->
 * **Les coordonnées d'un noeud :**
-<!-- -->
+
 ##### Fonction :
 ``` SQL
 SDO_TOPO_MAP.GET_NODE_COORDS(
