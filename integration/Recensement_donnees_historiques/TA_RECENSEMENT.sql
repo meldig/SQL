@@ -1,5 +1,7 @@
 /*
+
 La table ta_recensement regroupe toutes les valeurs des différents recensement.
+
 */
 -- 1. Création de la table
 CREATE TABLE ta_recensement(
@@ -9,6 +11,7 @@ CREATE TABLE ta_recensement(
 	population NUMBER(38,0),
 	fid_metadonnee NUMBER(38,0)
 );
+
 
 
 -- 2. Création des commentaires

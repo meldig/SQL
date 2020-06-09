@@ -52,9 +52,10 @@ WHERE
 
 
 -- 4. Insertion des IRIS dans TA_IRIS
-INSERT INTO ta_iris(fid_libelle, fid_code, fid_nom, fid_metadonnee, fid_iris_geom)
+
+INSERT INTO ta_iris(fid_libelle_court, fid_code, fid_nom, fid_metadonnee, fid_iris_geom)
 SELECT
-    d.objectid AS fid_libelle,
+    b.objectid AS fid_libelle,
     g.objectid AS fid_code,
     i.objectid AS fid_nom,
     h.objectid AS fid_metadonnee,
@@ -95,10 +96,10 @@ AND
                 INNER JOIN ta_provenance p ON a.fid_provenance = p.objectid
                 INNER JOIN ta_organisme o ON a.fid_organisme = o.objectid
             WHERE
-                c.nom_source = ('IRIS')
+                c.nom_source = ('Contours IRIS')
             )
         )
-;
+
 -- sous requete AND pour insérer le fid_bpe_geom de la bonne géométrie de l'IRIS.
 AND
     SDO_RELATE(a.ora_geometry, j.geom,'mask=equal') = 'TRUE'
