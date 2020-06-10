@@ -22,7 +22,7 @@ ALTER TABLE
 
 
 -- 2. Création de la table TA_OCS2D_SOURCE
--- 2.1. Table TA_OCS2D_SOURCE pour acceuillir les indices que peuvent avoir les surfaces OCS2D
+-- 2.1. Table TA_OCS2D_SOURCE pour acceuillir les sources que peuvent avoir les surfaces OCS2D
 CREATE TABLE TA_OCS2D_SOURCE(
 	objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY START WITH 1 INCREMENT BY 1,
 	valeur VARCHAR2(255)
@@ -109,7 +109,6 @@ CREATE TABLE TA_OCS2D(
 	us NUMBER(38,0),
 	indice NUMBER(38,0),
 	source NUMBER(38,0),
-	commentaire NUMBER(38,0),
 	metadonnee NUMBER(38,0),
 	geom NUMBER(38,0)
 );
