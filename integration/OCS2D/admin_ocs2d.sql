@@ -1,4 +1,4 @@
--- Création de la vue des communes actuelles de la MEL via la BdTopo de l'IGN aves les données historique des population communales 1876-2017 calculés sur la base de la géographie des communes en 2019. 
+-- Création de la vue présentant les données OCS2D au dernier millesime. 
 
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW admin_ocs2d
@@ -15,7 +15,7 @@ CREATE OR REPLACE FORCE VIEW admin_ocs2d
 	)
 AS
 
--- Sous requête selection des différents couverts des sols.
+-- Sous requête selection des différents usages des sols.
 WITH 
 	cte1 AS	(
 	SELECT 
@@ -74,6 +74,7 @@ WITH
 	    AND
 	    tf_niv_3.valeur = 'OCS2D'
 	),
+-- Sous requête selection des différents couverts des sols.
 	cte2 AS (
 	SELECT 
 	    ggp.fid_libelle_parent AS fid_libelle_niv_0,
@@ -129,6 +130,7 @@ WITH
 	    AND
 	    tf_niv_3.valeur = 'OCS2D'
 	),
+	-- Selection du dernier millesime
 		millesime AS (
 		SELECT 
 			ocs2d.objectid AS OBJECTID,
