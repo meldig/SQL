@@ -1,0 +1,84 @@
+# Insertion du cadastre en base
+
+## 1. Insertion des données cadastrales en base
+
+Les données cadastrales se composent de deux blocs de données que l'on insert en base :
+* Les données EDIGEO regroupant les géométries de chaque objet topographique ;
+* Les données MAJIC regroupant les données attributaires de chaque objet topographique ;
+
+
+## 1.1. Récupération des données
+
+Les données sont récupérées auprès du service foncier par Serge, souvent en septembre, qui les met sur infogeo/DGI.
+Les données ne sont pas traitées et sont divisées par commune.
+
+## 1.2. Les modèles de données de la DGFIP
+
+La DGFIP a mis en place deux modèles de données :
+* Le modèle VEREMAP qui n'est plus maintenu, mais qui était utilisé par la MEL jusqu'à aujourd'hui et qui a servi à insérer le cadastre dans Oracle 11g ;
+* Le modèle VMAP, conforme à la Directive INSPIRE, qui fut mis en place en 2016 et qui sert à insérer le cadastre dans Oracle 12c. "MAJIC FOR FME" est spécifiquement utilisé pour son exploitation ;
+
+## 1.3. L'intégrateur GMC
+
+**Lien de téléchargement :**  <http://download.veremes.net/?p=majic4fme/>  
+L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données en base. Il faut le télécharger chaque année car la structure des tables peut changer. Il met à disposition de l'utilisateur une interface permettant de charger séparement les données MAJIC et EDIGEO.  
+
+**Les schémas en base recueillant les données :**
+* Les données MAJIC sont insérées dans le schéma S_MAJIC ;
+* Les données EDIGEO sont insérées dans le schéma S_EDIGEO ;
+
+![Interface_GMC](Intégrateur_GMC.png)
+
+**Fonctionnement de l'intégrateur :**
+1. Lancer GMC ;
+2. Créer un espace de travail ;
+3. Créer une connexion à la base de données ; 
+
+|Paramètres          | Valeur           |
+|:-------------------|:-----------------|
+|Base de données     |oracle            |
+|Nom connexion       |Nom au choix      |
+|Serveur             |Nom de l'instance |
+|Port                |1521              |
+|Service             |Nom de l'instance |
+|Utilisateur         |EDIGEO            |
+|Mot de passe Majic  |----              |
+|Mot de passe Edigeo |----              |
+
+4. Charger les données ;
+5. Lancer les insertions en base test d'abord;
+6. Si l'insertion en base test se passe sans accroc, faire de même en base de production ;
+7. Les traitements sont lancés le soir pour être sûr que les applications utilisant ces données ne fonctionnent plus;
+
+Cette application utilise des workbench FME qui créent les tables oracle. A priori il est inutile de toucher au workbench, l'idéal étant de faire remonter les problèmes à Veremes.  
+
+**Les erreurs fréquentes :**  
+* **Données EDIGEO :** Plantage de FME quand la première ligne du fichier .VEC diffère du nom du fichier -> *Solution :* modifier la ligne en question pour qu'elle corresponde au nom du fichier. Une fois la correction faite, il n'est pas nécessaire de relancer toutes les insertions, mais uniquement celle de la commune concernée.
+* **Données MAJIC :** Blocage lors du chargement des données avec une erreur du type "le fichier xxx" n'a pas pu être lu" -> *Solution :* il faut supprimer la ligne qui dispose uniquement du nom de la commune, puis relancer l'insertion. Le problème a été remonté à Veremes, donc il est possible qu'il soit fixé pour la version 2020.
+
+**Documentation :**  
+
+* Lien vers une présentation rapide de MAJIC FOR FME et de son intégrateur : <https://www.veremes.com/produits/majic>;  
+* Lien vers les descriptions des données : <https://www.collectivites-locales.gouv.fr/fourniture-fichiers-informatises-fonciers>;  
+
+
+## 2. Analyse des données
+
+L'analyse des données cadastrales consiste à créer des vues permettant d'avoir certaines informations directement. Tous ces traitements sont faits dans le schéma G_DGFIP qui a un droit de lecture sur les schémas S°EDIGEO et S_MAJIC.
+
+**La vue VM_THEMAPARCELLEV2_GEOM :**  
+* Objectif :* connaître le type de propriétaire de chaque parcelle ;  
+* Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script du fichier *new_thema_parcelle_oracle12.sql* ;
+* fichier utilisé pour la mise à jour :* new_thema_parcelle_oracle12.sql ;
+
+## 3. Historisation des parcelles
+
+**Organisation des tables :**  
+* Les tables *Parcellaire_annee_en_cours* et *Parcellaires* contiennent les données les plus récentes (elles sont donc en doublons);
+* Les tables *Parcellaire_2018*, *Parcellaire_2017*, etc recensent les parcelles par année.
+
+**Cette historisation se fait via deux workbench :**
+* *Parcellaire-historique* -> qui archive les parcelles de l'année précédente ;
+* *Parcellaire-nouvelle année* -> qui met à jour les données des tables *Parcellaire_annee_en_cours* et *Parcellaires* dont il faudra mettre à jour l'année de comparaison avec l'historique par l'année du millésime des données ;
+
+Cette historisation permet de garder dans la base les parcelles dont les numéros de parcelles n'existent plus et ainsi de suivre la vie des parcelles.
