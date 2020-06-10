@@ -67,7 +67,6 @@ Cette application utilise des workbench FME qui créent les tables oracle. A pri
 L'analyse des données cadastrales consiste à créer des vues permettant d'avoir certaines informations directement. Tous ces traitements sont faits dans le schéma G_DGFIP qui a un droit de lecture sur les schémas S°EDIGEO et S_MAJIC.
 
 **La vue VM_THEMAPARCELLEV2_GEOM :**  
-
 * Objectif :* connaître le type de propriétaire de chaque parcelle ;  
 * Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script du fichier *new_thema_parcelle_oracle12.sql* ;
 * fichier utilisé pour la mise à jour :* new_thema_parcelle_oracle12.sql ;
@@ -78,8 +77,8 @@ L'analyse des données cadastrales consiste à créer des vues permettant d'avoi
 * Les tables *Parcellaire_annee_en_cours* et *Parcellaires* contiennent les données les plus récentes (elles sont donc en doublons);
 * Les tables *Parcellaire_2018*, *Parcellaire_2017*, etc recensent les parcelles par année.
 
-Cette historisation se fait via deux workbench :
-* Parcellaire-historique -> qui archive les parcelles de l'année précédente ;
-* Parcellaire-nouvelle année -> qui met à jour les données des tables *Parcellaire_annee_en_cours* et *Parcellaires* dont il faudra mettre à jour l'année de comparaison avec l'historique par l'année du millésime des données ;
+**Cette historisation se fait via deux workbench :**
+* *Parcellaire-historique* -> qui archive les parcelles de l'année précédente ;
+* *Parcellaire-nouvelle année* -> qui met à jour les données des tables *Parcellaire_annee_en_cours* et *Parcellaires* dont il faudra mettre à jour l'année de comparaison avec l'historique par l'année du millésime des données ;
 
 Cette historisation permet de garder dans la base les parcelles dont les numéros de parcelles n'existent plus et ainsi de suivre la vie des parcelles.
