@@ -47,17 +47,18 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 
 4. Charger les données ;
 5. Lancer les insertions en base test d'abord;
-6. Si l'insertion en base test se passe sans accroc, faire même en base de production ;
-7. Les traitements sont lancés le soir pour être sûr que les applications ne fonctionnent plus;
+6. Si l'insertion en base test se passe sans accroc, faire de même en base de production ;
+7. Les traitements sont lancés le soir pour être sûr que les applications utilisant ces données ne fonctionnent plus;
 
 Cette application utilise des workbench FME qui créent les tables oracle. A priori il est inutile de toucher au workbench, l'idéal étant de faire remonter les problèmes à Veremes.  
 
 **Les erreurs fréquentes :**  
 * **Données EDIGEO :** Plantage de FME quand la première ligne du fichier .VEC diffère du nom du fichier -> *Solution :* modifier la ligne en question pour qu'elle corresponde au nom du fichier. Une fois la correction faite, il n'est pas nécessaire de relancer toutes les insertions, mais uniquement celle de la commune concernée.
-* **Données MAJIC :** Blocage lors du chargement des données avec une erreur du type "le fichier xxx" n'a pas pu être lu" -> *Solution :* il faut supprimer la ligne qui dispose uniquement du nom de la commune, puis relancer l'insertion. Le problème a été remonté à Veremes, donc il est possible qu'ils soit fixé pour la version 2020.
+* **Données MAJIC :** Blocage lors du chargement des données avec une erreur du type "le fichier xxx" n'a pas pu être lu" -> *Solution :* il faut supprimer la ligne qui dispose uniquement du nom de la commune, puis relancer l'insertion. Le problème a été remonté à Veremes, donc il est possible qu'il soit fixé pour la version 2020.
 
 **Documentation :**  
-*Lien vers une présentation rapide de MAJIC FOR FME et de son intégrateur : <https://www.veremes.com/produits/majic>;  
+
+* Lien vers une présentation rapide de MAJIC FOR FME et de son intégrateur : <https://www.veremes.com/produits/majic>;  
 * Lien vers les descriptions des données : <https://www.collectivites-locales.gouv.fr/fourniture-fichiers-informatises-fonciers>;  
 
 
@@ -66,9 +67,10 @@ Cette application utilise des workbench FME qui créent les tables oracle. A pri
 L'analyse des données cadastrales consiste à créer des vues permettant d'avoir certaines informations directement. Tous ces traitements sont faits dans le schéma G_DGFIP qui a un droit de lecture sur les schémas S°EDIGEO et S_MAJIC.
 
 **La vue VM_THEMAPARCELLEV2_GEOM :**  
-*Objectif :* connaître le type de propriétaire de chaque parcelle ;  
-*Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script du fichier *new_thema_parcelle_oracle12.sql* ;
-*fichier utilisé pour la mise à jour :* new_thema_parcelle_oracle12.sql ;
+
+* Objectif :* connaître le type de propriétaire de chaque parcelle ;  
+* Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script du fichier *new_thema_parcelle_oracle12.sql* ;
+* fichier utilisé pour la mise à jour :* new_thema_parcelle_oracle12.sql ;
 
 ## 3. Historisation des parcelles
 
