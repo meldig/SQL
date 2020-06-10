@@ -29,20 +29,20 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 
 ![Interface_GMC](Intégrateur_GMC.png)
 
-** Fonctionnement de l'intégrateur : **
+** Fonctionnement de l'intégrateur :**
 1. Lancer GMC ;
 2. Créer un espace de travail ;
 3. Créer une connexion à la base de données ;
-|Paramètres         | Valeur            |
-|-------------------|-------------------|
-|Base de données    | oracle            |
-|Nom connexion      | Nom au choix      |
-|Serveur            | Nom de l'instance |
-|Port               | 1521              |
-|Service            | Nom de l'instance |
-|Utilisateur        | EDIGEO            |
-|Mot de passe Majic | ----              |
-|Mot de passe Edigeo| ----              |
+|Paramètres          | Valeur           |
+|:-------------------|:-----------------|
+|Base de données     |oracle            |
+|Nom connexion       |Nom au choix      |
+|Serveur             |Nom de l'instance |
+|Port                |1521              |
+|Service             |Nom de l'instance |
+|Utilisateur         |EDIGEO            |
+|Mot de passe Majic  |----              |
+|Mot de passe Edigeo |----              |
 
 4. Charger les données ;
 5. Lancer les insertions en base test d'abord;
@@ -51,7 +51,7 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 Cette application utilise des workbench FME qui créent les tables oracle. A priori il est inutile de toucher au workbench, l'idéal étant de faire remonter les problèmes à Veremes.  
 
 **Les erreurs fréquentes :**  
-* **Données EDIGEO : ** Plantage de FME quand la première ligne du fichier .VEC diffère du nom du fichier -> *Solution :* modifier la ligne en question pour qu'elle corresponde au nom du fichier. Une fois la correction faite, il n'est pas nécessaire de relancer toutes les insertions, mais uniquement celle de la commune concernée.
+* **Données EDIGEO :** Plantage de FME quand la première ligne du fichier .VEC diffère du nom du fichier -> *Solution :* modifier la ligne en question pour qu'elle corresponde au nom du fichier. Une fois la correction faite, il n'est pas nécessaire de relancer toutes les insertions, mais uniquement celle de la commune concernée.
 * **Données MAJIC :** Blocage lors du chargement des données avec une erreur du type "le fichier xxx" n'a pas pu être lu" -> *Solution :* il faut supprimer la ligne qui dispose uniquement du nom de la commune, puis relancer l'insertion. Le problème a été remonté à Veremes, donc il est possible qu'ils soit fixé pour la version 2020.
 
 **Documentation :**  
@@ -63,14 +63,14 @@ Cette application utilise des workbench FME qui créent les tables oracle. A pri
 
 L'analyse des données cadastrales consiste à créer des vues permettant d'avoir certaines informations directement. Tous ces traitements sont faits dans le schéma G_DGFIP qui a un droit de lecture sur les schémas S°EDIGEO et S_MAJIC.
 
-**La vue VM_THEMAPARCELLEV2_GEOM** :  
+**La vue VM_THEMAPARCELLEV2_GEOM :**  
 *Objectif :* connaître le type de propriétaire de chaque parcelle.  
 *Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script que Maxime mettra à dispoition dans un dossier.
 
 
 ## 3. Historisation des parcelles
 
-**Organisation des tables : **  
+**Organisation des tables :**  
 * Les tables *Parcellaire_annee_en_cours* et *Parcellaires* contiennent les données les plus récentes (elles sot donc en doublons);
 * Les tables *Parcellaire_2018*, *Parcellaire_2017*, etc recense les parcelles par année.
 
