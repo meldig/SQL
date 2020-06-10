@@ -1,7 +1,4 @@
 -- Requete sql necessaire à la l'insertion de la nomenclature OCS2D
--- Insertion de la nomenclature OCS2D
--- import des données brutes dans la base
-ogr2ogr -f OCI OCI:SYSTEM/oracle@Romain_Asus/XE C:\Users\Romain\Desktop\Programmation_cours\93_MEL\OCS2D\ocs2d_15_npdc\ocs2d_15.shp -lco SRID=2154
 
 
 -- 1. Insertion de la source dans TA_SOURCE
