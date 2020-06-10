@@ -29,7 +29,7 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 
 ![Interface_GMC](Intégrateur_GMC.png)
 
-** Fonctionnement de l'intégrateur :**
+**Fonctionnement de l'intégrateur :**
 1. Lancer GMC ;
 2. Créer un espace de travail ;
 3. Créer une connexion à la base de données ;  
