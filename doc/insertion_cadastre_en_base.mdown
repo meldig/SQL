@@ -32,7 +32,7 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 ** Fonctionnement de l'intégrateur :**
 1. Lancer GMC ;
 2. Créer un espace de travail ;
-3. Créer une connexion à la base de données ;
+3. Créer une connexion à la base de données ;  
 |Paramètres          | Valeur           |
 |:-------------------|:-----------------|
 |Base de données     |oracle            |
