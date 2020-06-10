@@ -32,7 +32,8 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 **Fonctionnement de l'intégrateur :**
 1. Lancer GMC ;
 2. Créer un espace de travail ;
-3. Créer une connexion à la base de données ;  
+3. Créer une connexion à la base de données ; 
+
 |Paramètres          | Valeur           |
 |:-------------------|:-----------------|
 |Base de données     |oracle            |
@@ -47,6 +48,7 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 4. Charger les données ;
 5. Lancer les insertions en base test d'abord;
 6. Si l'insertion en base test se passe sans accroc, faire même en base de production ;
+7. Les traitements sont lancés le soir pour être sûr que les applications ne fonctionnent plus;
 
 Cette application utilise des workbench FME qui créent les tables oracle. A priori il est inutile de toucher au workbench, l'idéal étant de faire remonter les problèmes à Veremes.  
 
@@ -64,14 +66,18 @@ Cette application utilise des workbench FME qui créent les tables oracle. A pri
 L'analyse des données cadastrales consiste à créer des vues permettant d'avoir certaines informations directement. Tous ces traitements sont faits dans le schéma G_DGFIP qui a un droit de lecture sur les schémas S°EDIGEO et S_MAJIC.
 
 **La vue VM_THEMAPARCELLEV2_GEOM :**  
-*Objectif :* connaître le type de propriétaire de chaque parcelle.  
-*Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script que Maxime mettra à dispoition dans un dossier.
-
+*Objectif :* connaître le type de propriétaire de chaque parcelle ;  
+*Mise à jour :* à chaque nouveau millésime il convient de la vider puis de la remplir via le script du fichier *new_thema_parcelle_oracle12.sql* ;
+*fichier utilisé pour la mise à jour :* new_thema_parcelle_oracle12.sql ;
 
 ## 3. Historisation des parcelles
 
 **Organisation des tables :**  
-* Les tables *Parcellaire_annee_en_cours* et *Parcellaires* contiennent les données les plus récentes (elles sot donc en doublons);
-* Les tables *Parcellaire_2018*, *Parcellaire_2017*, etc recense les parcelles par année.
+* Les tables *Parcellaire_annee_en_cours* et *Parcellaires* contiennent les données les plus récentes (elles sont donc en doublons);
+* Les tables *Parcellaire_2018*, *Parcellaire_2017*, etc recensent les parcelles par année.
 
-Cette historisation se fait via deux workbench, cependant seul celui nommé "Parcellaire-nouvelle année" sera à modifier en mettant à jour l'année de comparaison avec l'historique.
+Cette historisation se fait via deux workbench :
+* Parcellaire-historique -> qui archive les parcelles de l'année précédente ;
+* Parcellaire-nouvelle année -> qui met à jour les données des tables *Parcellaire_annee_en_cours* et *Parcellaires* dont il faudra mettre à jour l'année de comparaison avec l'historique par l'année du millésime des données ;
+
+Cette historisation permet de garder dans la base les parcelles dont les numéros de parcelles n'existent plus et ainsi de suivre la vie des parcelles.
