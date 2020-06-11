@@ -1,4 +1,4 @@
--- Création de la vue des communes actuelles de la MEL via la BdTopo de l'IGN aves les données historique des population communales 1876-2017 calculés sur la base de la géographie des communes en 2019. 
+-- Création de la vue des communes actuelles de la MEL via la BdTopo de l'IGN avec les données historiques des populations communales 1876-2017 calculées sur la base de la géographie des communes en 2019. 
 
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW admin_communes_mel_recensement_historique
@@ -41,7 +41,7 @@ CREATE OR REPLACE FORCE VIEW admin_communes_mel_recensement_historique
     CONSTRAINT "admin_communes_mel_recensement_historique_PK" PRIMARY KEY("IDENTIFIANT") DISABLE
 	)
 AS
--- sous vue pour pivoter la table TA_RECENSEMENT pour ensuite la joindre aux données des communes.
+-- Sous-requête pour pivoter la table TA_RECENSEMENT pour ensuite la joindre aux données des communes.
 WITH 
 	NOMBRE_HABITANT AS (
 	SELECT
@@ -107,7 +107,7 @@ WITH
 			)
 		)
 	)
--- Séléction principale des éléments de la vue. Utilisation des données de la sous requête isolant les données du recensement et des données liées aux communes
+-- Sélection principale des éléments de la vue. Utilisation des données de la sous requête isolant les données du recensement et des données liées aux communes
 SELECT
     b.code AS identifiant, 
     b.code AS code_insee, 
@@ -210,4 +210,15 @@ VALUES(
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
+);
+
+-- 4. Création de l'index spatial
+CREATE INDEX admin_communes_mel_recensement_historique_SIDX
+ON admin_communes_mel_recensement_historique(GEOM)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX
+PARAMETERS(
+  'sdo_indx_dims=2, 
+  layer_gtype=POLYGON, 
+  tablespace=G_ADT_INDX, 
+  work_tablespace=DATA_TEMP'
 );
