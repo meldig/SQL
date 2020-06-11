@@ -1,5 +1,5 @@
 /*
-Requêtes SQL utilisées pour insérer les données nécessaire à la compréhension des données historique des populatons communales. Recensements de la population 1876-2017.
+Requêtes SQL utilisées pour insérer les données nécessaires à la compréhension des données historiques des populatons communales. Recensements de la population 1876-2017.
 Cette base fournit les données de populations de 1876 à 2017 pour les communes de France continentale, de 1936 à 2017 pour les communes de Corse et de 1954 ou 1962 à 2017 pour les communes des DOM (hors Mayotte).
 */
 
@@ -20,7 +20,7 @@ VALUES (temp.source)
 MERGE INTO ta_provenance p
 USING
 	(
-		SELECT 'https://www.insee.fr/fr/statistiques/3698339#consulter' AS url,'la données est proposé en libre accès sous la forme dans tableau xlxs.' AS methode_acquisition FROM DUAL
+		SELECT 'https://www.insee.fr/fr/statistiques/3698339#consulter' AS url,'la donnée est proposé en libre accès sous la forme de tableau xlxs.' AS methode_acquisition FROM DUAL
 	)temp
 ON (temp.url = p.url
 AND temp.methode_acquisition = p.methode_acquisition)
@@ -120,7 +120,7 @@ VALUES(temp.fid_source,temp.fid_acquisition,temp.fid_provenance,temp.fid_organis
 ;
 
 
--- 6. Insertion des code insee dans la table TA_CODE si nécessaire
+-- 6. Insertion des codes insee dans la table TA_CODE si nécessaire
 MERGE INTO TA_CODE c
 USING 
     (
@@ -265,7 +265,8 @@ USING
 		    ta_famille f,
 		    ta_libelle_long ll
 		WHERE 
-    		f.valeur = 'Recensement' AND (ll.valeur LIKE 'Population municipale%' OR ll.valeur LIKE 'Population sans double compte%' OR ll.valeur LIKE 'Population totale%')
+    		f.valeur = 'Recensement'
+    	AND (ll.valeur LIKE 'Population municipale%' OR ll.valeur LIKE 'Population sans double compte%' OR ll.valeur LIKE 'Population totale%')
 	)temp
 ON (temp.fid_famille = fl.fid_famille
 AND temp.fid_libelle_long = fl.fid_libelle_long)
