@@ -99,12 +99,12 @@ MERGE INTO TA_OCS2D tocs2d
 USING(
 	SELECT
 		o.identite AS objectid,
-		cs.fid_libelle_niv_3 AS cs,
-		us.fid_libelle_niv_3 AS us,
-		i.objectid AS indice,
-		s.objectid AS source,
-		m.objectid AS metadonnee,
-		g.objectid AS geom
+		cs.fid_libelle_niv_3 AS fid_lib_cs,
+		us.fid_libelle_niv_3 AS fid_lib_us,
+		i.objectid AS fid_ocs2d_indice,
+		s.objectid AS fid_ocs2d_source,
+		m.objectid AS fid_metadonnee,
+		g.objectid AS fid_geom
 	FROM
 		TA_OCS2D_GEOM g,
 		TA_METADONNEE m,
@@ -147,8 +147,8 @@ AND temp.source = tocs2d.source
 AND temp.metadonnee = tocs2d.metadonnee
 )
 WHEN NOT MATCHED THEN
-INSERT(tocs2d.objectid, tocs2d.cs, tocs2d.us, tocs2d.indice, tocs2d.source, tocs2d.metadonnee,tocs2d.geom)
-VALUES(temp.objectid, temp.cs, temp.us, temp.indice, temp.source, temp.metadonnee,temp.geom)
+INSERT(tocs2d.objectid, tocs2d.fid_lib_cs, tocs2d.fid_lib_us, tocs2d.fid_ocs2d_indice, tocs2d.fid_ocs2d_source, tocs2d.fid_metadonnee,tocs2d.fid_geom)
+VALUES(temp.objectid, temp.fid_lib_cs, temp.fid_lib_us, temp.fid_ocs2d_indice, temp.fid_ocs2d_source, temp.fid_metadonnee,temp.fid_geom)
 ;
 
 
