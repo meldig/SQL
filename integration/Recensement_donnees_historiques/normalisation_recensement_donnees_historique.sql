@@ -1,11 +1,11 @@
 /*
-Requêtes SQL utilisées pour normaliser les données issues de la base historique des populatons communales. Recensements de la population 1876-2017.
+Requêtes SQL utilisées pour normaliser les données issues de la base historique des populations communales. Recensements de la population 1876-2017.
 Cette base fournit les données de populations de 1876 à 2017 pour les communes de France continentale, de 1936 à 2017 pour les communes de Corse et de 1954 ou 1962 à 2017 pour les communes des DOM (hors Mayotte).
 */
 
 
 -- Insertion des données dans la table TA_RECENSEMENT
-INSERT INTO ta_recensement(fid_code,population,fid_recensement,fid_metadonnee)
+INSERT INTO ta_recensement(fid_code,population,fid_lib_recensement,fid_metadonnee)
 -- CTE pour selectionner les différentes metadonnees suivant le millesime du recensement
 WITH annee AS (
     SELECT
