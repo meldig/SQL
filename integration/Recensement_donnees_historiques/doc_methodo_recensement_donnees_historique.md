@@ -1,6 +1,8 @@
 # Remarque sur l'intégration des données de la base historique des populations 1876 à 2017 avec la géographie de 2019.
 
-Ce document a pour but d'expliciter la méthode utilisée pour intégrer les données de la base historique des populations 1876 à 2017 avec la géographie de 2019. Trois fichiers de requêtes ont été écrit.
+Ce document a pour but d'expliciter la méthode utilisée pour intégrer les données de la base historique des populations 1876 à 2017 avec la géographie de 2019.
+Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.
+Trois fichiers de requêtes ont été écrit:
 * creation_structure_recensement.sql: fichier contenant la requête de création de la table TA_RECENSEMENT
 * insertion_nomenclature_recensement_donnees_historique.sql: fichier regroupant les instructions nécessaires à l'insertion de la nomenclature dans la base oracle
 * normalisation_recensement_donnees_historique.sql: fichier contenant la requête d'insertion des données contenues dans la base historique des populations 1876 à 2017 avec la géographie de 2019 dans la table TA_RECENSEMENT.
