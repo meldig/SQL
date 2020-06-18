@@ -118,7 +118,7 @@ WITH
 
 -- 2. Création des commentaires de table et de colonnes
 
-COMMENT ON TABLE admin_iris_mel IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
+COMMENT ON TABLE admin_iris_mel IS 'Vue proposant les IRIS actuelles de la MEL extraites des données contours_IRIS de l''IGN.';
 COMMENT ON COLUMN admin_iris_mel.identifiant IS 'Clé primaire de la vue, code de la zone IRIS.';
 COMMENT ON COLUMN admin_iris_mel.code_iris IS 'code de la zone IRIS.';
 COMMENT ON COLUMN admin_iris_mel.nom_iris IS 'Nom de la zone IRIS.';
