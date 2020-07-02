@@ -24,7 +24,7 @@ WITH
 			a.valeur AS CODE_INSEE,
 			e.valeur AS RECENSEMENT,
 			b.population AS POPULATION,
-			CONCAT(CONCAT(CONCAT(CONCAT(j.nom_source,  ' - '), l.acronyme),  ' - '), m.millesime) AS source
+			j.nom_source || ' - ' || l.acronyme || ' - ' || m.millesime AS source
 		FROM
 			ta_recensement b
 		INNER JOIN ta_code a ON a.objectid = b.fid_code
@@ -50,7 +50,7 @@ SELECT
     d.valeur AS nom, 
 	nombre_habitant.population,
     nombre_habitant.recensement,
-	CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(f.nom_source,  ' - '), h.acronyme),  ' - '), j.millesime), ' - '), nombre_habitant.source) AS source,
+	f.nom_source || ' - ' || h.acronyme || ' - ' || j.millesime || ' - ' || nombre_habitant.source AS source,
     c.geom
 FROM
     ta_identifiant_commune a
@@ -90,15 +90,4 @@ VALUES(
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
-);
-
--- 4. Création de l'index spatial
-CREATE INDEX admin_communes_mel_recensement_historique_SIDX
-ON admin_communes_mel_recensement_historique(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS(
-  'sdo_indx_dims=2, 
-  layer_gtype=POLYGON, 
-  tablespace=G_ADT_INDX, 
-  work_tablespace=DATA_TEMP'
 );
