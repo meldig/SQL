@@ -53,7 +53,7 @@ ALTER TABLE
 CREATE INDEX ta_recensement_fid_code_IDX ON ta_recensement(fid_code)
 TABLESPACE "G_ADT_INDX";
 
-CREATE INDEX ta_recensement_fid_recenseemnt_IDX ON ta_recensement(fid_lib_recensement)
+CREATE INDEX ta_recensement_fid_libelle_IDX ON ta_recensement(fid_lib_recensement)
 TABLESPACE "G_ADT_INDX";
 
 CREATE INDEX ta_recensement_fid_metadonnee_IDX ON ta_recensement(fid_metadonnee)
