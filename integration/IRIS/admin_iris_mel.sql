@@ -86,7 +86,7 @@ WITH
 		lci.valeur AS type_iris,
 		csm.CODE_INSEE AS code_insee,		
 		csm.NOM_COMMUNE AS nom_commune,
-		s.nom_source || oinsee.acronyme || oign.acronyme || e.valeur || ml.MILLESIME AS source,
+		s.nom_source || ' - ' || oinsee.acronyme || ' - ' || oign.acronyme || ' - ' || e.valeur || ' - ' || ml.MILLESIME AS source,
 		g.geom
 	FROM
 		ta_iris i
