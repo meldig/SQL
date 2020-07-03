@@ -8,9 +8,9 @@ CREATE TABLE ta_famille(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_famille IS 'Table contenant les familles de libellés.';
-COMMENT ON COLUMN g_referentiel.ta_famille.objectid IS 'Identifiant de chaque famille de libellés.';
-COMMENT ON COLUMN g_referentiel.ta_famille.valeur IS 'Valeur de chaque famille de libellés.';
+COMMENT ON TABLE g_geo.ta_famille IS 'Table contenant les familles de libellés.';
+COMMENT ON COLUMN g_geo.ta_famille.objectid IS 'Identifiant de chaque famille de libellés.';
+COMMENT ON COLUMN g_geo.ta_famille.valeur IS 'Valeur de chaque famille de libellés.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_famille
@@ -19,7 +19,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_famille TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_famille TO G_ADMIN_SIG;
 
 /*
 La table ta_libelle_long regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
@@ -31,9 +31,9 @@ CREATE TABLE ta_libelle_long(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_libelle_long IS 'Table regroupant les libelles long pouvant être prise par les objets de la base';
-COMMENT ON COLUMN g_referentiel.ta_libelle_long.objectid IS 'Clef primaire de la table TA_LIBELLE_LONG';
-COMMENT ON COLUMN g_referentiel.ta_libelle_long.valeur IS 'Valeur pouvant être prises par les variables';
+COMMENT ON TABLE g_geo.ta_libelle_long IS 'Table regroupant les libelles long pouvant être prise par les objets de la base';
+COMMENT ON COLUMN g_geo.ta_libelle_long.objectid IS 'Clef primaire de la table TA_LIBELLE_LONG';
+COMMENT ON COLUMN g_geo.ta_libelle_long.valeur IS 'Valeur pouvant être prises par les variables';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_libelle_long
@@ -46,7 +46,7 @@ CREATE INDEX ta_libelle_long_IDX ON ta_libelle_long(valeur)
 TABLESPACE G_ADT_INDX;
 
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_libelle_long TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle_long TO G_ADMIN_SIG;
 
 /*
 La table ta_libelle regroupe les objectids qui caractérise les états ou les actions que peuvent prendre les éléments de la base.
@@ -58,9 +58,9 @@ CREATE TABLE ta_libelle(
  );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_libelle  IS 'Table listant les libelles utilisé afin d''établir une hierarchie';
-COMMENT ON COLUMN g_referentiel.ta_libelle.objectid IS 'Clef primaire de la table TA_LIBELLE.';
-COMMENT ON COLUMN g_referentiel.ta_libelle.fid_libelle_long IS 'Clef etrangere vers la table TA_LIBELLE';
+COMMENT ON TABLE g_geo.ta_libelle  IS 'Table listant les libelles utilisé afin d''établir une hierarchie';
+COMMENT ON COLUMN g_geo.ta_libelle.objectid IS 'Clef primaire de la table TA_LIBELLE.';
+COMMENT ON COLUMN g_geo.ta_libelle.fid_libelle_long IS 'Clef etrangere vers la table TA_LIBELLE';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_libelle
@@ -76,7 +76,7 @@ FOREIGN KEY ("FID_LIBELLE_LONG")
 REFERENCES "TA_LIBELLE_LONG" ("OBJECTID");
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_libelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle TO G_ADMIN_SIG;
 
 /*
 Table regroupant les libelles court pouvant être prise par les objets de la base.
@@ -88,9 +88,9 @@ CREATE TABLE ta_libelle_court(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_libelle_court IS 'Table regroupant les libelles court pouvant être prise par les objets de la base.';
-COMMENT ON COLUMN g_referentiel.ta_libelle_court.objectid IS 'Clef primaire de la table TA_LIBELLE_COURT.';
-COMMENT ON COLUMN g_referentiel.ta_libelle_court.valeur IS 'Valeur pouvant être prises par les variables exemple A101 ou 1 ou 0 ou x.';
+COMMENT ON TABLE g_geo.ta_libelle_court IS 'Table regroupant les libelles court pouvant être prise par les objets de la base.';
+COMMENT ON COLUMN g_geo.ta_libelle_court.objectid IS 'Clef primaire de la table TA_LIBELLE_COURT.';
+COMMENT ON COLUMN g_geo.ta_libelle_court.valeur IS 'Valeur pouvant être prises par les variables exemple A101 ou 1 ou 0 ou x.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_libelle_court
@@ -103,7 +103,7 @@ CREATE INDEX ta_libelle_court_libelle_court_IDX ON ta_libelle_court(valeur)
 TABLESPACE G_ADT_INDX;
 
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_libelle_court TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle_court TO G_ADMIN_SIG;
 
 /*
 Creation de la table ta_libelle_correspondance
@@ -118,10 +118,10 @@ CREATE TABLE ta_libelle_correspondance(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_libelle_correspondance  IS 'Table indiquant les correspondances entre les libelles et les libelles court issus de la Base Permanente des Equipements. Exemple Police = A10 ou Sans objet = x';
-COMMENT ON COLUMN g_referentiel.ta_libelle_correspondance.objectid IS 'Clef primaire de la table ta_libelle_correspondance.';
-COMMENT ON COLUMN g_referentiel.ta_libelle_correspondance.fid_libelle IS 'Clef etrangere vers la table TA_LIBELLE';
-COMMENT ON COLUMN g_referentiel.ta_libelle_correspondance.fid_libelle_court IS 'Clef etrangere vers la table TA_LIBELLE_COURT pour connaitre les libelles courts des libelles. Exemple Police = A10 ou Sans objet  = x';
+COMMENT ON TABLE g_geo.ta_libelle_correspondance  IS 'Table indiquant les correspondances entre les libelles et les libelles court issus de la Base Permanente des Equipements. Exemple Police = A10 ou Sans objet = x';
+COMMENT ON COLUMN g_geo.ta_libelle_correspondance.objectid IS 'Clef primaire de la table ta_libelle_correspondance.';
+COMMENT ON COLUMN g_geo.ta_libelle_correspondance.fid_libelle IS 'Clef etrangere vers la table TA_LIBELLE';
+COMMENT ON COLUMN g_geo.ta_libelle_correspondance.fid_libelle_court IS 'Clef etrangere vers la table TA_LIBELLE_COURT pour connaitre les libelles courts des libelles. Exemple Police = A10 ou Sans objet  = x';
 
 -- 3. Création de la clef primaire
 ALTER TABLE ta_libelle_correspondance
@@ -151,7 +151,7 @@ CREATE INDEX ta_libelle_correspondance_fid_libelle_court_IDX ON ta_libelle_corre
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_libelle_correspondance TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle_correspondance TO G_ADMIN_SIG;
 
 /*
 Table qui sert à définir les relations entre les différents libelle de la nomenclature de la base permanente des equipements. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.
@@ -163,28 +163,28 @@ CREATE TABLE ta_libelle_relation(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_libelle_relation IS 'Table qui sert à définir les relations entre les différents libelle de la nomenclature de la base permanente des equipements. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.';
-COMMENT ON COLUMN g_referentiel.ta_libelle_relation.fid_libelle_fils IS 'Composante de la clef primaire. Clef étrangère vers la table TA_LIBELLE pour connaitre le libelle fils.';
-COMMENT ON COLUMN g_referentiel.ta_libelle_relation.fid_libelle_parent IS 'Composante de la clef primaire. Clef étrangère vers la table TA__LIBELLE pour connaitre le libelle parent.';
+COMMENT ON TABLE g_geo.ta_libelle_relation IS 'Table qui sert à définir les relations entre les différents libelle de la nomenclature de la base permanente des equipements. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.';
+COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_fils IS 'Composante de la clef primaire. Clef étrangère vers la table TA_LIBELLE pour connaitre le libelle fils.';
+COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_parent IS 'Composante de la clef primaire. Clef étrangère vers la table TA__LIBELLE pour connaitre le libelle parent.';
 
 -- 3. Création de la clé primaire composée.
 ALTER TABLE ta_libelle_relation
-ADD CONSTRAINT ta_relation_libelle_PK 
-PRIMARY KEY("FID_LIBELLE_FILS","FID_LIBELLE_PARENT")
-USING INDEX TABLESPACE "G_ADT_INDX";
+	ADD CONSTRAINT ta_libelle_relation_PK 
+	PRIMARY KEY("FID_LIBELLE_FILS","FID_LIBELLE_PARENT")
+	USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Clef etrangère
 
 ALTER TABLE ta_libelle_relation
-ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK"
-FOREIGN KEY ("FID_LIBELLE_FILS")
-REFERENCES  "G_REFERENTIEL"."TA_LIBELLE" ("OBJECTID");
+	ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK"
+	FOREIGN KEY ("FID_LIBELLE_FILS")
+	REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
 
 
 ALTER TABLE ta_libelle_relation
-ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK"
-FOREIGN KEY ("FID_LIBELLE_PARENT")
-REFERENCES  "G_REFERENTIEL"."TA_LIBELLE" ("OBJECTID");
+	ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK"
+	FOREIGN KEY ("FID_LIBELLE_PARENT")
+	REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
 
 -- 5. Création des index sur les cléfs étrangères.
 
@@ -195,7 +195,7 @@ CREATE INDEX ta_relation_libelle_fid_relation_parent_IDX ON ta_libelle_relation(
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_libelle_relation TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_libelle_relation TO G_ADMIN_SIG;
 
 /*
 La table ta_famille_libelle sert à faire la liaison entre les tables ta_libelle et ta_famille.
@@ -208,10 +208,10 @@ CREATE TABLE ta_famille_libelle(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_famille_libelle IS 'Table contenant les identifiant des tables ta_libelle et ta_famille, permettant de joindre le libellé à sa famille de libellés.';
-COMMENT ON COLUMN g_referentiel.ta_famille_libelle.objectid IS 'Identifiant de chaque ligne.';
-COMMENT ON COLUMN g_referentiel.ta_famille_libelle.fid_famille IS 'Identifiant de chaque famille de libellés - FK de la table ta_famille.';
-COMMENT ON COLUMN g_referentiel.ta_famille_libelle.fid_libelle_long IS 'Identifiant de chaque libellés - FK de la table ta_libelle_long.';
+COMMENT ON TABLE g_geo.ta_famille_libelle IS 'Table contenant les identifiant des tables ta_libelle et ta_famille, permettant de joindre le libellé à sa famille de libellés.';
+COMMENT ON COLUMN g_geo.ta_famille_libelle.objectid IS 'Identifiant de chaque ligne.';
+COMMENT ON COLUMN g_geo.ta_famille_libelle.fid_famille IS 'Identifiant de chaque famille de libellés - FK de la table ta_famille.';
+COMMENT ON COLUMN g_geo.ta_famille_libelle.fid_libelle_long IS 'Identifiant de chaque libellés - FK de la table ta_libelle_long.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_famille_libelle
@@ -238,7 +238,7 @@ CREATE INDEX ta_famille_libelle_fid_libelle_long_IDX ON ta_famille_libelle(fid_l
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_famille_libelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADMIN_SIG;
 
 /*
 La table TA_CODE regroupe tous les codes du schéma. 
@@ -252,10 +252,10 @@ CREATE TABLE ta_code(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_code IS 'La table regroupe tous les codes du schéma G_GEO.';
-COMMENT ON COLUMN g_referentiel.ta_code.objectid IS 'Clé primaire de la table.';
-COMMENT ON COLUMN g_referentiel.ta_code.valeur IS 'Codes de chaque donnée du schéma.';
-COMMENT ON COLUMN g_referentiel.ta_code.fid_libelle IS 'Clé étrangère de ta_libelle permettant de connaître la signification de chaque code.';
+COMMENT ON TABLE g_geo.ta_code IS 'La table regroupe tous les codes du schéma G_GEO.';
+COMMENT ON COLUMN g_geo.ta_code.objectid IS 'Clé primaire de la table.';
+COMMENT ON COLUMN g_geo.ta_code.valeur IS 'Codes de chaque donnée du schéma.';
+COMMENT ON COLUMN g_geo.ta_code.fid_libelle IS 'Clé étrangère de ta_libelle permettant de connaître la signification de chaque code.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_code
@@ -274,7 +274,7 @@ CREATE INDEX ta_code_fid_libelle_IDX ON ta_code(fid_libelle)
 TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_code TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_code TO G_ADMIN_SIG;
 
 /*
 La table ta_organisme recense tous les organismes créateurs de données desquels proviennent les données source de la table ta_source.
@@ -288,9 +288,9 @@ CREATE TABLE ta_organisme(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_organisme IS 'Table rassemblant tous les organismes créateurs des données source utilisées par la MEL.';
-COMMENT ON COLUMN g_referentiel.ta_organisme.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_organisme.nom_organisme IS 'Nom de l''organisme créateur des données sources utilisées par la MEL';
+COMMENT ON TABLE g_geo.ta_organisme IS 'Table rassemblant tous les organismes créateurs des données source utilisées par la MEL.';
+COMMENT ON COLUMN g_geo.ta_organisme.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_organisme.nom_organisme IS 'Nom de l''organisme créateur des données sources utilisées par la MEL';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_organisme 
@@ -299,7 +299,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_organisme TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_organisme TO G_ADMIN_SIG;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -314,11 +314,11 @@ CREATE TABLE ta_date_acquisition(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_date_acquisition IS 'Table recensant les dates d''acquisition, de millésime et du nom de l''obtenteur de chaque donnée source extérieure à la MEL.';
-COMMENT ON COLUMN g_referentiel.ta_date_acquisition.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_date_acquisition.date_acquisition IS 'Date d''importation de la donnée dans la table - DD/MM/AAAA.';
-COMMENT ON COLUMN g_referentiel.ta_date_acquisition.millesime IS 'Date de création de la donnée - MM/AAAA.';
-COMMENT ON COLUMN g_referentiel.ta_date_acquisition.nom_obtenteur IS 'Nom de la personne ayant inséré la donnée source dans la base.';
+COMMENT ON TABLE g_geo.ta_date_acquisition IS 'Table recensant les dates d''acquisition, de millésime et du nom de l''obtenteur de chaque donnée source extérieure à la MEL.';
+COMMENT ON COLUMN g_geo.ta_date_acquisition.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_date_acquisition.date_acquisition IS 'Date d''importation de la donnée dans la table - DD/MM/AAAA.';
+COMMENT ON COLUMN g_geo.ta_date_acquisition.millesime IS 'Date de création de la donnée - MM/AAAA.';
+COMMENT ON COLUMN g_geo.ta_date_acquisition.nom_obtenteur IS 'Nom de la personne ayant inséré la donnée source dans la base.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_date_acquisition 
@@ -343,7 +343,7 @@ BEGIN
 
 END;*/
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_date_acquisition TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADMIN_SIG;
 
 /*
 La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
@@ -357,10 +357,10 @@ CREATE TABLE ta_source(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_source IS 'Table rassemblant toutes les sources des données utilisées par la MEL.';
-COMMENT ON COLUMN g_referentiel.ta_source.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_source.nom_source IS 'Nom de la source des données.';
-COMMENT ON COLUMN g_referentiel.ta_source.description IS 'Description de la source de données.';
+COMMENT ON TABLE g_geo.ta_source IS 'Table rassemblant toutes les sources des données utilisées par la MEL.';
+COMMENT ON COLUMN g_geo.ta_source.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_source.nom_source IS 'Nom de la source des données.';
+COMMENT ON COLUMN g_geo.ta_source.description IS 'Description de la source de données.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_source 
@@ -369,7 +369,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_source TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_source TO G_ADMIN_SIG;
 
 /*
 La table ta_provenance regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
@@ -383,10 +383,10 @@ CREATE TABLE ta_provenance(
 );
    
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_provenance IS 'Table rassemblant tous les processus d''acquisition des donnees du referentiel.';
-COMMENT ON COLUMN g_referentiel.ta_provenance.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_provenance.url IS 'URL à partir de laquelle les données source ont été téléchargées, si c''est le cas.';
-COMMENT ON COLUMN g_referentiel.ta_provenance.methode_acquisition IS 'Méthode d''acquisition des données.';
+COMMENT ON TABLE g_geo.ta_provenance IS 'Table rassemblant tous les processus d''acquisition des donnees du referentiel.';
+COMMENT ON COLUMN g_geo.ta_provenance.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_provenance.url IS 'URL à partir de laquelle les données source ont été téléchargées, si c''est le cas.';
+COMMENT ON COLUMN g_geo.ta_provenance.methode_acquisition IS 'Méthode d''acquisition des données.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_provenance 
@@ -395,7 +395,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_provenance TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_provenance TO G_ADMIN_SIG;
 
 /*
 La table ta_echelle regroupe toutes les échelles d'affichage des données source.
@@ -408,9 +408,9 @@ CREATE TABLE ta_echelle(
 );
   
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_echelle IS 'Table rassemblant toutes les échelles d''affichage des données source';
-COMMENT ON COLUMN g_referentiel.ta_echelle.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_echelle.valeur IS 'Echelle de chaque donnée source.';
+COMMENT ON TABLE g_geo.ta_echelle IS 'Table rassemblant toutes les échelles d''affichage des données source';
+COMMENT ON COLUMN g_geo.ta_echelle.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_echelle.valeur IS 'Echelle de chaque donnée source.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_echelle 
@@ -419,7 +419,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_echelle TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_echelle TO G_ADMIN_SIG;
 
 /*
 La table ta_metadonnee regroupe toutes les informations relatives aux différentes donnees du schemas.
@@ -434,12 +434,12 @@ CREATE TABLE ta_metadonnee(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_metadonnee IS 'Table qui regroupe toutes les informations relatives aux différentes donnees du schema.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee.objectid IS 'clé primaire de la table.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee.fid_source IS 'clé étrangère vers la table TA_SOURCE pour connaitre la source de la donnée.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee.fid_acquisition IS 'clé étrangère vers la table ta_date_acquisition pour connaitre la date d''acquisition de la donnée.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee.fid_provenance IS 'clé étrangère vers la table TA_PROVENANCE pour connaitre la provenance de la donnée.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee.fid_echelle IS 'clé étrangère vers la table TA_ECHELLE pour connaitre l''echelle de la donnee.';
+COMMENT ON TABLE g_geo.ta_metadonnee IS 'Table qui regroupe toutes les informations relatives aux différentes donnees du schema.';
+COMMENT ON COLUMN g_geo.ta_metadonnee.objectid IS 'clé primaire de la table.';
+COMMENT ON COLUMN g_geo.ta_metadonnee.fid_source IS 'clé étrangère vers la table TA_SOURCE pour connaitre la source de la donnée.';
+COMMENT ON COLUMN g_geo.ta_metadonnee.fid_acquisition IS 'clé étrangère vers la table ta_date_acquisition pour connaitre la date d''acquisition de la donnée.';
+COMMENT ON COLUMN g_geo.ta_metadonnee.fid_provenance IS 'clé étrangère vers la table TA_PROVENANCE pour connaitre la provenance de la donnée.';
+COMMENT ON COLUMN g_geo.ta_metadonnee.fid_echelle IS 'clé étrangère vers la table TA_ECHELLE pour connaitre l''echelle de la donnee.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_metadonnee
@@ -480,15 +480,12 @@ TABLESPACE G_ADT_INDX;
 CREATE INDEX ta_metadonnee_fid_provenance_IDX ON ta_metadonnee(fid_provenance)
 TABLESPACE G_ADT_INDX;
 
-CREATE INDEX ta_metadonnee_fid_organisme_IDX ON ta_metadonnee(fid_organisme)
-TABLESPACE G_ADT_INDX;
-
 CREATE INDEX ta_metadonnee_fid_echelle_IDX ON ta_metadonnee(fid_echelle)
 TABLESPACE G_ADT_INDX;
 
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_metadonnee TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_metadonnee TO G_ADMIN_SIG;
 
 /*
 La table TA_METADONNEE_RELATION_ORGANISME regroupe le nom de tous les objets du référentiel (les zones administratives)
@@ -499,9 +496,9 @@ CREATE TABLE ta_metadonnee_relation_organisme(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_metadonnee_relation_organisme IS 'Table de relation entre les table TA_METADONNE et TA_ORGANISME pour pouvoir dans le cas ou une donnée a plusieurs organismes producteurs tous les connaitre.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee_relation_organisme.fid_metadonnee IS 'Clé étrangère vers la table TA_METADONNEE pour connaitre la donnée produite par un producteur.';
-COMMENT ON COLUMN g_referentiel.ta_metadonnee_relation_organisme.fid_organisme IS 'Clé étrangère vers la table TA_ORGANISME pour connaitre les producteur de la donnée.';
+COMMENT ON TABLE g_geo.ta_metadonnee_relation_organisme IS 'Table de relation entre les table TA_METADONNE et TA_ORGANISME pour pouvoir dans le cas ou une donnée a plusieurs organismes producteurs tous les connaitre.';
+COMMENT ON COLUMN g_geo.ta_metadonnee_relation_organisme.fid_metadonnee IS 'Clé étrangère vers la table TA_METADONNEE pour connaitre la donnée produite par un producteur.';
+COMMENT ON COLUMN g_geo.ta_metadonnee_relation_organisme.fid_organisme IS 'Clé étrangère vers la table TA_ORGANISME pour connaitre les producteur de la donnée.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_metadonnee_relation_organisme
@@ -529,12 +526,7 @@ FOREIGN KEY (fid_organisme)
 REFERENCES ta_organisme(objectid);
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_metadonnee_relation_organisme TO G_ADMIN_SIG;
-
-
-
-
-
+GRANT SELECT ON g_geo.ta_metadonnee_relation_organisme TO G_ADMIN_SIG;
 
 /*
 La table Ta_NOM regroupe le nom de tous les objets du référentiel (les zones administratives)
@@ -548,10 +540,10 @@ CREATE TABLE ta_nom(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_nom IS 'Table rassemblant tous les noms des objets du schéma.';
-COMMENT ON COLUMN g_referentiel.ta_nom.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_nom.acronyme IS 'Acronyme de chaque nom - Exemple : MEL pour la Métropole Européenne de Lille.';
-COMMENT ON COLUMN g_referentiel.ta_nom.valeur IS 'Nom de chaque objet.';
+COMMENT ON TABLE g_geo.ta_nom IS 'Table rassemblant tous les noms des objets du schéma.';
+COMMENT ON COLUMN g_geo.ta_nom.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_nom.acronyme IS 'Acronyme de chaque nom - Exemple : MEL pour la Métropole Européenne de Lille.';
+COMMENT ON COLUMN g_geo.ta_nom.valeur IS 'Nom de chaque objet.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_nom 
@@ -560,7 +552,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_nom TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_nom TO G_ADMIN_SIG;
 
 /*
 La table ta_commune regroupe toutes les communes de la MEL.
@@ -576,12 +568,12 @@ CREATE TABLE ta_commune(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_commune IS 'Table rassemblant tous les contours communaux de la MEL et leur équivalent belge.';
-COMMENT ON COLUMN g_referentiel.ta_commune.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_commune.geom IS 'Géométrie de chaque commune ou équivalent international.';
-COMMENT ON COLUMN g_referentiel.ta_commune.fid_lib_type_commune IS 'Clé étrangère permettant de connaître le statut de la commune ou équivalent international - ta_libelle.';
-COMMENT ON COLUMN g_referentiel.ta_commune.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de chaque commune ou équivalent international.';
-COMMENT ON COLUMN g_referentiel.ta_commune.fid_metadonnee IS 'Clé étrangère permettant de retrouver la source à partir de laquelle la donnée est issue - ta_source.';
+COMMENT ON TABLE g_geo.ta_commune IS 'Table rassemblant tous les contours communaux de la MEL et leur équivalent belge.';
+COMMENT ON COLUMN g_geo.ta_commune.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_commune.geom IS 'Géométrie de chaque commune ou équivalent international.';
+COMMENT ON COLUMN g_geo.ta_commune.fid_lib_type_commune IS 'Clé étrangère permettant de connaître le statut de la commune ou équivalent international - ta_libelle.';
+COMMENT ON COLUMN g_geo.ta_commune.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de chaque commune ou équivalent international.';
+COMMENT ON COLUMN g_geo.ta_commune.fid_metadonnee IS 'Clé étrangère permettant de retrouver la source à partir de laquelle la donnée est issue - ta_source.';
 
 
 -- 3. Création de la clé primaire
@@ -638,7 +630,7 @@ CREATE INDEX ta_commune_fid_metadonnee_IDX ON ta_commune(fid_metadonnee)
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_commune TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_commune TO G_ADMIN_SIG;
 
 /*
 La table TA_IDENTIFIANT_COMMUNE permet de regrouper tous les codes par commune. 
@@ -652,10 +644,10 @@ CREATE TABLE ta_identifiant_commune(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_referentiel.ta_identifiant_commune IS 'La table permet de regrouper tous les codes par commune.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_commune.objectid IS 'Clé primaire de la table.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_commune.fid_commune IS 'Clé étrangère de la table TA_COMMUNE.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_commune.fid_identifiant IS 'Clé étrangère de la table TA_CODE.';
+COMMENT ON TABLE g_geo.ta_identifiant_commune IS 'La table permet de regrouper tous les codes par commune.';
+COMMENT ON COLUMN g_geo.ta_identifiant_commune.objectid IS 'Clé primaire de la table.';
+COMMENT ON COLUMN g_geo.ta_identifiant_commune.fid_commune IS 'Clé étrangère de la table TA_COMMUNE.';
+COMMENT ON COLUMN g_geo.ta_identifiant_commune.fid_identifiant IS 'Clé étrangère de la table TA_CODE.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE TA_IDENTIFIANT_COMMUNE
@@ -675,7 +667,7 @@ FOREIGN KEY (fid_identifiant)
 REFERENCES ta_code(objectid);
 
 -- 4. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.TA_IDENTIFIANT_COMMUNE TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.TA_IDENTIFIANT_COMMUNE TO G_ADMIN_SIG;
 
 /* 
 La table TA_ZONE_ADMINISTRATIVE permet de recenser tous les noms des zones supra-communales.
@@ -690,11 +682,11 @@ CREATE TABLE ta_zone_administrative(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_zone_administrative IS 'Table regroupant tous les noms des zones supra-communales.';
-COMMENT ON COLUMN g_referentiel.ta_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_zone_administrative.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de la zone supra-communale.';
-COMMENT ON COLUMN g_referentiel.ta_zone_administrative.fid_libelle IS 'Clé étrangère de la table TA_LIBELLE permettant de catégoriser les zones administratives.';
-COMMENT ON COLUMN g_referentiel.ta_zone_administrative.fid_metadonnee IS 'Clé étrangère de la table TA_METADONNEE.';
+COMMENT ON TABLE g_geo.ta_zone_administrative IS 'Table regroupant tous les noms des zones supra-communales.';
+COMMENT ON COLUMN g_geo.ta_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de la zone supra-communale.';
+COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_libelle IS 'Clé étrangère de la table TA_LIBELLE permettant de catégoriser les zones administratives.';
+COMMENT ON COLUMN g_geo.ta_zone_administrative.fid_metadonnee IS 'Clé étrangère de la table TA_METADONNEE.';
 
 
 -- 3. Création de la clé primaire
@@ -730,7 +722,7 @@ CREATE INDEX ta_zone_administrative_fid_metadonnee_IDX ON ta_zone_administrative
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_zone_administrative TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_zone_administrative TO G_ADMIN_SIG;
 
 /* 
 La table TA_IDENTIFIANT_ZONE_ADMINISTRATIVE permet de lier les zones supra-communales avec leurs codes.
@@ -744,10 +736,10 @@ CREATE TABLE ta_identifiant_zone_administrative(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_identifiant_zone_administrative IS 'Table permettant de lier les zones supra-communales avec leurs codes.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_zone_administrative.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
-COMMENT ON COLUMN g_referentiel.ta_identifiant_zone_administrative.fid_identifiant IS 'Clé étrangère de la table TA_CODE.';
+COMMENT ON TABLE g_geo.ta_identifiant_zone_administrative IS 'Table permettant de lier les zones supra-communales avec leurs codes.';
+COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
+COMMENT ON COLUMN g_geo.ta_identifiant_zone_administrative.fid_identifiant IS 'Clé étrangère de la table TA_CODE.';
 
 
 -- 3. Création de la clé primaire
@@ -775,7 +767,7 @@ CREATE INDEX ta_identifiant_zone_administrative_fid_identifiant_IDX ON ta_identi
     TABLESPACE G_ADT_INDX;
 
 -- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_identifiant_zone_administrative TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_identifiant_zone_administrative TO G_ADMIN_SIG;
 
 /* 
 La table ta_za_communes sert de table de liaison entre les tables ta_commune et ta_zone_administrative.
@@ -792,12 +784,12 @@ CREATE TABLE ta_za_communes(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_referentiel.ta_za_communes IS 'Table de liaison entre les tables ta_commune et ta_unite_territoriale';
-COMMENT ON COLUMN g_referentiel.ta_za_communes.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_referentiel.ta_za_communes.fid_commune IS 'Clé étrangère de la table TA_COMMUNE.';
-COMMENT ON COLUMN g_referentiel.ta_za_communes.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
-COMMENT ON COLUMN g_referentiel.ta_za_communes.debut_validite IS 'Début de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
-COMMENT ON COLUMN g_referentiel.ta_za_communes.fin_validite IS 'Fin de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
+COMMENT ON TABLE g_geo.ta_za_communes IS 'Table de liaison entre les tables ta_commune et ta_unite_territoriale';
+COMMENT ON COLUMN g_geo.ta_za_communes.objectid IS 'Identifiant de chaque objet de la table.';
+COMMENT ON COLUMN g_geo.ta_za_communes.fid_commune IS 'Clé étrangère de la table TA_COMMUNE.';
+COMMENT ON COLUMN g_geo.ta_za_communes.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
+COMMENT ON COLUMN g_geo.ta_za_communes.debut_validite IS 'Début de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
+COMMENT ON COLUMN g_geo.ta_za_communes.fin_validite IS 'Fin de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE ta_za_communes 
@@ -825,4 +817,4 @@ CREATE INDEX ta_za_communes_fid_zone_administrative_IDX ON ta_za_communes(fid_zo
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_referentiel.ta_za_communes TO G_ADMIN_SIG;
+GRANT SELECT ON g_geo.ta_za_communes TO G_ADMIN_SIG;
