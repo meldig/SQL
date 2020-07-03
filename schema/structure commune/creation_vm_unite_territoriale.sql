@@ -1,3 +1,4 @@
+  
 /*
 Création de la vue matérialisée des Unités Territoriales (faite à partir de l'aggrégation des communes) quand la MEL se composait de 90 communes.
 */
@@ -19,22 +20,23 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
     c.objectid AS identifiant,
-    g.code AS code_adm,
-    e.nom AS nom_a,
+    h.valeur AS code_adm,
+    e.valeur AS nom_a,
     SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
 FROM
     g_geo.ta_commune a
-    INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
-    INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
-    INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-    INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-    INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-    INNER JOIN g_geo.ta_code g ON f.fid_code = g.objectid
+    INNER JOIN g_referentiel.ta_za_communes b ON a.objectid = b.fid_commune
+    INNER JOIN g_referentiel.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
+    INNER JOIN g_referentiel.ta_libelle d ON c.fid_libelle = d.objectid
+    INNER JOIN g_referentiel.ta_libelle_long e ON d.fid_libelle_long = e.objectid
+    INNER JOIN g_referentiel.ta_nom f ON c.fid_nom = e.objectid
+    INNER JOIN g_referentiel.ta_identifiant_zone_administrative g ON c.objectid = g.fid_zone_administrative
+    INNER JOIN g_referentiel.ta_code h ON g.fid_identifiant = h.objectid
 WHERE
-    d.libelle = 'Unité Territoriale'
+    e.valeur = 'Unité Territoriale'
     AND b.debut_validite = '01/01/2017'
     AND b.fin_validite = '31/12/2019'
-GROUP BY e.nom, c.objectid
+GROUP BY e.valeur, c.objectid, h.valeur
 ;
 
 -- 2. Création des métadonnées spatiales
@@ -99,22 +101,22 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
         c.objectid AS identifiant,
-        g.code AS code_adm,
-        e.nom AS nom_a,
+        h.valeur AS code_adm,
+        f.valeur AS nom_a,
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
     FROM
-        g_geo.ta_commune a
-        INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
-        INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
-        INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-        INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-        INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-        INNER JOIN g_geo.ta_code g ON f.fid_code = g.objectid
-    
+        g_referentiel.ta_commune a
+        INNER JOIN g_referentiel.ta_za_communes b ON a.objectid = b.fid_commune
+        INNER JOIN g_referentiel.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
+        INNER JOIN g_referentiel.ta_libelle d ON c.fid_libelle = d.objectid
+        INNER JOIN g_referentiel.ta_libelle_long e ON d.fid_libelle_long = e.objectid
+        INNER JOIN g_referentiel.ta_nom f ON c.fid_nom = f.objectid
+        INNER JOIN g_referentiel.ta_identifiant_zone_administrative g ON c.objectid = g.fid_zone_administrative
+        INNER JOIN g_referentiel.ta_code h ON g.fid_identifiant = h.objectid
     WHERE
-        d.libelle = 'Unité Territoriale'
+        e.valeur = 'Unité Territoriale'
         AND sysdate BETWEEN b.debut_validite AND b.fin_validite
-GROUP BY e.nom, c.objectid
+GROUP BY f.valeur, c.objectid, h.valeur
 ;
 
 -- 2. Création des métadonnées spatiales
