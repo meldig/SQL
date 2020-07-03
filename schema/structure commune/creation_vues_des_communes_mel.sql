@@ -10,23 +10,25 @@ CREATE OR REPLACE FORCE VIEW g_referentiel.admin_communes_mel (
 )
 AS
 SELECT
-    b.code AS identifiant,
-    b.code AS code_insee,
-    d.nom,
+    b.valeur AS identifiant,
+    b.valeur AS code_insee,
+    d.valeur,
     c.geom
 FROM
-    g_geo.ta_identifiant_commune a
-    INNER JOIN g_geo.ta_code b ON a.fid_identifiant = b.objectid
-    INNER JOIN g_geo.ta_commune c ON a.fid_commune = c.objectid
-    INNER JOIN g_geo.ta_nom d ON c.fid_nom = d.objectid
-    INNER JOIN g_geo.ta_metadonnee e ON c.fid_metadonnee = e.objectid
-    INNER JOIN g_geo.ta_source f ON e.fid_source = f.objectid
-    INNER JOIN g_geo.ta_za_communes g ON c.objectid = g.fid_commune
-    INNER JOIN g_geo.ta_organisme h ON e.fid_organisme = h.objectid
-    INNER JOIN g_geo.ta_date_acquisition j ON e.fid_acquisition = j.objectid
-    INNER JOIN g_geo.ta_libelle p ON b.fid_libelle = p.objectid
+    g_referentiel.ta_identifiant_commune a
+    INNER JOIN g_referentiel.ta_code b ON a.fid_identifiant = b.objectid
+    INNER JOIN g_referentiel.ta_commune c ON a.fid_commune = c.objectid
+    INNER JOIN g_referentiel.ta_nom d ON c.fid_nom = d.objectid
+    INNER JOIN g_referentiel.ta_metadonnee e ON c.fid_metadonnee = e.objectid
+    INNER JOIN g_referentiel.ta_source f ON e.fid_source = f.objectid
+    INNER JOIN g_referentiel.ta_za_communes g ON c.objectid = g.fid_commune
+    INNER JOIN g_referentiel.ta_metadonnee_relation_organisme h ON e.objectid = h.fid_metadonnee
+    INNER JOIN g_referentiel.ta_organisme i ON h.fid_organisme = i.objectid
+    INNER JOIN g_referentiel.ta_date_acquisition j ON e.fid_acquisition = j.objectid
+    INNER JOIN g_referentiel.ta_libelle p ON b.fid_libelle = p.objectid
+    INNER JOIN g_referentiel.ta_libelle_long q ON p.fid_libelle_long = q.objectid
 WHERE
-    p.libelle = 'code insee'
+    q.valeur = 'code insee'
     AND g.fid_zone_administrative = 1
     AND sysdate BETWEEN g.debut_validite AND g.fin_validite;
 
@@ -69,23 +71,25 @@ CREATE OR REPLACE FORCE VIEW g_referentiel.admin_communes_mel90 (
 )
 AS
 SELECT
-    b.code AS identifiant,
-    b.code AS code_insee,
-    d.nom,
+    b.valeur AS identifiant,
+    b.valeur AS code_insee,
+    d.valeur,
     c.geom
 FROM
-    g_geo.ta_identifiant_commune a
-    INNER JOIN g_geo.ta_code b ON a.fid_identifiant = b.objectid
-    INNER JOIN g_geo.ta_commune c ON a.fid_commune = c.objectid
-    INNER JOIN g_geo.ta_nom d ON c.fid_nom = d.objectid
-    INNER JOIN g_geo.ta_metadonnee e ON c.fid_metadonnee = e.objectid
-    INNER JOIN g_geo.ta_source f ON e.fid_source = f.objectid
-    INNER JOIN g_geo.ta_za_communes g ON c.objectid = g.fid_commune
-    INNER JOIN g_geo.ta_organisme h ON e.fid_organisme = h.objectid
-    INNER JOIN g_geo.ta_date_acquisition j ON e.fid_acquisition = j.objectid
-    INNER JOIN g_geo.ta_libelle p ON b.fid_libelle = p.objectid
+    g_referentiel.ta_identifiant_commune a
+    INNER JOIN g_referentiel.ta_code b ON a.fid_identifiant = b.objectid
+    INNER JOIN g_referentiel.ta_commune c ON a.fid_commune = c.objectid
+    INNER JOIN g_referentiel.ta_nom d ON c.fid_nom = d.objectid
+    INNER JOIN g_referentiel.ta_metadonnee e ON c.fid_metadonnee = e.objectid
+    INNER JOIN g_referentiel.ta_source f ON e.fid_source = f.objectid
+    INNER JOIN g_referentiel.ta_za_communes g ON c.objectid = g.fid_commune
+    INNER JOIN g_referentiel.ta_metadonnee_relation_organisme h ON e.objectid = h.fid_metadonnee
+    INNER JOIN g_referentiel.ta_organisme i ON h.fid_organisme = i.objectid
+    INNER JOIN g_referentiel.ta_date_acquisition j ON e.fid_acquisition = j.objectid
+    INNER JOIN g_referentiel.ta_libelle p ON b.fid_libelle = p.objectid
+    INNER JOIN g_referentiel.ta_libelle_long q ON p.fid_libelle_long =q.objectid
 WHERE
-    p.libelle = 'code insee'
+    q.valeur = 'code insee'
     AND g.fid_zone_administrative = 1
     AND g.debut_validite = '01/01/2017'
     AND g.fin_validite = '31/12/2019';
@@ -139,25 +143,27 @@ AS
 WITH
  v_main_selection AS(
     SELECT
-        b.code AS code_adm,
+        b.valeur AS code_adm,
         c.objectid,
-        d.nom,
+        d.valeur,
         c.geom,
         ROUND(SDO_GEOM.SDO_AREA(c.geom, 0.005, 'unit=SQ_KILOMETER'), 2) AS surf_km2,
-        CONCAT(CONCAT(CONCAT(CONCAT(h.acronyme, ' - '), f.nom_source), ' - '),  EXTRACT(YEAR FROM j.millesime))AS source
+        CONCAT(CONCAT(CONCAT(CONCAT(i.acronyme, ' - '), f.nom_source), ' - '),  EXTRACT(YEAR FROM j.millesime))AS source
     FROM
-        g_geo.ta_identifiant_commune a
-        INNER JOIN g_geo.ta_code b ON a.fid_identifiant = b.objectid
-        INNER JOIN g_geo.ta_commune c ON a.fid_commune = c.objectid
-        INNER JOIN g_geo.ta_nom d ON c.fid_nom = d.objectid
-        INNER JOIN g_geo.ta_metadonnee e ON c.fid_metadonnee = e.objectid
-        INNER JOIN g_geo.ta_source f ON e.fid_source = f.objectid
-        INNER JOIN g_geo.ta_za_communes g ON c.objectid = g.fid_commune
-        INNER JOIN g_geo.ta_organisme h ON e.fid_organisme = h.objectid
-        INNER JOIN g_geo.ta_date_acquisition j ON e.fid_acquisition = j.objectid
-        INNER JOIN g_geo.ta_libelle k ON b.fid_libelle = k.objectid
+        g_referentiel.ta_identifiant_commune a
+        INNER JOIN g_referentiel.ta_code b ON a.fid_identifiant = b.objectid
+        INNER JOIN g_referentiel.ta_commune c ON a.fid_commune = c.objectid
+        INNER JOIN g_referentiel.ta_nom d ON c.fid_nom = d.objectid
+        INNER JOIN g_referentiel.ta_metadonnee e ON c.fid_metadonnee = e.objectid
+        INNER JOIN g_referentiel.ta_source f ON e.fid_source = f.objectid
+        INNER JOIN g_referentiel.ta_za_communes g ON c.objectid = g.fid_commune
+        INNER JOIN g_referentiel.ta_metadonnee_relation_organisme h ON e.objectid = h.fid_metadonnee
+        INNER JOIN g_referentiel.ta_organisme i ON h.fid_organisme = i.objectid
+        INNER JOIN g_referentiel.ta_date_acquisition j ON e.fid_acquisition = j.objectid
+        INNER JOIN g_referentiel.ta_libelle k ON b.fid_libelle = k.objectid
+        INNER JOIN g_referentiel.ta_libelle_long l ON k.fid_libelle_long = l.objectid
     WHERE
-        k.libelle IN('code insee', 'code ins')
+        l.valeur IN('code insee', 'code ins')
         AND g.fid_zone_administrative IN(1, 3, 4, 5)
         AND sysdate BETWEEN g.debut_validite AND g.fin_validite
     ),
@@ -165,17 +171,18 @@ WITH
     v_selection_entite_adm AS(
     SELECT
         a.objectid,
-        b.libelle AS entite_adm
+        c.valeur AS entite_adm
     FROM
-        g_geo.ta_commune a
-        INNER JOIN g_geo.ta_libelle b ON a.fid_lib_type_commune = b.objectid
+        g_referentiel.ta_commune a
+        INNER JOIN g_referentiel.ta_libelle b ON a.fid_lib_type_commune = b.objectid
+        INNER JOIN g_referentiel.ta_libelle_long c ON b.fid_libelle_long = c.objectid
     )
     
     SELECT
         a.objectid AS identifiant,
         REPLACE(b.entite_adm, 'aux contours frontaliers modifiés', '') AS entite_adm,
         a.code_adm,
-        LOWER(a.nom) AS nom_a,
+        LOWER(a.valeur) AS nom_a,
         '' AS nom_b,
         '' AS nom_c,
         a.surf_km2,
