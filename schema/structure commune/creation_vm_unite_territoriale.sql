@@ -1,14 +1,15 @@
+  
 /*
 Création de la vue matérialisée des Unités Territoriales (faite à partir de l'aggrégation des communes) quand la MEL se composait de 90 communes.
 */
 
 /*
-DROP MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90;
+DROP MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel90;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'admin_unite_territoriale_mel90';
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90(
+CREATE MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel90(
     identifiant,
     code_adm,
     nom,
@@ -19,22 +20,23 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
     c.objectid AS identifiant,
-    g.code AS code_adm,
-    e.nom AS nom_a,
+    h.valeur AS code_adm,
+    e.valeur AS nom_a,
     SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
 FROM
     g_geo.ta_commune a
     INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
     INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
     INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-    INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-    INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-    INNER JOIN g_geo.ta_code g ON f.fid_code = g.objectid
+    INNER JOIN g_geo.ta_libelle_long e ON d.fid_libelle_long = e.objectid
+    INNER JOIN g_geo.ta_nom f ON c.fid_nom = e.objectid
+    INNER JOIN g_geo.ta_identifiant_zone_administrative g ON c.objectid = g.fid_zone_administrative
+    INNER JOIN g_geo.ta_code h ON g.fid_identifiant = h.objectid
 WHERE
-    d.libelle = 'Unité Territoriale'
+    e.valeur = 'Unité Territoriale'
     AND b.debut_validite = '01/01/2017'
     AND b.fin_validite = '31/12/2019'
-GROUP BY e.nom, c.objectid
+GROUP BY e.valeur, c.objectid, h.valeur
 ;
 
 -- 2. Création des métadonnées spatiales
@@ -68,11 +70,11 @@ PARAMETERS(
 );
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90 IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.identifiant IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.nom IS 'Nom des Unités Territoriales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.geom IS 'Géométrie de chaque Unité Territoriale.';
+COMMENT ON MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel90 IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel90.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel90.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel90.nom IS 'Nom des Unités Territoriales.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel90.geom IS 'Géométrie de chaque Unité Territoriale.';
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON admin_unite_territoriale_mel90 TO G_REFERENTIEL_LEC;
@@ -83,12 +85,12 @@ Création de la vue matérialisée des Unités Territoriales (faite à partir de
 */
 
 /*
-DROP MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel;
+DROP MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'admin_unite_territoriale_mel';
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel(
+CREATE MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel(
     identifiant,
     code_adm,
     nom,
@@ -99,22 +101,22 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
         c.objectid AS identifiant,
-        g.code AS code_adm,
-        e.nom AS nom_a,
+        h.valeur AS code_adm,
+        f.valeur AS nom_a,
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
     FROM
         g_geo.ta_commune a
         INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
         INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
         INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-        INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-        INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-        INNER JOIN g_geo.ta_code g ON f.fid_code = g.objectid
-    
+        INNER JOIN g_geo.ta_libelle_long e ON d.fid_libelle_long = e.objectid
+        INNER JOIN g_geo.ta_nom f ON c.fid_nom = f.objectid
+        INNER JOIN g_geo.ta_identifiant_zone_administrative g ON c.objectid = g.fid_zone_administrative
+        INNER JOIN g_geo.ta_code h ON g.fid_identifiant = h.objectid
     WHERE
-        d.libelle = 'Unité Territoriale'
+        e.valeur = 'Unité Territoriale'
         AND sysdate BETWEEN b.debut_validite AND b.fin_validite
-GROUP BY e.nom, c.objectid
+GROUP BY f.valeur, c.objectid, h.valeur
 ;
 
 -- 2. Création des métadonnées spatiales
@@ -148,11 +150,11 @@ PARAMETERS(
 );
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.identifiant IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.nom IS 'Nom des Unités Territoriales.';
-COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.geom IS 'Géométrie de chaque Unité Territoriale.';
+COMMENT ON MATERIALIZED VIEW g_geo.admin_unite_territoriale_mel IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel.nom IS 'Nom des Unités Territoriales.';
+COMMENT ON COLUMN g_geo.admin_unite_territoriale_mel.geom IS 'Géométrie de chaque Unité Territoriale.';
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON admin_unite_territoriale_mel TO G_REFERENTIEL_LEC;
