@@ -81,12 +81,12 @@ WITH
 -- requete principale pour sélectionner les IRIS avec leurs métadonnées et leurs communes de localisation
 	SELECT
 		i.objectid AS identifiant,
-		CONCAT(csm.CODE_INSEE,codei.valeur) AS code_iris,
+		csm.CODE_INSEE || codei.valeur AS code_iris,
 		nomi.valeur AS nom_iris,
 		lci.valeur AS type_iris,
 		csm.CODE_INSEE AS code_insee,		
 		csm.NOM_COMMUNE AS nom_commune,
-		s.nom_source || oinsee.acronyme || oign.acronyme || e.valeur || ml.MILLESIME AS source,
+		s.nom_source || ' - ' || oinsee.acronyme || ' - ' || oign.acronyme || ' - ' || e.valeur || ' - ' || ml.MILLESIME AS source,
 		g.geom
 	FROM
 		ta_iris i
