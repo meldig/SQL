@@ -52,10 +52,10 @@ COMMIT;
 -- 3. Insertion des noms dans TA_NOM
 MERGE INTO TA_NOM a
 USING municipalite_belge b
-ON(a.valeur = b."nom")
+ON(a.valeur = b."NOM")
 WHEN NOT MATCHED THEN
 INSERT(a.valeur)
-VALUES(b."nom")
+VALUES(b."NOM");
 
 -- 4. Insertion des libelles long concernant les communes belges
 MERGE INTO ta_libelle_long a
@@ -68,7 +68,7 @@ USING
 ON(a.valeur = b.valeur)
 WHEN NOT MATCHED THEN
 INSERT(a.valeur)
-VALUES(b.valeur)
+VALUES(b.valeur);
 
 
 -- 5. Insertion des relation famille-libelle concernant les communes belges
@@ -89,7 +89,7 @@ ON(a.fid_famille = b.fid_famille
 AND a.fid_libelle_long = b.fid_libelle_long)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_famille, a.fid_libelle_long)
-VALUES(b.fid_famille, b.fid_libelle_long)
+VALUES(b.fid_famille, b.fid_libelle_long);
 
 -- 6. Insertion des fid_libelle_long dans ta_libelle
 MERGE INTO ta_libelle a
@@ -112,7 +112,7 @@ MERGE INTO ta_code a
 USING
 	(
 		SELECT
-			a."code_ins" AS valeur,
+			a.code_ins AS valeur,
 			b.objectid AS fid_libelle
 		FROM
 			municipalite_belge a,
@@ -125,7 +125,7 @@ ON(a.valeur = b.valeur
 AND a.fid_libelle = b.fid_libelle)
 WHEN NOT MATCHED THEN
 INSERT(a.valeur, a.fid_libelle)
-VALUES(b.valeur, b.fid_libelle)
+VALUES(b.valeur, b.fid_libelle);
 
 -- 8. Insertion des municipalités belges dans TA_COMMUNE
 INSERT INTO ta_commune(geom, fid_lib_type_commune, fid_metadonnee, fid_nom)
@@ -143,7 +143,7 @@ FROM
 	INNER JOIN ta_metadonnee_relation_organisme i ON c.objectid = i.fid_metadonnee
 	INNER JOIN ta_organisme j ON i.fid_organisme = j.objectid,
     municipalite_belge a
-    INNER JOIN ta_nom d ON a."nom" = d.valeur,
+    INNER JOIN ta_nom d ON a.nom = d.valeur,
     ta_libelle b
     INNER JOIN ta_libelle_long k ON b.fid_libelle_long = k.objectid
 WHERE
@@ -151,7 +151,7 @@ WHERE
 AND 
 	j.nom_organisme = 'Institut Géographique National Belge'
 AND
-	h.echelle = '10 000'
+	h.valeur = '10 000'
 AND
 	e.nom_source = 'Inventaire topogéographique du territoire belge'
 AND
