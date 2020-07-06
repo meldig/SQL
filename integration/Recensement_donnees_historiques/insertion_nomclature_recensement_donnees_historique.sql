@@ -144,7 +144,7 @@ USING
         AND
             d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
         AND
-            f.nom_organisme IN ('Institut National de la statistique et des études économiques')
+            f.nom_organisme IN ('Institut National de la Statistique et des Etudes Economiques')
 	)b
 ON(a.fid_metadonnee = b.fid_metadonnee
 AND a.fid_organisme = b.fid_organisme)
@@ -155,24 +155,24 @@ VALUES(b.fid_metadonnee, b.fid_organisme)
 
 
 -- 7. Insertion des codes insee dans la table TA_CODE si nécessaire
-MERGE INTO TA_CODE c
+MERGE INTO TA_CODE a
 USING 
     (
         SELECT DISTINCT
-        	r.CODGEO AS code,
-        	l.objectid AS fid_libelle
+        	a.CODGEO AS valeur,
+        	b.objectid AS fid_libelle
         FROM
-        	RECENSEMENT r,
-        	ta_libelle l
-        INNER JOIN ta_libelle_long ll ON ll.objectid = l.fid_libelle_long
+        	RECENSEMENT a,
+        	ta_libelle b
+        INNER JOIN ta_libelle_long c ON b.fid_libelle_long = c.objectid
         WHERE
-        	ll.valeur = 'code insee'
-    )temp
-ON (temp.code = c.code
-AND temp.fid_libelle = c.fid_libelle)
+        	c.valeur = 'code insee'
+    )b
+ON (a.valeur = b.valeur
+AND a.fid_libelle = b.fid_libelle)
 WHEN NOT MATCHED THEN
-INSERT (c.code,c.fid_libelle)
-VALUES (temp.code,temp.fid_libelle)
+INSERT (a.valeur,a.fid_libelle)
+VALUES (b.valeur,b.fid_libelle)
 ;
 
 
@@ -355,7 +355,7 @@ WHERE
 INSERT INTO fusion_nomenclature_recensement(objectid, fid_libelle_long, libelle_long, fid_libelle_court, libelle_court)
 	SELECT
 -- Attention à la séquence utilisée
-	    ISEQ$$_1004437.NEXTVAL AS objectid,
+	    ISEQ$$_1018816.NEXTVAL AS objectid,
 -- Attention à la séquence utilisée
 	    b.objectid AS fid_libelle_long,
 	    b.valeur AS libelle_long,
@@ -404,36 +404,36 @@ INSERT INTO fusion_nomenclature_recensement(objectid, fid_libelle_long, libelle_
 
 
 -- 14. Insertion des 'objectid' et des 'fid_libelle_long' grâce à la table temporaire fusion_nomenclature_recensement(voir 12. et 13.) dans la table ta_libelle
-MERGE INTO ta_libelle l
+MERGE INTO ta_libelle a
 USING
     (
     SELECT
         objectid, 
         fid_libelle_long
     FROM fusion_nomenclature_recensement
-    ) temp
-ON (temp.objectid = l.objectid
-AND temp.fid_libelle_long = l.fid_libelle_long)
+    ) b
+ON (a.objectid = b.objectid
+AND a.fid_libelle_long = b.fid_libelle_long)
 WHEN NOT MATCHED THEN
-INSERT (l.objectid,l.fid_libelle_long)
-VALUES (temp.objectid,temp.fid_libelle_long)
+INSERT (a.objectid,a.fid_libelle_long)
+VALUES (b.objectid,b.fid_libelle_long)
 ;
 
 
 -- 15. Insertion des données dans ta_libelle_correspondance grâce à la table temporaire fusion_nomenclature_recensement(voir 12. et 13.) dans la table ta_libelle
-MERGE INTO ta_libelle_correspondance tc
+MERGE INTO ta_libelle_correspondance a
 USING
     (
     SELECT
         objectid, 
         fid_libelle_court
     FROM fusion_nomenclature_recensement
-    ) temp
-ON (temp.objectid = tc.fid_libelle
-AND temp.fid_libelle_court = tc.fid_libelle_court)
+    ) b
+ON (a.fid_libelle = b.objectid
+AND a.fid_libelle_court = b.fid_libelle_court)
 WHEN NOT MATCHED THEN
-INSERT (tc.fid_libelle,tc.fid_libelle_court)
-VALUES (temp.objectid,temp.fid_libelle_court)
+INSERT (a.fid_libelle,a.fid_libelle_court)
+VALUES (b.objectid,b.fid_libelle_court)
 ;
 
 
