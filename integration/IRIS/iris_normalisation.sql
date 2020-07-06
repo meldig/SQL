@@ -13,7 +13,7 @@ COMMIT;
 -- 1.2 Mise à jour de la colonne IDENTITY pour avoir des clé unique qui suivent l'incrémentation de la séquence de la table TA_IRIS
 UPDATE contours_iris
 -- Attention à la séquence utilisée
-SET identite = ISEQ$$_1014741.nextval;
+SET identite = ISEQ$$_1025578.nextval;
 -- Attention à la séquence utilisée
 
 
@@ -27,20 +27,6 @@ ON (a.valeur = b.valeur)
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur);
-
-
--- 3. insertion du fid_libelle_long 'code IRIS' dans la table TA_LIBELLE
-MERGE INTO ta_libelle a
-USING 
-        (
-            SELECT objectid AS fid_libelle_long 
-            FROM ta_libelle_long 
-            WHERE valeur = 'code IRIS'
-        ) b
-ON (a.fid_libelle_long = b.fid_libelle_long)
-WHEN NOT MATCHED THEN
-INSERT (a.fid_libelle_long)
-VALUES (b.fid_libelle_long);
 
 
 -- 4. Insertion des codes IRIS TA_CODE
