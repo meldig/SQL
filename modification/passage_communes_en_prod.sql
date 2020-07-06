@@ -45,7 +45,9 @@ INSERT INTO ta_metadonnee(fid_source, fid_acquisition, fid_provenance)
 SELECT
 	MAX(a.objectid),
 	MAX(b.objectid),
+
 	MAX(c.objectid)
+
 FROM
 	ta_source a,
 	ta_date_acquisition b,
@@ -77,7 +79,9 @@ AND
 AND
     e.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
 AND 
+
     b.acronyme = 'IGN';
+
 
 -- 3. Insertion des familles et des libelles des communes
 -- 3.1. Insertion dans ta_famille
@@ -94,7 +98,9 @@ INSERT INTO ta_libelle_long(valeur)
 VALUES('commune associée');
 COMMIT;
 
+
 -- 3.3. Insertion dans ta_famille_libelle (table de liaison entre ta_famille et ta_libelle_long)
+
 INSERT INTO ta_famille_libelle(fid_libelle_long, fid_famille)
 SELECT
     a.objectid,
@@ -119,7 +125,9 @@ INSERT INTO ta_libelle_long(valeur)
 VALUES('code postal');
 COMMIT;
 
+
 -- 4.3. insertion des fid_libelle_long dans ta_libelle_long;
+
 INSERT INTO ta_libelle(fid_libelle_long)
 SELECT
     objectid
@@ -142,7 +150,9 @@ WHERE
 COMMIT;
 
 ------------------------------ INSERTION DES CODES POSTAUX: REQUETE A SUPPRIMER
+
 /*                                INSERT INTO ta_code(code, fid_libelle)
+
                                 SELECT DISTINCT
                                 	a.code_post,
                                 	b.objectid
@@ -151,7 +161,9 @@ COMMIT;
                                 	ta_libelle b
                                 WHERE
                                 	b.libelle = 'code postal';
+
                                 COMMIT;*/
+
 ------------------------------ INSERTION DES CODES POSTAUX: REQUETE A SUPPRIMER
 
 
@@ -182,7 +194,9 @@ COMMIT;
 
 ------------------------------ INSERTION DES CODES POSTAUX: REQUETE A SUPPRIMER
 -- 5.4. insertion des fid_commune / fid_code dans ta_identifiant_commune pour les codes postaux (normalement il y a 63 codes postaux uniques)
+
 /*                                INSERT INTO ta_identifiant_commune(fid_commune, fid_identifiant)
+
                                 SELECT
                                     a.objectid,
                                     d.objectid
@@ -194,7 +208,9 @@ COMMIT;
                                     INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
                                 WHERE 
                                 	e.libelle = 'code postal';
+
                                 COMMIT;*/
+
 ------------------------------ INSERTION DES CODES POSTAUX: REQUETE A SUPPRIMER
 
 -- 5.4. insertion des fid_commune / fid_code dans ta_identifiant_commune pour les codes insee
@@ -205,7 +221,9 @@ SELECT
 FROM
     ta_commune a
     INNER JOIN ta_nom b ON a.fid_nom = b.objectid
+
     INNER JOIN commune c ON b.valeur = c.nom
+
     INNER JOIN ta_code d ON c.code_insee = d.valeur
     INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
     INNER JOIN ta_libelle_long f ON e.fid_libelle_long = f.objectid
@@ -231,7 +249,9 @@ SELECT
 FROM
     TA_LIBELLE_LONG
 WHERE
+
     valeur = 'Métropole';
+
 
 -- 6.4. Insertion dans la table ta_famille_libelle
 INSERT INTO ta_famille_libelle(fid_famille, fid_libelle_long)
@@ -247,7 +267,9 @@ WHERE
 COMMIT;
 
 -- 6.5. Insertion dans la table ta_nom
+
 INSERT INTO ta_nom(acronyme, valeur)
+
 VALUES('MEL', 'Métropole Européenne de Lille');
 COMMIT;
 
@@ -286,7 +308,9 @@ FROM
 	INNER JOIN ta_identifiant_commune c ON a.objectid = c.fid_commune
 	INNER JOIN ta_code d ON c.fid_identifiant = d.objectid
 	INNER JOIN ta_libelle e ON d.fid_libelle = e.objectid
+
     INNER JOIN ta_libelle_long f ON e.fid_libelle_long = f.objectid
+
 WHERE
 	f.valeur = 'code insee'
 	AND d.valeur NOT IN('59011', '59005', '59052', '59133', '59477');
@@ -401,7 +425,9 @@ FROM
     ta_libelle b
 INNER JOIN ta_libelle_long c ON b.fid_libelle_long = c.objectid
 WHERE
+
     a.valeur IN ('Tourcoing-Armentières', 'Roubaix-Villeneuve d''Ascq', 'Lille-Seclin', 'Marcq en Baroeul-la-Bassee')
+
     AND c.valeur = 'Unité Territoriale';
 COMMIT;
 
@@ -598,7 +624,9 @@ INSERT INTO ta_libelle_long(valeur)
 VALUES('Code Territoire');
 COMMIT;
 
+
 -- 8.3. Insertion dans la table de liaison ta_famille_libelle (table de liaison entre ta_famille et ta_libelle_long) des objectid des familles et des libellés de la MEL
+
 INSERT INTO ta_famille_libelle(fid_famille, fid_libelle_long)
 SELECT
     a.objectid,
@@ -694,7 +722,9 @@ FROM
     ta_libelle b
 INNER JOIN ta_libelle_long c ON b.fid_libelle_long = c.objectid
 WHERE
+
     c.valeur = 'Code Territoire';
+
 COMMIT;
 
 -- 8.9. Insertion des Territoires dans la table ta_zone_administrative
