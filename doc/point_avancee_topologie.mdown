@@ -1,0 +1,268 @@
+# Point sur l'avancée de la création d'une frontière jointive entre la France et la Belgique via la topologie
+
+* *Date :* 25/06/2020 ;
+* *Résumé de l'avancée :* je peux désormais modifier les contours de polygones simples, à condition que cela reste de la modification de coordonnées de noeuds ;
+* *Reste à faire 1 :* Faire un test sur le jeu de données de l'IGN ;
+* *Reste à faire 2 :* tester la création de nouveaux noeuds quand il y a besoin ;
+
+## Les étapes :
+
+1. Extraire les sommets des deux jeux de polygones et les mettre dans une table avec l'ordre des points par polygone ;
+2. Créer deux topologies, une pour les noeuds français et une autre pour les noeuds belges (ce qui permet de supprimer tous les doublons) ;
+3. Sélectionner les coordonnées du plus proche noeud français de chaque noeud belge ;
+4. Bouger les noeuds belges sur les coordonnées du plus proche noeud français récupéré à l'étape précédente ;
+5. Recréer les polygones belges à partir des points compris dans la topologie belge (contenant les noeuds qui ont été déplacés) ;
+
+## Description des étapes :
+
+### 1. Extraction des sommets dans une table
+
+**Objectif :** Obtenir une table avec par polygone tous les noeuds de leur contour extérieur ainsi que l'ordre de ces noeuds (indispensable à la reconstruction de géométrie de l'étape 5).  
+
+**Requête :**  
+``` SQL
+SET SERVEROUTPUT ON
+DECLARE
+    CURSOR C_1 IS -- Pour l'instant j'utilise un curseur, mais je cerhcer en parallèle une méthode ensembliste pour optimiser cette requête
+    SELECT
+        a.objectid,
+        t.x,
+        t.y,
+        t.id
+    FROM
+        ta_polygone a,
+        TABLE(SDO_UTIL.GETVERTICES(a.geom))t
+    WHERE
+        a.objectid IN(42, 43, 44, 45, 46, 47);
+    v_x NUMBER(38, 10);
+    v_y NUMBER(38, 10);
+    v_id_polygon NUMBER(38,0);
+    v_order_point NUMBER(38,0);
+BEGIN
+    OPEN C_1;
+    LOOP
+        FETCH C_1 INTO v_id_polygon, v_x, v_y, v_order_point;
+        EXIT WHEN C_1%NOTFOUND;
+        --DBMS_OUTPUT.PUT_LINE(v_id_polygon||' - '||v_order_point||' - '||v_x||' - '||v_y);
+        INSERT INTO ta_test_points(fid_polygone, fid_order_point, geom) VALUES(v_id_polygon, v_order_point, MDSYS.SDO_GEOMETRY(2001, 2154, MDSYS.SDO_POINT_TYPE(v_x, v_y, NULL), NULL, NULL));
+    END LOOP;
+    CLOSE C_1;
+    COMMIT;
+END;
+```
+
+**Résultat :**  
+![Tables_de_points_contours_polygones](Tables_de_points_contours_polygones.png)  
+
+### 2. Création des deux topologies de construction  
+
+**Objectif :** Obtenir des topologies contenant uniquement les noeuds français et belges afin de pouvoir identifier les plus proches voisins (la fonction utilisée pour cela ne fonctionne qu'avec des données topologiques). Cette étape n'est à créer qu'une seule fois, car en cas de changement il faudra just mettre à jour la table d'entités spatiales.
+
+**Requête :**  
+``` SQL
+-- 1. Création de la topologie Belge :
+
+-- 1.1 Création de la topologie (attention cette requête fonctionne sur mon odinateur personnel, mais sur les bases de la MEL il faudra mettre une tolérance de 1 (mètre))
+EXECUTE SDO_TOPO.CREATE_TOPOLOGY('TOPO_BELGIQUE', 0.0005; 2154);
+
+-- 1.2 Insertion de la face universelle
+INSERT INTO TOPO_BELGIQUE_FACE$ values (
+  -1, NULL, SDO_LIST_TYPE(), SDO_LIST_TYPE(), NULL);
+COMMIT;
+
+-- 1.3 Création de la table des entités spatiales
+CREATE TABLE TOPO_BELGIQUE_POINTS()
+  objectid NUMBER(38, 0),
+  fid_polygone NUMBER(38, 0),                      
+  geom SDO_TOPO_GEOMETRY);
+  
+COMMENT ON TABLE TOPO_BELGIQUE_POINTS IS 'Table contenant les entités spatiales belges.';
+COMMENT ON COLUMN TOPO_BELGIQUE_POINTS.objectid IS 'Identifiant de chaque objet.';
+COMMENT ON COLUMN TOPO_BELGIQUE_POINTS.fid_polygone IS 'Identifiant de chaque polygone d''appartenance.';
+COMMENT ON COLUMN TOPO_BELGIQUE_POINTS.geom IS 'Géométrie topologique de chaque objet.';
+
+ALTER TABLE TOPO_BELGIQUE_POINTS
+ADD CONSTRAINT TOPO_BELGIQUE_POINTS_PK 
+PRIMARY KEY("OBJECTID")
+USING INDEX TABLESPACE "G_ADT_INDX";
+
+-- 1.4 Association de la table des entités spatiales à sa topologie
+EXECUTE SDO_TOPO.ADD_TOPO_GEOMETRY_LAYER('TOPO_BELGIQUE', 'TOPO_BELGIQUE_POINTS','GEOM', 'POINT');
+
+-- 1.5 Création de l'objet TOPOMAP
+EXECUTE SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_BELGIQUE', 'TOPO_BELGIQUE_TOPOMAP');
+
+-- 1.6 Chargement de toute la topologie dans le cache de l'objet TOPOMAP pour les mises à jour
+EXECUTE SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_BELGIQUE_TOPOMAP', 'true');
+
+-- 1.7 Insertion dans la table d'entités spatiales des points belges
+BEGIN
+  FOR i IN (SELECT fid_polygone, geom, objectid FROM ta_test_points WHERE fid_polygone IN(42, 43, 46)) LOOP
+   INSERT INTO topo_points_verif(fid_polygone, geom, objectid) VALUES(i.fid_polygone,
+     SDO_TOPO_MAP.CREATE_FEATURE('TOPO_BELGIQUE', 'TOPO_BELGIQUE_POINTS', 'GEOM',
+         i.geom), i.objectid);
+  END LOOP;
+END; 
+CALL SDO_TOPO_MAP.COMMIT_TOPO_MAP(); -- Validation des insertions. Obligatoire pour les tables TOPO_BELGIQUE_relation$ et TOPO_BELGIQUE_node$ soient aussi mises à jour.
+
+-- 1.8 Suppression de l'objet TOPOMAP
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_BELGIQUE_TOPOMAP');
+
+-- 2. Création de la topologie Française :
+
+-- 1.1 Création de la topologie (attention cette requête fonctionne sur mon odinateur personnel, mais sur les bases de la MEL il faudra mettre une tolérance de 1 (mètre))
+EXECUTE SDO_TOPO.CREATE_TOPOLOGY('TOPO_FRANCE', 0.0005; 2154);
+
+-- 1.2 Insertion de la face universelle
+INSERT INTO TOPO_FRANCE_FACE$ values (
+  -1, NULL, SDO_LIST_TYPE(), SDO_LIST_TYPE(), NULL);
+COMMIT;
+
+-- 1.3 Création de la table des entités spatiales
+CREATE TABLE TOPO_FRANCE_POINTS()
+  objectid NUMBER(38, 0),
+  fid_polygone NUMBER(38, 0),                      
+  geom SDO_TOPO_GEOMETRY);
+  
+COMMENT ON TABLE TOPO_FRANCE_POINTS IS 'Table contenant les entités spatiales belges.';
+COMMENT ON COLUMN TOPO_FRANCE_POINTS.objectid IS 'Identifiant de chaque objet.';
+COMMENT ON COLUMN TOPO_FRANCE.fid_polygone IS 'Identifiant de chaque polygone d''appartenance.';
+COMMENT ON COLUMN TOPO_FRANCE.geom IS 'Géométrie topologique de chaque objet.';
+
+ALTER TABLE TOPO_FRANCE_POINTS
+ADD CONSTRAINT TOPO_FRANCE_POINTS_PK 
+PRIMARY KEY("OBJECTID")
+USING INDEX TABLESPACE "G_ADT_INDX";
+
+-- 1.4 Association de la table des entités spatiales à sa topologie
+EXECUTE SDO_TOPO.ADD_TOPO_GEOMETRY_LAYER('TOPO_FRANCE', 'TOPO_FRANCE_POINTS','GEOM', 'POINT');
+
+-- 1.5 Création de l'objet TOPOMAP
+EXECUTE SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_FRANCE', 'TOPO_FRANCE_TOPOMAP');
+
+-- 1.6 Chargement de toute la topologie dans le cache de l'objet TOPOMAP pour les mises à jour
+EXECUTE SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_FRANCE_TOPOMAP', 'true');
+
+-- 1.7 Insertion dans la table d'entités spatiales des points français
+BEGIN
+  FOR i IN (SELECT fid_polygone, geom, objectid FROM ta_test_points WHERE fid_polygone IN(42, 43, 46)) LOOP
+   INSERT INTO topo_points_verif(fid_polygone, geom, objectid) VALUES(i.fid_polygone,
+     SDO_TOPO_MAP.CREATE_FEATURE('TOPO_FRANCE', 'TOPO_FRANCE_POINTS', 'GEOM',
+         i.geom), i.objectid);
+  END LOOP;
+END; 
+CALL SDO_TOPO_MAP.COMMIT_TOPO_MAP(); -- Validation des insertions. Obligatoire pour les tables TOPO_FRANCE_relation$ et TOPO_FRANCE_node$ soient aussi mises à jour.
+
+-- 1.8 Suppression de l'objet TOPOMAP
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_FRANCE_TOPOMAP');
+```
+
+### 3. Recherche des plus proches voisins
+
+**Objectif :** Trouver les coordonnées du noeud français le plus proche de chaque noeud belge et créer une requête permettant de déplacer le noeud belge sur ces coordonnées
+
+**Explications de la requête :** La requête ci-dessous permet de créer toutes les requêtes qui vont permettre de modifier les noeuds frontaliers belges. L'utilisation de cette méthode est due au fait que la fonction "SDO_TOPO_MAP.MOVE_ISOLATED_NODE" ne peut pas être utilisée dans une procédure PL/SQL (en tous cas je n'ai pas trouvé comment faire). Une fois cette requête terminée, il faudra donc lancer toutes celles qui en résulteront.  
+
+``` SQL
+EXECUTE SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_BELGIQUE', 'TOPO_BELGIQUE_TOPOMAP');
+EXECUTE SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_BELGIQUE_TOPOMAP', 'true');
+
+SET SERVEROUTPUT ON
+DECLARE
+    v_id NUMBER;
+    v_polygone NUMBER;
+    v_node NUMBER;
+    v_msg VARCHAR2(200);
+    v_control NUMBER;
+BEGIN
+    v_id:=0;
+    v_polygone:=0;
+    v_node := 0;
+        -- Sélection de tous les noeuds français frontalier afin de chercher uniquement parmis ceux-là ceux qui sont les plus proches de chaque noeud belge.
+        FOR i IN (SELECT a.node_id, u.objectid, a.geometry FROM TOPO_ADMIN_FRANCAIS_NODE$ a, ta_polygone u WHERE u.objectid IN(42, 43, 46) AND SDO_WITHIN_DISTANCE(a.geometry, u.geom, 'distance = 900 unit=meter') = 'TRUE' ORDER BY a.node_id) -- sélection de tous les points dans un rayon d'1km autours de chaque polygone belge
+        LOOP -- Sélection du plus proche noeud du point français
+                v_control := v_node;
+                IF i.node_id <> v_id THEN -- Cette condition permet d'éviter les doublons
+                    SELECT 
+                        i.node_id,
+                        i.objectid,
+                        SDO_TOPO_MAP.GET_NEAREST_NODE(null, 'TOPO_VERIF_TOPOMAP', i.geometry) -- recherche du noeud belge le plus proche du point français donné
+                        INTO v_id, v_polygone, v_node
+                    FROM
+                        DUAL;
+                        SELECT 
+                            'CALL SDO_TOPO_MAP.MOVE_ISOLATED_NODE(NULL, '|| v_node||', '||TO_CHAR(i.geometry.sdo_point.x)||', '||TO_CHAR(i.geometry.sdo_point.y)||');'
+                            INTO v_msg -- Création de la requête qui devra être effectuée
+                        FROM DUAL;
+                        IF v_node <> v_control THEN
+                            DBMS_OUTPUT.put_line(v_msg);
+                        --ELSE
+                          --  DBMS_OUTPUT.put_line('Le noeud francais '||v_id||' est aussi le plus proche du noeud belge '||v_node||' du polygone '||v_polygone ||' - '||v_msg);
+                        END IF;
+                ELSE
+                    NULL;
+            END IF;
+        END LOOP;
+END;
+```
+
+### 4. Modification des coordonnées des noeuds belges
+
+Les requêtes suivantes sont le résultat de l'étape précédente :
+
+``` SQL
+CALL SDO_TOPO_MAP.MOVE_ISOLATED_NODE(NULL, 3, 702278.85392263694666326045989990234375, 7063061.5719936303794384002685546875);
+CALL SDO_TOPO_MAP.MOVE_ISOLATED_NODE(NULL, 4, 703958.096306844032369554042816162109375, 7062539.14102965034544467926025390625);
+CALL SDO_TOPO_MAP.MOVE_ISOLATED_NODE(NULL, 6, 705730.62993461894802749156951904296875, 7061848.7858272604644298553466796875);
+CALL SDO_TOPO_MAP.MOVE_ISOLATED_NODE(NULL, 10, 708450.049800000037066638469696044921875, 7061488.47900000028312206268310546875);
+CALL SDO_TOPO_MAP.COMMIT_TOPO_MAP();
+```
+
+### 5. Création des polygones belges avec leurs nouvelles coordonnées
+
+La requête ci-dessous re-créer bien les polygones. Cependant, elle n'est pas terminée puisque si j'obtiens bien mes polygones, je les obtiens en doublons (ce qui doit être dû à ma boucle je pense.)
+``` SQL
+SET SERVEROUTPUT ON
+DECLARE
+    v_id NUMBER(38, 0);
+    v_true VARCHAR2(100);
+BEGIN
+    FOR i IN (SELECT a.objectid FROM ta_polygone a WHERE a.objectid IN(42, 43, 46))
+    LOOP
+    INSERT INTO ta_polygone(nom, geom)
+    SELECT 'test_modif_polygon_'||f.objectid,
+            --sdo_geom.validate_geometry_with_context(linestring,0.005) AS vLine
+           linestring
+           --INTO v_id, v_true
+      FROM (SELECT
+                    g.objectid,
+                   mdsys.sdo_geometry(2003,2154,NULL,
+                                      mdsys.sdo_elem_info_array(1,1003,1),
+                                      CAST(MULTISET(SELECT d.COLUMN_VALUE
+                                                      FROM TOPO_POINTS_VERIF a
+                                                            INNER JOIN topo_verif_relation$ b ON a.geom.tg_id = b.tg_id
+                                                            INNER JOIN topo_verif_node$ c ON b.topo_id = c.node_id
+                                                            INNER JOIN ta_test_points e ON a.objectid = e.objectid                                                     ,
+                                                           TABLE(mdsys.sdo_ordinate_array(c.geometry.sdo_point.x,
+                                                                                          c.geometry.sdo_point.y)) d
+                                                     WHERE e.fid_polygone = g.objectid
+                                                     ORDER BY e.FID_ORDER_POINT, rownum)
+                                      AS mdsys.sdo_ordinate_array)) AS linestring
+              FROM ta_polygone g
+              WHERE g.objectid = i.objectid
+      ) f;
+      --DBMS_OUTPUT.put_line(v_id||' - '|| v_true);
+      END LOOP;
+END;
+```  
+
+**Résulats :**  
+
+* Avant :  
+![Avant_modification](Avant_modification.png)  
+
+* Après :  
+![Apres_modification](Apres_modification.png)  
+
+* Comparaison :  
+![Comparaison_avant_apres](Comparaison_avant_apres.png)
