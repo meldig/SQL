@@ -16,8 +16,8 @@ SELECT
 --EXTRACT(YEAR FROM b.DOS_DC) AS annee_creation, -- invalide car incohérent avec l'année en début de code pour les dos_num d'avant geogestion
   CAST(
   CASE
-			WHEN SUBSTR(b.DOS_NUM, 1, 1) >= 1 THEN '20' || SUBSTR(b.DOS_NUM, 1, 2)
-      WHEN SUBSTR(b.DOS_NUM, 1, 1) < 1 THEN '200' || SUBSTR(b.DOS_NUM, 1, 1)
+			WHEN SUBSTR(b.DOS_NUM, 1, 1) = 1 THEN '20' || SUBSTR(b.DOS_NUM, 1, 2)
+      WHEN SUBSTR(b.DOS_NUM, 1, 1) != 1 THEN '200' || SUBSTR(b.DOS_NUM, 1, 1)
 		ELSE NULL
 	END AS NUMBER) AS annee_creation,
   EXTRACT(YEAR FROM b.DOS_DMAJ) AS annee_maj,
