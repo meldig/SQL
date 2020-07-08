@@ -1,5 +1,5 @@
 /*
-La table ta_famille rassemble toutes les familles de libellés.
+La table TA_FAMILLE rassemble toutes les familles de libellés.
 */
 -- 1. Création de la table
 CREATE TABLE ta_famille(
@@ -22,7 +22,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_famille TO G_ADMIN_SIG;
 
 /*
-La table ta_libelle_long regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
+La table TA_LIBELLE_LONG regroupe tous les états ou actions regroupés dans une famille elle-même située dans la table ta_famille.
 */
 -- 1. Création de la table
 CREATE TABLE ta_libelle_long(
@@ -49,7 +49,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_libelle_long TO G_ADMIN_SIG;
 
 /*
-La table ta_libelle regroupe les objectids qui caractérise les états ou les actions que peuvent prendre les éléments de la base.
+La table TA_LIBELLE regroupe les objectids qui caractérise les états ou les actions que peuvent prendre les éléments de la base.
 */
 -- 1. Création de la table
 CREATE TABLE ta_libelle(
@@ -68,8 +68,8 @@ ADD CONSTRAINT ta_libelle_PK
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
--- 4. Création des clefs étrangères
--- clef étrangère vers la table TA_LIBELLE pour connaitre le libelle
+-- 4. Création des clés étrangères
+-- Clé étrangère vers la table TA_LIBELLE_LONG pour connaitre la valeur du libelle
 ALTER TABLE ta_libelle
 ADD CONSTRAINT  "TA_LIBELLE_FID_LIBELLE_LONG_FK"
 FOREIGN KEY ("FID_LIBELLE_LONG")
@@ -79,7 +79,7 @@ REFERENCES "TA_LIBELLE_LONG" ("OBJECTID");
 GRANT SELECT ON g_geo.ta_libelle TO G_ADMIN_SIG;
 
 /*
-Table regroupant les libelles court pouvant être prise par les objets de la base.
+La table TA_LIBELLE_COURT regroupant les libelles court pouvant être prise par les objets de la base.
 */
 -- 1. Création de la table
 CREATE TABLE ta_libelle_court(
@@ -106,8 +106,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_libelle_court TO G_ADMIN_SIG;
 
 /*
-Creation de la table ta_libelle_correspondance
-Cette table sert à faire la correspondance entre les libelles longs et les libelles courts.
+La table TA_LIBELLE_CORRESPONDANCE sert à faire la correspondance entre les libelles longs(par l'intermédiaire de TA_LIBELLE) et les libelles courts.
 */
 
 -- 1. Création de la table
@@ -123,27 +122,27 @@ COMMENT ON COLUMN g_geo.ta_libelle_correspondance.objectid IS 'Clef primaire de 
 COMMENT ON COLUMN g_geo.ta_libelle_correspondance.fid_libelle IS 'Clef etrangere vers la table TA_LIBELLE';
 COMMENT ON COLUMN g_geo.ta_libelle_correspondance.fid_libelle_court IS 'Clef etrangere vers la table TA_LIBELLE_COURT pour connaitre les libelles courts des libelles. Exemple Police = A10 ou Sans objet  = x';
 
--- 3. Création de la clef primaire
+-- 3. Création de la clé primaire
 ALTER TABLE ta_libelle_correspondance
 ADD CONSTRAINT ta_libelle_correspondance_PK 
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
--- 4. Création des clefs étrangères
+-- 4. Création des clés étrangères
 
--- clef étrangère vers la table TA_LIBELLE pour connaitre le libelle
+-- clé étrangère vers la table TA_LIBELLE pour connaitre le libelle
 ALTER TABLE ta_libelle_correspondance
 ADD CONSTRAINT  "TA_CORRESPONDANCE_FID_LIBELLE_FK"
 FOREIGN KEY ("FID_LIBELLE")
 REFERENCES  "TA_LIBELLE" ("OBJECTID");
 
--- clef étrangère vers la table TA_LIBELLE_COURT pour connaitre le libelle court
+-- clé étrangère vers la table TA_LIBELLE_COURT pour connaitre le libelle court
 ALTER TABLE ta_libelle_correspondance
 ADD CONSTRAINT "TA_CORRESPONDANCE_FID_LIBELLE_COURT_FK"
 FOREIGN KEY ("FID_LIBELLE_COURT")
 REFERENCES "TA_LIBELLE_COURT" ("OBJECTID");
 
---5. Creation des index
+--5. Creation des indexes sur les clés étrangères
 CREATE INDEX ta_libelle_correspondance_fid_libelle_IDX ON ta_libelle_correspondance(fid_libelle)
 TABLESPACE G_ADT_INDX;
 
@@ -154,7 +153,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_libelle_correspondance TO G_ADMIN_SIG;
 
 /*
-Table qui sert à définir les relations entre les différents libelle de la nomenclature de la base permanente des equipements. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.
+La table TA_LIBELLE_RELATION sert à définir les relations entre les différents libelles si elles existent. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.
 */
 -- 1. Création de la table
 CREATE TABLE ta_libelle_relation(
@@ -164,8 +163,8 @@ CREATE TABLE ta_libelle_relation(
 
 -- 2. Création des commentaires
 COMMENT ON TABLE g_geo.ta_libelle_relation IS 'Table qui sert à définir les relations entre les différents libelle de la nomenclature de la base permanente des equipements. Exemple A101/Police est un sous élément du libelle A1/Services Publics.x/Sans Object peut être un sous élément de COUVERT/Equipement couvert ou non mais aussi de ECLAIRE/Equipement éclairé ou non.';
-COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_fils IS 'Composante de la clef primaire. Clef étrangère vers la table TA_LIBELLE pour connaitre le libelle fils.';
-COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_parent IS 'Composante de la clef primaire. Clef étrangère vers la table TA__LIBELLE pour connaitre le libelle parent.';
+COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_fils IS 'Composante de la clé primaire. Clef étrangère vers la table TA_LIBELLE pour connaitre le libelle fils.';
+COMMENT ON COLUMN g_geo.ta_libelle_relation.fid_libelle_parent IS 'Composante de la clé primaire. Clef étrangère vers la table TA__LIBELLE pour connaitre le libelle parent.';
 
 -- 3. Création de la clé primaire composée.
 ALTER TABLE ta_libelle_relation
@@ -173,21 +172,20 @@ ALTER TABLE ta_libelle_relation
 	PRIMARY KEY("FID_LIBELLE_FILS","FID_LIBELLE_PARENT")
 	USING INDEX TABLESPACE "G_ADT_INDX";
 
--- 4. Clef etrangère
-
+-- 4. Clé étrangère
+-- 4.1. Clé étrangère vers la table TA_LIBELLE
 ALTER TABLE ta_libelle_relation
 	ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_FILS_FK"
 	FOREIGN KEY ("FID_LIBELLE_FILS")
 	REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
 
-
+-- 4.2. Clé étrangère vers la table TA_LIBELLE
 ALTER TABLE ta_libelle_relation
 	ADD CONSTRAINT  "TA_LIBELLE_OBJECTID_FID_LIBELLE_PARENT_FK"
 	FOREIGN KEY ("FID_LIBELLE_PARENT")
 	REFERENCES  "G_GEO"."TA_LIBELLE" ("OBJECTID");
 
--- 5. Création des index sur les cléfs étrangères.
-
+-- 5. Création des indexes sur les cléfs étrangères.
 CREATE INDEX ta_relation_libelle_fid_relation_fils_IDX ON ta_libelle_relation(fid_libelle_fils)
 TABLESPACE G_ADT_INDX;
 
@@ -198,7 +196,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_libelle_relation TO G_ADMIN_SIG;
 
 /*
-La table ta_famille_libelle sert à faire la liaison entre les tables ta_libelle et ta_famille.
+La table TA_FAMILLE_LIBELLE sert à faire la liaison entre les tables ta_libelle et ta_famille.
 */
 -- 1. Création de la table
 CREATE TABLE ta_famille_libelle(
@@ -220,17 +218,19 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clés étrangères
+-- 4.1. Clé étrangère vers la table TA_FAMILLE
 ALTER TABLE ta_famille_libelle
 ADD CONSTRAINT ta_famille_libelle_fid_famille_FK
 FOREIGN KEY(fid_famille)
 REFERENCES ta_famille(objectid);
 
+-- 4.2. Clé étrangère vers la table TA_LIBELLE_LONG
 ALTER TABLE	ta_famille_libelle
 ADD CONSTRAINT	ta_famille_libelle_fid_libelle_long_FK
 FOREIGN KEY(fid_libelle_long)
 REFERENCES ta_libelle_long(objectid);
 
--- 5. Création de l'index de la clé étrangère
+-- 5. Création des indexes sur les clés étrangères
 CREATE INDEX ta_famille_libelle_fid_famille_IDX ON ta_famille_libelle(fid_famille)
 TABLESPACE G_ADT_INDX;
 
@@ -264,6 +264,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clés étrangère
+-- 4.1. Clé étrangère vers la table TA_LIBELLE
 ALTER TABLE ta_code
 ADD CONSTRAINT ta_code_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
@@ -277,7 +278,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_code TO G_ADMIN_SIG;
 
 /*
-La table ta_organisme recense tous les organismes créateurs de données desquels proviennent les données source de la table ta_source.
+La table TA_ORGANISME recense tous les organismes créateurs de données desquels proviennent les données source de la table ta_source.
 */
 
 -- 1. Création de la table ta_organisme
@@ -302,7 +303,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_organisme TO G_ADMIN_SIG;
 
 /*
-La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
+La table TA_SOURCE permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
 */
 
 -- 1. Création de la table ta_date_acquisition
@@ -346,7 +347,7 @@ END;*/
 GRANT SELECT ON g_geo.ta_date_acquisition TO G_ADMIN_SIG;
 
 /*
-La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
+La table TA_SOURCE permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
 */
 
 -- 1. Création de la table ta_source
@@ -372,7 +373,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_source TO G_ADMIN_SIG;
 
 /*
-La table ta_provenance regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
+La table TA_PROVENANCE regroupe tous les processus d'acquisition des donnees du referentiel (équivalent de TA_PROVENANCE)
 */
 
 -- 1. Création de la table ta_provenance
@@ -398,13 +399,13 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_provenance TO G_ADMIN_SIG;
 
 /*
-La table ta_echelle regroupe toutes les échelles d'affichage des données source.
+La table TA_ECHELLE regroupe toutes les échelles d'affichage des données source.
 */
 
 -- 1. Création de la table ta_echelle
 CREATE TABLE ta_echelle(
     objectid NUMBER(38,0)GENERATED ALWAYS AS IDENTITY,
-    valeur VARCHAR2(20)
+    valeur NUMBER(38,0)
 );
   
 -- 2. Création des commentaires sur la table et les champs
@@ -422,7 +423,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_echelle TO G_ADMIN_SIG;
 
 /*
-La table ta_metadonnee regroupe toutes les informations relatives aux différentes donnees du schemas.
+La table TA_METADONNEE regroupe toutes les informations relatives aux différentes donnees du schemas.
 */
 -- 1. Création de la table
 CREATE TABLE ta_metadonnee(
@@ -449,28 +450,31 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 
 
 -- 4. Création des clés étrangère
-
+-- 4.1. clé étrangère vers la table TA_SOURCE
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_source_FK
 FOREIGN KEY (fid_source)
 REFERENCES ta_source(objectid);
 
+-- 4.2. clé étrangère vers la table TA_DATE_ACQUISITION
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_acquisition_FK
 FOREIGN KEY (fid_acquisition)
 REFERENCES ta_date_acquisition(objectid);
 
+-- 4.3. clé étrangère vers la table TA_PROVENANCE
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_provenance_FK
 FOREIGN KEY (fid_provenance)
 REFERENCES ta_provenance(objectid);
 
+-- 4.. clé étrangère vers la table TA_ECHELLE
 ALTER TABLE ta_metadonnee
 ADD CONSTRAINT ta_metadonnee_fid_echelle_FK
 FOREIGN KEY (fid_echelle)
 REFERENCES ta_echelle(objectid);
 
--- 7. Création de l'index de la clé étrangère
+-- 7. Création des indexes sur les clés étrangères
 CREATE INDEX ta_metadonnee_fid_source_IDX ON ta_metadonnee(fid_source)
 TABLESPACE G_ADT_INDX;
 
@@ -488,7 +492,7 @@ TABLESPACE G_ADT_INDX;
 GRANT SELECT ON g_geo.ta_metadonnee TO G_ADMIN_SIG;
 
 /*
-La table TA_METADONNEE_RELATION_ORGANISME regroupe le nom de tous les objets du référentiel (les zones administratives)
+La table TA_METADONNEE_RELATION_ORGANISME met en relation les métadonnées des données avec leurs organismes producteurs
 */
 CREATE TABLE ta_metadonnee_relation_organisme(
     fid_metadonnee NUMBER(38,0),
@@ -506,24 +510,26 @@ ADD CONSTRAINT	ta_metadonnee_relation_organisme_PK
 PRIMARY KEY("FID_METADONNEE","FID_ORGANISME")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
--- 4. Création de l'index de la clé étrangère
+-- 4. Création des clés étrangère
+-- 4.1. Clé étrangère vers la table TA_METADONNEE
+ALTER TABLE ta_metadonnee_relation_organisme
+ADD CONSTRAINT ta_metadonnee_relation_organisme_fid_metadonnee_FK
+FOREIGN KEY (fid_metadonnee)
+REFERENCES ta_metadonnee(objectid);
+
+-- 4.2. Clé étrangère vers la table TA_ORGANISME
+ALTER TABLE ta_metadonnee_relation_organisme
+ADD CONSTRAINT ta_metadonnee_fid_organisme_FK
+FOREIGN KEY (fid_organisme)
+REFERENCES ta_organisme(objectid);
+
+-- 5. Création des indexes des clés étrangères
 CREATE INDEX ta_metadonnee_relation_organisme_fid_metadonnee_IDX ON ta_metadonnee_relation_organisme(fid_metadonnee)
 TABLESPACE G_ADT_INDX;
 
 CREATE INDEX ta_metadonnee_relation_organisme_fid_organisme_IDX ON ta_metadonnee_relation_organisme(fid_organisme)
 TABLESPACE G_ADT_INDX;
 
--- 5. Création des clés étrangère
-
-ALTER TABLE ta_metadonnee_relation_organisme
-ADD CONSTRAINT ta_metadonnee_relation_organisme_fid_metadonnee_FK
-FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid);
-
-ALTER TABLE ta_metadonnee_relation_organisme
-ADD CONSTRAINT ta_metadonnee_fid_organisme_FK
-FOREIGN KEY (fid_organisme)
-REFERENCES ta_organisme(objectid);
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
 GRANT SELECT ON g_geo.ta_metadonnee_relation_organisme TO G_ADMIN_SIG;
@@ -555,7 +561,7 @@ USING INDEX TABLESPACE "G_ADT_INDX";
 GRANT SELECT ON g_geo.ta_nom TO G_ADMIN_SIG;
 
 /*
-La table ta_commune regroupe toutes les communes de la MEL.
+La table TA_COMMUNE regroupe toutes les communes de la MEL.
 */
 
 -- 1. Création de la table ta_commune
@@ -604,22 +610,25 @@ INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
 -- 6. Création des clés étrangères
+-- 6.1. Clé étrangère vers la table TA_LIBELLE
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_lib_type_commune_FK 
 FOREIGN KEY (fid_lib_type_commune)
 REFERENCES ta_libelle(objectid);
 
+-- 6.2. Clé étrangère vers la table TA_NOM
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_nom_FK 
 FOREIGN KEY (fid_nom)
 REFERENCES ta_nom(objectid);
 
+-- 6.3. Clé étrangère vers la TA_METADONNEE
 ALTER TABLE ta_commune
 ADD CONSTRAINT ta_commune_fid_metadonnee_FK 
 FOREIGN KEY (fid_metadonnee)
 REFERENCES ta_metadonnee(objectid);
 
--- 7. Création des index sur les clés étrangères
+-- 7. Création des indexes sur les clés étrangères
 CREATE INDEX ta_commune_fid_lib_type_commune_IDX ON ta_commune(fid_lib_type_commune)
     TABLESPACE G_ADT_INDX;
 
@@ -656,11 +665,13 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 6. Création des clés étrangères
+-- 6.1. Clé étrangère vers la table TA_COMMUNE
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_commune_FK 
 FOREIGN KEY (fid_commune)
 REFERENCES ta_commune(objectid);
 
+-- 6.2. Clé étrangère vers la table TA_CODE
 ALTER TABLE ta_identifiant_commune
 ADD CONSTRAINT ta_identifiant_commune_fid_identifiant_FK 
 FOREIGN KEY (fid_identifiant)
@@ -696,16 +707,19 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clés étrangères
+-- 4.1. Clé étrangère vers la table TA_NOM
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_nom_FK
 FOREIGN KEY (fid_nom)
 REFERENCES ta_nom(objectid);
 
+--4.2. Clé étrangère vers la table TA_LIBELLE
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_libelle_FK
 FOREIGN KEY (fid_libelle)
 REFERENCES ta_libelle(objectid);
 
+-- 4.3. Clé étrangère vers la table TA_METADONNEE
 ALTER TABLE ta_zone_administrative
 ADD CONSTRAINT ta_zone_administrative_fid_metadonnee_FK
 FOREIGN KEY (fid_metadonnee)
@@ -749,11 +763,13 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 4. Création des clés étrangères
+-- 4.1. Clé étrangère vers la table TA_ZONE_ADMINISTRATIVE
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
 REFERENCES ta_zone_administrative(objectid);
 
+-- 4.2. Clé étrangère vers la table TA_CODE
 ALTER TABLE ta_identifiant_zone_administrative
 ADD CONSTRAINT ta_identifiant_zone_administrative_fid_identifiant_FK
 FOREIGN KEY (fid_identifiant)
@@ -797,19 +813,20 @@ ADD CONSTRAINT ta_za_communes_PK
 PRIMARY KEY("OBJECTID") 
 USING INDEX TABLESPACE "G_ADT_INDX";
 
--- 6. Création des clés étrangères
-
+-- 4. Création des clés étrangères
+-- 4.1. Clé étrangère vers la table TA_COMMUNE
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_commune_FK
 FOREIGN KEY (fid_commune)
 REFERENCES ta_commune(objectid);
 
+-- 4.2. Clé étrangère vers la table TA_ZONE_ADMINISTRATIVE
 ALTER TABLE ta_za_communes
 ADD CONSTRAINT ta_za_communes_fid_zone_administrative_FK
 FOREIGN KEY (fid_zone_administrative)
 REFERENCES ta_zone_administrative(objectid);
 
--- 7. Création des index sur les clés étrangères
+-- 7. Création des indexes sur les clés étrangères
 CREATE INDEX ta_za_communes_fid_commune_IDX ON ta_za_communes(fid_commune)
     TABLESPACE G_ADT_INDX;
 
