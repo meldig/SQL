@@ -1,27 +1,27 @@
 -- Création de la struture pour intégrer les données IRIS.
 
--- 2. Creation de la table TA_IRIS_GEOM qui recense les zones IRIS.
+-- 1. Creation de la table TA_IRIS_GEOM qui recense les zones IRIS.
 
--- 2.1 Création de la table
+-- 1.1 Création de la table
 CREATE TABLE TA_IRIS_GEOM(
 	objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY START WITH 1 INCREMENT BY 1,
 	geom SDO_GEOMETRY
 	);
 
--- 2.2 Création des commentaires des colonnes
+-- 1.2 Création des commentaires des colonnes
 
-COMMENT ON TABLE g_referentiel.TA_IRIS_GEOM IS 'Table regroupant les zones IRIS';
-COMMENT ON COLUMN g_referentiel.TA_IRIS_GEOM.objectid IS 'Clé primaire de la table TA_BPE.';
-COMMENT ON COLUMN g_referentiel.TA_IRIS_GEOM.geom IS 'Géométrie de la zone IRIS.';
+COMMENT ON TABLE g_geo.TA_IRIS_GEOM IS 'Table regroupant les zones IRIS';
+COMMENT ON COLUMN g_geo.TA_IRIS_GEOM.objectid IS 'Clé primaire de la table TA_BPE.';
+COMMENT ON COLUMN g_geo.TA_IRIS_GEOM.geom IS 'Géométrie de la zone IRIS.';
 
--- 2.3 Création de la clé primaire
+-- 1.3 Création de la clé primaire
 ALTER TABLE TA_IRIS_GEOM
 	ADD CONSTRAINT TA_IRIS_GEOM_PK 
 	PRIMARY KEY("OBJECTID")
 	USING INDEX TABLESPACE "G_ADT_INDX";
 
 
--- 2.4 Création des métadonnées spatiales
+-- 1.4 Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
     TABLE_NAME, 
     COLUMN_NAME, 
@@ -35,7 +35,7 @@ VALUES(
     2154
 );
 
--- 2.5 Création de l'index spatial sur le champ geom
+-- 1.5 Création de l'index spatial sur le champ geom
 CREATE INDEX ta_iris_geom_SIDX
 ON ta_iris_geom(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
@@ -58,13 +58,13 @@ CREATE TABLE TA_IRIS(
 
 -- 2.2 Création des commentaires des colonnes
 
-COMMENT ON TABLE g_referentiel.ta_iris IS 'Table regroupant les zones IRIS';
-COMMENT ON COLUMN g_referentiel.ta_iris.objectid IS 'Clé primaire de la table TA_BPE.';
-COMMENT ON COLUMN g_referentiel.ta_iris.fid_code IS 'Clé étrangère vers la table TA_CODE pour connaitre le code de la zone IRIS.';
-COMMENT ON COLUMN g_referentiel.ta_iris.fid_nom IS 'Clé étrangère vers la table TA_NOM pour connaitre le nom de la zone IRIS.';
-COMMENT ON COLUMN g_referentiel.ta_iris.fid_lib_type IS 'Clé étrangère vers la table TA_LIBELLE pour connaitre le type de zone IRIS.';
-COMMENT ON COLUMN g_referentiel.ta_iris.fid_metadonnee IS 'Clé étrangère vers la table TA_METADONNE pour connaitre la source et le millesime de la zone IRIS.';
-COMMENT ON COLUMN g_referentiel.ta_iris.fid_iris_geom IS 'Clé étrangère vers la table TA_IRIS_GEOM pour connaitre la géométrie de la zone IRIS.';
+COMMENT ON TABLE g_geo.ta_iris IS 'Table regroupant les zones IRIS';
+COMMENT ON COLUMN g_geo.ta_iris.objectid IS 'Clé primaire de la table TA_BPE.';
+COMMENT ON COLUMN g_geo.ta_iris.fid_code IS 'Clé étrangère vers la table TA_CODE pour connaitre le code de la zone IRIS.';
+COMMENT ON COLUMN g_geo.ta_iris.fid_nom IS 'Clé étrangère vers la table TA_NOM pour connaitre le nom de la zone IRIS.';
+COMMENT ON COLUMN g_geo.ta_iris.fid_lib_type IS 'Clé étrangère vers la table TA_LIBELLE pour connaitre le type de zone IRIS.';
+COMMENT ON COLUMN g_geo.ta_iris.fid_metadonnee IS 'Clé étrangère vers la table TA_METADONNE pour connaitre la source et le millesime de la zone IRIS.';
+COMMENT ON COLUMN g_geo.ta_iris.fid_iris_geom IS 'Clé étrangère vers la table TA_IRIS_GEOM pour connaitre la géométrie de la zone IRIS.';
 
 -- 2.3 Création de la clé primaire
 ALTER TABLE ta_iris

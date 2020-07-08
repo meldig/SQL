@@ -51,7 +51,7 @@ USING
     (
         SELECT 'IGN' AS ACRONYME, 'Institut National de l''Information Geographie et Forestiere' AS NOM_ORGANISME FROM DUAL
         UNION
-        SELECT 'INSEE' AS ACRONYME, 'Institut National de la statistique et des études économiques' AS NOM_ORGANISME FROM DUAL
+        SELECT 'INSEE' AS ACRONYME, 'Institut National de la Statistique et des Etudes Economiques' AS NOM_ORGANISME FROM DUAL
     ) b
 ON (a.acronyme = b.acronyme)
 WHEN NOT MATCHED THEN
@@ -240,7 +240,7 @@ WHERE
 INSERT INTO fusion_nomenclature_iris
 SELECT
 -- Attention à la séquence utilisée
-    ISEQ$$_1004437.nextval as objectid,
+    ISEQ$$_1018816.nextval as objectid,
 -- Attention à la séquence utilisée
     b.objectid AS fid_libelle_long,
     b.VALEUR AS libelle_long,
@@ -262,7 +262,21 @@ WHERE
 ;
 
 
--- 14. Insertion des données dans ta_libelle
+-- 14. insertion du fid_libelle_long 'code IRIS' dans la table TA_LIBELLE
+MERGE INTO ta_libelle a
+USING 
+        (
+            SELECT objectid AS fid_libelle_long 
+            FROM ta_libelle_long 
+            WHERE valeur = 'code IRIS'
+        ) b
+ON (a.fid_libelle_long = b.fid_libelle_long)
+WHEN NOT MATCHED THEN
+INSERT (a.fid_libelle_long)
+VALUES (b.fid_libelle_long);
+
+
+-- 15. Insertion des données dans ta_libelle
 MERGE INTO ta_libelle a
 USING
     (
@@ -279,8 +293,8 @@ VALUES (b.objectid,b.fid_libelle_long)
 ;
 
 
--- 15. Insertion des données dans ta_correspondance_libelle
-MERGE INTO ta_correspondance_libelle a
+-- 16. Insertion des données dans ta_correspondance_libelle
+MERGE INTO ta_libelle_correspondance a
 USING
     (
     SELECT
@@ -296,6 +310,6 @@ VALUES (b.fid_libelle,b.fid_libelle_court)
 ;
 
 
--- 16. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 16. Suppression de la table temporaire fusion_nomenclature_iris
+-- 17. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
+-- 17. Suppression de la table temporaire fusion_nomenclature_iris
 DROP TABLE fusion_nomenclature_iris CASCADE CONSTRAINTS PURGE;
