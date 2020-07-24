@@ -63,7 +63,7 @@ VALUES(b.acronyme,b.nom_organisme)
 MERGE INTO ta_echelle a
 USING
     (
-        SELECT '1 000 000' AS VALEUR FROM DUAL
+        SELECT '1000000' AS VALEUR FROM DUAL
     )b
 ON (a.valeur = b.valeur)
 WHEN NOT MATCHED THEN
@@ -78,15 +78,13 @@ MERGE INTO ta_metadonnee a
 USING
     (
         SELECT 
-            a.objectid AS fid_source,
-            b.objectid AS fid_acquisition,
-            c.objectid AS fid_provenance,
-            d.objectid AS fid_echelle
+            a.objectid AS FID_SOURCE,
+            b.objectid AS FID_ACQUISITION,
+            c.objectid AS FID_PROVENANCE
         FROM
             ta_source a,
             ta_date_acquisition b,
-            ta_provenance c,
-            ta_echelle d
+            ta_provenance c
         WHERE
             a.nom_source = 'Contours...IRIS'
         AND
@@ -95,16 +93,13 @@ USING
             b.date_acquisition = '12/06/2019'
         AND
             c.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
-        AND
-            d.valeur = '1 000 000'
     )temp
 ON (a.fid_source = temp.fid_source
 AND a.fid_acquisition = temp.fid_acquisition
-AND a.fid_provenance = temp.fid_provenance
-AND a.fid_echelle = temp.fid_echelle)
+AND a.fid_provenance = temp.fid_provenance)
 WHEN NOT MATCHED THEN
-INSERT (a.fid_source, a.fid_acquisition, a.fid_provenance, a.fid_echelle)
-VALUES (temp.fid_source, temp.fid_acquisition, temp.fid_provenance, temp.fid_echelle)
+INSERT (a.fid_source, a.fid_acquisition, a.fid_provenance)
+VALUES (temp.fid_source, temp.fid_acquisition, temp.fid_provenance)
 ;
 
 -- 7. Insertion des information dans la table ta_metadonnee_relation_organisme
@@ -113,14 +108,13 @@ USING
     (
         SELECT
             a.objectid AS fid_metadonnee,
-            f.objectid AS fid_organisme
+            e.objectid AS fid_organisme
         FROM
             ta_metadonnee a
         INNER JOIN ta_source b ON b.objectid = a.fid_source
         INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
-        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid
-        INNER JOIN ta_echelle e ON a.fid_echelle = e.objectid,
-            ta_organisme f
+        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid,
+            ta_organisme e
         WHERE
             b.nom_source = 'Contours...IRIS'
         AND
@@ -130,9 +124,7 @@ USING
         AND
             d.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
         AND
-            e.valeur = '1 000 000'
-        AND
-            f.nom_organisme IN ('Institut National de l''Information Geographie et Forestiere','Institut National de la statistique et des études économiques')
+            e.nom_organisme IN ('Institut National de l''Information Geographie et Forestiere','Institut National de la statistique et des études économiques')
     )b
 ON(a.fid_metadonnee = b.fid_metadonnee
 AND a.fid_organisme = b.fid_organisme)
@@ -142,7 +134,42 @@ VALUES(b.fid_metadonnee, b.fid_organisme)
 ;
 
 
--- 8. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
+-- 8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
+MERGE INTO ta_metadonnee_relation_echelle a
+USING
+    (
+        SELECT
+            a.objectid AS fid_metadonnee,
+            g.objectid AS fid_echelle
+        FROM
+            ta_metadonnee a
+        INNER JOIN ta_source b ON b.objectid = a.fid_source
+        INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
+        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid
+        INNER JOIN ta_metadonnee_relation_organisme e ON e.fid_metadonnee = a.objectid
+        INNER JOIN ta_organisme f ON f.objectid = e.fid_organisme,
+            ta_echelle g
+        WHERE
+            b.nom_source = 'Contours...IRIS'
+       AND
+            c.date_acquisition = '12/06/2019'
+        AND
+            c.millesime = '03/09/2019'
+        AND
+            d.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
+        AND
+            f.nom_organisme IN ('Institut National de l''Information Geographie et Forestiere','Institut National de la statistique et des études économiques')
+        AND
+            g.valeur IN ('1000000')
+    )b
+ON(a.fid_metadonnee = b.fid_metadonnee
+AND a.fid_echelle = b.fid_echelle)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_metadonnee, a.fid_echelle)
+VALUES(b.fid_metadonnee, b.fid_echelle)
+;
+
+-- 9. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
 MERGE INTO ta_libelle_court a
 USING 
     (
@@ -155,7 +182,7 @@ VALUES (b.VALEUR)
 ;
 
 
--- 9. Insertion de la nomenclature dans la table TA_LIBELLE LONG
+-- 10. Insertion de la nomenclature dans la table TA_LIBELLE LONG
 MERGE INTO ta_libelle_long a
 USING 
     (
@@ -176,7 +203,7 @@ USING
   ;
 
 
--- 10. Insertion des familles utilisée par les données IRIS dans la table TA_FAMILLE.
+-- 11. Insertion des familles utilisée par les données IRIS dans la table TA_FAMILLE.
 MERGE INTO ta_famille a
 USING 
     (
@@ -188,7 +215,7 @@ INSERT (a.VALEUR)
 VALUES (b.VALEUR);
 
 
--- 11. Insertion des correspondances famille libelle dans TA_FAMILLE_LIBELLE;
+-- 12. Insertion des correspondances famille libelle dans TA_FAMILLE_LIBELLE;
 MERGE INTO ta_famille_libelle a
 USING 
     (
@@ -211,7 +238,7 @@ INSERT (a.fid_famille,a.fid_libelle_long)
 VALUES (b.fid_famille,b.fid_libelle_long);
 
 
--- 12. Création de la table temporaire fusion_nomenclature_iris
+-- 13. Création de la table temporaire fusion_nomenclature_iris
 CREATE GLOBAL TEMPORARY TABLE fusion_nomenclature_iris AS
 (SELECT
     a.objectid AS objectid,
@@ -236,7 +263,7 @@ WHERE
 );
 
 
--- 13. Insertion des données dans la table temporaire fusion_nomenclature_iris
+-- 14. Insertion des données dans la table temporaire fusion_nomenclature_iris
 INSERT INTO fusion_nomenclature_iris
 SELECT
 -- Attention à la séquence utilisée
@@ -262,7 +289,7 @@ WHERE
 ;
 
 
--- 14. insertion du fid_libelle_long 'code IRIS' dans la table TA_LIBELLE
+-- 15. insertion du fid_libelle_long 'code IRIS' dans la table TA_LIBELLE
 MERGE INTO ta_libelle a
 USING 
         (
@@ -276,7 +303,7 @@ INSERT (a.fid_libelle_long)
 VALUES (b.fid_libelle_long);
 
 
--- 15. Insertion des données dans ta_libelle
+-- 16. Insertion des données dans ta_libelle
 MERGE INTO ta_libelle a
 USING
     (
@@ -293,7 +320,7 @@ VALUES (b.objectid,b.fid_libelle_long)
 ;
 
 
--- 16. Insertion des données dans ta_correspondance_libelle
+-- 17. Insertion des données dans ta_correspondance_libelle
 MERGE INTO ta_libelle_correspondance a
 USING
     (
@@ -310,6 +337,6 @@ VALUES (b.fid_libelle,b.fid_libelle_court)
 ;
 
 
--- 17. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 17. Suppression de la table temporaire fusion_nomenclature_iris
+-- 18. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
+-- 18.1 Suppression de la table temporaire fusion_nomenclature_iris
 DROP TABLE fusion_nomenclature_iris CASCADE CONSTRAINTS PURGE;
