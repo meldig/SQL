@@ -31,23 +31,23 @@ ALTER TABLE
 -- 4.1 Clé étrangère du champ fid_commune vers la table ta_code
 ALTER TABLE 
 	ta_recensement
-	ADD CONSTRAINT ta_recensement_fid_code_FK
-	FOREIGN KEY (fid_code)
-	REFERENCES ta_code(objectid);
+	ADD CONSTRAINT "TA_CODE_OBJECTID_FK"
+	FOREIGN KEY ("FID_CODE")
+	REFERENCES "TA_CODE"("OBJECTID");
 
 -- 4.2 Clé étrangère du champ fid_lib_recensement vers la table ta_libelle
 ALTER TABLE 
 	ta_recensement
-	ADD CONSTRAINT ta_recensement_fid_lib_recensement_FK
-	FOREIGN KEY (fid_lib_recensement)
-	REFERENCES ta_libelle(objectid);
+	ADD CONSTRAINT "TA_LIBELLE_OBJECTID_FK"
+	FOREIGN KEY ("FID_LIB_RECENSEMENT")
+	REFERENCES "TA_LIBELLE"("OBJECTID");
 
 -- 4.3 Clé étrangère du champ fid_metadonnee vers la table ta_metadonnee
 ALTER TABLE 
 	ta_recensement
-	ADD CONSTRAINT ta_recensement_fid_metadonnee_FK
-	FOREIGN KEY (fid_metadonnee)
-	REFERENCES ta_metadonnee(objectid);
+	ADD CONSTRAINT "TA_METADONNEE_OBJECTID"
+	FOREIGN KEY ("FID_METADONNEE")
+	REFERENCES "TA_METADONNEE"("OBJECTID");
 
 -- 5. Création de l'index de la clé étrangère
 CREATE INDEX ta_recensement_fid_code_IDX ON ta_recensement(fid_code)
