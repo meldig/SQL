@@ -22,6 +22,7 @@ CREATE MATERIALIZED VIEW vm_bpe_millesime_mel
     ECLAIRE,
     NB_AIREJEU,
     NB_SALLES,
+    QUALITE_XY,
     SOURCE,
     geom
 )
