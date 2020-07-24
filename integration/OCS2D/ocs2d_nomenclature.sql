@@ -61,59 +61,148 @@ VALUES(temp.acronyme,temp.nom_organisme)
 MERGE INTO ta_echelle e
 USING
 	(
-		SELECT '1/5000' AS ECHELLE FROM DUAL
+		SELECT '5000' AS VALEUR FROM DUAL
 	) temp
-ON (e.echelle = temp.ECHELLE)
+ON (e.valeur = temp.valeur)
 WHEN NOT MATCHED THEN
-INSERT (e.echelle)
-VALUES(temp.echelle)
+INSERT (e.valeur)
+VALUES(temp.valeur)
 ;
 
 
--- 6. Insertion des données dans TA_METADONNEE
+-- 6. Insertion des données dans TA_METADONNEE pour le millesime 2005
 MERGE INTO ta_metadonnee m
 USING
 	(
 		SELECT 
-	    s.objectid AS SOURCE,
-	    a.objectid AS ACQUISITION,
-	    p.objectid AS PROVENANCE,
-	    o.objectid AS ORGANISME,
-	    e.objectid AS ECHELLE
+		    s.objectid AS SOURCE,
+		    a.objectid AS ACQUISITION,
+		    p.objectid AS PROVENANCE
 		FROM
 		    ta_source s,
 		    ta_date_acquisition a,
-		    ta_provenance p,
-		    ta_organisme o,
-		    ta_echelle e
+		    ta_provenance p
 		WHERE
-		    s.nom_source = 'OCS2D'
+		    (s.nom_source = 'OCS2D'
 		AND
-		    a.millesime IN ('01/01/2005','01/01/2015')
+		    a.millesime IN ('01/01/2005')
 		AND
 		    a.date_acquisition = '06/04/2020'
 		AND
-		    p.url = 'https://www.geo2france.fr'
+		    p.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2005')
+		OR
+			(s.nom_source = 'OCS2D'
 		AND
-		    o.acronyme = 'PPIGE'
-		AND 
-			e.echelle = '1/5000'
+		    a.millesime IN ('01/01/2015')
+		AND
+		    a.date_acquisition = '06/04/2020'
+		AND
+		    p.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2015')
 	) temp
 ON (temp.SOURCE = m.fid_source
 AND temp.ACQUISITION = m.fid_acquisition
-AND temp.PROVENANCE = m.fid_provenance
-AND temp.ORGANISME = m.fid_organisme
-AND temp.echelle = m.fid_echelle)
+AND temp.PROVENANCE = m.fid_provenance)
 WHEN NOT MATCHED THEN
-INSERT (fid_source,fid_acquisition,fid_provenance,fid_organisme,fid_echelle)
-VALUES(temp.SOURCE,temp.ACQUISITION,temp.PROVENANCE,temp.ORGANISME,temp.echelle)
+INSERT (fid_source,fid_acquisition,fid_provenance)
+VALUES(temp.SOURCE,temp.ACQUISITION,temp.PROVENANCE)
 ;
+
+-- 7. Insertion des données dans la table TA_METADONNEE_RELATION_ORGANISME
+MERGE INTO ta_metadonnee_relation_organisme a
+USING
+    (
+        SELECT
+            a.objectid AS fid_metadonnee,
+            e.objectid AS fid_organisme
+        FROM
+            ta_metadonnee a
+        INNER JOIN ta_source b ON b.objectid = a.fid_source
+        INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
+        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid,
+            ta_organisme e
+        WHERE
+            (b.nom_source = 'OCS2D'
+        AND
+            c.date_acquisition = '06/04/2020'
+        AND
+            c.millesime IN ('01/01/2005')
+        AND
+            d.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2005'
+        AND
+            e.nom_organisme IN ('Plateforme Publique de l''Information Géographique du Nord-PAS de Calais'))
+        OR
+        	(b.nom_source = 'OCS2D'
+        AND
+            c.date_acquisition = '06/04/2020'
+        AND
+            c.millesime IN ('01/01/2015')
+        AND
+            d.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2015'
+        AND
+            e.nom_organisme IN ('Plateforme Publique de l''Information Géographique du Nord-PAS de Calais'))
+    )b
+ON(a.fid_metadonnee = b.fid_metadonnee
+AND a.fid_organisme = b.fid_organisme)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_metadonnee, a.fid_organisme)
+VALUES(b.fid_metadonnee, b.fid_organisme)
+;
+
+-- 8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
+MERGE INTO ta_metadonnee_relation_echelle a
+USING
+    (
+		SELECT
+		    a.objectid AS fid_metadonnee,
+		    g.objectid AS fid_echelle
+		FROM
+		    ta_metadonnee a
+		INNER JOIN ta_source b ON b.objectid = a.fid_source
+		INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
+		INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid
+		INNER JOIN ta_metadonnee_relation_organisme e ON e.fid_metadonnee = a.objectid
+		INNER JOIN ta_organisme f ON f.objectid = e.fid_organisme,
+		    ta_echelle g
+        WHERE
+            (b.nom_source = 'OCS2D'
+        AND
+            c.date_acquisition = '06/04/2020'
+        AND
+            c.millesime IN ('01/01/2005')
+        AND
+            d.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2005'
+        AND
+            f.nom_organisme IN ('Plateforme Publique de l''Information Géographique du Nord-PAS de Calais')
+		AND
+		    g.valeur IN ('5000')
+            )
+        OR
+        	(b.nom_source = 'OCS2D'
+        AND
+            c.date_acquisition = '06/04/2020'
+        AND
+            c.millesime IN ('01/01/2015')
+        AND
+            d.url = 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2015'
+        AND
+            f.nom_organisme IN ('Plateforme Publique de l''Information Géographique du Nord-PAS de Calais')
+		AND
+		    g.valeur IN ('5000')
+        )
+    )b
+ON(a.fid_metadonnee = b.fid_metadonnee
+AND a.fid_echelle = b.fid_echelle)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_metadonnee, a.fid_echelle)
+VALUES(b.fid_metadonnee, b.fid_echelle)
+;
+
 
 --------------------------------------------------------------------------------
 -- INSERTION DE LA NOMENCLATURE COUVERT USAGE DES DONNEES OCS2D
 --------------------------------------------------------------------------------
 
--- 7. Vue simplifiant la nomenclature OCS2D usage pour faciliter sa normalisation
+-- 9. Vue simplifiant la nomenclature OCS2D usage pour faciliter sa normalisation
 CREATE VIEW ocs2d_nomenclature_couvert_usage AS
 SELECT DISTINCT
 	niv_0_libelle_court AS libelle_court, 
@@ -141,7 +230,7 @@ FROM
 	oc_us_ocs2d;
 
 
--- 8. Insertion des libelles courts dans TA_LIBELLE_COURT
+-- 10. Insertion des libelles courts dans TA_LIBELLE_COURT
 MERGE INTO ta_libelle_court tlc
 USING
 	(
@@ -157,7 +246,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 9. Insertion des libelles longs dans TA_LIBELLE_LONG
+-- 11. Insertion des libelles longs dans TA_LIBELLE_LONG
 MERGE INTO ta_libelle_long tl
 USING
 	(
@@ -173,7 +262,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 10. Insertion de la famille dans TA_FAMILLE
+-- 12. Insertion de la famille dans TA_FAMILLE
 MERGE INTO TA_FAMILLE tf
 USING
 	(
@@ -186,7 +275,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 11. Insertion des relations dans TA_FAMILLE_LIBELLE
+-- 13. Insertion des relations dans TA_FAMILLE_LIBELLE
 MERGE INTO TA_FAMILLE_LIBELLE tfl
 USING
 	(
@@ -214,7 +303,7 @@ VALUES (temp.fid_famille,temp.fid_libelle_long)
 ;
 
 
--- 12. Creation vue des relations
+-- 14. Creation vue des relations
 CREATE VIEW oc_us_ocs2d_relation AS
 SELECT DISTINCT
     niv_1_libelle_court AS lcf,
@@ -236,7 +325,7 @@ UNION ALL select distinct
 FROM oc_us_ocs2d;
 
 
--- 13. creation de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
+-- 15. creation de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
 CREATE GLOBAL TEMPORARY TABLE FUSION_OCS2D_COUVERT_USAGE AS
 (SELECT
     d.objectid AS objectid,
@@ -252,7 +341,7 @@ JOIN TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
 LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court);
 
 
--- 14. Insertion des données dans la table temporaire fusion utilisation de la séquence de la table TA_LIBELLE
+-- 16. Insertion des données dans la table temporaire fusion utilisation de la séquence de la table TA_LIBELLE
 INSERT INTO FUSION_OCS2D_COUVERT_USAGE
 SELECT
 -- attention à la séquence utilisée
@@ -269,7 +358,7 @@ JOIN TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
 LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court;
 
 
--- 15. Insertion des données dans ta_libelle
+-- 17. Insertion des données dans ta_libelle
 MERGE INTO ta_libelle l
 USING
 	(
@@ -286,7 +375,7 @@ VALUES (temp.objectid,temp.fid_libelle_long)
 ;
 
 
--- 16. Insertion des données dans ta_correspondance_libelle
+-- 18. Insertion des données dans ta_correspondance_libelle
 MERGE INTO ta_correspondance_libelle tc
 USING
 	(
@@ -303,7 +392,7 @@ VALUES (temp.objectid,temp.fid_libelle_court)
 ;
 
 
--- 17. Insertion des données dans ta_relation_libelle
+-- 19. Insertion des données dans ta_relation_libelle
 MERGE INTO ta_relation_libelle tr
 USING 
 	(
@@ -339,15 +428,15 @@ VALUES (temp.fid_libelle_fils,temp.fid_libelle_parent)
 ;
 
 
--- 18. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 18.1. Suppression de la table temporaire oc_us_ocs2d
+-- 20. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
+-- 20.1. Suppression de la table temporaire oc_us_ocs2d
 DROP TABLE oc_us_ocs2d CASCADE CONSTRAINTS PURGE;
 
--- 18.2. Suppression de la table temporaire FUSION_OCS2D_COUVERT_USAGE
+-- 20.2. Suppression de la table temporaire FUSION_OCS2D_COUVERT_USAGE
 DROP TABLE FUSION_OCS2D_COUVERT_USAGE CASCADE CONSTRAINTS PURGE;
 
--- 18.3. Suppression de la vue oc_us_ocs2d_relation
+-- 20.3. Suppression de la vue oc_us_ocs2d_relation
 DROP VIEW oc_us_ocs2d_relation CASCADE CONSTRAINTS;
 
--- 18.4. Suppression de la vue ocs2d_nomenclature_couvert_usage
+-- 20.4. Suppression de la vue ocs2d_nomenclature_couvert_usage
 DROP VIEW ocs2d_nomenclature_couvert_usage CASCADE CONSTRAINTS;
