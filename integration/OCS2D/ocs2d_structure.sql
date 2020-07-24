@@ -135,39 +135,39 @@ ALTER TABLE
 
 -- 5.4.1. vers la table ta_libelle pour les occupations du sol
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_lib_cs_FK 
-	FOREIGN KEY (fid_lib_cs)
-	REFERENCES ta_libelle(objectid);
+	ADD CONSTRAINT "TA_LIBELLE_COUVERT_OBJECTID" 
+	FOREIGN KEY ("FID_LIB_CS")
+	REFERENCES "TA_LIBELLE"("OBJECTID");
 
 -- 5.4.2. vers la table ta_libelle pour les utilisations du sol
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_lib_us_FK 
-	FOREIGN KEY (fid_lib_us)
-	REFERENCES ta_libelle(objectid);
+	ADD CONSTRAINT "TA_LIBELLE_USAGE_OBJECTID"
+	FOREIGN KEY ("FID_LIB_US")
+	REFERENCES "TA_LIBELLE"("OBJECTID");
 
 -- 5.4.3. vers la table ta_ocs2d_indice pour les indices
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_ocs2d_indice_FK 
-	FOREIGN KEY (fid_ocs2d_indice)
-	REFERENCES ta_ocs2d_indice(objectid);
+	ADD CONSTRAINT "TA_OCS2D_INDICE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_OCS2D_INDICE")
+	REFERENCES "TA_OCS2D_INDICE"("OBJECTID");
 
 -- 5.4.4. vers la table ta_ocs2d_source pour les sources OCS2D
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_ocs2d_source_FK 
-	FOREIGN KEY (fid_ocs2d_source)
-	REFERENCES ta_ocs2d_source(objectid);
+	ADD CONSTRAINT "FID_OCS2D_SOURCE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_OCS2D_SOURCE")
+	REFERENCES "TA_OCS2D_SOURCE"("OBJECTID");
 
 -- 5.4.5. vers la table ta_metadonnee pour les commentaires OCS2D
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_metadonnee_FK 
-	FOREIGN KEY (fid_metadonnee)
-	REFERENCES ta_metadonnee(objectid);
+	ADD CONSTRAINT "TA_METADONNEE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_METADONNEE")
+	REFERENCES "TA_METADONNEE"("OBJECTID");
 
 -- 5.4.6. vers la table ta_ocs2d_geom pour les commentaires OCS2D
 ALTER TABLE ta_ocs2d
-	ADD CONSTRAINT ta_ocs2d_fid_geom_FK 
-	FOREIGN KEY (fid_geom)
-	REFERENCES ta_ocs2d_geom(objectid);
+	ADD CONSTRAINT "TA_OCS2D_GEOM_OBJECTID_FK" 
+	FOREIGN KEY ("FID_GEOM")
+	REFERENCES "TA_OCS2D_GEOM"("OBJECTID");
 
 
 -- 6. Création de la table TA_OCS2D_RELATION_COMMENTAIRE
@@ -192,12 +192,12 @@ ALTER TABLE
 -- 6.4. Création des clé étrangère
 -- 6.4.1. vers la table ta_metadonnee pour les commentaires OCS2D
 ALTER TABLE ta_ocs2d_relation_commentaire
-	ADD CONSTRAINT ta_ocs2d_relation_commentaire_fid_ocs2d_FK 
-	FOREIGN KEY (fid_ocs2d)
-	REFERENCES ta_ocs2d(objectid);
+	ADD CONSTRAINT "TA_OCS2D_OBJECTID_FK"
+	FOREIGN KEY ("FID_OCS2D")
+	REFERENCES "TA_OCS2D"("OBJECTID");
 
 -- 6.4.2. vers la table ta_ocs2d_geom pour les commentaires OCS2D
 ALTER TABLE ta_ocs2d_relation_commentaire
-	ADD CONSTRAINT ta_ocs2d_relation_commentaire_fid_ocs2d_commentaire_FK 
-	FOREIGN KEY (fid_ocs2d_commentaire)
-	REFERENCES ta_ocs2d_commentaire(objectid);
+	ADD CONSTRAINT "TA_OCS2D_COMMENTAIRE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_OCS2D_COMMENTAIRE")
+	REFERENCES "TA_OCS2D_COMMENTAIRE"("OBJECTID");
