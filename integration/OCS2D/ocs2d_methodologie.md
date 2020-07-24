@@ -36,18 +36,20 @@ L'insertion de la nomenclature OCS2D se fait à partir des requêtes contenues d
 4. Insertion des données dans TA_ORGANISME.
 5. Insertion des données dans TA_ECHELLE.
 6. Insertion des données dans TA_METADONNEE.
-7. Vue simplifiant la nomenclature OCS2D pour faciliter sa normalisation.
-8. Insertion des libelles courts dans TA_LIBELLE_COURT.
-9. Insertion des libelles longs dans TA_LIBELLE_LONG.
-10. Insertion de la famille dans TA_FAMILLE.
-11. Insertion des relations dans TA_FAMILLE_LIBELLE.
-12. Création de la vue des relations des libelles.
-13. Création de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
-14. Insertion des données dans la table temporaire fusion avec l'utilisation de la séquence de la table TA_LIBELLE.
-15. Insertion des données dans TA_LIBELLE.
-16. Insertion des données dans TA_CORRESPONDANCE_LIBELLE.
-17. Insertion des données dans TA_RELATION_LIBELLE.
-18. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
+7. Insertion des données dans la table TA_METADONNEE_RELATION_ORGANISME
+8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
+9. Vue simplifiant la nomenclature OCS2D pour faciliter sa normalisation.
+10. Insertion des libelles courts dans TA_LIBELLE_COURT.
+11. Insertion des libelles longs dans TA_LIBELLE_LONG.
+12. Insertion de la famille dans TA_FAMILLE.
+13. Insertion des relations dans TA_FAMILLE_LIBELLE.
+14. Création de la vue des relations des libelles.
+15. Création de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
+16. Insertion des données dans la table temporaire fusion avec l'utilisation de la séquence de la table TA_LIBELLE.
+17. Insertion des données dans TA_LIBELLE.
+18. Insertion des données dans TA_CORRESPONDANCE_LIBELLE.
+19. Insertion des données dans TA_RELATION_LIBELLE.
+20. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
 
 ### 2.3. Génération des vues restituant les nomenclatures.
 
