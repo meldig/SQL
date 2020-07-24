@@ -27,7 +27,7 @@ WITH annee AS (
     AND
         d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
     AND
-        f.nom_organisme IN ('Institut National de la statistique et des études économiques')
+        f.nom_organisme IN ('Institut National de la Statistique et des Etudes Economiques')
     ),
 -- CTE pour mettre les données de la table de recensement en forme avant insertion. Mettre les données dans une colonne plutot que d'avoir une colonne par recensement
     population AS (
