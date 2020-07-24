@@ -59,6 +59,7 @@ WITH
 	        INNER JOIN ta_metadonnee b ON b.objectid = a.fid_metadonnee
 	        INNER JOIN ta_metadonnee_relation_echelle c ON c.fid_metadonnee = b.objectid
 	        INNER JOIN ta_echelle d ON d.objectid = c.fid_echelle
+	    WHERE d.valeur IN ('10000','30000','50000')
 	    GROUP BY a.objectid, b.objectid
 	    ),
 	equipement AS (
@@ -160,7 +161,10 @@ WITH
         END) AS COUVERT,
         MAX(CASE  
             WHEN VARIABLE.libelle_court_parent = 'ECLAIRE' THEN VARIABLE.libelle_court_fils
-        END) AS ECLAIRE
+        END) AS ECLAIRE,
+                MAX(CASE  
+            WHEN VARIABLE.libelle_court_parent = 'QUALITE_XY' THEN VARIABLE.libelle_court_fils
+        END) AS QUALITE_XY
 	FROM
 		ta_bpe bpe
  	LEFT JOIN ta_bpe_caracteristique bpecv ON bpecv.fid_bpe = bpe.objectid
@@ -202,6 +206,7 @@ WITH
         ATTRIBUT.ECLAIRE,
         ATTRIBUTQ.NB_AIREJEU,
         ATTRIBUTQ.NB_SALLES,
+        ATTRIBUT.QUALITE_XY,
    		s.nom_source || ' - ' || o.acronyme || ' - ' || e.echelle || ' - ' || millesime.MILLESIME AS source,
 		bpeg.geom
 	FROM
@@ -231,7 +236,7 @@ WITH
 	WHERE
     pl.valeur = 'code insee'
     AND so.nom_source = 'BDTOPO'
-    AND substr(ao.millesime,7,2) = '19'
+    AND SUBSTR(ao.millesime,7,2) = '19'
 ;
 
 
