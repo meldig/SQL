@@ -77,33 +77,33 @@ ALTER TABLE ta_iris
 
 -- 2.4.1 vers la table ta_code
 ALTER TABLE ta_iris
-	ADD CONSTRAINT ta_iris_fid_code_FK 
-	FOREIGN KEY (fid_code)
-	REFERENCES ta_code(objectid);
+	ADD CONSTRAINT "TA_CODE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_CODE")
+	REFERENCES "TA_CODE"("OBJECTID");
 
 -- 2.4.2 vers la table ta_nom
 ALTER TABLE ta_iris
-	ADD CONSTRAINT ta_iris_fid_nom_FK 
-	FOREIGN KEY (fid_nom)
-	REFERENCES ta_nom(objectid);
+	ADD CONSTRAINT "TA_NOM_OBJECTID_FK" 
+	FOREIGN KEY ("FID_NOM")
+	REFERENCES "TA_NOM"("OBJECTID");
 
 -- 2.4.3 vers la table ta_libelle
 ALTER TABLE ta_iris
-	ADD CONSTRAINT ta_iris_fid_lib_type_FK 
-	FOREIGN KEY (fid_lib_type)
-	REFERENCES ta_libelle(objectid);
+	ADD CONSTRAINT "TA_LIBELLE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_LIB_TYPE")
+	REFERENCES "TA_LIBELLE"("OBJECTID");
 
 -- 2.4.4 vers la table ta_metadonnee
 ALTER TABLE ta_iris
-	ADD CONSTRAINT ta_iris_fid_metadonnee_FK 
-	FOREIGN KEY (fid_metadonnee)
-	REFERENCES ta_metadonnee(objectid);
+	ADD CONSTRAINT "TA_METADONNEE_OBJECTID_FK" 
+	FOREIGN KEY ("FID_METADONNEE")
+	REFERENCES "TA_METADONNEE"("OBJECTID");
 
 -- 2.4.5 vers la table ta_iris_geom
 ALTER TABLE ta_iris
-	ADD CONSTRAINT ta_iris_fid_iris_geom_FK 
-	FOREIGN KEY (fid_iris_geom)
-	REFERENCES ta_iris_geom(objectid);
+	ADD CONSTRAINT "TA_IRIS_GEOM_OBJECTID_FK" 
+	FOREIGN KEY ("FID_IRIS_GEOM")
+	REFERENCES "TA_IRIS_GEOM"("OBJECTID");
 
 
 -- 2.5 Création des index sur les cléfs étrangères.
