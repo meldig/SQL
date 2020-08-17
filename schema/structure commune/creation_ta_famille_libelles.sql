@@ -39,4 +39,4 @@ CREATE INDEX ta_fam_lib_fid_libelle_long_IDX ON ta_libelle_long(objectid)
 TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_famille_libelle TO G_ADMIN_SIG;
