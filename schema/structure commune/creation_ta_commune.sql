@@ -81,4 +81,4 @@ CREATE INDEX ta_commune_fid_metadonnee_IDX ON g_geo.ta_commune(fid_metadonnee)
 
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_commune TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_commune TO G_ADMIN_SIG;
