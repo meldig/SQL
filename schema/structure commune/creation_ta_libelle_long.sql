@@ -20,4 +20,4 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 -- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.ta_libelle_long TO G_ADT_DSIG_ADM;
+GRANT SELECT ON g_geo.ta_libelle_long TO G_ADMIN_SIG;
