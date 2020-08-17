@@ -6,12 +6,12 @@
 #### 1.2. Exemple ;
 ### 2. Les concepts de la topologie ;
 ### 3. Le stockage de la topologie dans Oracle ;
-#### 3.1. La table des géométries topologiques ;
+#### 3.1. La table des entités topologiques ;
 #### 3.2. La table des relations topologiques ;
 #### 3.3. La table de noeuds ;
 #### 3.4. La table de tronçons ;
 #### 3.5. La table de surfaces ;
-### 4. Insérer, modifier et supprimer des géométries topologiques ;
+### 4. Insérer, modifier et supprimer des entités topologiques ;
 #### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle ;
 ##### 4.1.1. Création/suppression d'un objet TopoMap ;
 ##### 4.1.2. Chargement/suppression/validation des données dans l'objet TopoMap ;
@@ -19,9 +19,14 @@
 #### 4.2. Insérer des entités topologiques dans une topologie ;
 #### 4.3. Modifier des entités topologiques dans une topologie ;
 #### 4.4. Supprimer des entités topologiques dans une topologie ;
+#### 4.5. Supprimer une topologie ;
 ### 5. Rechercher des informations sur des primitives topologiques spécifiques ;
 #### 5.1. Connaître les coordonnées d'une primitive topologique ;
 #### 5.2. Connaître les informations d'un tronçon ;
+### 6. La fonction et les opérateurs topologiques
+#### 6.1. La fonction SDO_TOPO.RELATE
+#### 6.2. Les opérateurs topologiques
+#### 6.3. Les opérateurs spatiaux non-fonctionnels sur un modèle de données topologique
 <!-- -->
 <!-- -->
 ### 1. Présentation de la topologie :
@@ -54,7 +59,7 @@ Dans l'exemple du point 1.2., les deux communes adjacentes n'ont pas de noeuds n
 
 Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser à l'emboîtement des poupées russes, puis à une toile d'araignée et enfin aux étagères tylko. Je m'explique :
 
-* Emboîtement des objets permettant de stocker des géométries topologiques :
+* Emboîtement des objets permettant de stocker des entités topologiques :
 
 ###### Figure n°2 : Emboîtements des objets d'une topologie
 ![Illustration des emboitements dans une topologie](images_topologie/Illustration_3.png)
@@ -69,7 +74,7 @@ Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser 
 
 
                                                                                                                     
-#### 3.1. La table des géométries topologiques 
+#### 3.1. La table des entités topologiques 
 
 ##### Explications :
 Une géométrie topologique de la même façon que tout autre information, dans une table et dans une ligne. Autrement dit une ligne égale un objet. Cependant, le type de donnée *SDO_TOPO_GEOMETRY* ne contient pas de géométrie, mais les identifiants de leurs métadonnées, de leur topologie et de leur table de relation.
@@ -83,13 +88,13 @@ Une géométrie topologique de la même façon que tout autre information, dans 
 |:----------|:-----|:-------------------------------------------------------------------------------------------------------------|
 |TG_TYPE    |NUMBER|Type d'entité topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
 |TG_ID      |NUMBER|Identifiant de l'entité topologique à laquelle appartient la primitive topologique                        |
-|TG_LAYER_ID|NUMBER|Identifiant de la **table** de géométries topologiques à laquelle appartient la primitive topologique         |
-|TOPOLOGY_ID|NUMBER|Identifiant de la topologie à laquelle appartient la couche de géométries topologiques                        |
+|TG_LAYER_ID|NUMBER|Identifiant de la **table** de entités topologiques à laquelle appartient la primitive topologique         |
+|TOPOLOGY_ID|NUMBER|Identifiant de la topologie à laquelle appartient la couche de entités topologiques                        |
 
 #### 3.2. La table des relations topologiques
 
 ##### Explications :
-Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entre la table contenant les géométries topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
+Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entre la table contenant les entités topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
 
 ###### Figure n°5 : Les données dans une table de relation
 ![Illustration de la table de relations](images_topologie/́Illustration_3_2_relations.png)
@@ -162,7 +167,7 @@ Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primiti
 |ISLAND_NODE_ID_LIST|Identifiant du/des noeud(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
 |MBR_GEOMETRY|Contours rectangulaire minimum qui entoure cette surface. Ce rectangle est stocké en tant que rectangle optimisé, c'est-à-dire ne nécessitant que les coordoonées des points situés en bas à gauche et en haut à droite du rectangle Type = SDO_GEOMETRY|
 
-### 4. Insérer, modifier et supprimer des géométries topologiques
+### 4. Insérer, modifier et supprimer des entités topologiques
 
 #### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle
 La modification de toute entité topologique passe, dans Oracle, par une topologie sauvegardée en cache, c'est-à-dire par un objet TopoMap.
@@ -406,8 +411,51 @@ SDO_TOPO_MAP.CHANGE_EDGE_COORDS(
 
 
 #### 4.4. Supprimer des entités topologiques dans une topologie ;
+La suppression des entités topologiques se fait via la proccédure **SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER()**.
 
-### 5. Rechercher des informations sur des géométries topologiques spécifiques ;
+##### La proccédure :
+``` SQL
+SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER(
+     topology IN VARCHAR2,
+     nom_table IN VARCHAR2, 
+     nom_colonne IN VARCHAR2);
+```
+##### A savoir :
+1. La topologie à laquelle appartient la table des entités topologiques doit avoir été créée avec la proccédure *SDO_TOPO.CREATE_TOPOLOGY* ;
+2. **En théorie** si cette proccédure est utilisée pour supprimer toutes les entités géométriques de la dernière table d'entités topologiques de la topologie, alors les tables des primitives topologiques sont aussi vidées ;
+3. L'utilisation de cette fonction supprime uniquement les géométries topologiques, pas les autres attributs de la table ;
+4. La proccédure effectue un commit automatiquement, ce qui rend impossible tout rollback, il faut donc l'utiliser avec attention ;
+5. Cette proccédure casse le lien entre la topologie et la table d'entités topologiques ;
+
+##### Exemple :
+``` SQL
+ EXECUTE SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER('TOPO_RESEAU_ROUTIER', 'TOPO_VOIRIE', 'GEOM');
+```
+
+#### 4.5. Supprimer une topologie
+
+##### La proccédure :
+``` SQL
+SDO_TOPO.DROP_TOPOLOGY(topology IN VARCHAR2);
+```
+
+##### A savoir :
+1. La topologie doit avoir été créée avec la proccédure *SDO_TOPO.CREATE_TOPOLOGY* ;
+2. Avant de supprimer une topologie il faut **d'abord** vider les tables d'entités topologiques associées à la topologie, sinon la suppression ne se fera pas et vous obtiendrez un message d'erreur ;
+3. Supprimer la topologie supprime également les tables des primitives topologiques associées à cette topologie ;
+4. La procédure effectue un commit automatiquement, il n'y a donc pas de retour en arrière (rollback) possible ;
+5. Un schéma propriétaire d'une topologie ne peut pas être supprimé. Il faut d'abord supprimer la topologie, puis le schéma ;
+
+##### Exemple :
+``` SQL
+ -- Etape n°1 - Suppression des entités topologiques :
+ EXECUTE SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER('TOPO_RESEAU_ROUTIER', 'TOPO_VOIRIE', 'GEOM');
+
+ -- Etape n°2 - Suppression de la topologie :
+ EXECUTE SDO_TOPO.DROP_TOPOLOGY('TOPO_RESEAU_ROUTIER'); 
+```
+
+### 5. Rechercher des informations sur des entités topologiques spécifiques ;
 
 #### 5.1. Connaître les coordonnées d'une primitive topologique
 
@@ -528,6 +576,160 @@ SDO_TOPO_MAP.GET_NODE_STAR(
   node_id   IN NUMBER      
 ) RETURN SDO_NUMBER_ARRAY;
 ```
+
+### 6. La fonction et les opérateurs topologiques
+
+Ces outils permettent de connaître les relations topologiques entre les entités topologiques. Ce sont donc des outils adaptés à la recherche d'erreurs topologiques ou de relation topologique spécifique.
+
+#### 6.1. La fonction SDO_TOPO.RELATE
+
+##### Fonction :
+``` SQL
+SDO_TOPO.RELATE(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry,      
+  mask   IN Varchar2      
+) RETURN SDO_NUMBER_ARRAY;
+```
+
+##### Paramètres :
+
+|Paramètres|TYPE    						|Description                                                    |
+|:---------|:-------------------------------|:--------------------------------------------------------------|
+|geom1     |sdo_geometry / sdo_topo_geometry|Nom d'une colonne de géométrie spatiale ou topologique         |
+|geom2     |sdo_geometry / sdo_topo_geometry|Nom d'une colonne de géométrie spatiale ou topologiques 		|
+|mask      |Varchar2  						|Nom d'une des douze relations spatiales potentielles (exemple : 'ANYINTERACT')|
+
+##### Usages :
+Les opérateurs topologiques, présentés au point 6.2, proposent de meilleures performances que celle de la fonction SDO_TOPO.RELATE sur un grand jeu de données. Cependant, sur un petit jeu de données c'est la fonction qui a de meilleures performances (exemple : sur une liste de 95 communes la fonction retourne un résultat en 12,36 secondes pour un mask égal à 'OVERLAPBDYINTERSECT').
+
+##### Exemple :
+``` SQL
+-- Sélection des entités topologiques se recouvrant
+SELECT
+	a.objectid,
+	b.objectid
+fROM
+	topo_communes a,
+	topo_communes b
+WHERE
+	a.objectid <> b.objectid
+	AND a.objectid < b.objectid
+	AND SDO_TOPO.RELATE(a.geom, b.geom, 'OVERLAPBDYINTERSECT') = 'TRUE'
+ORDER BY
+	a.objectid ASC;
+
+-- Sélection des relations topologiques entre chaque entité topologique (traitement long)
+SELECT
+	a.objectid,
+	b.objectid
+fROM
+	topo_communes a,
+	topo_communes b,
+	SDO_TOPO.RELATE(a.geom, b.geom, 'DETERMINE')
+WHERE
+	a.objectid <> b.objectid
+	AND a.objectid < b.objectid
+ORDER BY
+	a.objectid ASC;
+```
+
+#### 6.2. Les opérateurs topologiques
+
+##### A savoir :
+Tout comme les opérateurs spatiaux, les opérateurs topologiques peuvent uniquement être utilisés dans le *WHERE*.  
+De plus, les opérateurs topologiques peuvent uniquement fonctionner avec les trois combinaisons suivantes :
+
+- Deux géométries topologiques ;
+- Une géométrie topologique en tant que premier paramètre et une géométrie spatiale en tant que second paramètre ;
+- Une géométrie topologique en tant que premier paramètre et un objet de type SDO_TOPO_OBJECT_ARRAY en tant que second paramètre ;
+
+##### Opérateur SDO_ANYINTERACT :
+Retourne 'TRUE' si les deux objets ne sont pas disjoints.
+``` SQL
+SDO_ANYINTERACT(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_CONTAINS :
+Retourne 'TRUE' si le deuxième objet est complètement inclus dans le premier objet, sans que les contours ne se touchent.
+``` SQL
+SDO_CONTAINS(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_INSIDE :
+Retourne 'TRUE' si le premier objet est complètement inclus dans le deuxième objet, sans que les contours ne se touchent.
+``` SQL
+SDO_INSIDE(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_COVEREDBY :
+Retourne 'TRUE' si le premier objet est entièrement inclus dans le deuxième objet et que leurs contours se touchent en au moins un point.
+``` SQL
+SDO_COVEREDBY(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_COVERS :
+Retourne 'TRUE' si le deuxième objet est entièrement inclus dans le premier objet et que leurs contours se touchent en au moins un point.
+``` SQL
+SDO_COVERS(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_EQUAL :
+Retourne 'TRUE' si les deux objets sont parfaitement identiques (mêmes contours, intérieurs et trous).
+``` SQL
+SDO_EQUAL(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_ON :
+Retourne 'TRUE' si le contour et l'intérieur d'une ligne (premier paramètre) sont complètement inclus dans un polygone (second paramètre).
+``` SQL
+SDO_ON(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_OVERLAPBDYINTERSECT :
+Retourne 'TRUE' si l'un des deux objets recouvre en partie le second et si leurs contours d'intersectent.
+``` SQL
+SDO_OVERLAPBDYINTERSECT(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+#### 6.3. Les opérateurs spatiaux non-fonctionnels sur un modèle de données topologique
+
+##### Opérateur SDO_RELATE :
+##### Opérateur SDO_NN :
+##### Opérateur SDO_NN_DISTANCE :
+##### Opérateur SDO_WITHIN_DISTANCE :
 -------------------------------------------
 
 ## Sources : 
