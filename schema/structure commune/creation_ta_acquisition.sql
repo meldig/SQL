@@ -1,10 +1,10 @@
 /*
-La table ta_source permet de rassembler toutes les données sources provenant d'une source extérieure à la MEL.
+Table recensant les dates d'acquisition, de millésime et du nom de l'obtenteur de chaque donnée source extérieure à la MEL.
 */
 
 -- 1. Création de la table ta_source
 CREATE TABLE ta_date_acquisition(
-    objectid NUMBER(38,0),
+    objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY,
     date_acquisition DATE,
     millesime DATE,
     nom_obtenteur VARCHAR2(200)
@@ -23,20 +23,7 @@ ADD CONSTRAINT ta_date_acquisition_PK
 PRIMARY KEY("OBJECTID") 
 USING INDEX TABLESPACE "INDX_GEO";
 
--- 4. Création de la séquence d'auto-incrémentation
-CREATE SEQUENCE SEQ_ta_date_acquisition
-START WITH 1 INCREMENT BY 1;
-
--- 5. Création du déclencheur de la séquence permettant d'avoir une PK auto-incrémentée
-CREATE OR REPLACE TRIGGER BEF_ta_date_acquisition
-BEFORE INSERT ON ta_date_acquisition
-FOR EACH ROW
-BEGIN
-    	:new.objectid := SEQ_ta_date_acquisition.nextval;
-    END IF;
-END;
-
--- 8. Création du déclencheur d'enregistrement de la date d'insertion de la donnée et du nom de la personne ayant fait cet import, dans la table ta_date_acquisition.
+-- 5. Création du déclencheur d'enregistrement de la date d'insertion de la donnée et du nom de la personne ayant fait cet import, dans la table ta_date_acquisition.
 
 CREATE OR REPLACE TRIGGER ta_date_acquisition
 BEFORE INSERT ON ta_source
