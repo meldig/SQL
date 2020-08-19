@@ -1,5 +1,5 @@
 /*
-La table ta_commune regroupe toutes les communes de la MEL.
+La table ta_commune regroupe tous les éléments de base du référentiel administratif, c'est-à-dire par exemple toutes les communes françaises et toutes les municipalités belges.
 */
 
 -- 1. Création de la table ta_commune
@@ -12,7 +12,7 @@ CREATE TABLE g_geo.ta_commune(
 );
 
 -- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_geo.ta_commune IS 'Table rassemblant tous les contours communaux de la MEL et leur équivalent belge.';
+COMMENT ON TABLE g_geo.ta_commune IS 'Table rassemblant tous les éléments de base du référentiel administratif tels que les communes françaises.';
 COMMENT ON COLUMN g_geo.ta_commune.objectid IS 'Identifiant de chaque objet de la table.';
 COMMENT ON COLUMN g_geo.ta_commune.geom IS 'Géométrie de chaque commune ou équivalent international.';
 COMMENT ON COLUMN g_geo.ta_commune.fid_lib_type_commune IS 'Clé étrangère permettant de connaître le statut de la commune ou équivalent international - ta_libelle.';
