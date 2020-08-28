@@ -4,7 +4,7 @@
 MERGE INTO TA_SOURCE a
 USING
 	(
-		SELECT 'Base Permanente des Equipements' AS NOM_SOURCE,'Inventaire des equipemens presents sur le territoire' AS description FROM DUAL
+		SELECT 'Base Permanente des Equipements' AS NOM_SOURCE,'Inventaire des équipements présents sur le territoire' AS description FROM DUAL
     ) b
 ON (a.nom_source = b.nom_source
 AND a.description = b.description)
@@ -307,6 +307,7 @@ FROM bpe_nomenclature;
 
 
 -- 15. creation de la table BPE_FUSION pour normaliser les données.
+-- Cette table est nécessaire pour récuperer l'ensemble des objectids des libellés et ainsi pouvoir insérer en base les correspondances entres les libellés longs et libellés courts ainsi que les relations en les libellés fils et parents.
 CREATE GLOBAL TEMPORARY TABLE BPE_FUSION AS
 (SELECT
     d.objectid AS objectid,
