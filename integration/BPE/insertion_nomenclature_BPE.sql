@@ -185,6 +185,12 @@ VALUES(b.fid_metadonnee, b.fid_echelle)
 -- 9. Création de la vue bpe_nomenclature_liste pour simplifier son insertion
 CREATE OR REPLACE VIEW bpe_nomenclature_liste AS
 SELECT DISTINCT
+	LC_niv_0 AS libelle_court, 
+	LL_niv_0 AS libelle_long,
+	'niv_0' AS niveau
+FROM bpe_nomenclature
+UNION ALL
+SELECT DISTINCT
 	LC_niv_1 AS libelle_court, 
 	LL_niv_1 AS libelle_long,
 	'niv_1' AS niveau
@@ -280,17 +286,24 @@ VALUES (b.fid_famille,b.fid_libelle_long)
 -- 14. Creation d'une vue des relations entre les libelles 'BPE' pour faciliter l'insertion des libelles
 CREATE OR REPLACE VIEW bpe_relation AS
 SELECT DISTINCT
+    lc_niv_1 AS lcf,
+    ll_niv_1 AS llf,
+    lc_niv_0 AS lcp,
+    ll_niv_0 AS llp
+FROM bpe_nomenclature
+UNION All SELECT DISTINCT
     lc_niv_2 AS lcf,
     ll_niv_2 AS llf,
     lc_niv_1 AS lcp,
     ll_niv_1 AS llp
-from bpe_nomenclature
-UNION All select distinct
+FROM bpe_nomenclature
+UNION All SELECT DISTINCT
     lc_niv_3 AS lcf,
     ll_niv_3 AS llf,
     lc_niv_2 AS lcp,
     ll_niv_2 AS llp
 FROM bpe_nomenclature;
+
 
 
 -- 15. creation de la table BPE_FUSION pour normaliser les données.
@@ -372,7 +385,11 @@ USING
 	(
 	SELECT
 	    a.objectid fid_libelle_fils,
-	    b.objectid fid_libelle_parent
+        a.libelle_long,
+        a.libelle_court,
+	    b.objectid fid_libelle_parent,
+        b.libelle_long,
+        b.libelle_court
 	FROM
 	    BPE_FUSION a,
 	    BPE_FUSION b,
