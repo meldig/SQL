@@ -21,7 +21,7 @@ auxquelles on peut ajouter 3 fichiers qui regroupent des requêtes pour génére
 		* la couche BPE sport et loisir.
 4. Suppression dans la couche BPE ensemble des équipements dont la valeur dans le champ "TYPEQU"  est aussi présent dans la couche BPE enseignement ou BPE sport et loisir.
 5. Création de la table <em>BPE_TOUT</em>, synthétisant l'ensemble des informations contenues dans les trois tables des équipements.
-	* Ajout de la colonne *identite* dans la table précédemment créée pour créer un identifiant à chaque équipement. Pour cela nous utilisons la séquence de la colonne *objectid* qui est de type *identity*. Cette méthode permet de créer pour chaque équipement de chaque millesime un identifiant unique. Dans les données brutes, les équipements n'ont pas d'identifiant unique.
+	* Ajout de la colonne *identite* dans la table <em>BPE_TOUT</em> pour créer un identifiant à chaque équipement. Pour cela nous utilisons la séquence de la colonne *objectid* de la table <em>TA_BPE</em> qui est de type *identity*. Cette méthode permet de créer pour chaque équipement de chaque millesime un identifiant unique. Dans les données brutes, les équipements n'ont pas d'identifiant unique.
 	* Correction des codes IRIS.
 	* Ajout des métadonnées spatiales à la table.
 6. Normalisation des données dans le schéma.
@@ -109,9 +109,13 @@ Les codes IRIS et INSEE sont préalablement insérés dans la table TA_CODE.
 
 ### 2. Insertion de la nomenclature 
 
-L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues dans le fichier: <em>insertion_nomenclature_bpe.sql</em>. Celle-ci se fait en 2 étapes. Dans un premier temps, on insère les libellés liés au type d'équipement et dans un second temps les libellés liés aux variables.
+L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues dans le fichier: <em>insertion_nomenclature_bpe.sql</em>. Celle-ci se fait en 2 étapes: 
+* Dans un premier temps, on insère les libellés liés au type d'équipement(POLICE/TRIBUNAL)
+* dans un second temps les libellés liés aux variables des équipements de type enseignement et sport et loisir initialement contenu dans les tables(COUVERT/ECLAIRE...):
+	* BPE enseignement.
+	* BPE sport et loisir.
 
-#### 2.1. Insertion des libellés des types équipements
+#### 2.1. Insertion de la nomenclature des BPE
 
 1. Insertion de la source dans <em>TA_SOURCE</em>.
 2. Insertion de la provenance dans <em>TA_PROVENANCE</em>.
@@ -121,7 +125,11 @@ L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues 
 6. Insertion des données dans <em>TA_METADONNEE</em>.
 7. Insertion des données dans la table <em>TA_METADONNEE_RELATION_ORGANISME</em>.
 8. Insertion des données dans la table <em>TA_METADONNEE_RELATION_ECHELLE</em>
-9. Création de la vue <em>bpe_nomenclature_liste</em> pour simplifier son insertion.
+9. Création de la vue <em>bpe_nomenclature_liste</em> pour simplifier son insertion. grâce à cette requete nous mettons la nomenclature sous la forme de trois colonne:
+* libellés court.
+* libellés long.
+* et son niveau.
+Cela permet de plus facilement insérer la nomenclature dans la base avec des requetes simple de type 'SELECT DISTINCT' pour le reste de l'insertion.
 10. Insertion des libellés courts dans <em>TA_LIBELLE_COURT</em>.
 11. Insertion des libellés longs dans <em>TA_LIBELLE_LONG</em>.
 12. Insertion de la famille 'BPE' dans la table <em>TA_FAMILLE</em>.
@@ -136,10 +144,10 @@ L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues 
 #### 2.2. Insertion des libellés liés aux variables propres aux équipements enseignement et sportif
 
 20. Ajout d'une colonne dans la table temporaire d'import des libellés pour ajouter les identifians des libellés de niveau 1 (COUVERT/ECLAIRE...).
-21. Création et insertion des libellés et des identifiants à partir de la sequence de la table <em>TA_LIBELLE</em> dans une table temporaire pour pouvoir attribuer des identifiants unique à des libellés utilisés par plusieurs variables (le libellés *Sans object* utilisé par les variables COUVERT ou ECLAIRE par exemple).
+21. Création et insertion des libellés et des identifiants à partir de la sequence de la table <em>TA_LIBELLE</em> dans une table temporaire pour pouvoir attribuer des identifiants uniques à des libellés utilisés par plusieurs variables (le libellés *Sans object* utilisé par les variables COUVERT ou ECLAIRE par exemple).
 22. Insertion des identifiants uniques dans la table temporaire <em>FUSION_BPE_VARIABLE</em> pour attribuer les identifiants aux libellés en utilisant la séquence de la table <em>TA_LIBELLE</em>.
 23. Insertion des identifiants de niveau 1 dans la table d'import des libellés.
-24. Ajout de la colonne lo_2 dans la table temporaire d'import des libellés pour ajouter les identifiants unique aux libellés de niveau 2. Cela permet d'attibuer des identifiants différents à un même libelle utilisé par des états différents (exemple *Sans objet*).
+24. Ajout de la colonne lo_2 dans la table temporaire d'import des libellés pour ajouter les identifiants uniques aux libellés de niveau 2. Cela permet d'attibuer des identifiants différents à un même libelle utilisé par des états différents (exemple *Sans objet*).
 25. Insertion des identifiants de niveau 2 en utilisant la séquence de la table <em>TA_LIBELLE</em>.
 26. Création de la vue <em>BPE_VARIABLE_LISTE</em> pour insérer les libellés longs et courts.
 27. Insertion des libellés courts dans <em>TA_LIBELLE_COURT</em>.
@@ -149,7 +157,7 @@ L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues 
 31. Insertion dans <em>TA_LIBELLE</em> des libellés de niveau 1.
 32. Insertion dans <em>TA_LIBELLE</em> des libellés de niveau 2.
 33. Insertion des correspondance dans la table <em>TA_CORRESPONDANCE_LIBELLE</em>.
-34. Insertion des relations dans la table <em>TA_RELATION_LIBELLE</em>.
+34. Insertion des relations dans la table <em>TA_RELATION_LIBELLE</em>(voir 1.2.).
 35. Insertion des relations entre les équipments et les codes INSEE et code IRIS des communes et zones IRIS d'implantation.
 36. Suppression des tables temporaires non utiles à la normalisation des données BPE:
 * BPE_NOMCLATURE_LISTE
@@ -175,10 +183,10 @@ Les équipements de la table BPE ensemble ayant un code présent dans l'une de c
 
 #### 3.2 Création d'une table temporaire synthétique.
 
-Afin de normaliser les données issues de la Base Permanente des Equipements une table synthétisant les informations est créée.
+Afin de normaliser les données issues de la Base Permanente des Equipements une table synthétisant les informations est créée, nommé <em>BPE_TOUT</em>.
 Plusieurs requêtes sont effectuées sur cette table afin de permettre de corriger des attributs.
 
-##### 3.2.1. Ajout d'une colonne identite à la table synthétique.
+##### 3.2.1. Ajout d'une colonne identite à la table BPE_TOUT.
 
 Mise à jour de la colonne *identite* pour avoir des clés uniques qui suivent l'incrémentation de la séquence de la table <em>TA_BPE</em>.
 
@@ -212,16 +220,16 @@ Ajout du *fid_metadonnee* correspondant.
 
 #### 3.4 Normalisation des données.
 
-A partir de cette table, plusieurs requêtes (présentes dans le fichier <em>normalisation_bpe.sql</em>) sont executées pour insérer les données dans les tables:
-3.4.1. <em>TA_BPE_GEOM</em> (requête 3):
+A partir de la table <em>BPE_TOUT</em>, plusieurs requêtes (présentes dans le fichier <em>normalisation_bpe.sql</em>) sont executées pour insérer les données dans les tables:
+* 3.4.1. <em>TA_BPE_GEOM</em> (requête 3):
 	* Cette requête permet d'insérer dans la table <em>TA_BPE_GEOM</em> les géométries uniques des BPE qui ne sont pas déja présentes dans la table.
-3.4.2. <em>TA_BPE</em> (requête 4):
+* 3.4.2. <em>TA_BPE</em> (requête 4):
 	* Cette requête permet d'insérer dans la table <em>TA_BPE</em>, l'identifiant de l'équipement et son fid_metadonnées considéré au dernier millésime inséré dans la base.
-3.4.3. <em>TA_BPE_CARACTERISTIQUE_QUANTITATIVE</em> (requête 6):
+* 3.4.3. <em>TA_BPE_CARACTERISTIQUE_QUANTITATIVE</em> (requête 6):
 	* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
-		* NB_AIREJEU: Nombre d'aires de pratique d'un meme type au sein de l'equipement
+		* NB_AIREJEU: Nombre d'aires de pratique d'un meme type d'activité au sein de l'equipement
 		* NB_SALLES: nombre de salles par theatre ou cinema
-3.4.4. <em>TA_BPE_CARACTERISTIQUE</em> (requête 7):
+* 3.4.4. <em>TA_BPE_CARACTERISTIQUE</em> (requête 7):
 	* un total de 3 requêtes sont necessaires pour inserer les données liées aux variables:
 		* la requetes 6.1 utilise la vue <em>V_NOMENCLATURE_EQUIPEMENT_BPE</em> pour inserer les attibuts type equipement.
 		* la requete 7.2, permet de creer la vue <em>BPE_VARIABLE_NOMENCLATURE</em>, simplifiant l'insertion des attributs variables.
@@ -235,14 +243,14 @@ A partir de cette table, plusieurs requêtes (présentes dans le fichier <em>nor
 			* SECT: appartenance au secteur public ou prive d'enseignement.
 			* COUVERT: equipement couvert ou non.
 			* ECLAIRE: equipement couvert ou non.
-3.4.5. <em>TA_BPE_RELATION_CODE</em>
+* 3.4.5. <em>TA_BPE_RELATION_CODE</em>
 	* Deux requêtes dont utilisées pour insérer les relations entre les équipements et les codes des communes et des zones IRIS d'implantation.
 		* La premiere requête (9.1) permet de mettre en relation l'équipement avec sa commune d'implantation,
 		* la deuxième (9.2) permet de mettre en relation l'équipement avec sa zone IRIS d'implantation.
 
 ### 4. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci.
 
-4.1. Suppression de la table synthétisant les données BPE, <em>BPE_TOUT</em>.
-4.2. Suppresion des metadonnées spatiales de la table synthétisant les données BPE.
-4.3. Suppresion de la vue <em>BPE_VARIABLE_NORMALISATION</em>.
-4.5. Suppression de la vue <em>BPE_VARIABLE_LISTE</em>.
+* 4.1. Suppression de la table synthétisant les données BPE, <em>BPE_TOUT</em>.
+* 4.2. Suppresion des metadonnées spatiales de la table synthétisant les données BPE.
+* 4.3. Suppresion de la vue <em>BPE_VARIABLE_NORMALISATION</em>.
+* 4.5. Suppression de la vue <em>BPE_VARIABLE_LISTE</em>.
