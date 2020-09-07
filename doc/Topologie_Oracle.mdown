@@ -27,6 +27,9 @@
 #### 6.1. La fonction SDO_TOPO.RELATE
 #### 6.2. Les opérateurs topologiques
 #### 6.3. Les opérateurs spatiaux non-fonctionnels sur un modèle de données topologique
+### 7. Comment identifier et corriger les erreurs topologiques ?
+#### 7.1. Identification des erreurs de topologie
+#### 7.2. Correction des erreurs de topologie
 <!-- -->
 <!-- -->
 ### 1. Présentation de la topologie :
@@ -730,6 +733,54 @@ RETURN VARCHAR2;
 ##### Opérateur SDO_NN :
 ##### Opérateur SDO_NN_DISTANCE :
 ##### Opérateur SDO_WITHIN_DISTANCE :
+
+### 7. Comment identifier et corriger les erreurs topologiques ?
+
+**Objectif :** L'utilité d'une topologie est qu'elle permet d'identifier et de corriger les erreurs topologiques sans être affectée par les déformations ou tolérances dues à l'utilisation des fonctions géométriques. L'objectif principal d'une topologie est donc d'identifier et de corriger les erreurs topologiques afin d'avoir une topologie propre / correcte. Attention cependant, une topologie n'est "propre" que si elle a du **sens**. C'est un fait qu'il faut **absolument** garder à l'esprit quand on manipule les topologies puisque lors du passage des objets géométriques aux objets topologiques, oracle créé des primitives topologiques correctes, ce qui signifie que si on inttergoe uniquement ces dernières, il n'y aura jamais d'erreur, et ce même si les objets géométriques se recouvrent, c'est pourquoi il faut interroger les *objets topologiques* au lieu des *primitives topologiques* dans un premier temps.
+
+
+#### 7.1. Identification des erreurs de topologie
+
+##### 7.1.1. Identification des recouvrements d'objets topologiques
+
+La table *nom_topologie_face$* comprend les faces de tous les objets de type polygone chargés dans la topologie, en théorie il s'agit donc des surfaces de ces objets sans les contours extérieurs.  
+Cependant la table *nom_topologie_edge$* comprend tous ces contours (intérieurs comme extérieurs d'ailleurs), il est donc inutile d'avoir des façes qui suivent parfaitement ces contours, ce qui détruirait la simplification des géométries voulue à travers la topologie. La table *nom_topologie_face$* contient donc des rectangles simples dont les contours encadre **scrupuleusement** chaque objet géométrique sans les dépasser ni les tronquer (cf.figure n°9).  
+
+###### Figure n°9 : Face et edges d'un objet topologique
+![Illustration de la définition](images_topologie/Illustration_7_1_1_edges_and_face.png)
+<!-- -->
+###### Conclusion :
+Si un objet compte plusieurs faces cela peut signifier deux choses : premièrement il s'agit d'un polygone à trous, deuxièment notre polygone est en partie recouvert par d'autres polygones et les faces obtenues sur les contours de notre polygones correspondent aux intersections entre les polygones. C'est ce deuxième cas qui nous intéresse.
+
+##### Requête servant à sélectionner tous les objets topologiques disposant de plusieurs faces :
+``` SQL
+SELECT
+    a.objectid, -- identifiant de chaque objet topologique
+    COUNT(c.face_id) -- décompte du nombre de faces par objet
+FROM
+    topo_communes a
+    INNER JOIN topo_limites_admin_relation$ b ON b.tg_id = a.geom.tg_id
+    INNER JOIN topo_limites_admin_face$ c ON c.face_id = b.topo_id
+GROUP BY
+    a.objectid, a.fid_commune
+HAVING
+    COUNT(c.face_id) > 1 -- Condition permettant de ne sélectionner que les objets topologiques dont le nombre de faces et supérieurs à 1
+    AND a.fid_commune < 96 -- Condition spéficique au modèle de données sur lequel cette requête a été lancée et permettant de n'étudier que les communes de la MEL95;
+```
+
+##### Requête servant à sélectionner toutes les faces d'un objet topologique :
+``` SQL
+-- Sélection de toutes les faces d'un objet topologique
+SELECT
+    a.objectid,
+    c.face_id
+FROM
+    topo_communes a
+    INNER JOIN topo_limites_admin_relation$ b ON b.tg_id = a.geom.tg_id
+    INNER JOIN topo_limites_admin_face$ c ON c.face_id = b.topo_id
+WHERE
+    a.objectid = 4156;
+```
 -------------------------------------------
 
 ## Sources : 
