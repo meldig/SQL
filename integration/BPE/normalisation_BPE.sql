@@ -36,7 +36,6 @@ COMMIT;
 -- 2.1. Creation de la table
 CREATE TABLE BPE_TOUT AS
 	SELECT
-		"OGR_FID",
 		"REG",
 		"DEP",
 		"DEPCOM",
@@ -61,7 +60,6 @@ CREATE TABLE BPE_TOUT AS
 		BPE_ENSEMBLE
 		UNION ALL
 			SELECT
-				"OGR_FID",
 				"REG",
 				"DEP",
 				"DEPCOM",
@@ -86,7 +84,6 @@ CREATE TABLE BPE_TOUT AS
 				BPE_SPORT_LOISIR
 		UNION ALL
 			SELECT
-				"OGR_FID",
 				"REG",
 				"DEP",
 				"DEPCOM",
@@ -122,10 +119,32 @@ COMMIT;
 
 
 -- 2.3. Mise à jour de la colonne IDENTITY pour avoir des clé unique qui suivent l'incrémentation de la séquence de la table TA_BPE
-UPDATE bpe_tout
--- Attention à la séquence utilisée
-SET identite = ISEQ$$_1025560.nextval;
--- Attention à la séquence utilisée
+SET SERVEROUTPUT ON
+DECLARE
+--  variable pour récuperer le nom de la séquence de la table.
+    v_sequence VARCHAR2(200);
+-- corp de la procédure.
+BEGIN
+-- recupere le nom de la sequence
+    BEGIN
+    SELECT s.NAME INTO v_sequence
+        FROM
+           sys.IDNSEQ$ os
+           INNER JOIN sys.obj$ t ON (t.obj# = os.obj#)
+           INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
+           INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
+           INNER JOIN all_users u ON (u.user_id = t.owner#)
+        WHERE t.NAME = 'TA_BPE'
+        AND u.username = 'G_GEO';
+    DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
+    END;
+-- execution de la requete
+    BEGIN
+    EXECUTE IMMEDIATE
+    'UPDATE bpe_tout SET identite =' || v_sequence || '.nextval';
+    END;
+END;
+/
 
 
 -- 2.4 Correction du format des codes IRIS pour permettre une jointure avec TA_CODE afin d'insérer des données dans la table TA_BPE_RELATION_CODE
@@ -143,7 +162,7 @@ SET "DCIRIS" = (
 
 
 -- 2.5. Ajout de la colonne geométrique
-ALTER TABLE BPE_TOUT
+ALTER TABLE BPE_TOUT_2
 ADD geom SDO_GEOMETRY;
 COMMIT;
 
@@ -195,7 +214,7 @@ SET geom = (
             NULL
             ) new_geom
     FROM
-        BPE_TOUT
+        BPE_TOUT_2
     WHERE
         lambert_x IS NOT NULL
     AND
@@ -222,7 +241,6 @@ SET fid_metadonnee =
                     a.millesime,
                     p.url,
                     o.acronyme,
-                    listagg(e.valeur, '; ') within group (ORDER BY e.valeur)"echelle"
                 FROM
                     ta_metadonnee m
                 INNER JOIN ta_source s ON s.objectid = m.fid_source
@@ -230,8 +248,6 @@ SET fid_metadonnee =
                 INNER JOIN ta_provenance p ON p.objectid = m.fid_provenance
                 INNER JOIN ta_metadonnee_relation_organisme mo ON mo.fid_metadonnee = m.objectid
                 INNER JOIN ta_organisme o ON o.objectid = mo.fid_organisme
-                INNER JOIN ta_metadonnee_relation_echelle me ON me.fid_metadonnee = m.objectid
-                INNER JOIN ta_echelle e ON e.objectid = me.fid_echelle
                 WHERE
                     s.nom_source = 'Base Permanente des Equipements'
                 AND
@@ -242,8 +258,6 @@ SET fid_metadonnee =
                     p.url = 'https://www.insee.fr/fr/statistiques/3568638?sommaire=3568656'
                 AND
                     o.nom_organisme IN ('Institut National de la Statistique et des Etudes Economiques')
-                AND
-                    e.valeur IN ('10000','30000','50000','1000000')
                 GROUP BY
                     m.objectid,
                     s.nom_source,
