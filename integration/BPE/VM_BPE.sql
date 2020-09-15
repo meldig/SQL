@@ -181,7 +181,7 @@ WITH
 	INNER JOIN ta_famille f ON f.objectid = fl.fid_famille
 	WHERE f.valeur = 'BPE'
 	)
--- Requète totale
+-- Requète de la selection totale
 	SELECT
 		bpe.objectid,
 		extract(year from millesime.millesime) AS ANNEE,
