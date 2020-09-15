@@ -69,6 +69,7 @@ si l'indicateur est acceptable: l'echelle d'utilisation sera 1/30000,
 si l'indicateur est mauvaise: l'echelle d'utilisation sera 1/50000,
 si l'équipement n'est pas géolocalisé ou alors pas cette année: l'echelle d'utilisation sera 1/1000000
 */
+/*
 MERGE INTO ta_echelle a
 USING
 	(
@@ -82,6 +83,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES(b.valeur)
 ;
+*/
 
 
 -- 6. Insertion des données dans TA_METADONNEE
@@ -147,6 +149,7 @@ INSERT(a.fid_metadonnee, a.fid_organisme)
 VALUES(b.fid_metadonnee, b.fid_organisme)
 ;
 
+/*
 -- 8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
 MERGE INTO ta_metadonnee_relation_echelle a
 USING
@@ -181,6 +184,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_metadonnee, a.fid_echelle)
 VALUES(b.fid_metadonnee, b.fid_echelle)
 ;
+*/
 
 -- 9. Création de la vue bpe_nomenclature_liste pour simplifier son insertion
 CREATE OR REPLACE VIEW bpe_nomenclature_liste AS
@@ -308,40 +312,47 @@ FROM bpe_nomenclature;
 
 -- 15. creation de la table BPE_FUSION pour normaliser les données.
 -- Cette table est nécessaire pour récuperer l'ensemble des objectids des libellés et ainsi pouvoir insérer en base les correspondances entres les libellés longs et libellés courts ainsi que les relations en les libellés fils et parents.
-CREATE GLOBAL TEMPORARY TABLE BPE_FUSION AS
-(SELECT
-    d.objectid AS objectid,
-    b.objectid AS fid_libelle_long,
-    a.libelle_long,
-    c.objectid AS fid_libelle_court,
-    a.libelle_court,
-    a.niveau
-FROM
-    ta_libelle d,
-	BPE_NOMENCLATURE_LISTE a
-JOIN
-    TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
-LEFT JOIN
-    TA_LIBELLE_COURT c ON c.valeur = a.libelle_court);
-
-
--- 16. Insertion des données dans la table temporaire BPE_FUSION. Utilisation de la séquence de la table ta_libelle
-INSERT INTO BPE_FUSION
-SELECT
--- Attention à la séquence utilisée
-	    ISEQ$$_1018816.nextval as objectid,
--- Attention à la séquence utilisée
-	    b.objectid AS fid_libelle_long,
-	    a.libelle_long,
-	    c.objectid AS fid_libelle_court,
-	    a.libelle_court,
-	    a.niveau
-	FROM
-	    BPE_NOMENCLATURE_LISTE a
-	JOIN
-	    TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
-	LEFT JOIN
-	    TA_LIBELLE_COURT c ON c.valeur = a.libelle_court;
+SET SERVEROUTPUT ON
+DECLARE
+--  variable pour récuperer le nom de la séquence de la table.
+    v_sequence VARCHAR2(200);
+-- corp de la procédure.
+BEGIN
+-- recupere le nom de la sequence
+    BEGIN
+    SELECT s.NAME INTO v_sequence
+        FROM
+           sys.IDNSEQ$ os
+           INNER JOIN sys.obj$ t ON (t.obj# = os.obj#)
+           INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
+           INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
+           INNER JOIN all_users u ON (u.user_id = t.owner#)
+        WHERE t.NAME = 'TA_LIBELLE'
+        AND u.username = 'G_GEO';
+    DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
+    END;
+-- execution de la requete
+    BEGIN
+    EXECUTE IMMEDIATE
+    'CREATE TABLE BPE_FUSION AS
+    SELECT
+    -- Attention à la séquence utilisée
+          '||v_sequence||'.nextval as objectid,
+    -- Attention à la séquence utilisée
+          b.objectid AS fid_libelle_long,
+          a.libelle_long,
+          c.objectid AS fid_libelle_court,
+          a.libelle_court,
+          a.niveau
+      FROM
+          BPE_NOMENCLATURE_LISTE a
+      JOIN
+          TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
+      LEFT JOIN
+          TA_LIBELLE_COURT c ON c.valeur = a.libelle_court';
+      END;
+END;
+/
 
 
 -- 17. Insertion des 'objectid' et des 'fid_libelle_long' grâce à la table temporaire BPE_FUSION(voir 13., 14.)
@@ -367,7 +378,7 @@ MERGE INTO ta_libelle_correspondance a
 USING
 	(
 	SELECT
-		objectid, 
+		objectid,
 		fid_libelle_court
 	FROM
         BPE_FUSION
@@ -386,11 +397,11 @@ USING
 	(
 	SELECT
 	    a.objectid fid_libelle_fils,
-        a.libelle_long,
-        a.libelle_court,
+        a.libelle_long libelle_long_fils,
+        a.libelle_court libelle_court_fils,
 	    b.objectid fid_libelle_parent,
-        b.libelle_long,
-        b.libelle_court
+        b.libelle_long libelle_long_parent,
+        b.libelle_court libelle_court_parent
 	FROM
 	    BPE_FUSION a,
 	    BPE_FUSION b,
@@ -437,33 +448,42 @@ ALTER TABLE bpe_variable ADD
 
 -- 21. Création et insertion des libelles et des identifiants à partir de la sequence de la table TA_LIBELLE
 -- dans une table temporaire pour pouvoir attribuer des identifiants unique à des libelles utilisés par plusieurs variables
-CREATE GLOBAL TEMPORARY TABLE fusion_bpe_variable AS
-SELECT
-	a.ll_niv_1,
--- Attention à la séquence utilisée
-	    ISEQ$$_1018816.nextval as lo_1
--- Attention à la séquence utilisée
-FROM 
-	(
-		SELECT DISTINCT ll_niv_1
-		FROM bpe_variable
-	) a
-;
-
-
--- 22. Insertion des identifiants unique dans la table temporaire fusion_bpe_variable pour attribuer les identifiants aux libelles en utilisant la séquence de la table TA_LIBELLE
-INSERT INTO fusion_bpe_variable
-SELECT
-	a.ll_niv_1,
--- Attention à la séquence utilisée
-	    ISEQ$$_1018816.nextval as lo_1
--- Attention à la séquence utilisée
-FROM 
-	(
-		SELECT DISTINCT ll_niv_1
-		FROM bpe_variable
-	) a
-;
+SET SERVEROUTPUT ON
+DECLARE
+--  variable pour récuperer le nom de la séquence de la table.
+    v_sequence VARCHAR2(200);
+-- corp de la procédure.
+BEGIN
+-- recupere le nom de la sequence
+    BEGIN
+    SELECT s.NAME INTO v_sequence
+        FROM
+           sys.IDNSEQ$ os
+           INNER JOIN sys.obj$ t ON (t.obj# = os.obj#)
+           INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
+           INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
+           INNER JOIN all_users u ON (u.user_id = t.owner#)
+        WHERE t.NAME = 'TA_LIBELLE'
+        AND u.username = 'G_GEO';
+    DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
+    END;
+-- execution de la requete
+    BEGIN
+    EXECUTE IMMEDIATE
+    'CREATE TABLE fusion_bpe_variable AS
+    SELECT
+        a.ll_niv_1,
+      -- Attention à la séquence utilisée
+          '||v_sequence||'.nextval as lo_1
+      -- Attention à la séquence utilisée
+      FROM 
+        (
+          SELECT DISTINCT ll_niv_1
+          FROM bpe_variable
+        ) a';
+      END;
+END;
+/
 
 
 -- 23. Insertion des identifiants de niveau 1 dans la table d'import des libelles
@@ -483,8 +503,32 @@ ALTER TABLE bpe_variable ADD
 ;
 
 -- 25. insertion des identifiants de niveau 2 en utilisant la séquence de la table TA_LIBELLE
-UPDATE bpe_variable
-SET lo_2 = ISEQ$$_1018816.nextval;
+SET SERVEROUTPUT ON
+DECLARE
+--  variable pour récuperer le nom de la séquence de la table.
+    v_sequence VARCHAR2(200);
+-- corp de la procédure.
+BEGIN
+-- recupere le nom de la sequence
+    BEGIN
+    SELECT s.NAME INTO v_sequence
+        FROM
+           sys.IDNSEQ$ os
+           INNER JOIN sys.obj$ t ON (t.obj# = os.obj#)
+           INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
+           INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
+           INNER JOIN all_users u ON (u.user_id = t.owner#)
+        WHERE t.NAME = 'TA_LIBELLE'
+        AND u.username = 'G_GEO';
+    DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
+    END;
+-- execution de la requete
+    BEGIN
+    EXECUTE IMMEDIATE
+    'UPDATE bpe_variable SET lo_2 =' || v_sequence || '.nextval WHERE lc_niv_2 IS NOT NULL';
+    END;
+END;
+/
 
 
 -- 26. creation de la vue pour inserer les libelles longs et courts
