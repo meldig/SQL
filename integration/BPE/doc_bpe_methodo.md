@@ -104,7 +104,7 @@ Prenons par exemple un equipement présent dans la Base Permanente des Equipemen
 
 Les données issues des colonnes REG et DEP ne sont pas insérer en base car ces informations peuvent être retrouvé grâce aux informations déjà présentes en base et à la position géométrique de l'équipement. Les valeurs dans les colonnes LAMBERT_X et LAMBERT_Y non plus.
 Les codes IRIS et INSEE sont préalablement insérés dans la table TA_CODE. 
-![exemple de normalisation d'un equipement](\exemple_normalisation_bpe.png)
+![exemple de normalisation d'un equipement](.\exemple_normalisation_bpe.png)
 
 
 ### 2. Insertion de la nomenclature 
