@@ -32,7 +32,7 @@ VALUES(b.url,b.methode_acquisition)
 MERGE INTO ta_date_acquisition a
 USING
 	(
-		SELECT TO_DATE('06/04/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2018') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
+		SELECT TO_DATE('15/09/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2019') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
 	) b
 ON (a.date_acquisition = b.date_acquisition
 AND a.millesime = b.millesime)
@@ -101,9 +101,9 @@ USING
 		WHERE
 		    a.nom_source = 'Base Permanente des Equipements'
 		AND
-		    b.millesime IN ('01/01/2018')
+		    b.millesime IN ('01/01/2019')
 		AND
-		    b.date_acquisition = '06/04/2020'
+		    b.date_acquisition = '15/09/2020'
 		AND
 		    c.url = 'https://www.insee.fr/fr/statistiques/3568638?sommaire=3568656'
 		AND
@@ -133,10 +133,10 @@ USING
             ta_organisme e
         WHERE
             b.nom_source = 'Base Permanente des Equipements'
-        AND
-            c.date_acquisition = '06/04/2020'
-        AND
-            c.millesime = '01/01/2018'
+		AND
+		    c.millesime IN ('01/01/2019')
+		AND
+		    c.date_acquisition = '15/09/2020'
         AND
             d.url = 'https://www.insee.fr/fr/statistiques/3568638?sommaire=3568656'
         AND
@@ -729,41 +729,6 @@ AND a.fid_libelle_parent = b.fid_libelle_parent)
 WHEN not matched THEN
 INSERT(a.fid_libelle_fils, a.fid_libelle_parent)
 VALUES (b.fid_libelle_fils, b.fid_libelle_parent);
-
-
--- 35. Insertion des relations entre les équipments et les codes INSEE et code IRIS des communes et zones IRIS d'implantation.
-
-MERGE INTO ta_bpe_relation_code a
-USING
-    (
-    select
-        a.identite as fid_bpe,
-        b.objectid as fid_code
-    from
-        bpe_tout a
-        inner join ta_code b on b.valeur = a.depcom
-        inner join ta_libelle c on c.objectid = b.fid_libelle
-        inner join ta_libelle_long d on d.objectid = c.fid_libelle_long
-    where
-        d.valeur = 'code insee'
-    UNION ALL
-    select
-        a.identite as fid_bpe,
-        b.objectid as fid_code
-    from
-        bpe_tout a
-        inner join ta_code b on b.valeur = substr(a.dciris,6,4)
-        inner join ta_libelle c on c.objectid = b.fid_libelle
-        inner join ta_libelle_long d on d.objectid = c.fid_libelle_long
-    where
-        d.valeur = 'code IRIS'
-    )b
-ON (a.fid_bpe = b.fid_bpe
-AND a.fid_code = b.fid_code)
-WHEN NOT MATCHED THEN
-INSERT (a.fid_bpe, a.fid_code)
-VALUES (b.fid_bpe, b.fid_code)
-;
 
 
 -- 36. Suppression des données temporaires.

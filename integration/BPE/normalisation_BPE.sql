@@ -162,7 +162,7 @@ SET "DCIRIS" = (
 
 
 -- 2.5. Ajout de la colonne geométrique
-ALTER TABLE BPE_TOUT_2
+ALTER TABLE BPE_TOUT
 ADD geom SDO_GEOMETRY;
 COMMIT;
 
@@ -240,7 +240,7 @@ SET fid_metadonnee =
                     a.date_acquisition,
                     a.millesime,
                     p.url,
-                    o.acronyme,
+                    o.acronyme
                 FROM
                     ta_metadonnee m
                 INNER JOIN ta_source s ON s.objectid = m.fid_source
@@ -251,9 +251,9 @@ SET fid_metadonnee =
                 WHERE
                     s.nom_source = 'Base Permanente des Equipements'
                 AND
-                    a.date_acquisition = '06/04/2020'
+                    a.date_acquisition = '15/09/2020'
                 AND
-                    a.millesime = '01/01/2018'
+                    a.millesime = '01/01/2019'
                 AND
                     p.url = 'https://www.insee.fr/fr/statistiques/3568638?sommaire=3568656'
                 AND
