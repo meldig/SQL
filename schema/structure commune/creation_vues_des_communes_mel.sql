@@ -1,7 +1,7 @@
 /*
 Création de la vue des communes actuelles de la MEL via la BdTopo de l'IGN 
 */
-CREATE OR REPLACE FORCE VIEW g_geo.admin_communes_mel (
+CREATE OR REPLACE FORCE VIEW g_referentiel.admin_communes_mel (
     identifiant,
     code_insee,
     nom,
@@ -33,11 +33,11 @@ WHERE
     AND sysdate BETWEEN g.debut_validite AND g.fin_validite;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE g_geo.admin_communes_mel IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
-COMMENT ON COLUMN g_geo.admin_communes_mel.identifiant IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN g_geo.admin_communes_mel.code_insee IS 'Code INSEE de chaque commune.';
-COMMENT ON COLUMN g_geo.admin_communes_mel.nom IS 'Nom de chaque commune de la MEL.';
-COMMENT ON COLUMN g_geo.admin_communes_mel.geom IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON TABLE g_referentiel.admin_communes_mel IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel.identifiant IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel.code_insee IS 'Code INSEE de chaque commune.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel.nom IS 'Nom de chaque commune de la MEL.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel.geom IS 'Géométrie de chaque commune - de type polygone.';
 
 -- 3. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -54,15 +54,15 @@ VALUES(
 );
 
 -- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
-GRANT SELECT ON admin_communes_mel TO G_REFERENTIEL_LEC;
-GRANT SELECT ON admin_communes_mel TO G_ADMIN_SIG;
+GRANT SELECT ON g_referentiel.admin_communes_mel TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_communes_mel TO G_ADMIN_SIG;
 
 /*
 Création de la vue des communes de la MEL90 via la BdTopo de l'IGN 
 */
 
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW g_geo.admin_communes_mel90 (
+CREATE OR REPLACE FORCE VIEW g_referentiel.admin_communes_mel90 (
     identifiant,
     code_insee,
     nom,
@@ -95,11 +95,11 @@ WHERE
     AND g.fin_validite = '31/12/2019';
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE g_geo.admin_communes_mel90 IS 'Vue proposant les communes de la MEL - quand elle se composait de 90 communes - extraites de la BdTopo de l''IGN.';
-COMMENT ON COLUMN g_geo.admin_communes_mel90.identifiant IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN g_geo.admin_communes_mel90.code_insee IS 'Code INSEE de chaque commune.';
-COMMENT ON COLUMN g_geo.admin_communes_mel90.nom IS 'Nom de chaque commune de la MEL.';
-COMMENT ON COLUMN g_geo.admin_communes_mel90.geom IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON TABLE g_referentiel.admin_communes_mel90 IS 'Vue proposant les communes de la MEL - quand elle se composait de 90 communes - extraites de la BdTopo de l''IGN.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel90.identifiant IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel90.code_insee IS 'Code INSEE de chaque commune.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel90.nom IS 'Nom de chaque commune de la MEL.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel90.geom IS 'Géométrie de chaque commune - de type polygone.';
 
 -- 3. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -116,8 +116,8 @@ VALUES(
 );
 
 -- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC et aux administrateurs
-GRANT SELECT ON admin_communes_mel90 TO G_REFERENTIEL_LEC;
-GRANT SELECT ON admin_communes_mel90 TO G_ADMIN_SIG;
+GRANT SELECT ON g_referentiel.admin_communes_mel90 TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_communes_mel90 TO G_ADMIN_SIG;
 
 /*
 Création de la vue des communes françaises avec les municipalités frontalières belges actuelles de la BdTopo de l'IGN français et belge.
@@ -126,7 +126,7 @@ Précision : la frontière des municipalités belges a été modifiée afin d'ob
 DROP VIEW admin_communes_mel_actuelles_et_belgique;
 */
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW g_geo.admin_communes_mel_belgique
+CREATE OR REPLACE FORCE VIEW g_referentiel.admin_communes_mel_belgique
  (
     identifiant,
     entite_adm,
@@ -195,16 +195,16 @@ WITH
         a.objectid = b.objectid;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE g_geo.admin_communes_mel_belgique IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN avec les municipalités belges frontalières issues de l''IGN belge dont les frontières ont été modifiées afin d''obtenir une frontière jointive avec les communes françaises.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.identifiant IS 'Clé primaire de la vue.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.entite_adm IS 'Types d''entités contenues dans la vue. Exemple : commune simple.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.code_adm IS 'Code INSEE pour les communes / Code INS pour les municipalités.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.nom_a IS 'Nom de chaque commune de la MEL et de chaque municipalités belges frontalières.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.nom_b IS 'Etiquette format intermédiaire.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.nom_c IS 'Etiquette format court.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.geom IS 'Géométrie de chaque commune - de type polygone.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux décimales.';
-COMMENT ON COLUMN g_geo.admin_communes_mel_belgique.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
+COMMENT ON TABLE g_referentiel.admin_communes_mel_belgique IS 'Vue proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN avec les municipalités belges frontalières issues de l''IGN belge dont les frontières ont été modifiées afin d''obtenir une frontière jointive avec les communes françaises.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.identifiant IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.entite_adm IS 'Types d''entités contenues dans la vue. Exemple : commune simple.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.code_adm IS 'Code INSEE pour les communes / Code INS pour les municipalités.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.nom_a IS 'Nom de chaque commune de la MEL et de chaque municipalités belges frontalières.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.nom_b IS 'Etiquette format intermédiaire.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.nom_c IS 'Etiquette format court.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.geom IS 'Géométrie de chaque commune - de type polygone.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.surf_km2 IS 'Surface de chaque commune, municipalité en km² arrondie à deux décimales.';
+COMMENT ON COLUMN g_referentiel.admin_communes_mel_belgique.source IS 'Source de la donnée avec l''organisme créateur, la source et son millésime.';
 
 -- 3. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -221,5 +221,5 @@ VALUES(
 );
 
 -- 4. Don du droit de lecture de la vue au schéma G_REFERENTIEL_LEC
-GRANT SELECT ON admin_communes_mel_belgique TO G_REFERENTIEL_LEC;
-GRANT SELECT ON admin_communes_mel_belgique TO G_ADMIN_SIG;
+GRANT SELECT ON g_referentiel.admin_communes_mel_belgique TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_communes_mel_belgique TO G_ADMIN_SIG;
