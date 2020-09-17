@@ -91,11 +91,17 @@ Pour accueillir les données BPE, 8 tables sont nécessaires:
 ### 2. Insertion de la nomenclature 
 
 L'insertion de la nomenclature BPE se fait à partir des requètes contenues dans le fichier: insertion_nomenclature_bpe.sql. Celle-ci se fait en 6 étapes:
+
 2.1. La première étape consiste à insérer les données dans la table TA_LIBELLE_COURT.
+
 2.2. Ensuite il faut insérer les données dans la table TA_LIBELLE.
+
 2.3. Etablir la correspondance entre les libellés courts et les libellés avec la table TA_CORRESPONDANCE_LIBELLE, car un libellé court peut avoir plusieurs signification
+
 2.4. Définir la relation hiérarchique entre les libellés, car il existe des niveaux entre les libellés utilisé dans la nomenclature BPE. Mais aussi car un libellés peut avoir plusieurs significations suivant sa variables. Par exemple 0 peut signifier équipement non couvert ou équipement non éclairé.
+
 2.5. Insertion de la valeur BPE dans la table TA_FAMILLE.
+
 2.6. Insertion des correspondance famille-libelle dans la table TA_FAMILLE_LIBELLE.
 
 ### 3. Normalisation des donnée
@@ -115,44 +121,56 @@ Les equipements de la table BPE ensemble ayant un code présent dans l'une des c
 #### 3.2 Création d'une table temporaire synthétique.
 
 Afin de normaliser les données issues de la Base Permanente des Equipements une table synthétisant les informations est créée. Cette table permet aussi d'insérer un identifiant unique à chaque équipement. Cette clé est défini pour l'insertion des prochaines données comme une incrémentation où le premier chiffre est égal au dernier identifiant entré dans la colonne 'objectid' de la table TA_BPE +1. Les métadonnées spatiales de cette tables sont aussi créées.
+
 Les codes IRIS sont corrigés. Les codes IRIS sont en deux formats dans la base BPE:
+
 * Alors que dans les données IRIS le format est sous forme INSEEIRIS, dans la table BPE les IRIS sont sous la forme INSEE_IRIS.
 * De plus quand une commune n'est pas sub-divisée en IRIS alors dans les données IRIS son code est sous la forme INSEE0000,mais dans les données BPE il n'y a que son numéro INSEE
 Une requête permet de corriger les codes IRIS dans la base BPE et de tout mettre en INSEEIRIS.
 
 #### 3.4 Normalisation des données.
 
-
 A parir de cette table, plusieurs requêtes (présentes dans le fichier normalisation_bpe) sont executés pour insérer les données dans les tables:
+
 3.4.1. TA_BPE_GEOM (requête 4)
-	* Cette requête permet d'insérer dans la table TA_BPE_GEOM les géométries unique des BPE qui ne sont pas déja présente dans la table
+
+Cette requête permet d'insérer dans la table TA_BPE_GEOM les géométries unique des BPE qui ne sont pas déja présente dans la table
+	
 3.4.2. TA_BPE (requête 5)
-	* Cette requête permet de mettre le fid_metadonnées de la donnée considéré au dernier millésime.
+
+Cette requête permet de mettre le fid_metadonnées de la donnée considéré au dernier millésime.
+	
 3.4.3. TA_BPE_RELATION_GEOM (requête 6)
+
 3.4.4. TA_BPE_CARACTERISTIQUE_NOMBRE (requête 7)
-	* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
-		* NB_AIREJEU: Nombre d'aires de pratique d'un meme type au sein de l'equipement
-		* NB_SALLES: nombre de salles par theatre ou cinema
+
+* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
+	* NB_AIREJEU: Nombre d'aires de pratique d'un meme type au sein de l'equipement
+	* NB_SALLES: nombre de salles par theatre ou cinema
+		
 3.4.5. TA_BPE_CARACTERISTIQUE (requête 8)
-	* un total de 11 requêtes pour inserer les données liées:
-		* TYPEQU: nature de l'équipement.
-		* CANT: présence ou absence d'une cantine.
-		* CL_PELEM: présence ou absence d'une classe pre-élementaire en école primaire
-		* CL_PGE: présence ou absence d'une clASse preparatoire aux grandes ecoles en lycee
-		* EP: Appartenance ou non à un dispositif d'education prioritaire
-		* INT: présence ou absence d'un internat
-		* QUALITE XY: qualite d'attribution pour un equipement de ses coordonnees XY
-		* RPIC: Presence ou absence d'un regroupement pedagogique intercommunal concentre
-		* SECT: appartenance au secteur public ou prive d'enseignement
-		* COUVERT: equipement couvert ou non
-		* ECLAIRE: equipement couvert ou non
-	* Ces requêtes possèdent plusieurs sous requête car afin d'identifier la nature de la variable il faut connaitre son libellé parent car un libellé peut définir plusieur état. Par exemple, 0 peut signifier aussi bien équipement non éclairé que non couvert.
-	* dans la première sous requête nous selectionnons l'ensemble des objectids et des libellés ainsi que ceux des libéllés parents.
-	* dans la seconde nous sélectionnons les libellés et leurs equivalences courts.
-	* dans la troisième sous requête, nous selectionnons l'ensemble des codes des libellés fils et parent avec un filtre sur l'attribut à renseigner dans la table.
-	* et enfin dans le SELECT de fin on sélectionne les BPE qui ont cette attribut.
+
+* un total de 11 requêtes pour inserer les données liées:
+	* TYPEQU: nature de l'équipement.
+	* CANT: présence ou absence d'une cantine.
+	* CL_PELEM: présence ou absence d'une classe pre-élementaire en école primaire
+	* CL_PGE: présence ou absence d'une clASse preparatoire aux grandes ecoles en lycee
+	* EP: Appartenance ou non à un dispositif d'education prioritaire
+	* INT: présence ou absence d'un internat
+	* QUALITE XY: qualite d'attribution pour un equipement de ses coordonnees XY
+	* RPIC: Presence ou absence d'un regroupement pedagogique intercommunal concentre
+	* SECT: appartenance au secteur public ou prive d'enseignement
+	* COUVERT: equipement couvert ou non
+	* ECLAIRE: equipement couvert ou non
+* Ces requêtes possèdent plusieurs sous requête car afin d'identifier la nature de la variable il faut connaitre son libellé parent car un libellé peut définir plusieur état. Par exemple, 0 peut signifier aussi bien équipement non éclairé que non couvert.
+* dans la première sous requête nous selectionnons l'ensemble des objectids et des libellés ainsi que ceux des libéllés parents.
+* dans la seconde nous sélectionnons les libellés et leurs equivalences courts.
+* dans la troisième sous requête, nous selectionnons l'ensemble des codes des libellés fils et parent avec un filtre sur l'attribut à renseigner dans la table.
+* et enfin dans le SELECT de fin on sélectionne les BPE qui ont cette attribut.
+	
 3.4.6. TA_BPE_RELATION_CODE (requête 9)
-	* il a été décidé de faire une table de relation entres les BPEs et les codes IRIS car certain BPE ne sont pas géolocalisés cette relation permet à minima d'identifier leurs communes d'implantation et si possible leurs IRIS.
-	* Cette insertion se fait en deux fois:
-		* pour les codes IRIS
-		* et les codes INSEE
+
+* il a été décidé de faire une table de relation entres les BPEs et les codes IRIS car certain BPE ne sont pas géolocalisés cette relation permet à minima d'identifier leurs communes d'implantation et si possible leurs IRIS.
+* Cette insertion se fait en deux fois:
+	* pour les codes IRIS
+	* et les codes INSEE
