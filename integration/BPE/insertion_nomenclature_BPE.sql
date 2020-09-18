@@ -1,7 +1,7 @@
--- Fichier regroupant les différentes étapes nécessaire à l'insertion des éléments issus de la Base Permanente des Equipements BPE.
+-- Fichier regroupant les différentes requêtes nécessaires à l'insertion des éléments issus de la Base Permanente des Equipements BPE.
 
--- 1. Insertion de la source dans TA_SOURCE.
-MERGE INTO TA_SOURCE a
+-- 1. Insertion de la source dans G_GEO.TA_SOURCE.
+MERGE INTO G_GEO.TA_SOURCE a
 USING
 	(
 		SELECT 'Base Permanente des Equipements' AS NOM_SOURCE,'Inventaire des équipements présents sur le territoire' AS description FROM DUAL
@@ -14,8 +14,8 @@ VALUES (b.nom_source,b.description)
 ;
 
 
--- 2. Insertion de la provenance dans TA_PROVENANCE
-MERGE INTO ta_provenance a
+-- 2. Insertion de la provenance dans G_GEO.TA_PROVENANCE
+MERGE INTO G_GEO.TA_PROVENANCE a
 USING
     (
     	SELECT 'https://www.insee.fr/fr/statistiques/3568638?sommaire=3568656' AS url,'Données en téléchargement libre' AS methode_acquisition FROM DUAL
@@ -28,8 +28,8 @@ VALUES(b.url,b.methode_acquisition)
 ;
 
 
--- 3. Insertion des données dans TA_DATE_ACQUISITION
-MERGE INTO ta_date_acquisition a
+-- 3. Insertion des données dans G_GEO.TA_DATE_ACQUISITION
+MERGE INTO G_GEO.TA_DATE_ACQUISITION a
 USING
 	(
 		SELECT TO_DATE('15/09/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2019') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
@@ -42,8 +42,8 @@ VALUES (b.date_acquisition,b.millesime)
 ;
 
 
--- 4. Insertion des données dans TA_ORGANISME
-MERGE INTO ta_organisme a
+-- 4. Insertion des données dans G_GEO.TA_ORGANISME
+MERGE INTO G_GEO.TA_ORGANISME a
 USING
 	(
 		SELECT 'INSEE' AS ACRONYME, 'Institut National de la Statistique et des Etudes Economiques' AS NOM_ORGANISME FROM DUAL
@@ -55,7 +55,7 @@ VALUES(b.acronyme,b.nom_organisme)
 ;
 
 
--- 5. Insertion des échelles dans TA_ECHELLE
+-- 5. Insertion des échelles dans G_GEO.TA_ECHELLE
 /*
 Afin de qualifier au mieux les coordonnées(x,y) diffusées, un indicateur de qualité de celle-ci est misà disposition pour chaque équipement. Il comporte cinq modalités:
 bonne : l'écart des coordonnées (x,y) fournies avec la réalité du terrain est inférieur à 100 m ;
@@ -70,7 +70,7 @@ si l'indicateur est mauvaise: l'echelle d'utilisation sera 1/50000,
 si l'équipement n'est pas géolocalisé ou alors pas cette année: l'echelle d'utilisation sera 1/1000000
 */
 /*
-MERGE INTO ta_echelle a
+MERGE INTO G_GEO.TA_ECHELLE a
 USING
 	(
 		SELECT '10000' AS VALEUR FROM DUAL
@@ -86,8 +86,8 @@ VALUES(b.valeur)
 */
 
 
--- 6. Insertion des données dans TA_METADONNEE
-MERGE INTO ta_metadonnee a
+-- 6. Insertion des données dans G_GEO.TA_METADONNEE
+MERGE INTO G_GEO.TA_METADONNEE a
 USING
 	(
 		SELECT 
@@ -95,9 +95,9 @@ USING
 	    b.objectid AS FID_ACQUISITION,
 	    c.objectid AS FID_PROVENANCE
 		FROM
-		    ta_source a,
-		    ta_date_acquisition b,
-		    ta_provenance c
+		    G_GEO.TA_SOURCE a,
+		    G_GEO.TA_DATE_ACQUISITION b,
+		    G_GEO.TA_PROVENANCE c
 		WHERE
 		    a.nom_source = 'Base Permanente des Equipements'
 		AND
@@ -118,19 +118,19 @@ VALUES(b.fid_source ,b.fid_acquisition,b.fid_provenance)
 ;
 
 
--- 7. Insertion des données dans la table TA_METADONNEE_RELATION_ORGANISME
-MERGE INTO ta_metadonnee_relation_organisme a
+-- 7. Insertion des données dans la table G_GEO.TA_METADONNEE_RELATION_ORGANISME
+MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
 USING
     (
         SELECT
             a.objectid AS fid_metadonnee,
             e.objectid AS fid_organisme
         FROM
-            ta_metadonnee a
-        INNER JOIN ta_source b ON b.objectid = a.fid_source
-        INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
-        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid,
-            ta_organisme e
+            G_GEO.TA_METADONNEE a
+        INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON a.fid_acquisition = c.objectid
+        INNER JOIN G_GEO.TA_PROVENANCE d ON a.fid_provenance = d.objectid,
+            G_GEO.TA_ORGANISME e
         WHERE
             b.nom_source = 'Base Permanente des Equipements'
 		AND
@@ -150,7 +150,7 @@ VALUES(b.fid_metadonnee, b.fid_organisme)
 ;
 
 /*
--- 8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
+-- 8. Insertion des données dans la table G_GEO.TA_METADONNEE_RELATION_ECHELLE
 MERGE INTO ta_metadonnee_relation_echelle a
 USING
     (
@@ -158,13 +158,13 @@ USING
 		    a.objectid AS fid_metadonnee,
 		    g.objectid AS fid_echelle
 		FROM
-		    ta_metadonnee a
-		INNER JOIN ta_source b ON b.objectid = a.fid_source
-		INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
-		INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid
-		INNER JOIN ta_metadonnee_relation_organisme e ON e.fid_metadonnee = a.objectid
-		INNER JOIN ta_organisme f ON f.objectid = e.fid_organisme,
-		    ta_echelle g
+		    G_GEO.TA_METADONNEE a
+		INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
+		INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON a.fid_acquisition = c.objectid
+		INNER JOIN G_GEO.TA_PROVENANCE d ON a.fid_provenance = d.objectid
+		INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME e ON e.fid_metadonnee = a.objectid
+		INNER JOIN G_GEO.TA_ORGANISME f ON f.objectid = e.fid_organisme,
+		    G_GEO.TA_ECHELLE g
 		WHERE
 		    b.nom_source = 'Base Permanente des Equipements'
 		AND
@@ -186,42 +186,42 @@ VALUES(b.fid_metadonnee, b.fid_echelle)
 ;
 */
 
--- 9. Création de la vue bpe_nomenclature_liste pour simplifier son insertion
-CREATE OR REPLACE VIEW bpe_nomenclature_liste AS
+-- 9. Création de la vue G_GEO.BPE_NOMENCLATURE_LISTE pour simplifier son insertion
+CREATE OR REPLACE VIEW G_GEO.BPE_NOMENCLATURE_LISTE AS
 SELECT DISTINCT
 	LC_niv_0 AS libelle_court, 
 	LL_niv_0 AS libelle_long,
 	'niv_0' AS niveau
-FROM bpe_nomenclature
+FROM G_GEO.BPE_NOMENCLATURE
 UNION ALL
 SELECT DISTINCT
 	LC_niv_1 AS libelle_court, 
 	LL_niv_1 AS libelle_long,
 	'niv_1' AS niveau
-FROM bpe_nomenclature
+FROM G_GEO.BPE_NOMENCLATURE
 UNION ALL
 SELECT DISTINCT
 	LC_niv_2 AS libelle_court, 
 	LL_niv_2 AS libelle_long,
 	'niv_2' AS niveau
-FROM bpe_nomenclature
+FROM G_GEO.BPE_NOMENCLATURE
 UNION ALL
 SELECT DISTINCT
 	LC_niv_3 AS libelle_court, 
 	LL_niv_3 AS libelle_long,
 	'niv_3' AS niveau
 FROM
-	bpe_nomenclature;
+	G_GEO.BPE_NOMENCLATURE;
 
 
--- 10. Insertion des libelles courts dans TA_LIBELLE_COURT
-MERGE INTO ta_libelle_court a
+-- 10. Insertion des libelles courts dans G_GEO.TA_LIBELLE_COURT
+MERGE INTO G_GEO.TA_LIBELLE_COURT a
 USING
 	(
 	SELECT DISTINCT
 		libelle_court
 	FROM
-		bpe_nomenclature_liste
+		G_GEO.BPE_NOMENCLATURE_LISTE
 	) b
 ON (a.valeur = b.libelle_court)
 WHEN NOT MATCHED THEN
@@ -230,14 +230,14 @@ VALUES (b.libelle_court)
 ;
 
 
--- 11. Insertion des libelles longs dans TA_LIBELLE_LONG
-MERGE INTO ta_libelle_long a
+-- 11. Insertion des libelles longs dans G_GEO.TA_LIBELLE_LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
 USING
 	(
 	SELECT DISTINCT
 		libelle_long
 	FROM
-		bpe_nomenclature_liste
+		G_GEO.BPE_NOMENCLATURE_LISTE
 	) b
 ON (a.valeur = b.libelle_long)
 WHEN NOT MATCHED THEN
@@ -246,7 +246,7 @@ VALUES (b.libelle_long)
 ;
 
 
--- 12. Insertion de la famille 'BPE' dans la table TA_FAMILLE
+-- 12. Insertion de la famille 'BPE' dans la table G_GEO.TA_FAMILLE
 MERGE INTO TA_FAMILLE a
 USING
 	(
@@ -259,7 +259,7 @@ VALUES (b.valeur)
 ;
 
 
--- 13. Insertion des relations familles-libelles dans TA_FAMILLE_LIBELLE
+-- 13. Insertion des relations familles-libelles dans G_GEO.TA_FAMILLE_LIBELLE
 MERGE INTO TA_FAMILLE_LIBELLE a
 USING
 	(
@@ -267,8 +267,8 @@ USING
 		f.objectid fid_famille,
 		l.objectid fid_libelle_long
     FROM
-        ta_famille f,
-        ta_libelle_long l
+        G_GEO.TA_FAMILLE f,
+        G_GEO.TA_LIBELLE_LONG l
 	WHERE 
 		f.valeur = 'BPE' AND
 		l.valeur IN
@@ -276,7 +276,7 @@ USING
 			SELECT DISTINCT
 				libelle_long
 			FROM
-				bpe_nomenclature_liste
+				G_GEO.BPE_NOMENCLATURE_LISTE
 			)
 		) b
 ON (a.fid_famille = b.fid_famille
@@ -288,29 +288,29 @@ VALUES (b.fid_famille,b.fid_libelle_long)
 
 
 -- 14. Creation d'une vue des relations entre les libelles 'BPE' pour faciliter l'insertion des libelles
-CREATE OR REPLACE VIEW bpe_relation AS
+CREATE OR REPLACE VIEW G_GEO.G_GEO.BPE_RELATION AS
 SELECT DISTINCT
     lc_niv_1 AS lcf,
     ll_niv_1 AS llf,
     lc_niv_0 AS lcp,
     ll_niv_0 AS llp
-FROM bpe_nomenclature
+FROM G_GEO.BPE_NOMENCLATURE
 UNION All SELECT DISTINCT
     lc_niv_2 AS lcf,
     ll_niv_2 AS llf,
     lc_niv_1 AS lcp,
     ll_niv_1 AS llp
-FROM bpe_nomenclature
+FROM G_GEO.BPE_NOMENCLATURE
 UNION All SELECT DISTINCT
     lc_niv_3 AS lcf,
     ll_niv_3 AS llf,
     lc_niv_2 AS lcp,
     ll_niv_2 AS llp
-FROM bpe_nomenclature;
+FROM G_GEO.BPE_NOMENCLATURE;
 
 
 
--- 15. creation de la table BPE_FUSION pour normaliser les données.
+-- 15. creation de la table G_GEO.BPE_FUSION pour normaliser les données.
 -- Cette table est nécessaire pour récuperer l'ensemble des objectids des libellés et ainsi pouvoir insérer en base les correspondances entres les libellés longs et libellés courts ainsi que les relations en les libellés fils et parents.
 SET SERVEROUTPUT ON
 DECLARE
@@ -327,14 +327,14 @@ BEGIN
            INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
            INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
            INNER JOIN all_users u ON (u.user_id = t.owner#)
-        WHERE t.NAME = 'TA_LIBELLE'
+        WHERE t.NAME = 'G_GEO.TA_LIBELLE'
         AND u.username = 'G_GEO';
     DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
     END;
 -- execution de la requete
     BEGIN
     EXECUTE IMMEDIATE
-    'CREATE TABLE BPE_FUSION AS
+    'CREATE TABLE G_GEO.BPE_FUSION AS
     SELECT
     -- Attention à la séquence utilisée
           '||v_sequence||'.nextval as objectid,
@@ -345,25 +345,25 @@ BEGIN
           a.libelle_court,
           a.niveau
       FROM
-          BPE_NOMENCLATURE_LISTE a
+          G_GEO.BPE_NOMENCLATURE_LISTE a
       JOIN
-          TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
+          G_GEO.TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
       LEFT JOIN
-          TA_LIBELLE_COURT c ON c.valeur = a.libelle_court';
+          G_GEO.TA_LIBELLE_COURT c ON c.valeur = a.libelle_court';
       END;
 END;
 /
 
 
--- 17. Insertion des 'objectid' et des 'fid_libelle_long' grâce à la table temporaire BPE_FUSION(voir 13., 14.)
-MERGE INTO ta_libelle a
+-- 17. Insertion des 'objectid' et des 'fid_libelle_long' grâce à la table temporaire G_GEO.BPE_FUSION(voir 13., 14.)
+MERGE INTO G_GEO.TA_LIBELLE a
 USING
     (
     SELECT
         objectid, 
         fid_libelle_long
     FROM
-        bpe_fusion
+        G_GEO.BPE_FUSION
     ) b
 ON (a.objectid = b.objectid
 AND a.fid_libelle_long = b.fid_libelle_long)
@@ -373,15 +373,15 @@ VALUES (b.objectid,b.fid_libelle_long)
 ;
 
 
--- 18. Insertion des données dans ta_correspondance_libelle grâce à la table temporaire BPE_FUSION(voir 13., 14.)
-MERGE INTO ta_libelle_correspondance a
+-- 18. Insertion des données dans G_GEO.TA_CORRESPONDANCE_LIBELLE grâce à la table temporaire G_GEO.BPE_FUSION(voir 13., 14.)
+MERGE INTO G_GEO.TA_CORRESPONDANCE_LIBELLE a
 USING
 	(
 	SELECT
 		objectid,
 		fid_libelle_court
 	FROM
-        BPE_FUSION
+        G_GEO.BPE_FUSION
 	) b
 ON (a.fid_libelle = b.objectid
 AND a.fid_libelle_court = b.fid_libelle_court)
@@ -391,7 +391,7 @@ VALUES (b.objectid,b.fid_libelle_court)
 ;
 
 
--- 19. Insertion des données dans ta_relation_libelle(hiérarchie des libelles comme par exemple A1(services publics > A101(police)) grâce à la table temporaire BPE_FUSION(voir 13., 14.)
+-- 19. Insertion des données dans ta_relation_libelle(hiérarchie des libelles comme par exemple A1(services publics > A101(police)) grâce à la table temporaire G_GEO.BPE_FUSION(voir 13., 14.)
 MERGE INTO ta_libelle_relation a
 USING 
 	(
@@ -403,9 +403,9 @@ USING
         b.libelle_long libelle_long_parent,
         b.libelle_court libelle_court_parent
 	FROM
-	    BPE_FUSION a,
-	    BPE_FUSION b,
-	    bpe_relation c
+	    G_GEO.BPE_FUSION a,
+	    G_GEO.BPE_FUSION b,
+	    G_GEO.BPE_RELATION c
 	WHERE
 	        a.libelle_court = c.lcf
 	    AND
@@ -423,9 +423,9 @@ USING
 	        (a.niveau = 'niv_3' AND b.niveau = 'niv_2')
 	    )
     AND
-    	a.objectid IN (SELECT objectid FROM ta_libelle)
+    	a.objectid IN (SELECT objectid FROM G_GEO.TA_LIBELLE)
     AND
-    	b.objectid IN (SELECT objectid FROM ta_libelle)
+    	b.objectid IN (SELECT objectid FROM G_GEO.TA_LIBELLE)
 	)b
 ON (a.fid_libelle_fils = b.fid_libelle_fils
 AND a.fid_libelle_parent = b.fid_libelle_parent)
@@ -441,12 +441,12 @@ VALUES (b.fid_libelle_fils,b.fid_libelle_parent)
 
 
 -- 20. Ajout d'une colonne dans la table temporaire d'import des libelles pour ajouter les identifians des libelles de niveau 1 (COUVERT/ECLAIRE...).
-ALTER TABLE bpe_variable ADD
+ALTER TABLE G_GEO.BPE_VARIABLE ADD
 	lo_1 NUMBER(38,0)
 ;
 
 
--- 21. Création et insertion des libelles et des identifiants à partir de la sequence de la table TA_LIBELLE
+-- 21. Création et insertion des libelles et des identifiants à partir de la sequence de la table G_GEO.TA_LIBELLE
 -- dans une table temporaire pour pouvoir attribuer des identifiants unique à des libelles utilisés par plusieurs variables
 SET SERVEROUTPUT ON
 DECLARE
@@ -463,14 +463,14 @@ BEGIN
            INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
            INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
            INNER JOIN all_users u ON (u.user_id = t.owner#)
-        WHERE t.NAME = 'TA_LIBELLE'
+        WHERE t.NAME = 'G_GEO.TA_LIBELLE'
         AND u.username = 'G_GEO';
     DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
     END;
 -- execution de la requete
     BEGIN
     EXECUTE IMMEDIATE
-    'CREATE TABLE fusion_bpe_variable AS
+    'CREATE TABLE G_GEO.FUSION_BPE_VARIABLE AS
     SELECT
         a.ll_niv_1,
       -- Attention à la séquence utilisée
@@ -479,7 +479,7 @@ BEGIN
       FROM 
         (
           SELECT DISTINCT ll_niv_1
-          FROM bpe_variable
+          FROM G_GEO.BPE_VARIABLE
         ) a';
       END;
 END;
@@ -487,9 +487,9 @@ END;
 
 
 -- 23. Insertion des identifiants de niveau 1 dans la table d'import des libelles
-MERGE INTO bpe_variable a
+MERGE INTO G_GEO.BPE_VARIABLE a
 USING 
-	fusion_bpe_variable b
+	G_GEO.FUSION_BPE_VARIABLE b
 ON(a.ll_niv_1 = b.ll_niv_1)
 WHEN MATCHED THEN
 UPDATE SET a.lo_1 = b.lo_1
@@ -498,11 +498,11 @@ WHERE a.lo_1 IS NULL;
 
 -- 24. Ajout de la colonne lo_2 dans la table temporaire d'import des libelles pour ajouter les identifiants unique aux libelles de niveau 2.
 -- Cela permet d'attibuer des identifiants différents à un même libelle utilisé par des états différents (exemple 'Sans objet').
-ALTER TABLE bpe_variable ADD
+ALTER TABLE G_GEO.BPE_VARIABLE ADD
     lo_2 NUMBER(38,0)
 ;
 
--- 25. insertion des identifiants de niveau 2 en utilisant la séquence de la table TA_LIBELLE
+-- 25. insertion des identifiants de niveau 2 en utilisant la séquence de la table G_GEO.TA_LIBELLE
 SET SERVEROUTPUT ON
 DECLARE
 --  variable pour récuperer le nom de la séquence de la table.
@@ -518,14 +518,14 @@ BEGIN
            INNER JOIN sys.obj$ s ON (s.obj# = os.seqobj#)
            INNER JOIN sys.col$ c ON (c.obj# = t.obj# AND c.col# = os.intcol#)
            INNER JOIN all_users u ON (u.user_id = t.owner#)
-        WHERE t.NAME = 'TA_LIBELLE'
+        WHERE t.NAME = 'G_GEO.TA_LIBELLE'
         AND u.username = 'G_GEO';
     DBMS_OUTPUT.PUT_LINE(v_sequence || '.nextval');
     END;
 -- execution de la requete
     BEGIN
     EXECUTE IMMEDIATE
-    'UPDATE bpe_variable SET lo_2 =' || v_sequence || '.nextval WHERE lc_niv_2 IS NOT NULL';
+    'UPDATE G_GEO.BPE_VARIABLE SET lo_2 =' || v_sequence || '.nextval WHERE lc_niv_2 IS NOT NULL';
     END;
 END;
 /
@@ -533,30 +533,30 @@ END;
 
 -- 26. creation de la vue pour inserer les libelles longs et courts
 --/!\ aussi necessaire à la normalisation des données
-CREATE OR REPLACE VIEW bpe_variable_liste AS
+CREATE OR REPLACE VIEW G_GEO.BPE_VARIABLE_LISTE AS
 SELECT DISTINCT 
 	LC_niv_1 AS libelle_court, 
 	LL_niv_1 AS libelle_long,
 	'niv_1' AS niveau
-FROM bpe_variable
+FROM G_GEO.BPE_VARIABLE
 UNION ALL
 SELECT DISTINCT 
 	LC_niv_2 AS libelle_court, 
 	LL_niv_2 AS libelle_long,
 	'niv_2' AS niveau
-FROM bpe_variable
+FROM G_GEO.BPE_VARIABLE
 WHERE LC_niv_2 IS NOT NULL
 AND LL_niv_2 IS NOT NULL;
 
 
--- 27. Insertion des libelles courts dans TA_LIBELLE_COURT
-MERGE INTO ta_libelle_court a
+-- 27. Insertion des libelles courts dans G_GEO.TA_LIBELLE_COURT
+MERGE INTO G_GEO.TA_LIBELLE_COURT a
 USING
     (
     SELECT DISTINCT
         libelle_court
     FROM
-        bpe_variable_liste
+        G_GEO.BPE_VARIABLE_LISTE
     ) b
 ON (a.valeur = b.libelle_court)
 WHEN NOT MATCHED THEN
@@ -565,14 +565,14 @@ VALUES (b.libelle_court)
 ;
 
 
--- 28. Insertion des libelles longs dans TA_LIBELLE_LONG
-MERGE INTO ta_libelle_long a
+-- 28. Insertion des libelles longs dans G_GEO.TA_LIBELLE_LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
 USING
 	(
 	SELECT DISTINCT
 		libelle_long
 	FROM
-		bpe_variable_liste
+		G_GEO.BPE_VARIABLE_LISTE
 	) b
 ON (a.valeur = b.libelle_long)
 WHEN NOT MATCHED THEN
@@ -581,8 +581,8 @@ VALUES (b.libelle_long)
 ;
 
 
--- 29. Insertion de la famille dans TA_FAMILLE
-MERGE INTO TA_FAMILLE a
+-- 29. Insertion de la famille dans G_GEO.TA_FAMILLE
+MERGE INTO G_GEO.TA_FAMILLE a
 USING
 	(
 		SELECT 'BPE' AS VALEUR FROM DUAL
@@ -594,16 +594,16 @@ VALUES (b.valeur)
 ;
 
 
--- 30. Insertion des relations dans TA_FAMILLE_LIBELLE
-MERGE INTO TA_FAMILLE_LIBELLE a
+-- 30. Insertion des relations dans G_GEO.TA_FAMILLE_LIBELLE
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 USING
 	(
 	SELECT
 		a.objectid fid_famille,
 		b.objectid fid_libelle_long
     FROM
-        ta_famille a,
-        ta_libelle_long b
+        G_GEO.TA_FAMILLE a,
+        G_GEO.TA_LIBELLE_LONG b
 	WHERE 
 		a.valeur = 'BPE' AND
 		b.valeur IN
@@ -611,7 +611,7 @@ USING
 			SELECT DISTINCT
 				libelle_long
 			FROM
-				bpe_variable_liste
+				G_GEO.BPE_VARIABLE_LISTE
 			)
 		) b
 ON (a.fid_famille = b.fid_famille
@@ -622,18 +622,18 @@ VALUES (b.fid_famille,b.fid_libelle_long)
 ;
 
 
--- 31. Insertion dans ta_libelle des libelles de niveau 1
-MERGE INTO ta_libelle a
+-- 31. Insertion dans G_GEO.TA_LIBELLE des libelles de niveau 1
+MERGE INTO G_GEO.TA_LIBELLE a
 USING
     (
     SELECT
         distinct a.lo_1 objectid,
         b.objectid fid_libelle_long
     FROM
-        bpe_variable a
-    INNER JOIN ta_libelle_long b ON a.ll_niv_1 = b.valeur
-    INNER JOIN ta_famille_libelle c ON b.objectid = c.fid_libelle_long
-    INNER JOIN ta_famille d ON c.fid_famille = d.objectid
+        G_GEO.BPE_VARIABLE a
+    INNER JOIN G_GEO.TA_LIBELLE_LONG b ON a.ll_niv_1 = b.valeur
+    INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON b.objectid = c.fid_libelle_long
+    INNER JOIN G_GEO.TA_FAMILLE d ON c.fid_famille = d.objectid
     WHERE
         d.valeur = 'BPE'
     )b
@@ -645,18 +645,18 @@ VALUES (b.objectid,b.fid_libelle_long)
 ;
 
 
--- 32. Insertion dans TA_LIBELLE des libelles de niveau 2
-MERGE INTO ta_libelle a
+-- 32. Insertion dans G_GEO.TA_LIBELLE des libelles de niveau 2
+MERGE INTO G_GEO.TA_LIBELLE a
 USING
     (
 	    SELECT
 	        a.lo_2 objectid,
 	        b.objectid fid_libelle_long
 	    FROM
-	        bpe_variable a
-	    INNER JOIN ta_libelle_long b ON a.ll_niv_2 = b.valeur
-	    INNER JOIN ta_famille_libelle c ON b.objectid = c.fid_libelle_long
-	    INNER JOIN ta_famille d ON c.fid_famille = d.objectid
+	        G_GEO.BPE_VARIABLE a
+	    INNER JOIN G_GEO.TA_LIBELLE_LONG b ON a.ll_niv_2 = b.valeur
+	    INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON b.objectid = c.fid_libelle_long
+	    INNER JOIN G_GEO.TA_FAMILLE d ON c.fid_famille = d.objectid
 	    WHERE
         d.valeur = 'BPE'
     )b
@@ -667,8 +667,8 @@ INSERT (a.objectid,a.fid_libelle_long)
 VALUES (b.objectid,b.fid_libelle_long)
 ;
 
--- 33. Insertion des correspondance dans la table TA_CORRESPONDANCE_LIBELLE
-MERGE INTO ta_libelle_correspondance a
+-- 33. Insertion des correspondance dans la table G_GEO.TA_CORRESPONDANCE_LIBELLE
+MERGE INTO G_GEO.TA_CORRESPONDANCE_LIBELLE a
 USING
 	(
 		SELECT 
@@ -677,13 +677,13 @@ USING
 		    a.lc_niv_1 AS libelle_court,
 		    b.objectid as fid_libelle_court
 		FROM
-		    bpe_variable a
+		    G_GEO.BPE_VARIABLE a
 		INNER JOIN
-		    ta_libelle_court b ON a.lc_niv_1 = b.valeur
+		    G_GEO.TA_LIBELLE_COURT b ON a.lc_niv_1 = b.valeur
 	    WHERE
 	        lo_1
 		    IN
-		      	(SELECT OBJECTID FROM TA_LIBELLE)
+		      	(SELECT OBJECTID FROM G_GEO.TA_LIBELLE)
 				UNION ALL
 				SELECT
 				    distinct a.ll_niv_2 AS libelle_long,
@@ -691,13 +691,13 @@ USING
 				    a.lc_niv_2 AS libelle_court,
 				    b.objectid AS fid_libelle_court
 				FROM
-				    bpe_variable a
+				    G_GEO.BPE_VARIABLE a
 				INNER JOIN
-				    ta_libelle_court b ON a.lc_niv_2 = b.valeur
+				    G_GEO.TA_LIBELLE_COURT b ON a.lc_niv_2 = b.valeur
 			    WHERE
 			        lo_2
 			    IN
-			      (SELECT OBJECTID FROM TA_LIBELLE)
+			      (SELECT OBJECTID FROM G_GEO.TA_LIBELLE)
 	)b
 ON(a.fid_libelle = b.fid_libelle
 AND a.fid_libelle_court = b.fid_libelle_court)
@@ -707,45 +707,25 @@ VALUES (b.fid_libelle, b.fid_libelle_court)
 ;
 
 
--- 34. Insertion des relations dans la table TA_RELATION_LIBELLE
+-- 34. Insertion des relations dans la table G_GEO.TA_RELATION_LIBELLE
 
-MERGE INTO ta_libelle_relation a
+MERGE INTO G_GEO.TA_RELATION_LIBELLE a
 USING
 	(
 	    SELECT
 	        lo_2 fid_libelle_fils,
 	        lo_1 fid_libelle_parent
 	    FROM
-	        bpe_variable
+	        G_GEO.BPE_VARIABLE
 	    WHERE
 	        ll_niv_2 IS NOT NULL
 	    AND
-	    	lo_2 IN (SELECT objectid FROM ta_libelle)
+	    	lo_2 IN (SELECT objectid FROM G_GEO.TA_LIBELLE)
 	    AND
-	    	lo_1 IN (SELECT objectid FROM ta_libelle)
+	    	lo_1 IN (SELECT objectid FROM G_GEO.TA_LIBELLE)
 	)b
 ON(a.fid_libelle_fils = b.fid_libelle_fils
 AND a.fid_libelle_parent = b.fid_libelle_parent)
 WHEN not matched THEN
 INSERT(a.fid_libelle_fils, a.fid_libelle_parent)
 VALUES (b.fid_libelle_fils, b.fid_libelle_parent);
-
-
--- 36. Suppression des données temporaires.
--- 36.1 Suppression de la vue bpe_nomenclature_liste
-DROP VIEW bpe_nomenclature_liste cascade constraints;
-
--- 36.2 Suppression de la vue bpe_relation
-DROP VIEW bpe_relation cascade constraints;
-
--- 36.3 Suppression de la table BPE_FUSION
-DROP TABLE BPE_FUSION cascade constraints purge;
-
--- 36.4 Suppression de la table FUSION_BPE_VARIABLE
-DROP TABLE FUSION_BPE_VARIABLE cascade constraints purge;
-
--- 36.5 Suppression de la table BPE_NOMENCLATURE
-DROP TABLE bpe_nomenclature cascade constraints;
-
--- 36.6 Suppression de la table BPE_VARIABLE
-DROP TABLE bpe_variable cascade constraints;
