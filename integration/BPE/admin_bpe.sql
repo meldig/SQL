@@ -178,7 +178,7 @@ WITH
     	END) AS NOMBRE_SALLES
     FROM
     	G_GEO.TA_BPE bpe
-    LEFT JOIN ta_bpe_caracteristique_quantitative bpecq ON bpecq.fid_bpe = bpe.objectid
+    LEFT JOIN G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE bpecq ON bpecq.fid_bpe = bpe.objectid
 	INNER JOIN G_GEO.TA_LIBELLE l ON l.objectid = bpecq.fid_libelle
     INNER JOIN G_GEO.TA_LIBELLE_LONG ll ON ll.objectid = l.fid_libelle_long
 	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fl ON fl.fid_libelle_long = ll.objectid
