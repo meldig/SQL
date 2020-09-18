@@ -1,0 +1,791 @@
+# Fiche Technique : La Topologie dans Oracle
+
+## Table des matières :
+### 1. Présentation de la topologie ;
+#### 1.1. Définition ;
+#### 1.2. Exemple ;
+### 2. Les concepts de la topologie ;
+### 3. Le stockage de la topologie dans Oracle ;
+#### 3.1. La table des entités topologiques ;
+#### 3.2. La table des relations topologiques ;
+#### 3.3. La table de noeuds ;
+#### 3.4. La table de tronçons ;
+#### 3.5. La table de surfaces ;
+### 4. Insérer, modifier et supprimer des entités topologiques ;
+#### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle ;
+##### 4.1.1. Création/suppression d'un objet TopoMap ;
+##### 4.1.2. Chargement/suppression/validation des données dans l'objet TopoMap ;
+##### 4.1.3. Exemple concret d'utilisation d'un objet TopoMap ;
+#### 4.2. Insérer des entités topologiques dans une topologie ;
+#### 4.3. Modifier des entités topologiques dans une topologie ;
+#### 4.4. Supprimer des entités topologiques dans une topologie ;
+#### 4.5. Supprimer une topologie ;
+### 5. Rechercher des informations sur des primitives topologiques spécifiques ;
+#### 5.1. Connaître les coordonnées d'une primitive topologique ;
+#### 5.2. Connaître les informations d'un tronçon ;
+### 6. La fonction et les opérateurs topologiques
+#### 6.1. La fonction SDO_TOPO.RELATE
+#### 6.2. Les opérateurs topologiques
+#### 6.3. Les opérateurs spatiaux non-fonctionnels sur un modèle de données topologique
+### 7. Comment identifier et corriger les erreurs topologiques ?
+#### 7.1. Identification des erreurs de topologie
+#### 7.2. Correction des erreurs de topologie
+<!-- -->
+<!-- -->
+### 1. Présentation de la topologie :
+### 1.1. Définition :
+
+La topologie désigne l'expression des relations entre les objets. Plus précisément, elle s'attache à représenter les objets tels que nous les voyons à travers nos yeux.
+
+### 1.2. Exemple :
+Les bibliothèques tylko que l'ont trouve chez ikéa se compose d'alignements verticaux et horizontaux de boîtes vides dans lesquelles on range nos affaires. Mais nos yeux ne voient pas le carré A, puis le carré B dont le segment de gauche recouvre le segment de droite du carré A, non. Nos yeux voient le carré A et le carré B qui partagent un segment et deux sommets.
+
+###### Figure n°1 : Exemple de ce que voient nos yeux
+![Illustration de la définition](images_topologie/Illustration_1_1.png)
+
+
+En d'autres termes les logiciels SIG qui gèrent la topologie identifient les objets les uns par rapport aux autres. Ainsi, deux communes adjacentes partagent les tronçons et les sommets sur leur frontière commune. Il n'y a pas de superposition.
+ 
+### 2. Les concepts de la topologie ;
+
+La topologie décompose chaque géométrie jusqu'à atteindre les objets fondamentaux qui les composent, appelés **entités topologiques** ou **primitives topologiques**. Cela permet d'étudier les relations entre géométries et notamment le partage de certains éléments :
+Dans l'exemple du point 1.2., les deux communes adjacentes n'ont pas de noeuds ni de tronçons qui se superposent à l'endroit de leur frontière commune, mais ils **partagent** les mêmes noeuds et les mêmes tronçons. Ainsi au lieu d'avoir systématiquement des doublons de noeuds et de tronçons on obtient un noeud et un tronçon qui appartiennent en même temps à la commune A **ET** à la commune B. Donc si on bouge un noeud situé sur leur frontière commune, alors on modifie les tronçons frontaliers qui l'utilisent. On peut donc modifier en même temps les communes A et B en bougeant un seul noeud.
+
+##### Les concepts à retenir :
+
+* La topologie étudie les relations entre objets ;
+* Il existe trois primitives topologiques : les noeuds, les tronçons et les faces ;
+* La topologie décompose chaque objet géométrique en primitives topologiques ;
+* Les primitives topologiques sont liées entre elles via la table de relation. Donc modifier une primitive topologie induit la modification de **TOUTES** les primitives topologiques qui s'y rattachent ;
+
+### 3. Le stockage de la topologie dans Oracle ;
+
+Pour comprendre le stockage de la topologie dans oracle, il faut d'abord penser à l'emboîtement des poupées russes, puis à une toile d'araignée et enfin aux étagères tylko. Je m'explique :
+
+* Emboîtement des objets permettant de stocker des entités topologiques :
+
+###### Figure n°2 : Emboîtements des objets d'une topologie
+![Illustration des emboitements dans une topologie](images_topologie/Illustration_3.png)
+
+    
+* Liens entre les objets (toile d'araignée) :
+
+###### Figure n°3 : Les relations entre les objets d'une topologie
+![Illustration des relations entre les objets d'une topologie](images_topologie/Illustration_3_liens.png)
+
+* Etagères tylko :
+
+
+                                                                                                                    
+#### 3.1. La table des entités topologiques 
+
+##### Explications :
+Une géométrie topologique de la même façon que tout autre information, dans une table et dans une ligne. Autrement dit une ligne égale un objet. Cependant, le type de donnée *SDO_TOPO_GEOMETRY* ne contient pas de géométrie, mais les identifiants de leurs métadonnées, de leur topologie et de leur table de relation.
+
+###### Figure n°4 : Exemple des données d'une table d'entité topologique
+![Illustration de stockage des SDO_TOPO_GEOMETRY](images_topologie/́Illustration_3_1_SDO_TOPO_GEOM.png)
+
+##### Paramètres :
+
+|Paramètres |TYPE  |Description                                                                                                   |
+|:----------|:-----|:-------------------------------------------------------------------------------------------------------------|
+|TG_TYPE    |NUMBER|Type d'entité topologique (1 = point ; 2 = ligne ou muliligne ; 3 = polygone ; 4 = collection) de l'objet |
+|TG_ID      |NUMBER|Identifiant de l'entité topologique à laquelle appartient la primitive topologique                        |
+|TG_LAYER_ID|NUMBER|Identifiant de la **table** de entités topologiques à laquelle appartient la primitive topologique         |
+|TOPOLOGY_ID|NUMBER|Identifiant de la topologie à laquelle appartient la couche de entités topologiques                        |
+
+#### 3.2. La table des relations topologiques
+
+##### Explications :
+Cette table, qui par defaut se nomme *TopologyName_relation$*, fait le lien entre la table contenant les entités topologiques et leurs primitives topologiques. C'est la table névralgique de toute topologie et elle se créer automatiquement lorsque l'on créer la topologie.
+
+###### Figure n°5 : Les données dans une table de relation
+![Illustration de la table de relations](images_topologie/́Illustration_3_2_relations.png)
+
+##### Paramètres :
+
+|Paramètres |TYPE    |Description                                                                                            |
+|:----------|:-------|:------------------------------------------------------------------------------------------------------|
+|TG_LAYER_ID|NUMBER  |Identifiant de la table d'entité topologique|
+|TG_ID      |NUMBER  |Identifiant de l'entité topologique présente dans la table d'entités topologiques|
+|TOPO_ID    |NUMBER  |Identifiant des primitives topologiques, pour les topologies qui ne disposent pas de hiérarchie entre les tables d'entité topologique|
+|TOPO_TYPE  |NUMBER  |Identifiant des types de primitives pour les topologies qui ne disposent pas de hiérarchie entre les tables d'entité topologique (1=noeud, 2=tronçon, 3=surface)|
+
+#### 3.3. La table des noeuds
+
+##### Explications :
+Cette table, qui par défaut se nomme *TopologyName_node$*, contient les primitives topologiques de type noeud. Autrement dit, elle regroupe tous les noeuds de la topologie quelque que soit leur table d'entité topologique d'appartenance.
+
+###### Figure n°6 : Les données dans une table de noeuds
+![Illustration de la table de noeuds](images_topologie/́Illustration_3_3_noeuds.png)
+
+##### Paramètres :
+
+|Paramètres |TYPE        |Description                     |
+|:----------|:-----------|:-------------------------------|
+|NODE_ID    |NUMBER      |Identifiant unique du noeud|
+|EDGE_ID    |NUMBER      |Identifiant du tronçon associé au noeud|
+|FACE_ID    |NUMBER      |Identifiant de la surface associée au noeud|
+|GEOMETRY   |SDO_GEOMETRY|Géométrie du noeud|
+
+#### 3.4. La table des tronçons
+
+##### Explications :
+Cette table, qui par défaut se nomme *TopologyName_edge$*, contient les primitives topologiques de type tronçon. Autrement dit, elle regroupe tous les tronçons de la topologie quelque que soit leur table d'entité topologique d'appartenance.
+
+###### Figure n°7 : Les données dans une table de tronçons
+![Illustration de la table de tronçons](images_topologie/́Illustration_3_4_troncons.png)
+
+##### Paramètres :
+
+|Paramètres        |TYPE        |Description                     |
+|:-----------------|:-----------|:-------------------------------|
+|EDGE_ID           |NUMBER      |Identifiant unique du tronçon|
+|START_NODE_ID     |NUMBER      |Identifiant du noeud de départ du tronçon|
+|END_NODE_ID       |NUMBER      |Identifiant du noeud d'arrivée du tronçon|
+|NEXT_LEFT_EDGE_ID |NUMBER      |Identifiant du prochain tronçon situé à gauche du tronçon actuel|
+|PREV_LEFT_EDGE_ID |NUMBER      |Identifiant du précédent tronçon situé à gauche du tronçon actuel|
+|NEXT_RIGHT_EDGE_ID|NUMBER      |Identifiant du prochain tronçon situé à droite du tronçon actuel|
+|PREV_RIGHT_EDGE_ID|NUMBER      |Identifiant du précédent tronçon situé à droite du tronçon actuel|
+|LEFT_FACE_ID      |NUMBER      |Identifiant de la surface située à gauche du tronçon|
+|RIGHT_FACE_ID     |NUMBER      |Identifiant de la surface située à droite du tronçon|
+|GEOMETRY          |SDO_GEOMETRY|Géométrie du tronçon de type SDO_GEOMETRY|
+
+
+#### 3.4. La table des surfaces
+
+##### Explications :
+Cette table, qui par défaut se nomme *TopologyName_face$*, contient les primitives topologiques de type surface. Autrement dit, elle regroupe toutes les surfaces de la topologie quelque que soit leur table d'entité topologique d'appartenance.
+
+###### Figure n°8 : Les données dans une table de tronçons
+![Illustration de la table de surfaces](images_topologie/́Illustration_3_5_surfaces.png)
+
+##### Paramètres :
+
+|Paramètres |Description                            |
+|:----------|:--------------------------------------|
+|FACE_ID|Identifiant unique de la surface|
+|BOUNDARY_EDGE_ID|Identifiant du countours de cette surface. Le signe de cet id indique l'orientation du contours : positif = vers la gauche, négatif = vers la droite|
+|ISLAND_EDGE_ID_LIST|Identifiant du/des tronçon(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
+|ISLAND_NODE_ID_LIST|Identifiant du/des noeud(s) du contours du trou appartenant à cette surface. Type = SDO_LISTE_TYP|
+|MBR_GEOMETRY|Contours rectangulaire minimum qui entoure cette surface. Ce rectangle est stocké en tant que rectangle optimisé, c'est-à-dire ne nécessitant que les coordoonées des points situés en bas à gauche et en haut à droite du rectangle Type = SDO_GEOMETRY|
+
+### 4. Insérer, modifier et supprimer des entités topologiques
+
+#### 4.1. Le prérequis à la modification d'entités topologiques sous Oracle
+La modification de toute entité topologique passe, dans Oracle, par une topologie sauvegardée en cache, c'est-à-dire par un objet TopoMap.
+Cet objet est absolument nécessaire à l'édition des topologies, puisque c'est lui qui rend cette action possible.
+De ce fait, toutes les fonctions utilisées pour modifier les topologies appartiennent au package *MDSYS.SDO_TOPO_MAP*.
+Pour créer et utiliser un objet Topo Map avec PL/SQL APPI, vous pouvez soit le faire explicitement, soit laisser *Spatial And Graph* le faire automatiquement.
+Il est cependant recommandé de le faire explicitement à des fins d'optimisation des requêtes :
+
+* La création automatique d'un objet TopoMap se fait dans le cadre de l'utilisation d'une fonction du package *MDSYS.SDO_TOPO_MAP*. Autrement dit, quand on utilise une fonction du package *MDSYS.SDO_TOPO_MAP*, Oracle créé automatiquement un objet TopoMap, valide les changements et supprime l'objet une fois la requête effectuée.
+
+* La création explicite d'un objet TopoMap permet d'utiliser ce dernier pour toutes les requêtes que l'on veut, tant que l'on reste dans le package *MDSYS.SDO_TOPO_MAP*. Il n'est donc pas nécessaire d'en créer un à chaque requête. Il faudra simplement valider explicitement les changements apportés à la topologie puis supprimer l'objet TopoMap, après avoir fait toutes vos requêtes.
+
+* Le deuxième avantage de la crétion explicite d'un objet TopoMap est que l'on peut créer cet objet en mode *modifiable* ou en mode *lecture seule*, selon les besoins.
+
+##### 4.1.1. Création/suppression d'un objet TopoMap ;
+
+* **Création d'un objet TopoMap**
+
+##### Fonction : 
+
+``` SQL
+SDO_TOPO_MAP.CREATE_TOPO_MAP(
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2,
+     number_of_edges IN NUMBER DEFAULT 100,
+     number_of_nodes IN NUMBER DEFAULT 80,
+     number_of_faces IN NUMBER DEFAULT 30);
+```  
+##### Paramètres :
+
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie dans laquelle l'utilisateur veut travailler|
+|TOPO_MAP  |VARCHAR2|Nom de l'objet Topo_Map - je préconise cette nomenclature : TopologyName_TOPO_MAP|
+|number_of_edges|NUMBER|Nombre estimé de tronçons chargés dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 100.|
+|number_of_nodes|NUMBER|Nombre estimé de noeuds chargés dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 80.|
+|number_of_faces|NUMBER|Nombre estimé de surfaces chargées dans l'objet TopoMap, en un temps donné. Si ce paramètre n'est pas spécifié, il prendra la valeur par défaut 30.|
+
+##### Usages :
+Cette fonction associe un objet TopoMap à une topologie pour permettre la modification de cette dernière. Pour faire une modification de la topologie il faut donc créer, au préalable, un objet TopoMap. **Attention** l'objet TopoMap permet de faire plusieurs modifications, il ne s'agit donc pas d'en créer un pour chaque modification.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+<!-- -->
+* **Suppression d'un objet TopoMap**
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.DROP_TOPO_MAP(topo_map IN VARCHAR2);
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                        |
+|:---------|:-------|:----------------------------------|
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap à supprimmer|
+
+##### Usages :
+Cette fonction n'est à  utiliser qu'à la toute fin des manipulations de la topologie car elle effectue trois actions :
+* Un Rollback de tous les changements non validés **si et seulement si** l'objet TopoMap est modifiable,
+* Elle libère la mémoire cache associée à l'objet TopoMap ;
+* La suppression de l'objet TopoMap de la session de l'utilisateur ;
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+
+##### 4.1.2. Chargement/suppression/validation des données dans l'objet TopoMap ;
+* **Chargement des données dans l'objet TopoMap**
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.LOAD_TOPO_MAP(
+     topo_map IN VARCHAR2,
+     allow_updates IN VARCHAR2,
+     build_indexes IN VARCHAR2 DEFAULT 'TRUE'
+     ) RETURN VARCHAR2;
+```
+
+##### Paramètres :
+|Paramètres   |TYPE    |Description                                                 |
+|:------------|:-------|:-----------------------------------------------------------|
+|TOPO_MAP     |VARCHAR2|Nom de l'objet TopoMap à supprimmer                         |
+|ALLOW_UPDATES|VARCHAR2|'TRUE' = objet modifiable ; 'Fasle' = objet en lecture seule|
+|BUILD_INDEXES|VARCHAR2|Permet de créer un index R-Tree en mémoire pour les tronçons et les surfaces. Par défaut la valeur de ce paramètre est 'TRUE', mais elle peut être changée en 'FALSE', si vous ne voulez pas de l'index|
+
+##### Usages :
+Cette fonction est obligatoire pour modifier ou interroger la topologie dans l'objet TopoMap car elle permet d'y charger les primitives topologiques d'une topologie et d'indiquer si cette dernière est modifiable ou non. Ainsi elle peut être utilisée pour identifier des coordonnées ou des noeuds spécifiques, comme pour modifier/ajouter/supprimer des tronçons, noeuds ou des faces.
+L'utilisation de cette fonction succède celle de la fonction SDO_TOPO_MAP.CREATE_TOPO_MAP(), qui permet de faire le lien entre la topologie et l'objet topologique.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP', 'TRUE', 'TRUE');
+```
+<!-- -->
+* **Suppression des données dans l'objet TopoMap**
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.CLEAR_TOPO_MAP(topo_map IN VARCHAR2);
+```
+
+##### Paramètres :
+|Paramètres   |TYPE    |Description                   |
+|:------------|:-------|:-----------------------------|
+|TOPO_MAP     |VARCHAR2|Nom de l'objet TopoMap à vider|
+
+##### Usages :
+Cette fonction permet de vider le cache associé à l'objet TopoMap. L'utilisation de cette fonction sur un objet TopoMap *modifiable* le passe automatiquement en *lecture seule*.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.CLEAR_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+<!-- -->
+* **Validation des modifications topologiques**
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.COMMIT_TOPO_MAP;
+```
+##### Usages :
+Cette fonction valide toutes les modifications faites dans l'objet TopoMap et les passe en base. Cette fonction n'est à utiliser qu'à la toute fin des modifications topologiques, puisque son utilisation passe automatiquement l'objet TopoMap en lecture seule. Si vous voulez faire de nouvelles modifications, il faudra donc supprimer l'objet TopoMap, créer un nouvel objet et y charger les primitives topologiques.
+
+##### 4.1.3. Exemple concret d'utilisation d'un objet TopoMap ;
+Dans cet exemple, nous allons sélectionner l'id d'un tronçon du boulevard de la liberté, créer un objet TopoMap afin de connaître les coordonnées des noeuds du tronçon spécifique, puis le supprimer.
+``` SQL
+-- 1.1. Sélection des tronçons du Boulevard de la Liberté
+SELECT
+    a.edge_id,
+    b.tg_id,
+    c.nom_rue
+FROM
+    topo_reseau_routier_edge$ a
+    INNER JOIN topo_reseau_routier_relation$ b ON a.edge_id = b.topo_id
+    INNER JOIN topo_voirie c ON b.tg_id = c.geom.tg_id
+WHERE
+    c.nom_rue = 'Boulevard de la Liberté';
+    
+-- 1.2. Résultat de la sélection :
+EDGE_ID  TG_ID          NOM_RUE
+    2	   4	Boulevard de la Liberté
+    9	   4	Boulevard de la Liberté
+    14	   4	Boulevard de la Liberté
+    33     4	Boulevard de la Liberté
+    
+-- 2. Création de l'objet TopoMap
+CALL SDO_TOPO_MAP.CREATE_TOPO_MAP('TOPO_RESEAU_ROUTIER', 'TOPO_RESEAU_ROUTIER_TOPOMAP');
+
+-- 3. Chargement des primitives topologiques dans l'objet TopoMap
+CALL SDO_TOPO_MAP.LOAD_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP', 'TRUE', 'TRUE');
+
+-- 4.1. Sélection des id de tous les noeuds du tronçon dont l'id = 2
+SELECT SDO_TOPO_MAP.GET_EDGE_NODES(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- 4.2. Résultats de la sélection :
+MDSYS.SDO_NUMBER_ARRAY(3, 26)
+
+-- 5.1. Sélection des coordonnées des noeuds du segement 2
+SELECT 
+    SDO_TOPO_MAP.GET_EDGE_NODES(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) AS start_end_node,
+    SDO_TOPO_MAP.GET_EDGE_COORDS(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) AS coordonnees
+FROM DUAL;
+
+-- 5.2. Résultats :
+        START_END_NODE                      COORDONNEES
+MDSYS.SDO_NUMBER_ARRAY(3, 26)	MDSYS.SDO_NUMBER_ARRAY(703659.850059045, 7060037.47342021, 704309.739551736, 7059480.40298927)
+
+-- 6. Suppression de l'objet TopoMap
+CALL SDO_TOPO_MAP.DROP_TOPO_MAP('TOPO_RESEAU_ROUTIER_TOPOMAP');
+```
+#### 4.2. Insérer des entités topologiques dans une topologie ;
+
+##### 4.2.1. Ajouter un noeud
+
+* Ajout d'un noeud appartenant à un tronçon
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.ADD_NODE(     
+  topology IN VARCHAR2,      
+  edge_id IN NUMBER,      
+  point IN SDO_GEOMETRY,      
+  coord_index IN NUMBER,      
+  is_new_shape_point IN VARCHAR2      
+) RETURN NUMBER;
+```
+##### 4.2.2. Ajouter un tronçon
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.ADD_EDGE(     
+  topology IN VARCHAR2,      
+  node_id1 IN NUMBER,      
+  node_id2 IN NUMBER,      
+  geom IN SDO_GEOMETRY      
+) RETURN NUMBER;
+```
+##### Paramètres :
+
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2    |Nom de la topologie à laquelle appartient le tronçon|
+|NODE_ID1  |NUMBER      |Identifiant du noeud de départ du tronçon|
+|NODE_ID2  |NUMBER      |Identifiant du noeud d'arrivé du tronçon|
+|GEOM      |SDO_GEOMETRY|Géométrie du tronçon|
+
+##### Usages :
+La fonction *SDO_TOPO_MAP.ADD_EDGE* permet d'insérer un tronçon dans une topologie en utilisant des noeuds déjà présents dans cette même topologie. De plus, si l'insertion de ce nouveau tronçon impacte la surface à laquelle il est associé, alors cette dernière sera automatiquement mise à jour. Enfin, cette fonction retourne l'id du nouveau tronçon.
+
+##### Exemple :
+``` SQL
+CALL SDO_TOPO_MAP.ADD_EDGE(
+    'TOPO_RESEAU_ROUTIER', 
+    1, 
+    12,
+    SDO_GEOMETRY(2002, 2154, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1),
+        SDO_ORDINATE_ARRAY(704810.69434039131738245487213134765625, 7058595.73342161066830158233642578125, 704351.811239582835696637630462646484375, 7058976.2695821225643157958984375)
+    )
+)
+INTO :identifiant_troncon;
+```
+#### 4.3. Modifier des entités topologiques dans une topologie ;
+
+##### 4.3.1. Modifier un tronçon
+
+##### Fonction : 
+``` SQL
+SDO_TOPO_MAP.CHANGE_EDGE_COORDS(     
+  topology IN VARCHAR2,      
+  edge_id IN NUMBER,      
+  geom IN SDO_GEOMETRY);
+```
+
+##### Paramètres :
+
+|Paramètres|TYPE        |Description                                         |
+|:---------|:-----------|:---------------------------------------------------|
+|TOPOLOGY  |VARCHAR2    |Nom de la topologie à laquelle appartient le tronçon|
+|EDGE_ID   |NUMBER      |Identifiant du tronçon|
+|GEOM      |SDO_GEOMETRY|Géométrie du tronçon modifié|
+
+
+#### 4.4. Supprimer des entités topologiques dans une topologie ;
+La suppression des entités topologiques se fait via la proccédure **SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER()**.
+
+##### La proccédure :
+``` SQL
+SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER(
+     topology IN VARCHAR2,
+     nom_table IN VARCHAR2, 
+     nom_colonne IN VARCHAR2);
+```
+##### A savoir :
+1. La topologie à laquelle appartient la table des entités topologiques doit avoir été créée avec la proccédure *SDO_TOPO.CREATE_TOPOLOGY* ;
+2. **En théorie** si cette proccédure est utilisée pour supprimer toutes les entités géométriques de la dernière table d'entités topologiques de la topologie, alors les tables des primitives topologiques sont aussi vidées ;
+3. L'utilisation de cette fonction supprime uniquement les géométries topologiques, pas les autres attributs de la table ;
+4. La proccédure effectue un commit automatiquement, ce qui rend impossible tout rollback, il faut donc l'utiliser avec attention ;
+5. Cette proccédure casse le lien entre la topologie et la table d'entités topologiques ;
+
+##### Exemple :
+``` SQL
+ EXECUTE SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER('TOPO_RESEAU_ROUTIER', 'TOPO_VOIRIE', 'GEOM');
+```
+
+#### 4.5. Supprimer une topologie
+
+##### La proccédure :
+``` SQL
+SDO_TOPO.DROP_TOPOLOGY(topology IN VARCHAR2);
+```
+
+##### A savoir :
+1. La topologie doit avoir été créée avec la proccédure *SDO_TOPO.CREATE_TOPOLOGY* ;
+2. Avant de supprimer une topologie il faut **d'abord** vider les tables d'entités topologiques associées à la topologie, sinon la suppression ne se fera pas et vous obtiendrez un message d'erreur ;
+3. Supprimer la topologie supprime également les tables des primitives topologiques associées à cette topologie ;
+4. La procédure effectue un commit automatiquement, il n'y a donc pas de retour en arrière (rollback) possible ;
+5. Un schéma propriétaire d'une topologie ne peut pas être supprimé. Il faut d'abord supprimer la topologie, puis le schéma ;
+
+##### Exemple :
+``` SQL
+ -- Etape n°1 - Suppression des entités topologiques :
+ EXECUTE SDO_TOPO.DELETE_TOPO_GEOMETRY_LAYER('TOPO_RESEAU_ROUTIER', 'TOPO_VOIRIE', 'GEOM');
+
+ -- Etape n°2 - Suppression de la topologie :
+ EXECUTE SDO_TOPO.DROP_TOPOLOGY('TOPO_RESEAU_ROUTIER'); 
+```
+
+### 5. Rechercher des informations sur des entités topologiques spécifiques ;
+
+#### 5.1. Connaître les coordonnées d'une primitive topologique
+
+* **Les coordonnées d'un tronçon :**
+<!-- -->
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_EDGE_COORDS(
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2, 
+     edge_id IN NUMBER);
+     
+-- RETURN SDO_NUMBER_ARRAY
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                                                    |
+|:---------|:-------|:--------------------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie à laquelle appartient le tronçon           |
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap de la session, ou NULL s'il n'y en a pas|
+|EDGE_ID   |NUMBER  |Identifiant du tronçon situé dans la table des entités topologiques : topologyName_edge$.edge_id|
+
+##### Usages :
+Cette fonction retourne un tableau des coordonnées du noeud de départ, des sommets intermédiaires et du noeud d'arrivée du tronçon, sous la forme *SDO_NUMBER_ARRAY(x1, y1, x2, y2)*. Cependant, dans le cas où un objet TopoMap existe déjà, il faut remplir **soit** le paramètre *TOPOLOGY*, **soit** le paramètre *TOPO_MAP*, mais **jamais** les deux à la fois, sans quoi vous obtiendrez un message d'erreur. Quelque soit le paramètre que vous choisissiez, l'autre doit être remplacé par *NULL*.
+
+
+##### Exemple :
+``` SQL
+-- Requête :
+SELECT SDO_TOPO_MAP.GET_EDGE_COORDS(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- Résultat :
+MDSYS.SDO_NUMBER_ARRAY(703659.850059045, 7060037.47342021, 704309.739551736, 7059480.40298927)
+```
+<!-- -->
+* **Les coordonnées d'un noeud :**
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_NODE_COORDS(
+     topology IN VARCHAR2,
+     topo_map IN VARCHAR2, 
+     node_id IN NUMBER);
+     
+-- RETURN MDSYS.SDO_GEOMETRY()
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                                                    |
+|:---------|:-------|:--------------------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie à laquelle appartient le tronçon           |
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap de la session, ou NULL s'il n'y en a pas|
+|NODE_ID   |NUMBER  |Identifiant du noeud situé dans la table des entités topologiques : topologyName_node$.node_id|
+
+##### Usages :
+Cette fonction retourne la géométrie du noeud sous la forme *MDSYS.SDO_GEOMETRY()*, composée entre autre de ses coordonnées. De plus, elle s'utilise toujours dans un objet TopoMap. Cependant, dans le cas où un objet TopoMap existe déjà suite à sa création explicite, il faut remplir **soit** le paramètre *TOPOLOGY*, **soit** le paramètre *TOPO_MAP*, mais **jamais** les deux à la fois, sans quoi vous obtiendrez un message d'erreur. Quelque soit le paramètre que vous choisissiez, l'autre doit être remplacé par *NULL*.
+
+##### Exemple :
+``` SQL
+-- Requête :
+SELECT
+    SDO_TOPO_MAP.GET_NODE_COORD(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 3)
+FROM
+    DUAL;
+
+-- Résultat :
+MDSYS.SDO_GEOMETRY(2001, 2154, MDSYS.SDO_POINT_TYPE(703659.850059045, 7060037.47342021, NULL), NULL, NULL)
+```
+
+#### 5.2. Connaître les informations d'un tronçon ;
+
+* **Connaître les noeuds d'un tronçon :**
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_EDGE_NODES(     
+    topology IN VARCHAR2,      
+    topo_map IN VARCHAR2,      
+    edge_id  IN NUMBER); 
+
+-- RETURN SDO_NUMBER_ARRAY()
+```
+##### Paramètres :
+
+|Paramètres|TYPE    |Description                                                    |
+|:---------|:-------|:--------------------------------------------------------------|
+|TOPOLOGY  |VARCHAR2|Nom de la topologie à laquelle appartient le tronçon           |
+|TOPO_MAP  |VARCHAR2|Nom de l'objet TopoMap de la session, ou NULL s'il n'y en a pas|
+|EDGE_ID   |NUMBER  |Identifiant du tronçon situé dans la table des entités topologiques : topologyName_edge$.edge_id|
+
+##### Usages :
+Cette fonction permet de connaître les identifiants du noeud de départ et du noeud d'arrivée d'un tronçon spécifque. De plus, elle s'utilise toujours dans un objet TopoMap. Cependant, dans le cas où un objet TopoMap existe déjà suite à sa création explicite, il faut remplir **soit** le paramètre *TOPOLOGY*, **soit** le paramètre *TOPO_MAP*, mais **jamais** les deux à la fois, sans quoi vous obtiendrez un message d'erreur. Quelque soit le paramètre que vous choisissiez, l'autre doit être remplacé par *NULL*.
+
+##### Exemple :
+``` SQL
+-- Requête :
+SELECT SDO_TOPO_MAP.GET_EDGE_NODES(NULL, 'TOPO_RESEAU_ROUTIER_TOPOMAP', 2) FROM DUAL;
+
+-- Résultat :
+MDSYS.SDO_NUMBER_ARRAY(3, 26)
+```
+
+-------------------------------------------
+Créer une entité topologique
+##### Fonction :
+``` SQL
+CREATE SDO_TOPO_GEOMETRY() AS OBJECT(
+    tg_type      NUMBER,
+    tg_id        NUMBER,
+    tg_layer_id  NUMBER,
+    topology_id  NUMBER);
+```
+
+Sélectionner tous les tronçons connectés à un noeud spécifique.
+##### Fonction :
+``` SQL
+SDO_TOPO_MAP.GET_NODE_STAR(     
+  topology  IN VARCHAR2,      
+  topo_map  IN VARCHAR2,      
+  node_id   IN NUMBER      
+) RETURN SDO_NUMBER_ARRAY;
+```
+
+### 6. La fonction et les opérateurs topologiques
+
+Ces outils permettent de connaître les relations topologiques entre les entités topologiques. Ce sont donc des outils adaptés à la recherche d'erreurs topologiques ou de relation topologique spécifique.
+
+#### 6.1. La fonction SDO_TOPO.RELATE
+
+##### Fonction :
+``` SQL
+SDO_TOPO.RELATE(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry,      
+  mask   IN Varchar2      
+) RETURN SDO_NUMBER_ARRAY;
+```
+
+##### Paramètres :
+
+|Paramètres|TYPE    						|Description                                                    |
+|:---------|:-------------------------------|:--------------------------------------------------------------|
+|geom1     |sdo_geometry / sdo_topo_geometry|Nom d'une colonne de géométrie spatiale ou topologique         |
+|geom2     |sdo_geometry / sdo_topo_geometry|Nom d'une colonne de géométrie spatiale ou topologiques 		|
+|mask      |Varchar2  						|Nom d'une des douze relations spatiales potentielles (exemple : 'ANYINTERACT')|
+
+##### Usages :
+Les opérateurs topologiques, présentés au point 6.2, proposent de meilleures performances que celle de la fonction SDO_TOPO.RELATE sur un grand jeu de données. Cependant, sur un petit jeu de données c'est la fonction qui a de meilleures performances (exemple : sur une liste de 95 communes la fonction retourne un résultat en 12,36 secondes pour un mask égal à 'OVERLAPBDYINTERSECT').
+
+##### Exemple :
+``` SQL
+-- Sélection des entités topologiques se recouvrant
+SELECT
+	a.objectid,
+	b.objectid
+fROM
+	topo_communes a,
+	topo_communes b
+WHERE
+	a.objectid <> b.objectid
+	AND a.objectid < b.objectid
+	AND SDO_TOPO.RELATE(a.geom, b.geom, 'OVERLAPBDYINTERSECT') = 'TRUE'
+ORDER BY
+	a.objectid ASC;
+
+-- Sélection des relations topologiques entre chaque entité topologique (traitement long)
+SELECT
+	a.objectid,
+	b.objectid
+fROM
+	topo_communes a,
+	topo_communes b,
+	SDO_TOPO.RELATE(a.geom, b.geom, 'DETERMINE')
+WHERE
+	a.objectid <> b.objectid
+	AND a.objectid < b.objectid
+ORDER BY
+	a.objectid ASC;
+```
+
+#### 6.2. Les opérateurs topologiques
+
+##### A savoir :
+Tout comme les opérateurs spatiaux, les opérateurs topologiques peuvent uniquement être utilisés dans le *WHERE*.  
+De plus, les opérateurs topologiques peuvent uniquement fonctionner avec les trois combinaisons suivantes :
+
+- Deux géométries topologiques ;
+- Une géométrie topologique en tant que premier paramètre et une géométrie spatiale en tant que second paramètre ;
+- Une géométrie topologique en tant que premier paramètre et un objet de type SDO_TOPO_OBJECT_ARRAY en tant que second paramètre ;
+
+##### Opérateur SDO_ANYINTERACT :
+Retourne 'TRUE' si les deux objets ne sont pas disjoints.
+``` SQL
+SDO_ANYINTERACT(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_CONTAINS :
+Retourne 'TRUE' si le deuxième objet est complètement inclus dans le premier objet, sans que les contours ne se touchent.
+``` SQL
+SDO_CONTAINS(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_INSIDE :
+Retourne 'TRUE' si le premier objet est complètement inclus dans le deuxième objet, sans que les contours ne se touchent.
+``` SQL
+SDO_INSIDE(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_COVEREDBY :
+Retourne 'TRUE' si le premier objet est entièrement inclus dans le deuxième objet et que leurs contours se touchent en au moins un point.
+``` SQL
+SDO_COVEREDBY(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_COVERS :
+Retourne 'TRUE' si le deuxième objet est entièrement inclus dans le premier objet et que leurs contours se touchent en au moins un point.
+``` SQL
+SDO_COVERS(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_EQUAL :
+Retourne 'TRUE' si les deux objets sont parfaitement identiques (mêmes contours, intérieurs et trous).
+``` SQL
+SDO_EQUAL(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_ON :
+Retourne 'TRUE' si le contour et l'intérieur d'une ligne (premier paramètre) sont complètement inclus dans un polygone (second paramètre).
+``` SQL
+SDO_ON(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+##### Opérateur SDO_OVERLAPBDYINTERSECT :
+Retourne 'TRUE' si l'un des deux objets recouvre en partie le second et si leurs contours d'intersectent.
+``` SQL
+SDO_OVERLAPBDYINTERSECT(     
+  geom1  IN sdo_geometry ou sdo_topo_geometry,      
+  geom2  IN sdo_geometry ou sdo_topo_geometry)
+RETURN VARCHAR2;
+
+```
+
+#### 6.3. Les opérateurs spatiaux non-fonctionnels sur un modèle de données topologique
+
+##### Opérateur SDO_RELATE :
+##### Opérateur SDO_NN :
+##### Opérateur SDO_NN_DISTANCE :
+##### Opérateur SDO_WITHIN_DISTANCE :
+
+### 7. Comment identifier et corriger les erreurs topologiques ?
+
+**Objectif :** L'utilité d'une topologie est qu'elle permet d'identifier et de corriger les erreurs topologiques sans être affectée par les déformations ou tolérances dues à l'utilisation des fonctions géométriques. L'objectif principal d'une topologie est donc d'identifier et de corriger les erreurs topologiques afin d'avoir une topologie propre / correcte. Attention cependant, une topologie n'est "propre" que si elle a du **sens**. C'est un fait qu'il faut **absolument** garder à l'esprit quand on manipule les topologies puisque lors du passage des objets géométriques aux objets topologiques, oracle créé des primitives topologiques correctes, ce qui signifie que si on inttergoe uniquement ces dernières, il n'y aura jamais d'erreur, et ce même si les objets géométriques se recouvrent, c'est pourquoi il faut interroger les *objets topologiques* au lieu des *primitives topologiques* dans un premier temps.
+
+
+#### 7.1. Identification des erreurs de topologie
+
+##### 7.1.1. Identification des recouvrements d'objets topologiques
+
+La table *nom_topologie_face$* comprend les faces de tous les objets de type polygone chargés dans la topologie, en théorie il s'agit donc des surfaces de ces objets sans les contours extérieurs.  
+Cependant la table *nom_topologie_edge$* comprend tous ces contours (intérieurs comme extérieurs d'ailleurs), il est donc inutile d'avoir des façes qui suivent parfaitement ces contours, ce qui détruirait la simplification des géométries voulue à travers la topologie. La table *nom_topologie_face$* contient donc des rectangles simples dont les contours encadre **scrupuleusement** chaque objet géométrique sans les dépasser ni les tronquer (cf.figure n°9).  
+
+###### Figure n°9 : Face et edges d'un objet topologique
+![Illustration de la définition](images_topologie/Illustration_7_1_1_edges_and_face.png)
+<!-- -->
+###### Conclusion :
+Si un objet compte plusieurs faces cela peut signifier deux choses : premièrement il s'agit d'un polygone à trous, deuxièment notre polygone est en partie recouvert par d'autres polygones et les faces obtenues sur les contours de notre polygones correspondent aux intersections entre les polygones. C'est ce deuxième cas qui nous intéresse.
+
+##### Requête servant à sélectionner tous les objets topologiques disposant de plusieurs faces :
+``` SQL
+SELECT
+    a.objectid, -- identifiant de chaque objet topologique
+    COUNT(c.face_id) -- décompte du nombre de faces par objet
+FROM
+    topo_communes a
+    INNER JOIN topo_limites_admin_relation$ b ON b.tg_id = a.geom.tg_id
+    INNER JOIN topo_limites_admin_face$ c ON c.face_id = b.topo_id
+GROUP BY
+    a.objectid, a.fid_commune
+HAVING
+    COUNT(c.face_id) > 1 -- Condition permettant de ne sélectionner que les objets topologiques dont le nombre de faces et supérieurs à 1
+    AND a.fid_commune < 96 -- Condition spéficique au modèle de données sur lequel cette requête a été lancée et permettant de n'étudier que les communes de la MEL95;
+```
+
+##### Requête servant à sélectionner toutes les faces d'un objet topologique :
+``` SQL
+-- Sélection de toutes les faces d'un objet topologique
+SELECT
+    a.objectid,
+    c.face_id
+FROM
+    topo_communes a
+    INNER JOIN topo_limites_admin_relation$ b ON b.tg_id = a.geom.tg_id
+    INNER JOIN topo_limites_admin_face$ c ON c.face_id = b.topo_id
+WHERE
+    a.objectid = 4156;
+```
+-------------------------------------------
+
+## Sources : 
+* https://docs.oracle.com/database/121/TOPOL/topology-data-model-overview.htm#TOPOL100
+* https://docs.oracle.com/database/121/TOPOL/editing-topologies.htm#TOPOL150
+* https://docs.oracle.com/database/121/TOPOL/SDO_TOPO_MAP-reference.htm#TOPOL250
+* https://docs.oracle.com/cd/E11882_01/appdev.112/e11831.pdf
+* https://www.notre-planete.info/terre/outils/sig.php#topologie
