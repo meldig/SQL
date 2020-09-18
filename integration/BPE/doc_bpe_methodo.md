@@ -5,9 +5,6 @@ Ce document a pour but d'expliciter la méthode utilisée pour intégrer les don
 * <em>import_donnees_bpe.bat:</em> fichier regroupant les commandes utilisées pour insérer les données brutes dans la base oracle.
 * <em>insertion_nomenclature.sql:</em> fichier regroupant les instructions nécessaires à l'insertion de la nomenclature dans la base oracle.
 * <em>normalisation_bpe.sql:</em> fichier regroupant les instructions nécessaires à la normalisation des données BPE dans la base oracle.
-auxquelles on peut ajouter 3 fichiers qui regroupent des requêtes pour générer des vues restituant les nomenclatures BPE ainsi que les données BPE:
-* <em>vue_libelle_variable_bpe.sql:</em> vue restituant la nomenclature des variables BPE (COUVERT/ECLAIRE...)
-* <em>vue_libelle_equipement.sql:</em> vue restituant la nomenclature des types d'équipement (A101, B101...)
 * <em>v_bpe_millesime.sql:</em> vue restituant les données BPE
 
 ## Phasage:
@@ -160,13 +157,6 @@ Cela permet de plus facilement insérer la nomenclature dans la base avec des re
 33. Insertion des correspondance dans la table <em>TA_CORRESPONDANCE_LIBELLE</em>.
 34. Insertion des relations dans la table <em>TA_RELATION_LIBELLE</em>(voir 1.2.).
 35. Insertion des relations entre les équipments et les codes INSEE et code IRIS des communes et zones IRIS d'implantation.
-36. Suppression des tables temporaires non utiles à la normalisation des données BPE:
-* BPE_NOMCLATURE_LISTE
-* BPE_REALTION
-* BPE_FUSION
-* FUSION_BPE_VARIABLE
-* BPE_NOMENCLATURE
-* BPE_VARIABLE
 
 
 ### 3. Normalisation des donnée
@@ -271,3 +261,19 @@ Cette requête permet d'insérer dans la table <em>TA_BPE</em>, l'identifiant de
 4.3. Suppresion de la vue <em>BPE_VARIABLE_NORMALISATION</em>.
 
 4.4. Suppression de la vue <em>BPE_VARIABLE_LISTE</em>.
+
+4.5. Suppression de la vue <em>BPE_NOMENCLATURE_LISTE</em>.
+
+4.6. Suppression de la vue <em>BPE_RELATION</em>.
+
+4.7. Suppression de la table <em>BPE_FUSION</em>.
+
+4.8. Suppression de la table <em>FUSION_BPE_VARIABLE</em>.
+
+4.9. Suppression de la table <em>BPE_NOMENCLATURE</em>.
+
+4.10. Suppression de la table <em>BPE_VARIABLE</em>.
+
+4.11. Suppression de la vue <em>V_NOMENCLATURE_EQUIPEMENT_BPE</em>.
+
+4.12. Suppression de la vue <em>V_NOMENCLATURE_VARIABLES_BPE</em>.
