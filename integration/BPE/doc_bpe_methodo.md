@@ -109,6 +109,7 @@ Les codes IRIS et INSEE sont préalablement insérés dans la table TA_CODE.
 
 ### 2. Insertion de la nomenclature 
 
+
 L'insertion de la nomenclature BPE s'effectue à partir des requêtes contenues dans le fichier: <em>insertion_nomenclature_bpe.sql</em>. Celle-ci se fait en 2 étapes: 
 * Dans un premier temps, on insère les libellés liés au type d'équipement(POLICE/TRIBUNAL)
 * dans un second temps les libellés liés aux variables des équipements de type enseignement et sport et loisir initialement contenu dans les tables(COUVERT/ECLAIRE...):
@@ -167,6 +168,7 @@ Cela permet de plus facilement insérer la nomenclature dans la base avec des re
 * BPE_NOMENCLATURE
 * BPE_VARIABLE
 
+
 ### 3. Normalisation des donnée
 
 La normalisation des données se fait à partir des requêtes présentes dans le fichier :<em>normalisation_bpe.sql</em>. Celle-ci se fait en plusieurs étapes.
@@ -183,6 +185,7 @@ Les équipements de la table BPE ensemble ayant un code présent dans l'une de c
 
 #### 3.2 Création d'une table temporaire synthétique.
 
+
 Afin de normaliser les données issues de la Base Permanente des Equipements une table synthétisant les informations est créée, nommé <em>BPE_TOUT</em>.
 Plusieurs requêtes sont effectuées sur cette table afin de permettre de corriger des attributs.
 
@@ -193,6 +196,7 @@ Mise à jour de la colonne *identite* pour avoir des clés uniques qui suivent l
 ##### 3.2.2. Correction des codes IRIS pour mettre à jour la géométrie des BPE non géolocalisés.
 
 Les codes IRIS sont en deux formats dans la base BPE:
+
 * Alors que dans les données IRIS le format est sous forme INSEEIRIS, dans la table BPE les IRIS sont sous la forme INSEE_IRIS.
 * De plus quand une commune n'est pas subdivisée en IRIS, son code est sous la forme INSEE0000, mais dans les données BPE celui-ci est alors égale à son code INSEE.
 Une requête permet de corriger les codes IRIS dans la base BPE et de tout mettre au format INSEEIRIS.
@@ -221,16 +225,24 @@ Ajout du *fid_metadonnee* correspondant.
 #### 3.4 Normalisation des données.
 
 A partir de la table <em>BPE_TOUT</em>, plusieurs requêtes (présentes dans le fichier <em>normalisation_bpe.sql</em>) sont executées pour insérer les données dans les tables:
-* 3.4.1. <em>TA_BPE_GEOM</em> (requête 3):
-	* Cette requête permet d'insérer dans la table <em>TA_BPE_GEOM</em> les géométries uniques des BPE qui ne sont pas déja présentes dans la table.
-* 3.4.2. <em>TA_BPE</em> (requête 4):
-	* Cette requête permet d'insérer dans la table <em>TA_BPE</em>, l'identifiant de l'équipement et son fid_metadonnées considéré au dernier millésime inséré dans la base.
-* 3.4.3. <em>TA_BPE_CARACTERISTIQUE_QUANTITATIVE</em> (requête 6):
-	* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
+
+3.4.1. <em>TA_BPE_GEOM</em> (requête 3):
+
+Cette requête permet d'insérer dans la table <em>TA_BPE_GEOM</em> les géométries uniques des BPE qui ne sont pas déja présentes dans la table.
+
+3.4.2. <em>TA_BPE</em> (requête 4):
+
+Cette requête permet d'insérer dans la table <em>TA_BPE</em>, l'identifiant de l'équipement et son fid_metadonnées considéré au dernier millésime inséré dans la base.
+
+3.4.3. <em>TA_BPE_CARACTERISTIQUE_QUANTITATIVE</em> (requête 6):
+
+* Deux requêtes sont à éxecuter car deux variables ont pour caractéristique d'attribuer un attribut numérique
 		* NB_AIREJEU: Nombre d'aires de pratique d'un meme type d'activité au sein de l'equipement
 		* NB_SALLES: nombre de salles par theatre ou cinema
-* 3.4.4. <em>TA_BPE_CARACTERISTIQUE</em> (requête 7):
-	* un total de 3 requêtes sont necessaires pour inserer les données liées aux variables:
+    
+3.4.4. <em>TA_BPE_CARACTERISTIQUE</em> (requête 7):
+
+* un total de 3 requêtes sont necessaires pour inserer les données liées aux variables:
 		* la requetes 6.1 utilise la vue <em>V_NOMENCLATURE_EQUIPEMENT_BPE</em> pour inserer les attibuts type equipement.
 		* la requete 7.2, permet de creer la vue <em>BPE_VARIABLE_NOMENCLATURE</em>, simplifiant l'insertion des attributs variables.
 		* la requete 7.3 permet d'insérer les BPEs concernés par les attributs de type variable.
@@ -243,14 +255,19 @@ A partir de la table <em>BPE_TOUT</em>, plusieurs requêtes (présentes dans le 
 			* SECT: appartenance au secteur public ou prive d'enseignement.
 			* COUVERT: equipement couvert ou non.
 			* ECLAIRE: equipement couvert ou non.
-* 3.4.5. <em>TA_BPE_RELATION_CODE</em>
-	* Deux requêtes dont utilisées pour insérer les relations entre les équipements et les codes des communes et des zones IRIS d'implantation.
+      
+3.4.5. <em>TA_BPE_RELATION_CODE</em>
+
+* Deux requêtes dont utilisées pour insérer les relations entre les équipements et les codes des communes et des zones IRIS d'implantation.
 		* La premiere requête (9.1) permet de mettre en relation l'équipement avec sa commune d'implantation,
 		* la deuxième (9.2) permet de mettre en relation l'équipement avec sa zone IRIS d'implantation.
 
 ### 4. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci.
 
-* 4.1. Suppression de la table synthétisant les données BPE, <em>BPE_TOUT</em>.
-* 4.2. Suppresion des metadonnées spatiales de la table synthétisant les données BPE.
-* 4.3. Suppresion de la vue <em>BPE_VARIABLE_NORMALISATION</em>.
-* 4.5. Suppression de la vue <em>BPE_VARIABLE_LISTE</em>.
+4.1. Suppression de la table synthétisant les données BPE, <em>BPE_TOUT</em>.
+
+4.2. Suppresion des metadonnées spatiales de la table synthétisant les données BPE.
+
+4.3. Suppresion de la vue <em>BPE_VARIABLE_NORMALISATION</em>.
+
+4.4. Suppression de la vue <em>BPE_VARIABLE_LISTE</em>.
