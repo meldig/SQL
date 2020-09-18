@@ -1,6 +1,6 @@
 /*
 Requête nécessaire à la normalisation des données issues de la Base Permanente des Equipements
-*/
+
 
 -- 1. Suppression des équipements présents dans la table G_GEO.BPE_ENSEMBLE mais également des les tables G_GEO.BPE_ENSEIGNEMENT et G_GEO.BPE_SPORT_LOISIR. Cela est nécessaire pour supprimer les doublons
 -- 1.1. suppression des BPE enseignement de la table des BPE ensemble
@@ -356,19 +356,31 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_bpe_geom)
 VALUES (b.fid_bpe, b.fid_bpe_geom)
 ;
-
+*/
 
 -- 6. Insertion des données dans la table G_GEO.TA_BPE_CARACTERISTIQUE nombre
 -- 6.1 mise à jour des valeurs des colonnes NB_AIREJEU et NB_SALLES pour passer les nouvelles valeurs 'so'(Sans Objet) et 'nd'(Non Défini') en NULL comme pour les précédents millesimes.
 UPDATE G_GEO.BPE_TOUT
 SET NB_AIREJEU = 'NULL'
 WHERE NB_AIREJEU IN ('nd','so');
-
+COMMIT;
 
 UPDATE G_GEO.BPE_TOUT
 SET NB_SALLES = 'NULL'
 WHERE NB_SALLES IN ('nd','so');
+COMMIT;
 
+-- Correctif de libelles déja présents dans le schéma.
+-- /!\ A supprimer du fichier après execution
+UPDATE g_geo.ta_libelle_court
+SET valeur = 'X'
+WHERE objectid =78;
+COMMIT;
+
+UPDATE g_geo.ta_libelle_long
+SET valeur = 'Type d''équipement'
+WHERE objectid = 231;
+COMMIT;
 
 -- 6.1 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE a
@@ -395,7 +407,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_libelle, a.nombre)
 VALUES (b.fid_bpe, b.fid_libelle, b.nombre)
 ;
-
+COMMIT;
 
 -- 6.2 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE a
@@ -422,8 +434,8 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_libelle, a.nombre)
 VALUES (b.fid_bpe, b.fid_libelle, b.nombre)
 ;
-
-
+COMMIT;
+/*
 -- 7. Insertion des données dans la table G_GEO.TA_BPE_CARACTERISTIQUE
 -- Pour insérer ces données il est nécessaire de générer précédemment deux vues synthétisant les nomenclatures BPE.
 -- 7.1 Insertion des caracteristique TYPEQU.
@@ -467,7 +479,7 @@ CREATE OR REPLACE VIEW G_GEO.BPE_VARIABLE_NORMALISATION AS
         ECLAIRE AS 'ECLAIRE'
         ))
         ;
-
+*/
 
 -- 8. Etape de normalisation des variables BPE.
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE a
@@ -490,7 +502,7 @@ AND a.fid_libelle = b.fid_libelle_court_fils)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_libelle)
 VALUES (b.fid_bpe, b.fid_libelle_court_fils);
-
+COMMIT;
 
 -- 9. Insertion des relations BPE/code de localisation
 -- 9.1. Equipement/code insee dans la table G_GEO.TA_BPE_RELATION_CODE
@@ -502,7 +514,7 @@ USING
             b.objectid AS fid_code
         FROM
             G_GEO.BPE_TOUT a,
-            ta_code b
+            G_GEO.TA_CODE b
         INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
         INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
         WHERE
@@ -515,8 +527,8 @@ AND a.fid_code = b.fid_code)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_code)
 VALUES (b.fid_bpe, b.fid_code);
-
-
+COMMIT;
+/*
 -- 9.2. equipement/code iris dans la table G_GEO.TA_BPE_RELATION_CODE
 MERGE INTO G_GEO.TA_BPE_RELATION_CODE a
 USING
@@ -526,7 +538,7 @@ USING
             b.objectid AS fid_code
         FROM
             G_GEO.BPE_TOUT a,
-            ta_code b
+            G_GEO.TA_CODE b
         INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
         INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
         WHERE
@@ -539,7 +551,8 @@ AND a.fid_code = b.fid_code)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_code)
 VALUES (b.fid_bpe, b.fid_code);
-
+COMMIT;
+*/
 
 
 -- 10. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci. 
@@ -552,18 +565,19 @@ FROM
     user_sdo_geom_metadata
 WHERE
     table_name = 'G_GEO.BPE_TOUT';
+COMMIT;
 
 -- 10.3 Suppresion de la vue G_GEO.BPE_VARIABLE_NORMALISATION
-DROP VIEW G_GEO.BPE_VARIABLE_NORMALISATION CASCADE CONSTRAINTS PURGE;
+DROP VIEW G_GEO.BPE_VARIABLE_NORMALISATION;
 
 -- 10.4 Suppression de la vue bpe_variable_liste
-DROP VIEW G_GEO.BPE_VARIABLE_LISTE cascade constraints;
+DROP VIEW G_GEO.BPE_VARIABLE_LISTE;
 
 -- 10.5 Suppression de la vue G_GEO.BPE_NOMENCLATURE_LISTE
-DROP VIEW G_GEO.BPE_NOMENCLATURE_LISTE cascade constraints;
+DROP VIEW G_GEO.BPE_NOMENCLATURE_LISTE;
 
 -- 10.6 Suppression de la vue G_GEO.BPE_RELATION
-DROP VIEW G_GEO.BPE_RELATION cascade constraints;
+DROP VIEW G_GEO.BPE_RELATION;
 
 -- 10.7 Suppression de la table G_GEO.BPE_FUSION
 DROP TABLE G_GEO.BPE_FUSION cascade constraints purge;
@@ -578,7 +592,7 @@ DROP TABLE G_GEO.BPE_NOMENCLATURE cascade constraints;
 DROP TABLE G_GEO.BPE_VARIABLE cascade constraints;
 
 -- 10.11 Suppression de la vue V_NOMENCLATURE_EQUIPEMENT_BPE
-DROP VIEW G_GEO.V_NOMENCLATURE_EQUIPEMENT_BPE
+DROP VIEW G_GEO.V_NOMENCLATURE_EQUIPEMENT_BPE;
 
 -- 10.12 Suppression de la vue V_NOMENCLATURE_VARIABLE_BPE
-DROP VIEW G_GEO.V_NOMENCLATURE_VARIABLES_BPE
+DROP VIEW G_GEO.V_NOMENCLATURE_VARIABLES_BPE;
