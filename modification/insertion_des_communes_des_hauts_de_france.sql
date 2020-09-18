@@ -74,7 +74,7 @@ WHEN NOT MATCHED THEN
 -- Insertion des zone supra-communales dans la table TA_ZONE_ADMINISTRATIVE
 --Insertion de la région Hauts-de-France
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS NOM, d.objectid AS LIBELLE
+    USING(SELECT b.objectid AS NOM, c.objectid AS LIBELLE
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -88,7 +88,7 @@ WHEN NOT MATCHED THEN
 
 --Insertion du département de l'Aisne
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS nom, d.objectid AS libelle
+    USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -102,7 +102,7 @@ WHEN NOT MATCHED THEN
 
 --Insertion du département du Nord
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS nom, d.objectid AS libelle
+    USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -116,7 +116,7 @@ WHEN NOT MATCHED THEN
     
 --Insertion du département de l'Oise
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS nom, d.objectid AS libelle
+    USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -130,7 +130,7 @@ WHEN NOT MATCHED THEN
     
 --Insertion du département du Pas-de-Calais
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS nom, d.objectid AS libelle
+    USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -144,7 +144,7 @@ WHEN NOT MATCHED THEN
     
 --Insertion du département du Somme
 MERGE INTO TA_ZONE_ADMINISTRATIVE a
-    USING(SELECT b.objectid AS nom, d.objectid AS libelle
+    USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM TA_NOM b,
                 TA_LIBELLE c 
                 INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
@@ -393,90 +393,7 @@ WHEN NOT MATCHED THEN
 --3.3. gestion des géométries ;
 -- Communes de l'Aisne
 MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, f.objectid AS metadonnee
-    FROM 
-        G_GEO.COMMUNES_AISNE a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
-        G_GEO.TA_METADONNEE f 
-        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        
-    WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '02'
-        AND g.date_acquisition = sysdate
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple') t
-ON(a.fid_nom = t.fid_nom AND a.fid_metadonnee = 1)
-WHEN NOT MATCHED THEN
-    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
-    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
----------------------------------------    
--- Communes du Nord
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, f.objectid AS metadonnee
-    FROM 
-        G_GEO.COMMUNES_NORD a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
-        G_GEO.TA_METADONNEE f 
-        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-    WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '59'
-        AND g.date_acquisition = sysdate
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple') t
-ON(a.fid_nom = t.fid_nom AND a.fid_metadonnee = 1)
-WHEN NOT MATCHED THEN
-    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
-    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
-    
--- Communes de l'Oise
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, f.objectid AS metadonnee
-    FROM 
-        G_GEO.COMMUNES_OISE a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
-        G_GEO.TA_METADONNEE f 
-        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        
-    WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '60'
-        AND g.date_acquisition = sysdate
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple') t
-ON(a.fid_nom = t.fid_nom AND a.fid_metadonnee = 1)
-WHEN NOT MATCHED THEN
-    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
-    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
-    
--- Communes du Pas-de-Calais
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, f.objectid AS metadonnee
-    FROM 
-        G_GEO.COMMUNES_PAS_DE_CALAIS a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
-        G_GEO.TA_METADONNEE f 
-        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        
-    WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '62'
-        AND g.date_acquisition = sysdate
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple') t
-ON(a.fid_nom = t.fid_nom AND a.fid_metadonnee = 1)
-WHEN NOT MATCHED THEN
-    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
-    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
-    
--- Communes de la somme
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, f.objectid AS metadonnee
+    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
         G_GEO.COMMUNES_SOMME a
         INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
@@ -484,13 +401,177 @@ MERGE INTO TA_COMMUNE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
         G_GEO.TA_METADONNEE f 
         INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+    WHERE 
+        SUBSTR(a.INSEE_COM, 0, 2) = '02'
+        AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+        AND g.nom_obtenteur = 'bjacq'
+        AND c.valeur = 'commune simple'
+        AND h.nom_source = 'BDTOPO') t
+ON(
+        t.insee_com IN(
+                        SELECT DISTINCT y.valeur
+                        FROM
+                            G_GEO.TA_CODE y
+                            INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE u ON u.fid_identifiant = y.objectid
+                            INNER JOIN G_GEO.TA_COMMUNE x ON x.objectid = u.fid_commune
+                            INNER JOIN G_GEO.TA_LIBELLE z ON z.objectid = y.fid_libelle
+                            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = z.fid_libelle_long
+                        WHERE
+                            e.valeur = 'code insee'
+                            AND SUBSTR(y.valeur, 1,2) = 02
+        ) 
+    AND 
+    a.fid_metadonnee = t.metadonnee
+)
+WHEN NOT MATCHED THEN
+    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
+    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
+---------------------------------------    
+-- Communes du Nord
+MERGE INTO TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+    FROM 
+        G_GEO.COMMUNES_SOMME a
+        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
+        G_GEO.TA_LIBELLE b
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.TA_METADONNEE f 
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+    WHERE 
+        SUBSTR(a.INSEE_COM, 0, 2) = '59'
+        AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+        AND g.nom_obtenteur = 'bjacq'
+        AND c.valeur = 'commune simple'
+        AND h.nom_source = 'BDTOPO') t
+ON(
+        t.insee_com IN(
+                        SELECT DISTINCT y.valeur
+                        FROM
+                            G_GEO.TA_CODE y
+                            INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE u ON u.fid_identifiant = y.objectid
+                            INNER JOIN G_GEO.TA_COMMUNE x ON x.objectid = u.fid_commune
+                            INNER JOIN G_GEO.TA_LIBELLE z ON z.objectid = y.fid_libelle
+                            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = z.fid_libelle_long
+                        WHERE
+                            e.valeur = 'code insee'
+                            AND SUBSTR(y.valeur, 1,2) = 59
+        ) 
+    AND 
+    a.fid_metadonnee = t.metadonnee
+)
+WHEN NOT MATCHED THEN
+    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
+    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
+    
+-- Communes de l'Oise
+MERGE INTO TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+    FROM 
+        G_GEO.COMMUNES_SOMME a
+        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
+        G_GEO.TA_LIBELLE b
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.TA_METADONNEE f 
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+    WHERE 
+        SUBSTR(a.INSEE_COM, 0, 2) = '60'
+        AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+        AND g.nom_obtenteur = 'bjacq'
+        AND c.valeur = 'commune simple'
+        AND h.nom_source = 'BDTOPO') t
+ON(
+        t.insee_com IN(
+                        SELECT DISTINCT y.valeur
+                        FROM
+                            G_GEO.TA_CODE y
+                            INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE u ON u.fid_identifiant = y.objectid
+                            INNER JOIN G_GEO.TA_COMMUNE x ON x.objectid = u.fid_commune
+                            INNER JOIN G_GEO.TA_LIBELLE z ON z.objectid = y.fid_libelle
+                            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = z.fid_libelle_long
+                        WHERE
+                            e.valeur = 'code insee'
+                            AND SUBSTR(y.valeur, 1,2) = 60
+        ) 
+    AND 
+    a.fid_metadonnee = t.metadonnee
+)
+WHEN NOT MATCHED THEN
+    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
+    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
+    
+-- Communes du Pas-de-Calais
+MERGE INTO TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+    FROM 
+        G_GEO.COMMUNES_SOMME a
+        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
+        G_GEO.TA_LIBELLE b
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.TA_METADONNEE f 
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+    WHERE 
+        SUBSTR(a.INSEE_COM, 0, 2) = '62'
+        AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+        AND g.nom_obtenteur = 'bjacq'
+        AND c.valeur = 'commune simple'
+        AND h.nom_source = 'BDTOPO') t
+ON(
+        t.insee_com IN(
+                        SELECT DISTINCT y.valeur
+                        FROM
+                            G_GEO.TA_CODE y
+                            INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE u ON u.fid_identifiant = y.objectid
+                            INNER JOIN G_GEO.TA_COMMUNE x ON x.objectid = u.fid_commune
+                            INNER JOIN G_GEO.TA_LIBELLE z ON z.objectid = y.fid_libelle
+                            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = z.fid_libelle_long
+                        WHERE
+                            e.valeur = 'code insee'
+                            AND SUBSTR(y.valeur, 1,2) = 62
+        ) 
+    AND 
+    a.fid_metadonnee = t.metadonnee
+)
+WHEN NOT MATCHED THEN
+    INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
+    VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
+    
+-- Communes de la somme
+MERGE INTO TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+    FROM 
+        G_GEO.COMMUNES_SOMME a
+        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
+        G_GEO.TA_LIBELLE b
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.TA_METADONNEE f 
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
     WHERE 
         SUBSTR(a.INSEE_COM, 0, 2) = '80'
-        AND g.date_acquisition = sysdate
+        AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
         AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple') t
-ON(a.fid_nom = t.fid_nom AND a.fid_metadonnee = 1)
+        AND c.valeur = 'commune simple'
+        AND h.nom_source = 'BDTOPO') t
+ON(
+        t.insee_com IN(
+                        SELECT DISTINCT y.valeur
+                        FROM
+                            G_GEO.TA_CODE y
+                            INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE u ON u.fid_identifiant = y.objectid
+                            INNER JOIN G_GEO.TA_COMMUNE x ON x.objectid = u.fid_commune
+                            INNER JOIN G_GEO.TA_LIBELLE z ON z.objectid = y.fid_libelle
+                            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = z.fid_libelle_long
+                        WHERE
+                            e.valeur = 'code insee'
+                            AND SUBSTR(y.valeur, 1,2) = 80
+        ) 
+    AND 
+    a.fid_metadonnee = t.metadonnee
+)
 WHEN NOT MATCHED THEN
     INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
