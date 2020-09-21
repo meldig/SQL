@@ -1,8 +1,8 @@
 /*
 Ensemble des requêtes utilisés pour insérer la nomenclature des données IRIS dans la base de données.
 */
--- 1. Insertion de la source dans TA_SOURCE
-MERGE INTO ta_source a
+-- 1. Insertion de la source dans G_GEO.TA_SOURCE
+MERGE INTO G_GEO.TA_SOURCE a
 USING 
     (
         SELECT 'Contours...IRIS' AS nom_source, 'Contours...Iris®, coédition Insee et IGN, est la base de données de référence pour la diffusion infracommunale des résultats du recensement de la population par Iris, de précision décamétrique.' AS description FROM DUAL
@@ -15,8 +15,8 @@ VALUES (b.nom_source,b.description)
 ;
 
 
--- 2. Insertion de la provenance de la données dans TA_PROVENANCE
-MERGE INTO ta_provenance a
+-- 2. Insertion de la provenance de la données dans G_GEO.TA_PROVENANCE
+MERGE INTO G_GEO.TA_PROVENANCE a
 USING
     (
         SELECT 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris' AS url, 'Donnée à télécharger en libre accès' AS methode_acquisition FROM DUAL
@@ -29,12 +29,12 @@ VALUES(b.url,b.methode_acquisition)
 ;
 
 
--- 3. Insertion des dates d'acquisition et du millesime de la source dans la table TA_DATE_ACQUISITION
+-- 3. Insertion des dates d'acquisition et du millesime de la source dans la table G_GEO.TA_DATE_ACQUISITION
 -- attention à l'insertion des dates, à mettre à jour suivant le millesime de la donnée à insérer
-MERGE INTO ta_date_acquisition a
+MERGE INTO G_GEO.TA_DATE_ACQUISITION a
 USING
     (
-        SELECT '12/06/2019' AS DATE_ACQUISITION, '03/09/2019' AS MILLESIME,'rjault' AS NOM_OBTENTEUR FROM DUAL
+        SELECT TO_DATE(SYSDATE,'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/19') AS MILLESIME,'rjault' AS NOM_OBTENTEUR FROM DUAL
     ) b
 ON (a.date_acquisition = b.date_acquisition
 AND a.millesime = b.millesime
@@ -45,8 +45,8 @@ VALUES (b.date_acquisition, b.millesime, b.nom_obtenteur)
 ;
 
 
--- 4. Insertion de l'organisme producteur dans la table TA_ORGANISME
-MERGE INTO ta_organisme a
+-- 4. Insertion de l'organisme producteur dans la table G_GEO.TA_ORGANISME
+MERGE INTO G_GEO.TA_ORGANISME a
 USING
     (
         SELECT 'IGN' AS ACRONYME, 'Institut National de l''Information Geographie et Forestiere' AS NOM_ORGANISME FROM DUAL
@@ -59,8 +59,8 @@ INSERT (a.acronyme,a.nom_organisme)
 VALUES(b.acronyme,b.nom_organisme)
 ;
 
--- 5. Insertion de l'echelle d'utilisation dans la table TA_ECHELLE
-MERGE INTO ta_echelle a
+-- 5. Insertion de l'echelle d'utilisation dans la table G_GEO.TA_ECHELLE
+MERGE INTO G_GEO.TA_ECHELLE a
 USING
     (
         SELECT '1000000' AS VALEUR FROM DUAL
@@ -72,9 +72,9 @@ VALUES(b.valeur)
 ;
 
 
--- 6. Insertion des métadonnées dans la table TA_METADONNEE
+-- 6. Insertion des métadonnées dans la table G_GEO.TA_METADONNEE
 -- attention à l'insertion des dates, à mettre à jour suivant le millesime de la donnée à insérer
-MERGE INTO ta_metadonnee a
+MERGE INTO G_GEO.TA_METADONNEE a
 USING
     (
         SELECT 
@@ -82,15 +82,15 @@ USING
             b.objectid AS FID_ACQUISITION,
             c.objectid AS FID_PROVENANCE
         FROM
-            ta_source a,
-            ta_date_acquisition b,
-            ta_provenance c
+            G_GEO.TA_SOURCE a,
+            G_GEO.TA_DATE_ACQUISITION b,
+            G_GEO.TA_PROVENANCE c
         WHERE
             a.nom_source = 'Contours...IRIS'
         AND
-            b.millesime IN ('03/09/2019')
+            b.millesime IN ('01/01/2019')
         AND
-            b.date_acquisition = '12/06/2019'
+            b.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
         AND
             c.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
     )temp
@@ -102,25 +102,25 @@ INSERT (a.fid_source, a.fid_acquisition, a.fid_provenance)
 VALUES (temp.fid_source, temp.fid_acquisition, temp.fid_provenance)
 ;
 
--- 7. Insertion des information dans la table ta_metadonnee_relation_organisme
-MERGE INTO ta_metadonnee_relation_organisme a
+-- 7. Insertion des information dans la table G_GEO.TA_METADONNEE_RELATION_ORGANISME
+MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
 USING
     (
         SELECT
             a.objectid AS fid_metadonnee,
             e.objectid AS fid_organisme
         FROM
-            ta_metadonnee a
-        INNER JOIN ta_source b ON b.objectid = a.fid_source
-        INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
-        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid,
-            ta_organisme e
+            G_GEO.TA_METADONNEE a
+        INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON a.fid_acquisition = c.objectid
+        INNER JOIN G_GEO.TA_PROVENANCE d ON a.fid_provenance = d.objectid,
+            G_GEO.TA_ORGANISME e
         WHERE
             b.nom_source = 'Contours...IRIS'
         AND
-            c.date_acquisition = '12/06/2019'
+            c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
         AND
-            c.millesime = '03/09/2019'
+            c.millesime = '01/01/2019'
         AND
             d.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
         AND
@@ -134,27 +134,27 @@ VALUES(b.fid_metadonnee, b.fid_organisme)
 ;
 
 
--- 8. Insertion des données dans la table TA_METADONNEE_RELATION_ECHELLE
-MERGE INTO ta_metadonnee_relation_echelle a
+-- 8. Insertion des données dans la table G_GEO.TA_METADONNEE_RELATION_ECHELLE
+MERGE INTO G_GEO.TA_METADONNEE_RELATION_ECHELLE a
 USING
     (
         SELECT
             a.objectid AS fid_metadonnee,
             g.objectid AS fid_echelle
         FROM
-            ta_metadonnee a
-        INNER JOIN ta_source b ON b.objectid = a.fid_source
-        INNER JOIN ta_date_acquisition c ON a.fid_acquisition = c.objectid
-        INNER JOIN ta_provenance d ON a.fid_provenance = d.objectid
-        INNER JOIN ta_metadonnee_relation_organisme e ON e.fid_metadonnee = a.objectid
-        INNER JOIN ta_organisme f ON f.objectid = e.fid_organisme,
-            ta_echelle g
+            G_GEO.TA_METADONNEE a
+        INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON a.fid_acquisition = c.objectid
+        INNER JOIN G_GEO.TA_PROVENANCE d ON a.fid_provenance = d.objectid
+        INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME e ON e.fid_metadonnee = a.objectid
+        INNER JOIN G_GEO.TA_ORGANISME f ON f.objectid = e.fid_organisme,
+            G_GEO.TA_ECHELLE g
         WHERE
             b.nom_source = 'Contours...IRIS'
-       AND
-            c.date_acquisition = '12/06/2019'
         AND
-            c.millesime = '03/09/2019'
+            c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
+        AND
+            c.millesime = '01/01/2019'
         AND
             d.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
         AND
@@ -169,8 +169,8 @@ INSERT(a.fid_metadonnee, a.fid_echelle)
 VALUES(b.fid_metadonnee, b.fid_echelle)
 ;
 
--- 9. Insertion de la nomenclature dans la table TA_LIBELLE_COURT
-MERGE INTO ta_libelle_court a
+-- 9. Insertion de la nomenclature dans la table G_GEO.TA_LIBELLE_COURT
+MERGE INTO G_GEO.TA_LIBELLE_COURT a
 USING 
     (
     SELECT DISTINCT TYP_IRIS AS VALEUR FROM contours_iris
@@ -182,11 +182,11 @@ VALUES (b.VALEUR)
 ;
 
 
--- 10. Insertion de la nomenclature dans la table TA_LIBELLE LONG
-MERGE INTO ta_libelle_long a
+-- 10. Insertion de la nomenclature dans la table G_GEO.TA_LIBELLE LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
 USING 
     (
-    SELECT 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbaIN (voies prINcipales, voies ferrées, cours d''eau, ...)' AS VALEUR FROM dual
+    SELECT 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)' AS VALEUR FROM dual
     UNION
     SELECT 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' AS VALEUR FROM dual
     UNION
@@ -194,7 +194,7 @@ USING
     UNION
     SELECT 'Communes non découpées en IRIS' AS VALEUR FROM dual
     UNION
-    SELECT 'code IRIS' AS VALEUR FROM dual
+    SELECT 'code iris' AS VALEUR FROM dual
     ) b
   ON (a.VALEUR = b.VALEUR)
   WHEN NOT MATCHED THEN
@@ -203,11 +203,13 @@ USING
   ;
 
 
--- 11. Insertion des familles utilisée par les données IRIS dans la table TA_FAMILLE.
-MERGE INTO ta_famille a
+-- 11. Insertion des familles utilisée par les données IRIS dans la table G_GEO.TA_FAMILLE.
+MERGE INTO G_GEO.TA_FAMILLE a
 USING 
     (
     SELECT 'type de zone IRIS' AS VALEUR FROM dual
+    UNION
+    SELECT 'Identifiants de zone statistique' AS VALEUR FROM dual
     ) b
 ON (a.VALEUR = b.VALEUR)
 WHEN NOT MATCHED THEN
@@ -215,21 +217,22 @@ INSERT (a.VALEUR)
 VALUES (b.VALEUR);
 
 
--- 12. Insertion des correspondances famille libelle dans TA_FAMILLE_LIBELLE;
-MERGE INTO ta_famille_libelle a
+-- 12. Insertion des correspondances famille libelle dans G_GEO.TA_FAMILLE_LIBELLE;
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 USING 
     (
     SELECT
         a.objectid AS fid_famille,
         b.objectid AS fid_libelle_long
     FROM
-        ta_famille a,
-        ta_libelle_long b
+        G_GEO.TA_FAMILLE a,
+        G_GEO.TA_LIBELLE_LONG b
     WHERE
-        a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbaIN (voies prINcipales, voies ferrées, cours d''eau, ...)' OR
-        a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
-        a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' OR
-        a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'Communes non découpées en IRIS'
+        a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)'
+        OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....'
+        OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente'
+        OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'Communes non découpées en IRIS'
+        OR a.VALEUR = 'Identifiants de zone statistique' AND b.VALEUR = 'code iris'
     ) b
 ON (a.fid_famille = b.fid_famille
 AND a.fid_libelle_long = b.fid_libelle_long)
@@ -238,105 +241,54 @@ INSERT (a.fid_famille,a.fid_libelle_long)
 VALUES (b.fid_famille,b.fid_libelle_long);
 
 
--- 13. Création de la table temporaire fusion_nomenclature_iris
-CREATE GLOBAL TEMPORARY TABLE fusion_nomenclature_iris AS
-(SELECT
-    a.objectid AS objectid,
-    b.objectid AS fid_libelle_long,
-    b.VALEUR AS libelle_long,
-    c.objectid AS fid_libelle_court,
-    c.VALEUR AS libelle_court
-FROM
-    ta_libelle a,
-    ta_libelle_court c,
-    ta_libelle_long b
-INNER JOIN
-    TA_FAMILLE_LIBELLE trl ON trl.fid_libelle_long = b.objectid
-INNER JOIN
-    TA_FAMILLE f ON f.objectid = trl.fid_famille
-WHERE
-    c.VALEUR = 'H' AND b.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbaIN (voies prINcipales, voies ferrées, cours d''eau, ...)' OR
-    c.VALEUR = 'D' AND b.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
-    c.VALEUR = 'A' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' OR
-    c.VALEUR = 'Z' AND b.VALEUR = 'Communes non découpées en IRIS' AND
-    f.VALEUR = 'type de zone IRIS'
-);
-
-
--- 14. Insertion des données dans la table temporaire fusion_nomenclature_iris
-INSERT INTO fusion_nomenclature_iris
-SELECT
--- Attention à la séquence utilisée
-    ISEQ$$_1018816.nextval as objectid,
--- Attention à la séquence utilisée
-    b.objectid AS fid_libelle_long,
-    b.VALEUR AS libelle_long,
-    c.objectid AS fid_libelle_court,
-    c.VALEUR AS libelle_court
-FROM
-    ta_libelle_court c,
-    ta_libelle_long b
-INNER JOIN
-    TA_FAMILLE_LIBELLE trl ON trl.fid_libelle_long = b.objectid
-INNER JOIN
-    TA_FAMILLE f ON f.objectid = trl.fid_famille
-WHERE
-    c.VALEUR = 'H' AND b.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbaIN (voies prINcipales, voies ferrées, cours d''eau, ...)' OR
-    c.VALEUR = 'D' AND b.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
-    c.VALEUR = 'A' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' OR
-    c.VALEUR = 'Z' AND b.VALEUR = 'Communes non découpées en IRIS' AND
-    f.VALEUR = 'type de zone IRIS'
-;
-
-
--- 15. insertion du fid_libelle_long 'code IRIS' dans la table TA_LIBELLE
-MERGE INTO ta_libelle a
-USING 
-        (
-            SELECT objectid AS fid_libelle_long 
-            FROM ta_libelle_long 
-            WHERE valeur = 'code IRIS'
-        ) b
-ON (a.fid_libelle_long = b.fid_libelle_long)
+-- 13. Insertion des fid_libelle_long dans la table G_GEO.TA_LIBELLE
+MERGE INTO G_GEO.TA_LIBELLE a
+USING
+    (
+    SELECT
+        a.objectid AS fid_libelle_long,
+        a.VALEUR AS libelle_long
+    FROM
+        G_GEO.TA_LIBELLE_LONG a
+    INNER JOIN
+        G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
+    INNER JOIN
+        G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
+    WHERE
+        c.VALEUR = 'type de zone IRIS'
+    OR c.VALEUR = 'Identifiants de zone statistique'
+    )b
+ON(a.fid_libelle_long = b.fid_libelle_long)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_libelle_long)
 VALUES (b.fid_libelle_long);
 
 
--- 16. Insertion des données dans ta_libelle
-MERGE INTO ta_libelle a
-USING
+-- 14. Insertion des données dans la table G_GEO.TA_LIBELLE_CORRESPONDANCE
+MERGE INTO G_GEO.TA_LIBELLE_CORRESPONDANCE a
+USING 
     (
-    SELECT
-        objectid, 
-        fid_libelle_long
-    FROM fusion_nomenclature_iris
-    ) b
-ON (a.objectid = b.objectid
-AND a.fid_libelle_long = b.fid_libelle_long)
-WHEN NOT MATCHED THEN
-INSERT (a.objectid,a.fid_libelle_long)
-VALUES (b.objectid,b.fid_libelle_long)
-;
-
-
--- 17. Insertion des données dans ta_correspondance_libelle
-MERGE INTO ta_libelle_correspondance a
-USING
-    (
-    SELECT
-        objectid AS FID_LIBELLE, 
-        fid_libelle_court
-    FROM fusion_nomenclature_iris
-    ) b
-ON (a.fid_libelle = b.fid_libelle
+        SELECT
+            a.objectid AS fid_libelle,
+            b.objectid AS fid_libelle_court
+        FROM
+            G_GEO.TA_LIBELLE_COURT b,        
+            G_GEO.TA_LIBELLE a
+        INNER JOIN 
+            G_GEO.TA_LIBELLE_LONG c ON c.objectid = a.fid_libelle_long
+        INNER JOIN
+            G_GEO.TA_FAMILLE_LIBELLE d ON d.fid_libelle_long = c.objectid
+        INNER JOIN
+            G_GEO.TA_FAMILLE e ON e.objectid = d.fid_famille
+        WHERE
+            b.VALEUR = 'H' AND c.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)' OR
+            b.VALEUR = 'D' AND c.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
+            b.VALEUR = 'A' AND c.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' OR
+            b.VALEUR = 'Z' AND c.VALEUR = 'Communes non découpées en IRIS' AND
+            e.VALEUR = 'type de zone IRIS'
+    )b
+ON(a.fid_libelle = b.fid_libelle
 AND a.fid_libelle_court = b.fid_libelle_court)
 WHEN NOT MATCHED THEN
-INSERT (a.fid_libelle,a.fid_libelle_court)
-VALUES (b.fid_libelle,b.fid_libelle_court)
-;
-
-
--- 18. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 18.1 Suppression de la table temporaire fusion_nomenclature_iris
-DROP TABLE fusion_nomenclature_iris CASCADE CONSTRAINTS PURGE;
+INSERT(a.fid_libelle, a.fid_libelle_court)
+VALUES(b.fid_libelle, b.fid_libelle_court);
