@@ -536,8 +536,7 @@ USING
             G_GEO.BPE_TOUT a,
             G_GEO.TA_LIBELLE b
         INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid
-        WHERE c.valeur = 'code iris';
-
+        WHERE c.valeur = 'code iris'
     ) b
 ON (a.valeur = b.valeur
 AND a.fid_libelle = b.fid_libelle)
