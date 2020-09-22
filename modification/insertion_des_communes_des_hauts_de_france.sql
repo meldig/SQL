@@ -15,15 +15,15 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
 --1. Création des départements et de la région des Hauts-de-France ;
 --1.1. gestion des types de zones supra-communales ;
 -- Insertion de la famille des zones supra-communales qui contient les libellés de toutes les zones construites à partir des communes
-MERGE INTO ta_famille a
+MERGE INTO G_GEO.TA_FAMILLE a
     USING(SELECT 'zone supra-communale' AS nom FROM DUAL) t
     ON (a.valeur = t.nom)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
     
--- Insertion des libelles appartenant à la famille "zones supra-communales" dans la table ta_libelle_long
-MERGE INTO ta_libelle_long a
+-- Insertion des libelles appartenant à la famille "zones supra-communales" dans la tableG_GEO.TA_LIBELLE_LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
     USING(SELECT 'département' AS nom FROM DUAL UNION
             SELECT 'région' AS nom FROM DUAL) t
     ON (a.valeur = t.nom)
@@ -31,28 +31,35 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
 
--- Insertion des id des famille et libellés dans TA_FAMILLE_LIBELLE
-INSERT INTO TA_FAMILLE_LIBELLE(fid_famille, fid_libelle_long)
-SELECT
-    a.objectid,
-    b.objectid
-FROM
-    ta_famille a,
-    ta_libelle_long b
-WHERE
-    b.valeur IN('département', 'région')
-    AND a.valeur = 'zone supra-communale';
+-- Insertion des id des famille et libellés dans G_GEO.TA_FAMILLE_LIBELLE
 
--- INSERTION des fid_libelle_long dans TA_LIBELLE
-MERGE INTO TA_LIBELLE a
-USING(SELECT b.objectid FROM TA_LIBELLE_LONG b WHERE b.valeur IN('département', 'région')) t
+MERGE INTO G_GEO.G_GEO.TA_FAMILLE_LIBELLE a
+    USING (
+        SELECT
+            a.objectid AS id_famille,
+            b.objectid AS id_libelle_long
+        FROM
+            G_GEO.TA_FAMILLE a,
+           G_GEO.TA_LIBELLE_LONG b
+        WHERE
+            b.valeur IN('département', 'région')
+            AND a.valeur = 'zone supra-communale'
+    )t
+    ON (a.fid_famille = t.id_famille AND a.fid_libelle_long = t.id_libelle_long)
+WHEN NOT MATCHED
+    INSERT (a.fid_famille, a.fid_libelle_long)
+    VALUES(t.id_famille, t.id_libelle_long);
+
+-- INSERTION des fid_libelle_long dans G_GEO.TA_LIBELLE
+MERGE INTO G_GEO.TA_LIBELLE a
+USING(SELECT b.objectid FROM G_GEO.TA_LIBELLE_LONG b WHERE b.valeur IN('département', 'région')) t
 ON (a.fid_libelle_long = t.objectid)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.objectid);
     
--- Insertion des noms des départements dans la table TA_NOM
-MERGE INTO ta_nom a
+-- Insertion des noms des départements dans la table G_GEO.TA_NOM
+MERGE INTO G_GEO.TA_NOM a
     USING(SELECT 'Aisne' AS nom FROM DUAL UNION
             SELECT 'Nord' AS nom FROM DUAL UNION
             SELECT 'Oise' AS nom FROM DUAL UNION
@@ -63,21 +70,21 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
     
--- Insertion du nom de la région Hauts-de-France dans la table TA_NOM
-MERGE INTO ta_nom a
+-- Insertion du nom de la région Hauts-de-France dans la table G_GEO.TA_NOM
+MERGE INTO G_GEO.TA_NOM a
     USING(SELECT 'Hauts-de-France' AS nom FROM DUAL)t
     ON (a.valeur = t.nom)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
     
--- Insertion des zone supra-communales dans la table TA_ZONE_ADMINISTRATIVE
+-- Insertion des zone supra-communales dans la table G_GEO.TA_ZONE_ADMINISTRATIVE
 --Insertion de la région Hauts-de-France
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS NOM, c.objectid AS LIBELLE
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Hauts-de-France'
                 AND d.valeur = 'région') t
@@ -87,11 +94,11 @@ WHEN NOT MATCHED THEN
     VALUES(t.NOM, t.LIBELLE);
 
 --Insertion du département de l'Aisne
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Aisne'
                 AND d.valeur = 'département') t
@@ -101,11 +108,11 @@ WHEN NOT MATCHED THEN
     VALUES(t.nom, t.libelle);
 
 --Insertion du département du Nord
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Nord'
                 AND d.valeur = 'département') t
@@ -115,11 +122,11 @@ WHEN NOT MATCHED THEN
     VALUES(t.nom, t.libelle);
     
 --Insertion du département de l'Oise
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Oise'
                 AND d.valeur = 'département') t
@@ -129,11 +136,11 @@ WHEN NOT MATCHED THEN
     VALUES(t.nom, t.libelle);
     
 --Insertion du département du Pas-de-Calais
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Pas-de-Calais'
                 AND d.valeur = 'département') t
@@ -143,11 +150,11 @@ WHEN NOT MATCHED THEN
     VALUES(t.nom, t.libelle);
     
 --Insertion du département du Somme
-MERGE INTO TA_ZONE_ADMINISTRATIVE a
+MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
-            FROM TA_NOM b,
-                TA_LIBELLE c 
-                INNER JOIN TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
+            FROM G_GEO.TA_NOM b,
+                G_GEO.TA_LIBELLE c 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
             WHERE
                 b.valeur = 'Somme'
                 AND d.valeur = 'département') t
@@ -157,58 +164,58 @@ WHEN NOT MATCHED THEN
     VALUES(t.nom, t.libelle);
 
 -- 1.2. gestion des codes des zones supra-communales ;
--- Insertion du libelle code département dans la table TA_LIBELLE_LONG
-MERGE INTO TA_LIBELLE_LONG a
+-- Insertion du libelle code département dans la tableG_GEO.TA_LIBELLE_LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
     USING(SELECT 'code département' AS libelle FROM DUAL) t
     ON (a.valeur = t.libelle)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
 
--- Insertion du libelle code région dans la table TA_LIBELLE_LONG
-MERGE INTO TA_LIBELLE_LONG a
+-- Insertion du libelle code région dans la tableG_GEO.TA_LIBELLE_LONG
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
     USING(SELECT 'code région' AS libelle FROM DUAL) t
     ON (a.valeur = t.libelle)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
 
--- Insertion dans la table de liaison TA_FAMILLE_LIBELLE pour les départements
-MERGE INTO TA_FAMILLE_LIBELLE a
+-- Insertion dans la table de liaison G_GEO.TA_FAMILLE_LIBELLE pour les départements
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
     USING(SELECT b.objectid AS famille, c.objectid AS libelle 
-            FROM TA_FAMILLE b, TA_LIBELLE_LONG c
+            FROM G_GEO.TA_FAMILLE b,G_GEO.TA_LIBELLE_LONG c
             WHERE b.valeur = 'Identifiants de zone administrative' AND c.valeur = 'code département') t
     ON (a.fid_famille = t.famille AND a.fid_libelle_long = t.libelle)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.famille, t.libelle);
     
--- Insertion dans la table de liaison TA_FAMILLE_LIBELLE pour les régions
-MERGE INTO TA_FAMILLE_LIBELLE a
+-- Insertion dans la table de liaison G_GEO.TA_FAMILLE_LIBELLE pour les régions
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
     USING(SELECT b.objectid AS famille, c.objectid AS libelle 
-            FROM TA_FAMILLE b, TA_LIBELLE_LONG c
+            FROM G_GEO.TA_FAMILLE b,G_GEO.TA_LIBELLE_LONG c
             WHERE b.valeur = 'Identifiants de zone administrative' AND c.valeur = 'code région') t
     ON (a.fid_famille = t.famille AND a.fid_libelle_long = t.libelle)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.famille, t.libelle);
     
--- Insertion des fid_libelle_long dans la table TA_LIBELLE
-MERGE INTO TA_LIBELLE a
+-- Insertion des fid_libelle_long dans la table G_GEO.TA_LIBELLE
+MERGE INTO G_GEO.TA_LIBELLE a
     USING (SELECT b.objectid AS libelle
-            FROM TA_LIBELLE_LONG b
+           FROM G_GEO.TA_LIBELLE_LONG b
             WHERE b.valeur IN('code département', 'code région')) t
     ON (a.fid_libelle_long = t.libelle)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.libelle);
 
--- Insertion des codes départementaux et du code régional dans la table TA_CODE
+-- Insertion des codes départementaux et du code régional dans la table G_GEO.TA_CODE
 -- Département de l'Aisne
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '02' AS code, b.objectid AS libelle, c.valeur
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code département') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -216,10 +223,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.code, t.libelle);
 
 -- Département du Nord
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '59' AS code, b.objectid AS libelle
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code département') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -227,10 +234,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.code, t.libelle);
     
 -- Département de l'Oise
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '60' AS code, b.objectid AS libelle
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code département') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -238,10 +245,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.code, t.libelle);
     
 -- Département du Pas-de-Calais
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '62' AS code, b.objectid AS libelle
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code département') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -249,10 +256,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.code, t.libelle);
     
 -- Département de la Somme
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '80' AS code, b.objectid AS libelle
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code département') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -260,10 +267,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.code, t.libelle);
     
 -- Région des Hauts-de-France
-MERGE INTO TA_CODE a
+MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '32' AS code, b.objectid AS libelle
-            FROM TA_LIBELLE b 
-                INNER JOIN TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+            FROM G_GEO.TA_LIBELLE b 
+                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
             WHERE c.valeur = 'code région') t
     ON (a.valeur = t.code)
 WHEN NOT MATCHED THEN
@@ -272,13 +279,26 @@ WHEN NOT MATCHED THEN
 
 --2. Création des métadonnées des communes ;
 -- Insertion de la date d'import des données en base
-INSERT INTO TA_DATE_ACQUISITION(date_acquisition, millesime, nom_obtenteur)
-VALUES(sysdate, '01/01/2019', 'bjacq');
+MERGE INTO G_GEO.TA_DATE_ACQUISITION a
+    USING(
+        SELECT 
+            TO_DATE(sysdate, 'dd/mm/yy') AS date_insertion, 
+            '01/01/2019' AS date_millesime,
+            sys_context('USERENV','OS_USER') AS nom_obtenteur 
+        FROM DUAL)t
+    ON (
+            a.date_acquisition = t.date_insertion 
+            AND a.millesime = t.date_millesime
+            AND a.nom_obtenteur = t.nom_obtenteur
+        )
+WHEN NOT MATCHED THEN
+    INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
+    VALUES(t.date_insertion, t.date_millesime, t.nom_obtenteur);
 
 -- Insertion de la nouvelle métadonnée
-MERGE INTO ta_metadonnee a
+MERGE INTO G_GEO.TA_METADONNEE a
     USING (SELECT b.objectid AS source, c.objectid AS acquisition, d.objectid AS provenance
-            FROM ta_source b, ta_date_acquisition c, ta_provenance d 
+            FROM G_GEO.TA_SOURCE b, G_GEO.TA_DATE_ACQUISITION c, ta_provenance d 
             WHERE b.nom_source = 'BDTOPO' AND c.date_acquisition = sysdate AND d.objectid = 1 AND c.nom_obtenteur = 'bjacq') t
     ON (a.fid_acquisition = t.acquisition)
 WHEN NOT MATCHED THEN
@@ -288,9 +308,9 @@ WHEN NOT MATCHED THEN
 --3. Insertion des communes en base ;
 --3.1. gestion des noms ;
 
--- Insertion des noms des communes dans la table TA_NOM
+-- Insertion des noms des communes dans la table G_GEO.TA_NOM
 -- Communes de l'Aisne
-MERGE INTO ta_nom a
+MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_AISNE WHERE SUBSTR(INSEE_COM, 0, 2) = '02') t
     ON (a.valeur = t.NOM)
 WHEN NOT MATCHED THEN
@@ -298,7 +318,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.NOM);
 
 -- Communes du Nord
-MERGE INTO ta_nom a
+MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_NORD WHERE SUBSTR(INSEE_COM, 0, 2) = '59') t
     ON (a.valeur = t.NOM)
 WHEN NOT MATCHED THEN
@@ -306,7 +326,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.NOM);
     
 -- Communes de l'Oise
-MERGE INTO ta_nom a
+MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_OISE WHERE SUBSTR(INSEE_COM, 0, 2) = '60') t
     ON (a.valeur = t.NOM)
 WHEN NOT MATCHED THEN
@@ -314,7 +334,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.NOM);
     
 -- Communes du Pas-de-Calais
-MERGE INTO ta_nom a
+MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_PAS_DE_CALAIS WHERE SUBSTR(INSEE_COM, 0, 2) = '62') t
     ON (a.valeur = t.NOM)
 WHEN NOT MATCHED THEN
@@ -322,8 +342,8 @@ WHEN NOT MATCHED THEN
     VALUES(t.NOM);
     
 -- Communes de la somme
-MERGE INTO ta_nom a
-    USING (SELECT NOM FROM G_GEO.COMMUNES_SOMME WHERE SUBSTR(INSEE_COM, 0, 2) = '80') t
+MERGE INTO G_GEO.TA_NOM a
+    USING (SELECT NOM FROM G_GEO.TEMP_COMMUNES_SOMME WHERE SUBSTR(INSEE_COM, 0, 2) = '80') t
     ON (a.valeur = t.NOM)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
@@ -331,7 +351,7 @@ WHEN NOT MATCHED THEN
  
 -- 3.2. gestion des codes ;
 -- Communes de l'Aisne
-MERGE INTO ta_code a
+MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
             FROM G_GEO.COMMUNES_AISNE  b, 
                 G_GEO.TA_LIBELLE c 
@@ -343,7 +363,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.INSEE_COM, t.objectid);
 
 -- Communes du Nord
-MERGE INTO ta_code a
+MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
             FROM G_GEO.COMMUNES_NORD  b, 
                 G_GEO.TA_LIBELLE c 
@@ -355,7 +375,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.INSEE_COM, t.objectid);
     
 -- Communes de l'Oise
-MERGE INTO ta_code a
+MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
             FROM G_GEO.COMMUNES_OISE  b, 
                 G_GEO.TA_LIBELLE c 
@@ -367,7 +387,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.INSEE_COM, t.objectid);
     
 -- Communes du Pas-de-Calais
-MERGE INTO ta_code a
+MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
             FROM G_GEO.COMMUNES_PAS_DE_CALAIS  b, 
                 G_GEO.TA_LIBELLE c 
@@ -379,9 +399,9 @@ WHEN NOT MATCHED THEN
     VALUES(t.INSEE_COM, t.objectid);
     
 -- Communes de la somme
-MERGE INTO ta_code a
+MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
-            FROM G_GEO.COMMUNES_SOMME  b, 
+            FROM G_GEO.TEMP_COMMUNES_SOMME  b, 
                 G_GEO.TA_LIBELLE c 
                 INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long 
             WHERE SUBSTR(b.INSEE_COM, 0, 2) = '80' AND d.valeur = 'code insee') t
@@ -392,11 +412,11 @@ WHEN NOT MATCHED THEN
     
 --3.3. gestion des géométries ;
 -- Communes de l'Aisne
-MERGE INTO TA_COMMUNE a
+MERGE INTO G_GEO.TA_COMMUNE a
     USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
-        G_GEO.COMMUNES_SOMME a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
+        G_GEO.TEMP_COMMUNES_SOMME a
+        INNER JOIN G_GEO.TA_NOM d ON d.valeur = a.nom,
         G_GEO.TA_LIBELLE b
         INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
         G_GEO.TA_METADONNEE f 
@@ -429,22 +449,26 @@ WHEN NOT MATCHED THEN
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
 ---------------------------------------    
 -- Communes du Nord
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+MERGE INTO G_GEO.TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, i.objectid AS libelle, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
-        G_GEO.COMMUNES_SOMME a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.COMMUNES_Nord a
+        INNER JOIN G_GEO.TA_CODE b ON b.valeur = a.insee_com
+        INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
+        INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long,
         G_GEO.TA_METADONNEE f 
         INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source,
+        G_GEO.TA_LIBELLE i
+        INNER JOIN G_GEO.TA_LIBELLE_LONG j ON j.objectid = i.fid_libelle_long
     WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '59'
+        a.INSEE_DEP = '59'
         AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple'
-        AND h.nom_source = 'BDTOPO') t
+        AND g.millesime = '01/01/19'
+        AND d.valeur = 'code insee'
+        AND h.nom_source = 'BDTOPO'
+        AND j.valeur = 'commune simple'
+    ) t
 ON(
         t.insee_com IN(
                         SELECT DISTINCT y.valeur
@@ -466,22 +490,26 @@ WHEN NOT MATCHED THEN
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
     
 -- Communes de l'Oise
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+MERGE INTO G_GEO.TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, i.objectid AS libelle, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
-        G_GEO.COMMUNES_SOMME a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.COMMUNES_OISE a
+        INNER JOIN G_GEO.TA_CODE b ON b.valeur = a.insee_com
+        INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
+        INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long,
         G_GEO.TA_METADONNEE f 
         INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source,
+        G_GEO.TA_LIBELLE i
+        INNER JOIN G_GEO.TA_LIBELLE_LONG j ON j.objectid = i.fid_libelle_long
     WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '60'
+        a.INSEE_DEP = '60'
         AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple'
-        AND h.nom_source = 'BDTOPO') t
+        AND g.millesime = '01/01/19'
+        AND d.valeur = 'code insee'
+        AND h.nom_source = 'BDTOPO'
+        AND j.valeur = 'commune simple'
+    ) t
 ON(
         t.insee_com IN(
                         SELECT DISTINCT y.valeur
@@ -503,22 +531,26 @@ WHEN NOT MATCHED THEN
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
     
 -- Communes du Pas-de-Calais
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+MERGE INTO G_GEO.TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, i.objectid AS libelle, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
-        G_GEO.COMMUNES_SOMME a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        G_GEO.COMMUNES_PAS_DE_CAlAIS a
+        INNER JOIN G_GEO.TA_CODE b ON b.valeur = a.insee_com
+        INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
+        INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long,
         G_GEO.TA_METADONNEE f 
         INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source,
+        G_GEO.TA_LIBELLE i
+        INNER JOIN G_GEO.TA_LIBELLE_LONG j ON j.objectid = i.fid_libelle_long
     WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '62'
+        a.INSEE_DEP = '62'
         AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple'
-        AND h.nom_source = 'BDTOPO') t
+        AND g.millesime = '01/01/19'
+        AND d.valeur = 'code insee'
+        AND h.nom_source = 'BDTOPO'
+        AND j.valeur = 'commune simple'
+    ) t
 ON(
         t.insee_com IN(
                         SELECT DISTINCT y.valeur
@@ -540,22 +572,26 @@ WHEN NOT MATCHED THEN
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
     
 -- Communes de la somme
-MERGE INTO TA_COMMUNE a
-    USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
+MERGE INTO G_GEO.TA_COMMUNE a
+    USING(SELECT a.ORA_GEOMETRY, i.objectid AS libelle, a.INSEE_COM, f.objectid AS metadonnee
     FROM 
         G_GEO.COMMUNES_SOMME a
-        INNER JOIN G_GEO.ta_nom d ON d.valeur = a.nom,
-        G_GEO.TA_LIBELLE b
-        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+        INNER JOIN G_GEO.TA_CODE b ON b.valeur = a.insee_com
+        INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = b.fid_libelle
+        INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long,
         G_GEO.TA_METADONNEE f 
         INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+        INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source,
+        G_GEO.TA_LIBELLE i
+        INNER JOIN G_GEO.TA_LIBELLE_LONG j ON j.objectid = i.fid_libelle_long
     WHERE 
-        SUBSTR(a.INSEE_COM, 0, 2) = '80'
+        a.INSEE_DEP = '80'
         AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-        AND g.nom_obtenteur = 'bjacq'
-        AND c.valeur = 'commune simple'
-        AND h.nom_source = 'BDTOPO') t
+        AND g.millesime = '01/01/19'
+        AND d.valeur = 'code insee'
+        AND h.nom_source = 'BDTOPO'
+        AND j.valeur = 'commune simple'
+    ) t
 ON(
         t.insee_com IN(
                         SELECT DISTINCT y.valeur
@@ -581,12 +617,12 @@ WHEN NOT MATCHED THEN
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
             FROM ta_commune b
-                INNER JOIN TA_METADONNEE c ON c.objectid = b.fid_metadonnee
-                INNER JOIN TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
-                INNER JOIN TA_NOM p ON p.objectid = b.fid_nom, 
-                ta_code e 
-                INNER JOIN TA_LIBELLE f ON f.objectid = e.fid_libelle
-                INNER JOIN TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
+                INNER JOIN G_GEO.TA_METADONNEE c ON c.objectid = b.fid_metadonnee
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
+                INNER JOIN G_GEO.TA_NOM p ON p.objectid = b.fid_nom, 
+                G_GEO.TA_CODE e 
+                INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 INNER JOIN COMMUNES_AISNE h ON h.INSEE_COM = e.valeur
             WHERE d.date_acquisition = sysdate AND d.nom_obtenteur = 'bjacq' 
                 AND g.valeur = 'code insee' 
@@ -601,12 +637,12 @@ WHEN NOT MATCHED THEN
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
             FROM ta_commune b
-                INNER JOIN TA_METADONNEE c ON c.objectid = b.fid_metadonnee
-                INNER JOIN TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
-                INNER JOIN TA_NOM p ON p.objectid = b.fid_nom, 
-                ta_code e 
-                INNER JOIN TA_LIBELLE f ON f.objectid = e.fid_libelle
-                INNER JOIN TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
+                INNER JOIN G_GEO.TA_METADONNEE c ON c.objectid = b.fid_metadonnee
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
+                INNER JOIN G_GEO.TA_NOM p ON p.objectid = b.fid_nom, 
+                G_GEO.TA_CODE e 
+                INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 INNER JOIN COMMUNES_NORD h ON h.INSEE_COM = e.valeur
             WHERE d.date_acquisition = sysdate AND d.nom_obtenteur = 'bjacq' 
                 AND g.valeur = 'code insee' 
@@ -621,12 +657,12 @@ WHEN NOT MATCHED THEN
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
             FROM ta_commune b
-                INNER JOIN TA_METADONNEE c ON c.objectid = b.fid_metadonnee
-                INNER JOIN TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
-                INNER JOIN TA_NOM p ON p.objectid = b.fid_nom, 
-                ta_code e 
-                INNER JOIN TA_LIBELLE f ON f.objectid = e.fid_libelle
-                INNER JOIN TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
+                INNER JOIN G_GEO.TA_METADONNEE c ON c.objectid = b.fid_metadonnee
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
+                INNER JOIN G_GEO.TA_NOM p ON p.objectid = b.fid_nom, 
+                G_GEO.TA_CODE e 
+                INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 INNER JOIN COMMUNES_OISE h ON h.INSEE_COM = e.valeur
             WHERE d.date_acquisition = sysdate AND d.nom_obtenteur = 'bjacq' 
                 AND g.valeur = 'code insee' 
@@ -641,12 +677,12 @@ WHEN NOT MATCHED THEN
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
             FROM ta_commune b
-                INNER JOIN TA_METADONNEE c ON c.objectid = b.fid_metadonnee
-                INNER JOIN TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
-                INNER JOIN TA_NOM p ON p.objectid = b.fid_nom, 
-                ta_code e 
-                INNER JOIN TA_LIBELLE f ON f.objectid = e.fid_libelle
-                INNER JOIN TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
+                INNER JOIN G_GEO.TA_METADONNEE c ON c.objectid = b.fid_metadonnee
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
+                INNER JOIN G_GEO.TA_NOM p ON p.objectid = b.fid_nom, 
+                G_GEO.TA_CODE e 
+                INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 INNER JOIN COMMUNES_PAS_DE_CALAIS h ON h.INSEE_COM = e.valeur
             WHERE d.date_acquisition = sysdate AND d.nom_obtenteur = 'bjacq' 
                 AND g.valeur = 'code insee' 
@@ -661,13 +697,13 @@ WHEN NOT MATCHED THEN
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
             FROM ta_commune b
-                INNER JOIN TA_METADONNEE c ON c.objectid = b.fid_metadonnee
-                INNER JOIN TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
-                INNER JOIN TA_NOM p ON p.objectid = b.fid_nom, 
-                ta_code e 
-                INNER JOIN TA_LIBELLE f ON f.objectid = e.fid_libelle
-                INNER JOIN TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
-                INNER JOIN COMMUNES_SOMME h ON h.INSEE_COM = e.valeur
+                INNER JOIN G_GEO.TA_METADONNEE c ON c.objectid = b.fid_metadonnee
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = c.fid_acquisition
+                INNER JOIN G_GEO.TA_NOM p ON p.objectid = b.fid_nom, 
+                G_GEO.TA_CODE e 
+                INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
+                INNER JOIN G_GEO.TEMP_COMMUNES_SOMME h ON h.INSEE_COM = e.valeur
             WHERE d.date_acquisition = sysdate AND d.nom_obtenteur = 'bjacq' 
                 AND g.valeur = 'code insee' 
                 AND SDO_RELATE(b.geom, h.ora_geometry, 'mask=equal') = 'TRUE'
@@ -689,11 +725,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Aisne'
             AND f.valeur = 'code département'
@@ -712,11 +748,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Nord'
             AND f.valeur = 'code département'
@@ -735,11 +771,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Oise'
             AND f.valeur = 'code département'
@@ -758,11 +794,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Pas-de-Calais'
             AND f.valeur = 'code département'
@@ -781,11 +817,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Somme'
             AND f.valeur = 'code département'
@@ -804,11 +840,11 @@ USING(
             d.objectid AS id_code,
             d.valeur AS valeur_code
         FROM
-            ta_zone_administrative b
-            INNER JOIN ta_nom c ON c.objectid = b.fid_nom,
-            ta_code d
-            INNER JOIN ta_libelle e ON e.objectid = d.fid_libelle
-            INNER JOIN ta_libelle_long f ON f.objectid = e.fid_libelle_long
+            G_GEO.TA_ZONE_ADMINISTRATIVE b
+            INNER JOIN G_GEO.TA_NOM c ON c.objectid = b.fid_nom,
+            G_GEO.TA_CODE d
+            INNER JOIN G_GEO.TA_LIBELLE e ON e.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG f ON f.objectid = e.fid_libelle_long
         WHERE
             c.valeur = 'Hauts-de-France'
             AND f.valeur = 'code région'
@@ -824,14 +860,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 SUBSTR(d.valeur, 0, 2) = '02' 
                 AND i.valeur = 'code insee'
@@ -847,14 +883,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 SUBSTR(d.valeur, 0, 2) = '59' 
                 AND i.valeur = 'code insee'
@@ -870,14 +906,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 SUBSTR(d.valeur, 0, 2) = '60' 
                 AND i.valeur = 'code insee'
@@ -893,14 +929,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 SUBSTR(d.valeur, 0, 2) = '62' 
                 AND i.valeur = 'code insee'
@@ -916,14 +952,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 SUBSTR(d.valeur, 0, 2) = '80' 
                 AND i.valeur = 'code insee'
@@ -939,14 +975,14 @@ MERGE INTO TA_ZA_COMMUNES a
     USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
             FROM ta_commune b
                 INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN ta_code d ON d.objectid = c.fid_identifiant
-                INNER JOIN ta_libelle h ON h.objectid = d.fid_libelle
-                INNER JOIN ta_libelle_long i ON i.objectid = h.fid_libelle_long, 
-                ta_zone_administrative e
+                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+                G_GEO.TA_ZONE_ADMINISTRATIVE e
                 INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN ta_code g ON g.objectid = f.fid_identifiant
-                INNER JOIN ta_libelle j ON j.objectid = g.fid_libelle
-                INNER JOIN ta_libelle_long k ON k.objectid = j.fid_libelle_long
+                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
             WHERE 
                 i.valeur = 'code insee'
                 AND g.valeur = '32'
