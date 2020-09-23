@@ -1,27 +1,267 @@
 /*
 Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et création des départements et des régions
 
-1. Création des départements et de la région des Hauts-de-France ;
-	1.1. gestion des types de zones supra-communales ;
-	1.2. gestion des codes des zones supra-communales ;
-2. Création des métadonnées des communes ;
-3. Insertion des communes en base ;
-	3.1. gestion des noms ;
-	3.2. gestion des codes ;
-	3.3. gestion des géométries ;
-4. Affectation des communes à leurs départements et région d'appartenance
+1. Création des métadonnées ;
+    1.1. Insertion de l'organisme créateur des données ;
+    1.2. Insertion de la source des données ;
+    1.3. Insertion du millésime, date d'insertion et nom de l'obtenteur des données ;
+    1.4. Insertion de la provenance des données ;
+    1.5. Insertion des clés étrangères dans la table pivot TA_METADONNEE ;
+    1.6. Insertion des clés étrangères dans la table pivot TA_METADONNEE_RELATION_ORGANISME ;
+    
+2. Création des familles et libelles ;
+    2.1. Insertion de toutes les familles requises pour les communes ;
+    2.2. Insertion de tous les libelles longs requis pour les communes ;
+    2.3. Insertion des clés étrangères dans la table pivot TA_FAMILLE_LIBELLE ;
+  
+3. Création des noms requis pour les communes
+    3.1. Insertion des noms des zones supra-communales ;
+    3.2. Insertion des noms des communes ;
+    
+4. Mise en base des codes requis pour les communes
+    4.1. Insertion des codes départementaux, régionaux, territoriaux et des unités territoriales ;
+    4.2. Insertion des codes INSEE ;
+    
+5. Création des zones supra-communales, des territoires et des unités territoriales
+
+6. Insertion des géométries des communes dans la table TA_COMMUNE
+
+7. Association des géométries communales avec leur code INSEE
+
+8. Association des géométries communales avec leur nom
+
+9. Association des communes avec leur zone supra-communales respectives
+    9.1. Association des communes à leur département d'appartenance ;
+    9.2. Associaition des communes à la MEL d'appartenance ;
+    9.3. Association des communes à leur région d'appartenance ;
 */
 
---1. Création des départements et de la région des Hauts-de-France ;
---1.1. gestion des types de zones supra-communales ;
+
+-- 1. Création des métadonnées ;
+-- 1.1. Insertion de l'organisme créateur des données ;
+MERGE INTO G_GEO.TA_ORGANISME a
+USING(
+    SELECT 
+        'IGN' AS acronyme, 
+        'Institut National de l''Information Geographie et Forestiere' AS valeur 
+    FROM DUAL
+    )t
+ON (a.acronyme = t.acronyme AND a.nom_organisme = t.valeur)
+WHEN NOT MATCHED THEN
+    INSERT(a.acronyme, a.nom_organisme)
+    VALUES(t.acronyme, t.valeur);
+COMMIT;
+
+-- 1.2. Insertion de la source des données ;
+MERGE INTO G_GEO.TA_SOURCE a
+USING(
+    SELECT 
+        'BDTOPO' AS nom, 
+        'Description vectorielle des elements du territoire francais et de ses infrastructures avec une precision metrique.' AS description 
+    FROM DUAL
+    )t
+ON (a.nom_source = t.nom AND a.description = t.description)
+WHEN NOT MATCHED THEN
+    INSERT(a.nom_source, a.description)
+    VALUES(t.nom, t.description);
+COMMIT;
+
+-- 1.3. Insertion du millésime, date d'insertion et nom de l'obtenteur des données ;
+MERGE INTO G_GEO.TA_DATE_ACQUISITION a
+    USING(
+        SELECT 
+            TO_DATE(sysdate, 'dd/mm/yy') AS date_insertion, 
+            '01/01/2019' AS date_millesime,
+            sys_context('USERENV','OS_USER') AS nom_obtenteur 
+        FROM DUAL
+    )t
+    ON (
+            a.date_acquisition = t.date_insertion 
+            AND a.millesime = t.date_millesime
+            AND a.nom_obtenteur = t.nom_obtenteur
+        )
+WHEN NOT MATCHED THEN
+    INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
+    VALUES(t.date_insertion, t.date_millesime, t.nom_obtenteur);
+COMMIT;
+
+-- 1.4. Insertion de la provenance des données ;
+MERGE INTO G_GEO.TA_PROVENANCE a
+    USING(
+        SELECT 'https://geoservices.ign.fr/documentation/diffusion/index.html' AS url,
+        'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.' AS methode
+    )t
+    ON(
+        a.url = t.url AND a.methode_acquisition = t.methode
+    )
+WHEN NOT MATCHED THEN
+    INSERT(a.url, a.methode_acquisition)
+    VALUES(t.url, t.methode);
+COMMIT;
+    
+-- 1.5. Insertion des clés étrangères dans la table pivot TA_METADONNEE ;
+MERGE INTO G_GEO.TA_METADONNEE a
+    USING(
+        SELECT 
+            b.objectid AS fid_source,
+            c.objectid AS fid_acquisition
+            d.objectid AS fid_provenance
+        FROM
+            G_GEO.TA_SOURCE b,
+            G_GEO.TA_DATE_ACQUISITION c,
+            G_GEO.TA_PROVENANCE d
+        WHERE
+            b.nom_source = 'BDTOPO'
+            AND c.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+            AND c.millesime = '01/01/2019'
+            AND c.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
+            AND d.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
+            AND d.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
+    )t
+    ON(
+        a.fid_source = t.fid_source 
+        AND a.fid_acquisition = t.fid_acquisition
+        AND a.fid_provenance = t.fid_provenance
+    )
+WHEN NOT MATCHED THEN
+    INSERT(a.fid_source, a.fid_acquisition, a.fid_provenance)
+    VALUES(t.fid_source, t.fid_acquisition, t.fid_provenance);
+COMMIT;
+
+-- 1.6. Insertion des clés étrangères dans la table pivot TA_METADONNEE_RELATION_ORGANISME
+MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
+    USING(
+        SELECT 
+            b.objectid AS fid_metadonnee,
+            f.objectid AS fid_organisme
+        FROM
+            G_GEO.TA_METADONNEE b
+            INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = b.fid_source
+            INNER JOIN G_GEO.TA_DATE_ACQUISITION d ON d.objectid = d.fid_acquisition
+            INNER JOIN G_GEO.TA_PROVENANCE e ON e.objectid = b.fid_provenance,
+            G_GEO.TA_ORGANISME f
+        WHERE
+            c.nom_source = 'BDTOPO'
+            AND d.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+            AND d.millesime = '01/01/2019'
+            AND d.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
+            AND e.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
+            AND e.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
+            AND f.acronyme = 'IGN'
+    )t
+    ON (
+        a.fid_metadonnee = t.fid_metadonnee
+        AND a.fid_organisme = t.fid_organisme
+    )
+WHEN NOT MATCHED THEN
+    INSERT (a.fid_metadonnee, a.fid_organisme)
+    VALUES (t.fid_metadonnee, t.fid_organisme);
+COMMIT;
+
+-- 2. Création des familles et libelles ;
+-- 2.1. Insertion de toutes les familles requises pour les communes ;
+MERGE INTO G_GEO.TA_FAMILLE a
+    USING(
+        SELECT 'types de commune' AS FAMILLE FROM DUAL
+        UNION
+        SELECT 'zone supra-communale' AS FAMILLE FROM DUAL
+        UNION
+        SELECT 'Identifiants de zone administrative' AS FAMILLE FROM DUAL
+        UNION
+        SELECT 'Identifiants des divisions territoriales de la MEL' AS FAMILLE FROM DUAL
+        UNION
+        SELECT 'Division territoriale de la MEL' AS FAMILLE FROM DUAL
+        UNION
+        SELECT 'Etablissements de Coopération Intercommunale (EPCI)' AS FAMILLE FROM DUAL
+    )t
+    ON(
+        a.valeur = t.famille
+    )
+WHEN NOT MATCHED THEN
+    INSERT(a.valeur)
+    VALUES(t.famille);
+COMMIT;
+
+-- 2.2. Insertion de tous les libelles longs requis pour les communes ;
+MERGE INTO G_GEO.TA_LIBELLE_LONG a
+    USING(
+            SELECT 'département' AS libelle FROM DUAL 
+            UNION
+            SELECT 'région' AS libelle FROM DUAL
+            UNION
+            SELECT 'commune simple' AS libelle FROM DUAL 
+            UNION
+            SELECT 'commune associée' AS libelle FROM DUAL 
+            UNION
+            SELECT 'Métropole' AS libelle FROM DUAL
+            UNION
+            SELECT 'Unité Territoriale' AS libelle FROM DUAL
+            UNION
+            SELECT 'Code Unité Territoriale' AS libelle FROM DUAL
+            UNION
+            SELECT 'Territoire' AS libelle FROM DUAL
+            UNION
+            SELECT 'Code Territoire' AS libelle FROM DUAL
+    ) t
+    ON (a.valeur = t.libelle)
+WHEN NOT MATCHED THEN
+    INSERT(a.valeur)
+    VALUES(t.libelle);
+COMMIT;
+
+-- 2.3. Insertion des clés étrangères dans la table pivot TA_FAMILLE_LIBELLE ;
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
+    USING(
+        SELECT
+            y.fid_famille,
+            y.fid_libelle_long
+        FROM
+            (SELECT DISTINCT
+                a.objectid AS fid_famille,
+                CASE
+                    WHEN a.valeur = 'types de commune' AND b.valeur = 'commune simple'
+                    THEN b.objectid
+                    WHEN a.valeur = 'types de commune' AND b.valeur = 'commune associée'
+                    THEN b.objectid
+                    WHEN a.valeur = 'zone supra-communale' AND b.valeur = 'département'
+                    THEN b.objectid
+                    WHEN a.valeur = 'zone supra-communale' AND b.valeur = 'région'
+                    THEN b.objectid
+                    WHEN a.valeur = 'Etablissements de Coopération Intercommunale (EPCI)' AND b.valeur = 'Métropole'
+                    THEN b.objectid
+                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Territoire'
+                    THEN b.objectid
+                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Unité territoriale'
+                    THEN b.objectid
+                END AS fid_libelle_long
+            FROM
+                G_GEO.TA_FAMILLE a,
+                G_GEO.TA_LIBELLE_LONG b
+            WHERE
+                a.valeur IN('types de commune', 'zone supra-communale', 'Etablissements de Coopération Intercommunale (EPCI)', 'Division territoriale de la MEL')
+            )y
+        WHERE
+            y.fid_famille IS NOT NULL
+            AND y.fid_libelle_long IS NOT NULL
+    )t
+    ON(a.fid_famille = t.fid_famille AND a.fid_libelle_long = t.fid_libelle_long)
+WHEN NOT MATCHED THEN
+    INSERT(a.fid_famille, a.fid_libelle_long)
+    VALUES(t.fid_famille, t.fid_libelle_long);
+    
+-- 1. Création des départements et de la région des Hauts-de-France ;
+-- 1.1. gestion des types de zones supra-communales ;
 -- Insertion de la famille des zones supra-communales qui contient les libellés de toutes les zones construites à partir des communes
 MERGE INTO G_GEO.TA_FAMILLE a
-    USING(SELECT 'zone supra-communale' AS nom FROM DUAL) t
+    USING(SELECT 'zone supra-communale' AS nom FROM DUAL
+            UNION
+          SELECT 'Identifiants de zone administrative' AS nom FROM DUAL) t
     ON (a.valeur = t.nom)
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
-    
+COMMIT;
+
 -- Insertion des libelles appartenant à la famille "zones supra-communales" dans la tableG_GEO.TA_LIBELLE_LONG
 MERGE INTO G_GEO.TA_LIBELLE_LONG a
     USING(SELECT 'département' AS nom FROM DUAL UNION
@@ -30,10 +270,10 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
+COMMIT;
 
 -- Insertion des id des famille et libellés dans G_GEO.TA_FAMILLE_LIBELLE
-
-MERGE INTO G_GEO.G_GEO.TA_FAMILLE_LIBELLE a
+MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
     USING (
         SELECT
             a.objectid AS id_famille,
@@ -46,9 +286,10 @@ MERGE INTO G_GEO.G_GEO.TA_FAMILLE_LIBELLE a
             AND a.valeur = 'zone supra-communale'
     )t
     ON (a.fid_famille = t.id_famille AND a.fid_libelle_long = t.id_libelle_long)
-WHEN NOT MATCHED
+WHEN NOT MATCHED THEN
     INSERT (a.fid_famille, a.fid_libelle_long)
     VALUES(t.id_famille, t.id_libelle_long);
+COMMIT;
 
 -- INSERTION des fid_libelle_long dans G_GEO.TA_LIBELLE
 MERGE INTO G_GEO.TA_LIBELLE a
@@ -57,7 +298,8 @@ ON (a.fid_libelle_long = t.objectid)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.objectid);
-    
+COMMIT;
+
 -- Insertion des noms des départements dans la table G_GEO.TA_NOM
 MERGE INTO G_GEO.TA_NOM a
     USING(SELECT 'Aisne' AS nom FROM DUAL UNION
@@ -69,7 +311,8 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
-    
+COMMIT;
+
 -- Insertion du nom de la région Hauts-de-France dans la table G_GEO.TA_NOM
 MERGE INTO G_GEO.TA_NOM a
     USING(SELECT 'Hauts-de-France' AS nom FROM DUAL)t
@@ -77,9 +320,10 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
-    
+COMMIT;
+
 -- Insertion des zone supra-communales dans la table G_GEO.TA_ZONE_ADMINISTRATIVE
---Insertion de la région Hauts-de-France
+-- Insertion de la région Hauts-de-France
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS NOM, c.objectid AS LIBELLE
             FROM G_GEO.TA_NOM b,
@@ -92,8 +336,9 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.NOM, t.LIBELLE);
+COMMIT;
 
---Insertion du département de l'Aisne
+-- Insertion du département de l''Aisne
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM G_GEO.TA_NOM b,
@@ -106,8 +351,9 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.nom, t.libelle);
+COMMIT;
 
---Insertion du département du Nord
+-- Insertion du département du Nord
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM G_GEO.TA_NOM b,
@@ -120,8 +366,9 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.nom, t.libelle);
-    
---Insertion du département de l'Oise
+COMMIT;
+
+-- Insertion du département de l''Oise
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM G_GEO.TA_NOM b,
@@ -134,8 +381,9 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.nom, t.libelle);
-    
---Insertion du département du Pas-de-Calais
+COMMIT;
+
+-- Insertion du département du Pas-de-Calais
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM G_GEO.TA_NOM b,
@@ -148,8 +396,9 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.nom, t.libelle);
-    
---Insertion du département du Somme
+COMMIT;
+
+-- Insertion du département du Somme
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(SELECT b.objectid AS nom, c.objectid AS libelle
             FROM G_GEO.TA_NOM b,
@@ -162,6 +411,7 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.nom, t.libelle);
+COMMIT;
 
 -- 1.2. gestion des codes des zones supra-communales ;
 -- Insertion du libelle code département dans la tableG_GEO.TA_LIBELLE_LONG
@@ -171,6 +421,7 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
+COMMIT;
 
 -- Insertion du libelle code région dans la tableG_GEO.TA_LIBELLE_LONG
 MERGE INTO G_GEO.TA_LIBELLE_LONG a
@@ -179,6 +430,7 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
+COMMIT;
 
 -- Insertion dans la table de liaison G_GEO.TA_FAMILLE_LIBELLE pour les départements
 MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
@@ -189,7 +441,8 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.famille, t.libelle);
-    
+COMMIT;
+
 -- Insertion dans la table de liaison G_GEO.TA_FAMILLE_LIBELLE pour les régions
 MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
     USING(SELECT b.objectid AS famille, c.objectid AS libelle 
@@ -199,7 +452,8 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.famille, t.libelle);
-    
+COMMIT;
+
 -- Insertion des fid_libelle_long dans la table G_GEO.TA_LIBELLE
 MERGE INTO G_GEO.TA_LIBELLE a
     USING (SELECT b.objectid AS libelle
@@ -209,6 +463,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.libelle);
+COMMIT;
 
 -- Insertion des codes départementaux et du code régional dans la table G_GEO.TA_CODE
 -- Département de l'Aisne
@@ -221,6 +476,7 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
+COMMIT;
 
 -- Département du Nord
 MERGE INTO G_GEO.TA_CODE a
@@ -232,7 +488,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
-    
+COMMIT;
+
 -- Département de l'Oise
 MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '60' AS code, b.objectid AS libelle
@@ -243,7 +500,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
-    
+COMMIT;    
+
 -- Département du Pas-de-Calais
 MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '62' AS code, b.objectid AS libelle
@@ -254,7 +512,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
-    
+COMMIT;
+
 -- Département de la Somme
 MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '80' AS code, b.objectid AS libelle
@@ -265,7 +524,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
-    
+COMMIT;
+
 -- Région des Hauts-de-France
 MERGE INTO G_GEO.TA_CODE a
     USING(SELECT '32' AS code, b.objectid AS libelle
@@ -276,8 +536,9 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, fid_libelle)
     VALUES(t.code, t.libelle);
+COMMIT;
 
---2. Création des métadonnées des communes ;
+-- 2. Création des métadonnées des communes ;
 -- Insertion de la date d'import des données en base
 MERGE INTO G_GEO.TA_DATE_ACQUISITION a
     USING(
@@ -294,19 +555,21 @@ MERGE INTO G_GEO.TA_DATE_ACQUISITION a
 WHEN NOT MATCHED THEN
     INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
     VALUES(t.date_insertion, t.date_millesime, t.nom_obtenteur);
+COMMIT;
 
 -- Insertion de la nouvelle métadonnée
 MERGE INTO G_GEO.TA_METADONNEE a
     USING (SELECT b.objectid AS source, c.objectid AS acquisition, d.objectid AS provenance
             FROM G_GEO.TA_SOURCE b, G_GEO.TA_DATE_ACQUISITION c, ta_provenance d 
-            WHERE b.nom_source = 'BDTOPO' AND c.date_acquisition = sysdate AND d.objectid = 1 AND c.nom_obtenteur = 'bjacq') t
+            WHERE b.nom_source = 'BDTOPO' AND c.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy' AND d.objectid = 1 AND c.nom_obtenteur = 'bjacq') t
     ON (a.fid_acquisition = t.acquisition)
 WHEN NOT MATCHED THEN
     INSERT(a.fid_source, a.fid_acquisition, a.fid_provenance)
     VALUES(t.source, t.acquisition, t.provenance);
-
---3. Insertion des communes en base ;
---3.1. gestion des noms ;
+COMMIT;
+           
+-- 3. Insertion des communes en base ;
+-- 3.1. gestion des noms ;
 
 -- Insertion des noms des communes dans la table G_GEO.TA_NOM
 -- Communes de l'Aisne
@@ -316,6 +579,7 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
+COMMIT;
 
 -- Communes du Nord
 MERGE INTO G_GEO.TA_NOM a
@@ -324,7 +588,8 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
-    
+COMMIT;
+
 -- Communes de l'Oise
 MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_OISE WHERE SUBSTR(INSEE_COM, 0, 2) = '60') t
@@ -332,7 +597,8 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
-    
+COMMIT;
+
 -- Communes du Pas-de-Calais
 MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.COMMUNES_PAS_DE_CALAIS WHERE SUBSTR(INSEE_COM, 0, 2) = '62') t
@@ -340,7 +606,8 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
-    
+COMMIT;
+
 -- Communes de la somme
 MERGE INTO G_GEO.TA_NOM a
     USING (SELECT NOM FROM G_GEO.TEMP_COMMUNES_SOMME WHERE SUBSTR(INSEE_COM, 0, 2) = '80') t
@@ -348,7 +615,8 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
- 
+COMMIT;
+
 -- 3.2. gestion des codes ;
 -- Communes de l'Aisne
 MERGE INTO G_GEO.TA_CODE a
@@ -361,6 +629,7 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.objectid);
+COMMIT;
 
 -- Communes du Nord
 MERGE INTO G_GEO.TA_CODE a
@@ -373,7 +642,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.objectid);
-    
+COMMIT;
+
 -- Communes de l'Oise
 MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
@@ -385,7 +655,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.objectid);
-    
+COMMIT;
+
 -- Communes du Pas-de-Calais
 MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
@@ -397,7 +668,8 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.objectid);
-    
+COMMIT;
+
 -- Communes de la somme
 MERGE INTO G_GEO.TA_CODE a
     USING (SELECT b.INSEE_COM, c.objectid 
@@ -409,8 +681,9 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.objectid);
-    
---3.3. gestion des géométries ;
+COMMIT;
+
+-- 3.3. gestion des géométries ;
 -- Communes de l'Aisne
 MERGE INTO G_GEO.TA_COMMUNE a
     USING(SELECT a.ORA_GEOMETRY, b.objectid AS libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS metadonnee
@@ -447,6 +720,8 @@ ON(
 WHEN NOT MATCHED THEN
     INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
     VALUES(t.ORA_GEOMETRY, t.libelle, t.fid_nom, t.metadonnee);
+COMMIT;
+
 ---------------------------------------    
 -- Communes du Nord
 MERGE INTO G_GEO.TA_COMMUNE a
