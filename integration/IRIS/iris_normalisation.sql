@@ -1,6 +1,9 @@
 -- Requêtes SQL nécessaire pour normaliser les données IRIS
 
--- 1. Insertion des noms IRIS dans G_GEO.TA_NOM
+-- 1. Suppression des IRIS qui ne sont pas présents dans les Hauts-de-France
+DELETE FROM G_GEO.CONTOURS_IRIS WHERE SUBSTR(INSEE_COM,1,2) NOT IN ('02','59','60','62','80');
+
+-- 2. Insertion des noms IRIS dans G_GEO.TA_NOM
 MERGE INTO G_GEO.TA_NOM a
 USING 
         (
@@ -12,7 +15,7 @@ INSERT (a.valeur)
 VALUES (b.valeur);
 
 
--- 2. Insertion des codes IRIS G_GEO.TA_CODE
+-- 3. Insertion des codes IRIS G_GEO.TA_CODE
 MERGE INTO G_GEO.TA_CODE a
 USING 
         (
@@ -33,7 +36,7 @@ INSERT (a.valeur,a.fid_libelle)
 VALUES (b.valeur,b.fid_libelle);
 
 
--- 3. Insertion des géométrie des IRIS dans G_GEO.TA_IRIS_GEOM
+-- 4. Insertion des géométrie des IRIS dans G_GEO.TA_IRIS_GEOM
 INSERT INTO G_GEO.TA_IRIS_GEOM(geom)
 SELECT
     ora_geometry
