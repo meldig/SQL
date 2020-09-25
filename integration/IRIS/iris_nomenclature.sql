@@ -1,6 +1,10 @@
 /*
 Ensemble des requêtes utilisés pour insérer la nomenclature des données IRIS dans la base de données.
 */
+SET SERVEROUTPUT ON
+BEGIN
+SAVEPOINT POINT_SAUVERGARDE_1;
+
 -- 1. Insertion de la source dans G_GEO.TA_SOURCE
 MERGE INTO G_GEO.TA_SOURCE a
 USING 
@@ -34,7 +38,7 @@ VALUES(b.url,b.methode_acquisition)
 MERGE INTO G_GEO.TA_DATE_ACQUISITION a
 USING
     (
-        SELECT TO_DATE(SYSDATE,'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/19') AS MILLESIME,'rjault' AS NOM_OBTENTEUR FROM DUAL
+        SELECT TO_DATE(SYSDATE,'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/19') AS MILLESIME, SYS_CONTEXT('USERENV', 'OS_USER') AS NOM_OBTENTEUR FROM DUAL
     ) b
 ON (a.date_acquisition = b.date_acquisition
 AND a.millesime = b.millesime
@@ -91,6 +95,8 @@ USING
             b.millesime IN ('01/01/2019')
         AND
             b.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
+        AND
+            b.nom_obtenteur = SYS_CONTEXT('USERENV', 'OS_USER')
         AND
             c.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris'
     )temp
@@ -250,10 +256,8 @@ USING
         a.VALEUR AS libelle_long
     FROM
         G_GEO.TA_LIBELLE_LONG a
-    INNER JOIN
-        G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
-    INNER JOIN
-        G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
+    INNER JOIN G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
+    INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
     WHERE
         c.VALEUR = 'type de zone IRIS'
     OR c.VALEUR = 'Identifiants de zone statistique'
@@ -274,12 +278,9 @@ USING
         FROM
             G_GEO.TA_LIBELLE_COURT b,        
             G_GEO.TA_LIBELLE a
-        INNER JOIN 
-            G_GEO.TA_LIBELLE_LONG c ON c.objectid = a.fid_libelle_long
-        INNER JOIN
-            G_GEO.TA_FAMILLE_LIBELLE d ON d.fid_libelle_long = c.objectid
-        INNER JOIN
-            G_GEO.TA_FAMILLE e ON e.objectid = d.fid_famille
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = a.fid_libelle_long
+        INNER JOIN G_GEO.TA_FAMILLE_LIBELLE d ON d.fid_libelle_long = c.objectid
+        INNER JOIN G_GEO.TA_FAMILLE e ON e.objectid = d.fid_famille
         WHERE
             b.VALEUR = 'H' AND c.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)' OR
             b.VALEUR = 'D' AND c.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
@@ -292,3 +293,11 @@ AND a.fid_libelle_court = b.fid_libelle_court)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_libelle, a.fid_libelle_court)
 VALUES(b.fid_libelle, b.fid_libelle_court);
+
+COMMIT;
+-- 15. En cas d'exeption levée, faire un ROLLBACK
+EXCEPTION
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.put_line('une erreur est survenue, un rollback va être effectué: ' || SQLCODE || ' : '  || SQLERRM(SQLCODE));
+    ROLLBACK TO POINT_SAUVERGARDE_1
+END;
