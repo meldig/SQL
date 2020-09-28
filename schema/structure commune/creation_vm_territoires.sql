@@ -18,23 +18,26 @@ REFRESH ON DEMAND
 FORCE
 DISABLE QUERY REWRITE AS
 SELECT
-        c.objectid AS identifiant,
-        g.code_adm,
-        e.nom AS nom_a,
-        SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
-    FROM
-        g_geo.ta_commune a
-        INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
-        INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
-        INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-        INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-        INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-        INNER JOIN g_geo.ta_code g ON f.fid_identifiant = g.objectid
-    WHERE
-        d.libelle = 'Territoire'
-        AND sysdate BETWEEN b.debut_validite AND b.fin_validite
-GROUP BY e.nom, c.objectid
-;
+    c.objectid AS identifiant,
+    h.valeur AS code_adm,
+    f.valeur AS nom_a,
+    SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
+FROM
+    g_geo.ta_commune a
+    INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
+    INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
+    INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
+    INNER JOIN g_geo.ta_libelle_long e ON e.objectid = d.fid_libelle_long
+    INNER JOIN g_geo.ta_nom f ON f.objectid = c.fid_nom
+    INNER JOIN g_geo.ta_identifiant_zone_administrative g ON g.fid_zone_administrative = c.objectid
+    INNER JOIN g_geo.ta_code h ON h.objectid = g.fid_identifiant
+WHERE
+    e.valeur = 'Territoire'
+    AND sysdate BETWEEN b.debut_validite AND b.fin_validite
+GROUP BY 
+    f.valeur, 
+    c.objectid, 
+    h.valeur;
 
 -- 2. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -75,4 +78,5 @@ COMMENT ON COLUMN g_referentiel.admin_territoire_mel.geom IS 'Géométrie de cha
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON g_referentiel.admin_territoire_mel TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_territoire_mel TO G_REFERENTIEL_MAJ;
 GRANT SELECT ON g_referentiel.admin_territoire_mel TO G_ADMIN_SIG;
