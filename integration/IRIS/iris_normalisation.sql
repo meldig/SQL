@@ -1,7 +1,7 @@
 -- Requêtes SQL nécessaire pour normaliser les données IRIS
 SET SERVEROUTPUT ON
 BEGIN
-SAVEPOINT POINT_SAUVERGARDE_1;
+SAVEPOINT POINT_SAUVERGARDE_NORMALISATION_1;
 
 -- 1. Suppression des IRIS qui ne sont pas présents dans les Hauts-de-France
 DELETE FROM G_GEO.CONTOURS_IRIS WHERE SUBSTR(INSEE_COM,1,2) NOT IN ('02','59','60','62','80');
@@ -123,12 +123,13 @@ VALUES (b.fid_lib_type,b.fid_code,b.fid_nom,b.fid_metadonnee,b.fid_iris_geom)
 ;
 
 -- 6. Suppression de la table d'import des IRIS
-DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS
+-- DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS
 
 COMMIT;
 -- 7. En cas d'exeption levée, faire un ROLLBACK
 EXCEPTION
     WHEN OTHERS THEN
     DBMS_OUTPUT.put_line('une erreur est survenue, un rollback va être effectué: ' || SQLCODE || ' : '  || SQLERRM(SQLCODE));
-    ROLLBACK TO POINT_SAUVERGARDE_1
+    ROLLBACK TO POINT_SAUVERGARDE_NORMALISATION_1;
 END;
+/
