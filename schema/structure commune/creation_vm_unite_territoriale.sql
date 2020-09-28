@@ -9,7 +9,7 @@ DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'admin_unite_territoriale_
 */
 
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90(
+/*CREATE MATERIALIZED VIEW g_referentiel.admin_unite_territoriale_mel90(
     identifiant,
     code_adm,
     nom,
@@ -78,6 +78,7 @@ COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel90.geom IS 'Géomét
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel90 TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel90 TO G_REFERENTIEL_MAJ;
 GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel90 TO G_ADT_DSIG_ADM;
 
 /*
@@ -158,4 +159,5 @@ COMMENT ON COLUMN g_referentiel.admin_unite_territoriale_mel.geom IS 'Géométri
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
 GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel TO G_REFERENTIEL_LEC;
+GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel TO G_REFERENTIEL_MAJ;
 GRANT SELECT ON g_referentiel.admin_unite_territoriale_mel TO G_ADMIN_SIG;
