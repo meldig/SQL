@@ -266,6 +266,7 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.fid_famille, t.fid_libelle_long);
+COMMIT;
 
 -- 2.4. Insertion des clés étrangères dans la table pivot TA_LIBELLE
 MERGE INTO G_GEO.TA_LIBELLE a
@@ -281,6 +282,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.fid_libelle_long);
+COMMIT;
 
 -- 3. Création des noms requis pour les communes
 -- 3.1. Insertion des noms des zones supra-communales ;
@@ -450,7 +452,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
 COMMIT;
-*/
+
 -- 5. Création des zones supra-communales, des territoires et des unités territoriales
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(
@@ -703,7 +705,7 @@ ON (a.fid_zone_administrative = t.ID_ZONE_ADMIN AND a.fid_identifiant = t.ID_COD
 WHEN NOT MATCHED THEN
     INSERT(a.fid_zone_administrative, a.fid_identifiant)
     VALUES(t.id_zone_admin, t.id_code);
-
+COMMIT;
 
 /*-- Insertion dans la table ta_za_communes des communes par département et région
 -- Département de l'Aisne
