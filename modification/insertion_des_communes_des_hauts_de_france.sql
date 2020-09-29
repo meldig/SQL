@@ -203,7 +203,7 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
             UNION
             SELECT 'code unité territoriale' AS libelle FROM DUAL
             UNION
-            SELECT 'territoire' AS libelle FROM DUAL
+            SELECT 'Territoire' AS libelle FROM DUAL
             UNION
             SELECT 'code insee' AS libelle FROM DUAL
             UNION
@@ -239,7 +239,7 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
                     THEN b.objectid
                     WHEN a.valeur = 'Etablissements de Coopération Intercommunale (EPCI)' AND b.valeur = 'Métropole'
                     THEN b.objectid
-                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'territoire'
+                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Territoire'
                     THEN b.objectid
                     WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Unité Territoriale'
                     THEN b.objectid
@@ -276,7 +276,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
         FROM
             G_GEO.TA_LIBELLE_LONG b
         WHERE
-            b.valeur IN('département', 'région', 'commune simple', 'commune associée', 'Métropole', 'Unité Territoriale', 'code unité territoriale', 'territoire', 'code insee', 'code département', 'code région', 'code territoire')
+            b.valeur IN('département', 'région', 'commune simple', 'commune associée', 'Métropole', 'Unité Territoriale', 'code unité territoriale', 'Territoire', 'code insee', 'code département', 'code région', 'code territoire')
     )t
     ON (a.fid_libelle_long = t.fid_libelle_long)
 WHEN NOT MATCHED THEN
@@ -680,7 +680,7 @@ USING(
                             THEN e.objectid
                         WHEN b.valeur = 'Oise' AND d.valeur = 'département' AND e.valeur = '60' AND g.valeur = 'code département'
                             THEN e.objectid
-                        WHEN b.valeur = 'Hauts-de-France' AND d.valeur = 'département' AND e.valeur = '32' AND g.valeur = 'code région'
+                        WHEN b.valeur = 'Hauts-de-France' AND d.valeur = 'région' AND e.valeur = '32' AND g.valeur = 'code région'
                             THEN e.objectid*/
                     END AS ID_CODE,
                     e.valeur AS code,
@@ -696,7 +696,7 @@ USING(
                     INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 WHERE
                     d.valeur IN('Territoire', 'Unité Territoriale', 'département', 'région')
-                    AND g.valeur IN('Code Territoire', 'Code Unité Territoriale', 'code départment', 'code région')
+                    AND g.valeur IN('code territoire', 'code unité territoriale', 'code département', 'code région')
         ) a
     WHERE
         a.ID_CODE IS NOT NULL
