@@ -30,7 +30,11 @@ USING
                 G_GEO.CONTOURS_IRIS a,
                 G_GEO.TA_LIBELLE b
             INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid
-            WHERE c.valeur = 'code iris'
+            INNER JOIN G_GEO.TA_FAMILLE_LIBELLE d ON d.fid_libelle_long = c.objectid
+            INNER JOIN G_GEO.TA_FAMILLE e ON e.objectid = d.fid_famille
+            WHERE
+                c.valeur = 'code iris'
+            AND e.valeur = 'identifiants de zone statistique'
         ) b
 ON (a.valeur = b.valeur
 AND a.fid_libelle = b.fid_libelle)
@@ -64,30 +68,37 @@ WHERE
 MERGE INTO G_GEO.TA_IRIS a
 USING 
     (
-        SELECT
+SELECT
             d.objectid AS fid_lib_type,
             h.objectid AS fid_code,
             i.objectid AS fid_nom,
-            j.objectid AS fid_metadonnee,
-            k.objectid AS fid_iris_geom
+            n.objectid AS fid_metadonnee,
+            o.objectid AS fid_iris_geom
         FROM
             G_GEO.CONTOURS_IRIS a
             INNER JOIN G_GEO.TA_LIBELLE_COURT b ON b.valeur = a.typ_iris    
-            INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE c ON b.objectid = c.fid_libelle_court
-            INNER JOIN G_GEO.TA_LIBELLE d ON c.fid_libelle = d.objectid
-            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON d.fid_libelle_long = e.objectid
-            INNER JOIN G_GEO.TA_FAMILLE_LIBELLE f ON e.objectid = f.fid_libelle_long
-            INNER JOIN G_GEO.TA_FAMILLE g ON f.fid_famille = g.objectid
-            INNER JOIN G_GEO.TA_CODE h ON a.iris = h.valeur
-            INNER JOIN G_GEO.TA_NOM i ON a.nom_iris = i.valeur,
-            G_GEO.TA_METADONNEE j,
-            G_GEO.TA_IRIS_GEOM k
-        -- sous requete dans le WHERE pour être sur d'avoir des clé étrangé fid_code qui correspondent à des code iris
+            INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE c ON c.fid_libelle_court = b.objectid
+            INNER JOIN G_GEO.TA_LIBELLE d ON d.objectid = c.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long
+            INNER JOIN G_GEO.TA_FAMILLE_LIBELLE f ON f.fid_libelle_long = e.objectid
+            INNER JOIN G_GEO.TA_FAMILLE g ON g.objectid = f.fid_famille
+            INNER JOIN G_GEO.TA_CODE h ON h.valeur = a.iris
+            INNER JOIN G_GEO.TA_NOM i ON i.valeur = a.nom_iris
+            INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = h.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
+            INNER JOIN G_GEO.TA_FAMILLE_LIBELLE l ON l.fid_libelle_long = k.objectid
+            INNER JOIN G_GEO.TA_FAMILLE m ON m.objectid = l.fid_famille,
+            G_GEO.TA_METADONNEE n,
+            G_GEO.TA_IRIS_GEOM o
+        -- sous requete dans le WHERE pour être sur d'avoir des clé étrangére fid_libelle qui correspondent à des types de zone IRIS
         WHERE
             g.valeur = 'type de zone IRIS'
+        -- AND pour être sur d'avoir des clé étrangére fid_code qui correspondent à des identifiants de zone statistique
+        AND
+            m.valeur = 'identifiants de zone statistique'
         -- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
         AND 
-            j.objectid IN
+            n.objectid IN
                 (
                 SELECT
                     a.objectid AS id_mtd
@@ -110,7 +121,7 @@ USING
                 )
         -- sous requete AND pour insérer le fid_iris_geom de la bonne géométrie de l'IRIS.
         AND
-            ORA_HASH(TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_CENTROID(a.ora_geometry)))) = ORA_HASH(TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_CENTROID(k.geom))))
+            ORA_HASH(TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_CENTROID(a.ora_geometry)))) = ORA_HASH(TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_CENTROID(o.geom))))
     )b
 ON (a.fid_lib_type = b.fid_lib_type
 AND a.fid_code = b.fid_code
@@ -123,7 +134,10 @@ VALUES (b.fid_lib_type,b.fid_code,b.fid_nom,b.fid_metadonnee,b.fid_iris_geom)
 ;
 
 -- 6. Suppression de la table d'import des IRIS
--- DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS
+-- 6.1. Suppression de la table d'import des IRIS
+-- DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS;
+-- 6.2. Suppression des métadonnee de la table G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS
+-- DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'CONTOURS_IRIS';
 
 COMMIT;
 -- 7. En cas d'exeption levée, faire un ROLLBACK
