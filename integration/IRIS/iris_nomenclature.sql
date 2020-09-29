@@ -215,7 +215,7 @@ USING
     (
     SELECT 'type de zone IRIS' AS VALEUR FROM dual
     UNION
-    SELECT 'Identifiants de zone statistique' AS VALEUR FROM dual
+    SELECT 'identifiants de zone statistique' AS VALEUR FROM dual
     ) b
 ON (a.VALEUR = b.VALEUR)
 WHEN NOT MATCHED THEN
@@ -260,7 +260,7 @@ USING
     INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
     WHERE
         c.VALEUR = 'type de zone IRIS'
-    OR c.VALEUR = 'Identifiants de zone statistique'
+    OR c.VALEUR = 'identifiants de zone statistique'
     )b
 ON(a.fid_libelle_long = b.fid_libelle_long)
 WHEN NOT MATCHED THEN
