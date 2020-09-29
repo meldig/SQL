@@ -287,14 +287,14 @@ COMMIT;
 -- 3. Création des noms requis pour les communes
 -- 3.1. Insertion des noms des zones supra-communales ;
 --##CORRECTIF - Nom du Territoire Lillois## :
-UPDATE TA_NOM
-SET NOM = 'Territoire Lillois'
-WHERE NOM = 'Lille-Lomme-Hellemmes';
+UPDATE G_GEO.TA_NOM
+SET VALEUR = 'Territoire Lillois'
+WHERE VALEUR = 'Lille-Lomme-Hellemmes';
 COMMIT ;
 
-UPDATE TA_NOM
-SET NOM = 'Marcq en Baroeul-la-Bassee'
-WHERE NOM = 'La Basse-Marcq en Baroeul';
+UPDATE G_GEO.TA_NOM
+SET VALEUR = 'Marcq en Baroeul-la-Bassee'
+WHERE VALEUR = 'La Basse-Marcq en Baroeul';
 COMMIT ;
 /*
 MERGE INTO G_GEO.TA_NOM a
