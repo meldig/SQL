@@ -148,9 +148,24 @@ MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES a
 				G_GEO.TEMP_COMMUNES_VM co,
 				G_GEO.TA_IRIS i
 			INNER JOIN G_GEO.TA_IRIS_GEOM ig ON ig.objectid = i.fid_iris_geom
+			INNER JOIN G_GEO.TA_CODE codei ON codei.objectid = i.fid_code
+			-- distinction pour ne selectonner que les IRIS
+			INNER JOIN G_GEO.TA_LIBELLE lc ON lc.objectid = codei.fid_libelle
+			INNER JOIN G_GEO.TA_LIBELLE_LONG llc ON llc.objectid = lc.fid_libelle_long
+			INNER JOIN G_GEO.TA_FAMILLE_LIBELLE llcf ON llcf.fid_libelle_long = llc.objectid
+			INNER JOIN G_GEO.TA_FAMILLE llf ON llf.objectid = llcf.fid_famille
+			-- distinction pour le type d'IRIS
+			INNER JOIN G_GEO.TA_LIBELLE li ON li.objectid = i.fid_lib_type
+			INNER JOIN G_GEO.TA_LIBELLE_LONG lli ON lli.objectid = li.fid_libelle_long
+			INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fli ON fli.fid_libelle_long = lli.objectid
+			INNER JOIN G_GEO.TA_FAMILLE fi ON fi.objectid = fli.fid_famille
 			INNER JOIN millesime millesime ON millesime.id_mtd = i.fid_metadonnee
 			WHERE
 				SDO_RELATE(ig.geom, co.geom, 'mask=OVERLAPBDYINTERSECT') = 'TRUE'
+			AND 
+				llf.valeur = 'identifiants de zone statistique'
+			AND
+				fi.valeur = 'type de zone IRIS'
 		)b
 ON(a.CODE_INSEE = b.CODE_INSEE
 AND a.iris_objectid = b.iris_objectid)
@@ -296,6 +311,8 @@ WITH
 	-- distinction pour ne selectonner que les IRIS
 	INNER JOIN G_GEO.TA_LIBELLE lc ON lc.objectid = codei.fid_libelle
 	INNER JOIN G_GEO.TA_LIBELLE_LONG llc ON llc.objectid = lc.fid_libelle_long
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE llcf ON llcf.fid_libelle_long = llc.objectid
+	INNER JOIN G_GEO.TA_FAMILLE llf ON llf.objectid = llcf.fid_famille
 	-- distinction pour le type d'IRIS
 	INNER JOIN G_GEO.TA_LIBELLE li ON li.objectid = i.fid_lib_type
 	INNER JOIN G_GEO.TA_LIBELLE_LONG lli ON lli.objectid = li.fid_libelle_long
@@ -312,6 +329,10 @@ WITH
     INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
     INNER JOIN G_GEO.TEMP_COMMUNES_SURFACES_MAX csm ON csm.iris_objectid = i.objectid
     INNER JOIN organisme o ON o.ID_MTD = m.objectid
+    WHERE
+    	fi.valeur = 'type de zone IRIS'
+    AND
+    	llf.valeur = 'identifiants de zone statistique'
 	;
     
 
@@ -366,14 +387,15 @@ PARAMETERS(
 
 -- 9. Suppression des tables temporaire
 -- 9.1
-DROP TABLE G_GEO.TEMP_COMMUNES_VM CASCADE CONSTRAINTS;
-DELETE FROM SDO_USER_GEOM_METADATA WHERE table_name = 'TEMP_COMMUNES_VM';
+-- DROP TABLE G_GEO.TEMP_COMMUNES_VM CASCADE CONSTRAINTS;
+-- DELETE FROM USER_SDO_GEOM_METADATA WHERE table_name = 'TEMP_COMMUNES_VM';
 
 -- 9.2
-DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES CASCADE CONSTRAINTS;
+-- DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES CASCADE CONSTRAINTS;
 
 -- 9.3
-DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES_MAX CASCADE CONSTRAINTS;
+-- DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES_MAX CASCADE CONSTRAINTS;
 
 -- 9.4
-DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS;
+-- DROP TABLE G_GEO.CONTOURS_IRIS CASCADE CONSTRAINTS;
+/
