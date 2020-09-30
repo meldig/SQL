@@ -6,7 +6,7 @@ DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'G_REFERENTIEL.admin_bpe';
 -- 1. Création de la vue
 
 
-CREATE MATERIALIZED VIEW G_REFERENTIEL.admin_bpe
+CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_BPE 
 (
 	OBJECTID,
 	ANNEE,
@@ -27,7 +27,7 @@ CREATE MATERIALIZED VIEW G_REFERENTIEL.admin_bpe
 	NOMBRE_SALLES,
 	QUALITE_DE_LA_LOCALISATION,
 	SOURCE,
-	geom
+	GEOM
 )
 USING INDEX
 TABLESPACE G_ADT_INDX
@@ -178,7 +178,7 @@ WITH
     	END) AS NOMBRE_SALLES
     FROM
     	G_GEO.TA_BPE bpe
-    LEFT JOIN ta_bpe_caracteristique_quantitative bpecq ON bpecq.fid_bpe = bpe.objectid
+    LEFT JOIN G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE bpecq ON bpecq.fid_bpe = bpe.objectid
 	INNER JOIN G_GEO.TA_LIBELLE l ON l.objectid = bpecq.fid_libelle
     INNER JOIN G_GEO.TA_LIBELLE_LONG ll ON ll.objectid = l.fid_libelle_long
 	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fl ON fl.fid_libelle_long = ll.objectid
@@ -270,8 +270,8 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'G_REFERENTIEL.admin_bpe',
-    'geom',
+    'G_REFERENTIEL.ADMIN_BPE',
+    'GEOM',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );

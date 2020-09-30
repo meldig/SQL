@@ -1,6 +1,6 @@
 /*
 Requête nécessaire à la normalisation des données issues de la Base Permanente des Equipements
-
+*/
 
 -- 1. Suppression des équipements présents dans la table G_GEO.BPE_ENSEMBLE mais également des les tables G_GEO.BPE_ENSEIGNEMENT et G_GEO.BPE_SPORT_LOISIR. Cela est nécessaire pour supprimer les doublons
 -- 1.1. suppression des BPE enseignement de la table des BPE ensemble
@@ -29,6 +29,12 @@ WHERE
 	FROM
 		G_GEO.BPE_SPORT_LOISIR);
 COMMIT;
+
+
+-- 1.3. suppression des BPE qui ne sont pas dans les Hauts-de-France (REGION 32).
+DELETE FROM G_GEO.BPE_ENSEIGNEMENT WHERE REG<>32;
+DELETE FROM G_GEO.BPE_SPORT_LOISIR WHERE REG<>32;
+DELETE FROM G_GEO.BPE_ENSEMBLE WHERE REG<>32;
 
 
 -- 2. Création de la table temporaire pour synthétiser l'ensemble des informations des 3 couches BPE
@@ -356,33 +362,22 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_bpe_geom)
 VALUES (b.fid_bpe, b.fid_bpe_geom)
 ;
-*/
+
 
 -- 6. Insertion des données dans la table G_GEO.TA_BPE_CARACTERISTIQUE nombre
 -- 6.1 mise à jour des valeurs des colonnes NB_AIREJEU et NB_SALLES pour passer les nouvelles valeurs 'so'(Sans Objet) et 'nd'(Non Défini') en NULL comme pour les précédents millesimes.
 UPDATE G_GEO.BPE_TOUT
-SET NB_AIREJEU = 'NULL'
+SET NB_AIREJEU = ''
 WHERE NB_AIREJEU IN ('nd','so');
 COMMIT;
 
 UPDATE G_GEO.BPE_TOUT
-SET NB_SALLES = 'NULL'
+SET NB_SALLES = ''
 WHERE NB_SALLES IN ('nd','so');
 COMMIT;
 
--- Correctif de libelles déja présents dans le schéma.
--- /!\ A supprimer du fichier après execution
-UPDATE g_geo.ta_libelle_court
-SET valeur = 'X'
-WHERE objectid =78;
-COMMIT;
 
-UPDATE g_geo.ta_libelle_long
-SET valeur = 'Type d''équipement'
-WHERE objectid = 231;
-COMMIT;
-
--- 6.1 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
+-- 6.2 Insertion des caracteristiques liés aux nb_airejeu (Nombre d'aires de pratique d'un meme type au sein de l'equipement)
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE a
 USING
     (
@@ -409,7 +404,7 @@ VALUES (b.fid_bpe, b.fid_libelle, b.nombre)
 ;
 COMMIT;
 
--- 6.2 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
+-- 6.3 Insertion des caracteristiques liés aux nb_salles(nombre de salles par theatre ou cinema)
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE_QUANTITATIVE a
 USING
     (
@@ -435,7 +430,7 @@ INSERT (a.fid_bpe, a.fid_libelle, a.nombre)
 VALUES (b.fid_bpe, b.fid_libelle, b.nombre)
 ;
 COMMIT;
-/*
+
 -- 7. Insertion des données dans la table G_GEO.TA_BPE_CARACTERISTIQUE
 -- Pour insérer ces données il est nécessaire de générer précédemment deux vues synthétisant les nomenclatures BPE.
 -- 7.1 Insertion des caracteristique TYPEQU.
@@ -479,7 +474,7 @@ CREATE OR REPLACE VIEW G_GEO.BPE_VARIABLE_NORMALISATION AS
         ECLAIRE AS 'ECLAIRE'
         ))
         ;
-*/
+
 
 -- 8. Etape de normalisation des variables BPE.
 MERGE INTO G_GEO.TA_BPE_CARACTERISTIQUE a
@@ -505,6 +500,7 @@ VALUES (b.fid_bpe, b.fid_libelle_court_fils);
 COMMIT;
 
 -- 9. Insertion des relations BPE/code de localisation
+
 -- 9.1. Equipement/code insee dans la table G_GEO.TA_BPE_RELATION_CODE
 MERGE INTO G_GEO.TA_BPE_RELATION_CODE a
 USING
@@ -528,8 +524,29 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_code)
 VALUES (b.fid_bpe, b.fid_code);
 COMMIT;
-/*
--- 9.2. equipement/code iris dans la table G_GEO.TA_BPE_RELATION_CODE
+
+-- 9.2 Insertion des codes iris dans la table G_GEO.TA_CODE
+MERGE INTO G_GEO.TA_CODE a
+USING
+    (
+        SELECT
+            DISTINCT(SUBSTR(a.dciris,6,4)) AS valeur,
+            b.objectid AS fid_libelle
+        FROM
+            G_GEO.BPE_TOUT a,
+            G_GEO.TA_LIBELLE b
+        INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid
+        WHERE c.valeur = 'code iris'
+    ) b
+ON (a.valeur = b.valeur
+AND a.fid_libelle = b.fid_libelle)
+WHEN NOT MATCHED THEN
+INSERT (a.valeur, a.fid_libelle)
+VALUES (b.valeur, b.fid_libelle);
+COMMIT;
+
+
+-- 9.3. equipement/code iris dans la table G_GEO.TA_BPE_RELATION_CODE
 MERGE INTO G_GEO.TA_BPE_RELATION_CODE a
 USING
     (
@@ -552,7 +569,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_bpe, a.fid_code)
 VALUES (b.fid_bpe, b.fid_code);
 COMMIT;
-*/
+
 
 
 -- 10. Suppression de la table sythétisant les informations des BPE et des metadonnées de celle-ci. 
@@ -596,3 +613,12 @@ DROP VIEW G_GEO.V_NOMENCLATURE_EQUIPEMENT_BPE;
 
 -- 10.12 Suppression de la vue V_NOMENCLATURE_VARIABLE_BPE
 DROP VIEW G_GEO.V_NOMENCLATURE_VARIABLES_BPE;
+
+-- 10.13 Suppression de la table BPE_ENSEMBLE
+DROP TABLE G_GEO.BPE_ENSEMBLE cascade constraints purge;
+
+-- 10.14 Suppression de la table BPE_SPORT_LOISIR
+DROP TABLE G_GEO.BPE_SPORT_LOISIR cascade constraints purge;
+
+-- 10.15 Suppression de la table BPE_ENSEIGNEMENT
+DROP TABLE G_GEO.BPE_ENSEIGNEMENT cascade constraints purge;
