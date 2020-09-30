@@ -40,14 +40,14 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
 
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données ;
-/*MERGE INTO G_GEO.TA_ORGANISME a
+MERGE INTO G_GEO.TA_ORGANISME a
 USING(
     SELECT 
         'IGN' AS acronyme, 
         'Institut National de l''Information Geographie et Forestiere' AS valeur 
     FROM DUAL
     )t
-ON (a.acronyme = t.acronyme AND a.nom_organisme = t.valeur)
+ON (UPPER(a.acronyme) = UPPER(t.acronyme) AND UPPER(a.nom_organisme) = UPPER(t.valeur))
 WHEN NOT MATCHED THEN
     INSERT(a.acronyme, a.nom_organisme)
     VALUES(t.acronyme, t.valeur);
@@ -61,7 +61,7 @@ USING(
         'Description vectorielle des elements du territoire francais et de ses infrastructures avec une precision metrique.' AS description 
     FROM DUAL
     )t
-ON (a.nom_source = t.nom AND a.description = t.description)
+ON (UPPER(a.nom_source) = UPPER(t.nom) AND UPPER(a.description) = UPPER(t.description))
 WHEN NOT MATCHED THEN
     INSERT(a.nom_source, a.description)
     VALUES(t.nom, t.description);
@@ -115,10 +115,10 @@ MERGE INTO G_GEO.TA_METADONNEE a
             G_GEO.TA_DATE_ACQUISITION c,
             G_GEO.TA_PROVENANCE d
         WHERE
-            b.nom_source = 'BDTOPO'
+            UPPER(b.nom_source) = UPPER('BDTOPO')
             AND c.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND c.millesime = '01/01/2019'
-            AND c.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
+            AND c.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND d.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
             AND d.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
     )t
@@ -145,10 +145,10 @@ MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
             INNER JOIN G_GEO.TA_PROVENANCE e ON e.objectid = b.fid_provenance,
             G_GEO.TA_ORGANISME f
         WHERE
-            c.nom_source = 'BDTOPO'
+            UPPER(c.nom_source) = UPPER('BDTOPO')
             AND d.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND d.millesime = '01/01/2019'
-            AND d.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
+            AND d.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND e.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
             AND e.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
             AND f.acronyme = 'IGN'
@@ -161,7 +161,7 @@ WHEN NOT MATCHED THEN
     INSERT (a.fid_metadonnee, a.fid_organisme)
     VALUES (t.fid_metadonnee, t.fid_organisme);
 COMMIT;
-*/
+
 -- 2. Création des familles et libelles ;
 -- 2.1. Insertion de toutes les familles requises pour les communes ;
 MERGE INTO G_GEO.TA_FAMILLE a
@@ -276,7 +276,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
         FROM
             G_GEO.TA_LIBELLE_LONG b
         WHERE
-            b.valeur IN(
+            UPPER(b.valeur) IN(
                     UPPER('département'),
                     UPPER('région'), 
                     UPPER('commune simple'), 
@@ -349,7 +349,7 @@ MERGE INTO G_GEO.TA_NOM a
             UNION
             SELECT 'Métropole Européenne de Lille' AS nom FROM DUAL
             )t
-    ON (a.valeur = t.nom)
+    ON (UPPER(a.valeur) = UPPER(t.nom))
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
@@ -444,6 +444,8 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.code, t.libelle);
 COMMIT;
+
+
 /*
 -- 4.2. Insertion des codes INSEE ;
 MERGE INTO G_GEO.TA_CODE a
@@ -464,7 +466,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
 COMMIT;
-
+*/
 -- 5. Création des zones supra-communales, des territoires et des unités territoriales
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(
@@ -473,15 +475,15 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
                 (
                     SELECT
                         CASE
-                            WHEN b.valeur IN('Aisne', 'Nord', 'Oise', 'Pas-de-Calais', 'Somme') AND d.valeur = 'département'
+                            WHEN UPPER(b.valeur) IN(UPPER('Aisne'), UPPER('Nord'), UPPER('Oise'), UPPER('Pas-de-Calais'), UPPER('Somme')) AND UPPER(d.valeur) = UPPER('département')
                                 THEN b.objectid
-                            WHEN b.valeur = 'Hauts-de-France' AND d.valeur = 'région'
+                            WHEN UPPER(b.valeur) = UPPER('Hauts-de-France') AND UPPER(d.valeur) = UPPER('région')
                                 THEN b.objectid
-                            WHEN b.valeur IN('Territoire Est', 'Territoire Tourquennois', 'Territoire des Weppes', 'Couronne Nord de Lille', 'Territoire de la Lys', 'Territoire Roubaisien', 'Territoire Lillois', 'Couronne Sud de Lille') AND d.valeur = 'Territoire'
+                            WHEN UPPER(b.valeur) IN(UPPER('Territoire Est'), UPPER('Territoire Tourquennois'), UPPER('Territoire des Weppes'), UPPER('Couronne Nord de Lille'), UPPER('Territoire de la Lys'), UPPER('Territoire Roubaisien'), UPPER('Territoire Lillois'), UPPER('Couronne Sud de Lille')) AND UPPER(d.valeur) = UPPER('Territoire')
                                 THEN b.objectid
-                            WHEN b.valeur IN('Tourcoing-Armentières', 'Roubaix-Villeneuve d''Ascq', 'Lille-Seclin', 'Marcq en Baroeul-la-Bassee') AND d.valeur = 'Unité Territoriale'
+                            WHEN UPPER(b.valeur) IN(UPPER('Tourcoing-Armentières'), UPPER('Roubaix-Villeneuve d''Ascq'), UPPER('Lille-Seclin'), UPPER('Marcq en Baroeul-la-Bassee')) AND UPPER(d.valeur) = UPPER('Unité Territoriale')
                                 THEN b.objectid
-                            WHEN b.valeur = 'Métropole Européenne de Lille' AND d.valeur = 'Métropole'
+                            WHEN UPPER(b.valeur) = UPPER('Métropole Européenne de Lille') AND UPPER(d.valeur) = UPPER('Métropole')
                                 THEN b.objectid
                         END AS fid_nom,
                         c.objectid AS fid_libelle,
@@ -658,7 +660,7 @@ USING(
         (
             SELECT DISTINCT
                     CASE
-                        WHEN UPPER(b.valeur) = UPPER('Territoire Est') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '5' AND UPPER(g.valeur = UPPER('Code Territoire')
+                        WHEN UPPER(b.valeur) = UPPER('Territoire Est') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '5' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
                         WHEN UPPER(b.valeur) = UPPER('Territoire Tourquennois') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '2' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
@@ -680,9 +682,9 @@ USING(
                             THEN e.objectid
                         WHEN UPPER(b.valeur) = UPPER('Roubaix-Villeneuve d''Ascq') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '3' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale')
                             THEN e.objectid
-                        WHEN UPPER(b.valeur) = UPPER('Tourcoing-Armentières') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '4' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale'
+                        WHEN UPPER(b.valeur) = UPPER('Tourcoing-Armentières') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '4' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale')
                             THEN e.objectid
-                        /*WHEN UPPER(b.valeur) = UPPER('Aisne') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '02' AND UPPER(g.valeur) = UPPER('code département')
+                        WHEN UPPER(b.valeur) = UPPER('Aisne') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '02' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
                         WHEN UPPER(b.valeur) = UPPER('Nord') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '59' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
@@ -693,7 +695,7 @@ USING(
                         WHEN UPPER(b.valeur) = UPPER('Oise') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '60' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
                         WHEN UPPER(b.valeur) = UPPER('Hauts-de-France') AND UPPER(d.valeur) = UPPER('région') AND e.valeur = '32' AND UPPER(g.valeur) = UPPER('code région')
-                            THEN e.objectid*/
+                            THEN e.objectid
                     END AS ID_CODE,
                     e.valeur AS code,
                     a.objectid AS ID_ZONE_ADMIN,
