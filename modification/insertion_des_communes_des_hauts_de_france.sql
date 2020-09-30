@@ -40,7 +40,7 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
 
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données ;
-MERGE INTO G_GEO.TA_ORGANISME a
+/*MERGE INTO G_GEO.TA_ORGANISME a
 USING(
     SELECT 
         'IGN' AS acronyme, 
@@ -161,7 +161,7 @@ WHEN NOT MATCHED THEN
     INSERT (a.fid_metadonnee, a.fid_organisme)
     VALUES (t.fid_metadonnee, t.fid_organisme);
 COMMIT;
-
+*/
 -- 2. Création des familles et libelles ;
 -- 2.1. Insertion de toutes les familles requises pour les communes ;
 MERGE INTO G_GEO.TA_FAMILLE a
