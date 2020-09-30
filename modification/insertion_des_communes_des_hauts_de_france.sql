@@ -179,7 +179,7 @@ MERGE INTO G_GEO.TA_FAMILLE a
         SELECT 'Etablissements de Coopération Intercommunale (EPCI)' AS FAMILLE FROM DUAL
     )t
     ON(
-        a.valeur = t.famille
+        UPPER(a.valeur) = UPPER(t.famille)
     )
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
@@ -213,7 +213,7 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
             UNION
             SELECT 'code territoire' AS libelle FROM DUAL
     ) t
-    ON (a.valeur = t.libelle)
+    ON (UPPER(a.valeur) = UPPER(t.libelle))
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
@@ -229,29 +229,29 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
             (SELECT DISTINCT
                 a.objectid AS fid_famille,
                 CASE
-                    WHEN a.valeur = 'types de commune' AND b.valeur = 'commune simple'
+                    WHEN UPPER(a.valeur) = UPPER('types de commune') AND UPPER(b.valeur) = UPPER('commune simple')
                     THEN b.objectid
-                    WHEN a.valeur = 'types de commune' AND b.valeur = 'commune associée'
+                    WHEN UPPER(a.valeur) = UPPER('types de commune') AND UPPER(b.valeur) = UPPER('commune associée')
                     THEN b.objectid
-                    WHEN a.valeur = 'zone supra-communale' AND b.valeur = 'département'
+                    WHEN UPPER(a.valeur) = UPPER('zone supra-communale') AND UPPER(b.valeur) = UPPER('département')
                     THEN b.objectid
-                    WHEN a.valeur = 'zone supra-communale' AND b.valeur = 'région'
+                    WHEN UPPER(a.valeur) = UPPER('zone supra-communale') AND UPPER(b.valeur) = UPPER('région')
                     THEN b.objectid
-                    WHEN a.valeur = 'Etablissements de Coopération Intercommunale (EPCI)' AND b.valeur = 'Métropole'
+                    WHEN UPPER(a.valeur) = UPPER('Etablissements de Coopération Intercommunale (EPCI)') AND UPPER(b.valeur) = UPPER('Métropole')
                     THEN b.objectid
-                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Territoire'
+                    WHEN UPPER(a.valeur) = UPPER('Division territoriale de la MEL') AND UPPER(b.valeur) = UPPER('Territoire')
                     THEN b.objectid
-                    WHEN a.valeur = 'Division territoriale de la MEL' AND b.valeur = 'Unité Territoriale'
+                    WHEN UPPER(a.valeur) = UPPER('Division territoriale de la MEL') AND UPPER(b.valeur) = UPPER('Unité Territoriale')
                     THEN b.objectid
-                    WHEN a.valeur = 'Identifiants de zone administrative' AND b.valeur = 'code insee'
+                    WHEN UPPER(a.valeur) = UPPER('Identifiants de zone administrative') AND UPPER(b.valeur) = UPPER('code insee')
                     THEN b.objectid
-                    WHEN a.valeur = 'Identifiants de zone administrative' AND b.valeur = 'code département'
+                    WHEN UPPER(a.valeur) = UPPER('Identifiants de zone administrative') AND UPPER(b.valeur) = UPPER('code département')
                     THEN b.objectid
-                    WHEN a.valeur = 'Identifiants de zone administrative' AND b.valeur = 'code région'
+                    WHEN UPPER(a.valeur) = UPPER('Identifiants de zone administrative') AND UPPER(b.valeur) = UPPER('code région')
                     THEN b.objectid
-                    WHEN a.valeur = 'Identifiants des divisions territoriales de la MEL' AND b.valeur = 'code unité territoriale'
+                    WHEN UPPER(a.valeur) = UPPER('Identifiants des divisions territoriales de la MEL') AND UPPER(b.valeur) = UPPER('code unité territoriale')
                     THEN b.objectid
-                    WHEN a.valeur = 'Identifiants des divisions territoriales de la MEL' AND b.valeur = 'code territoire'
+                    WHEN UPPER(a.valeur) = UPPER('Identifiants des divisions territoriales de la MEL') AND UPPER(b.valeur) = UPPER('code territoire')
                     THEN b.objectid
                 END AS fid_libelle_long
             FROM
@@ -276,7 +276,19 @@ MERGE INTO G_GEO.TA_LIBELLE a
         FROM
             G_GEO.TA_LIBELLE_LONG b
         WHERE
-            b.valeur IN('département', 'région', 'commune simple', 'commune associée', 'Métropole', 'Unité Territoriale', 'code unité territoriale', 'Territoire', 'code insee', 'code département', 'code région', 'code territoire')
+            b.valeur IN(
+                    UPPER('département'),
+                    UPPER('région'), 
+                    UPPER('commune simple'), 
+                    UPPER('commune associée'), 
+                    UPPER('Métropole'), 
+                    UPPER('Unité Territoriale'), 
+                    UPPER('code unité territoriale'), 
+                    UPPER('Territoire'), 
+                    UPPER('code insee'), 
+                    UPPER('code département'), 
+                    UPPER('code région'), 
+                    UPPER('code territoire'))
     )t
     ON (a.fid_libelle_long = t.fid_libelle_long)
 WHEN NOT MATCHED THEN
@@ -411,10 +423,10 @@ MERGE INTO G_GEO.TA_CODE a
                     )
                 SELECT
                     CASE
-                        WHEN c.valeur = 'code territoire' AND a.code IN('1', '2', '3', '4', '5', '6', '7', '8') THEN a.code
-                        WHEN c.valeur = 'code unité territoriale' AND a.code IN('1', '2', '3', '4') THEN a.code
-                        WHEN c.valeur = 'code département' AND a.code IN('02', '59', '60', '62', '80') THEN a.code
-                        WHEN c.valeur = 'code région' AND a.code = '32' THEN a.code
+                        WHEN UPPER(c.valeur) = UPPER('code territoire') AND a.code IN('1', '2', '3', '4', '5', '6', '7', '8') THEN a.code
+                        WHEN UPPER(c.valeur) = UPPER('code unité territoriale') AND a.code IN('1', '2', '3', '4') THEN a.code
+                        WHEN UPPER(c.valeur) = UPPER('code département') AND a.code IN('02', '59', '60', '62', '80') THEN a.code
+                        WHEN UPPER(c.valeur) = UPPER('code région') AND a.code = '32' THEN a.code
                     END AS code,
                     b.objectid AS libelle,
                     c.valeur AS libelle_long
@@ -646,41 +658,41 @@ USING(
         (
             SELECT DISTINCT
                     CASE
-                        WHEN b.valeur = 'Territoire Est' AND d.valeur = 'Territoire' AND e.valeur = '5' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire Est') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '5' AND UPPER(g.valeur = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Territoire Tourquennois' AND d.valeur = 'Territoire' AND e.valeur = '2' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire Tourquennois') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '2' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Territoire des Weppes' AND d.valeur = 'Territoire' AND e.valeur = '1' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire des Weppes') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '1' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Territoire Lillois' AND d.valeur = 'Territoire' AND e.valeur = '8' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire Lillois') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '8' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Couronne Nord de Lille' AND d.valeur = 'Territoire' AND e.valeur = '6' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Couronne Nord de Lille') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '6' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Couronne Sud de Lille' AND d.valeur = 'Territoire' AND e.valeur = '7' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Couronne Sud de Lille') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '7' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Territoire Roubaisien' AND d.valeur = 'Territoire' AND e.valeur = '3' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire Roubaisien') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '3' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Territoire de la Lys' AND d.valeur = 'Territoire' AND e.valeur = '4' AND g.valeur = 'Code Territoire'
+                        WHEN UPPER(b.valeur) = UPPER('Territoire de la Lys') AND UPPER(d.valeur) = UPPER('Territoire') AND e.valeur = '4' AND UPPER(g.valeur) = UPPER('Code Territoire')
                             THEN e.objectid
-                        WHEN b.valeur = 'Lille-Seclin' AND d.valeur = 'Unité Territoriale' AND e.valeur = '1' AND g.valeur = 'Code Unité Territoriale'
+                        WHEN UPPER(b.valeur) = UPPER('Lille-Seclin') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '1' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale')
                             THEN e.objectid
-                        WHEN b.valeur = 'Marcq en Baroeul-la-Bassee' AND d.valeur = 'Unité Territoriale' AND e.valeur = '2' AND g.valeur = 'Code Unité Territoriale'
+                        WHEN UPPER(b.valeur) = UPPER('Marcq en Baroeul-la-Bassee') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '2' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale')
                             THEN e.objectid
-                        WHEN b.valeur = 'Roubaix-Villeneuve d''Ascq' AND d.valeur = 'Unité Territoriale' AND e.valeur = '3' AND g.valeur = 'Code Unité Territoriale'
+                        WHEN UPPER(b.valeur) = UPPER('Roubaix-Villeneuve d''Ascq') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '3' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale')
                             THEN e.objectid
-                        WHEN b.valeur = 'Tourcoing-Armentières' AND d.valeur = 'Unité Territoriale' AND e.valeur = '4' AND g.valeur = 'Code Unité Territoriale'
+                        WHEN UPPER(b.valeur) = UPPER('Tourcoing-Armentières') AND UPPER(d.valeur) = UPPER('Unité Territoriale') AND e.valeur = '4' AND UPPER(g.valeur) = UPPER('Code Unité Territoriale'
                             THEN e.objectid
-                        /*WHEN b.valeur = 'Aisne' AND d.valeur = 'département' AND e.valeur = '02' AND g.valeur = 'code département'
+                        /*WHEN UPPER(b.valeur) = UPPER('Aisne') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '02' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
-                        WHEN b.valeur = 'Nord' AND d.valeur = 'département' AND e.valeur = '59' AND g.valeur = 'code département'
+                        WHEN UPPER(b.valeur) = UPPER('Nord') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '59' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
-                        WHEN b.valeur = 'Pas-de-Calais' AND d.valeur = 'département' AND e.valeur = '62' AND g.valeur = 'code département'
+                        WHEN UPPER(b.valeur) = UPPER('Pas-de-Calais') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '62' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
-                        WHEN b.valeur = 'Somme' AND d.valeur = 'département' AND e.valeur = '80' AND g.valeur = 'code département'
+                        WHEN UPPER(b.valeur) = UPPER('Somme') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '80' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
-                        WHEN b.valeur = 'Oise' AND d.valeur = 'département' AND e.valeur = '60' AND g.valeur = 'code département'
+                        WHEN UPPER(b.valeur) = UPPER('Oise') AND UPPER(d.valeur) = UPPER('département') AND e.valeur = '60' AND UPPER(g.valeur) = UPPER('code département')
                             THEN e.objectid
-                        WHEN b.valeur = 'Hauts-de-France' AND d.valeur = 'région' AND e.valeur = '32' AND g.valeur = 'code région'
+                        WHEN UPPER(b.valeur) = UPPER('Hauts-de-France') AND UPPER(d.valeur) = UPPER('région') AND e.valeur = '32' AND UPPER(g.valeur) = UPPER('code région')
                             THEN e.objectid*/
                     END AS ID_CODE,
                     e.valeur AS code,
@@ -695,8 +707,8 @@ USING(
                     INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = e.fid_libelle
                     INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
                 WHERE
-                    d.valeur IN('Territoire', 'Unité Territoriale', 'département', 'région')
-                    AND g.valeur IN('code territoire', 'code unité territoriale', 'code département', 'code région')
+                    UPPER(d.valeur) IN(UPPER('Territoire'), UPPER('Unité Territoriale'), UPPER('département'), UPPER('région'))
+                    AND UPPER(g.valeur) IN(UPPER('code territoire'), UPPER('code unité territoriale'), UPPER('code département'), UPPER('code région'))
         ) a
     WHERE
         a.ID_CODE IS NOT NULL
@@ -710,22 +722,28 @@ COMMIT;
 /*-- Insertion dans la table ta_za_communes des communes par département et région
 -- Département de l'Aisne
 MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                SUBSTR(d.valeur, 0, 2) = '02' 
-                AND i.valeur = 'code insee'
-                AND g.valeur = '02'
-                AND k.valeur = 'code département') t
+    USING(
+        SELECT 
+            b.objectid AS commune, 
+            e.objectid AS zone_admin, 
+            '01/01/2020' AS debut_validite, 
+            '01/01/2999' AS fin_validite  
+        FROM ta_commune b
+            INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
+            INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+            INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
+            G_GEO.TA_ZONE_ADMINISTRATIVE e
+            INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
+            INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
+            INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+            INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
+        WHERE 
+            SUBSTR(d.valeur, 0, 2) = '02' 
+            AND UPPER(i.valeur) = UPPER('code insee')
+            AND g.valeur = '02'
+            AND UPPER(k.valeur) = UPPER('code département')
+    ) t
     ON (a.fid_zone_administrative = t.zone_admin)
 WHEN NOT MATCHED THEN
     INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
