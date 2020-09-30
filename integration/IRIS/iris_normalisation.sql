@@ -90,10 +90,10 @@ SELECT
             INNER JOIN G_GEO.TA_FAMILLE m ON m.objectid = l.fid_famille,
             G_GEO.TA_METADONNEE n,
             G_GEO.TA_IRIS_GEOM o
-        -- sous requete dans le WHERE pour être sur d'avoir des clé étrangére fid_libelle qui correspondent à des types de zone IRIS
+        -- sous requete dans le WHERE pour être sur d'avoir des clés étrangéres fid_libelle qui correspondent à des types de zone IRIS
         WHERE
             g.valeur = 'type de zone IRIS'
-        -- AND pour être sur d'avoir des clé étrangére fid_code qui correspondent à des identifiants de zone statistique
+        -- AND pour être sur d'avoir des clés étrangéres fid_code qui correspondent à des identifiants de zone statistique
         AND
             m.valeur = 'identifiants de zone statistique'
         -- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
