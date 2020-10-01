@@ -85,7 +85,7 @@ MERGE INTO G_GEO.TEMP_COMMUNES_VM a
 				WHERE
 					llco.valeur = 'code insee'
 				AND
-					nomza.valeur = 'Hauts-de-France'
+					nomza.valeur IN ('Oise','Pas-de-Calais','Nord','Somme','Aisne')
 				AND
 					so.nom_source  = 'BDTOPO'
 				AND
@@ -161,7 +161,7 @@ MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES a
 			INNER JOIN G_GEO.TA_FAMILLE fi ON fi.objectid = fli.fid_famille
 			INNER JOIN millesime millesime ON millesime.id_mtd = i.fid_metadonnee
 			WHERE
-				SDO_RELATE(ig.geom, co.geom, 'mask=OVERLAPBDYINTERSECT') = 'TRUE'
+				SDO_RELATE(co.geom, ig.geom, 'mask=ANYINTERACT') = 'TRUE'
 			AND 
 				llf.valeur = 'identifiants de zone statistique'
 			AND

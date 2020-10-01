@@ -236,9 +236,9 @@ USING
     WHERE
         a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)'
         OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....'
-        OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente'
+        OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moins deux fois plus d''emplois salariés que de population résidente'
         OR a.VALEUR = 'type de zone IRIS' AND b.VALEUR = 'Communes non découpées en IRIS'
-        OR a.VALEUR = 'Identifiants de zone statistique' AND b.VALEUR = 'code iris'
+        OR a.VALEUR = 'identifiants de zone statistique' AND b.VALEUR = 'code iris'
     ) b
 ON (a.fid_famille = b.fid_famille
 AND a.fid_libelle_long = b.fid_libelle_long)
@@ -284,7 +284,7 @@ USING
         WHERE
             b.VALEUR = 'H' AND c.VALEUR = 'IRIS d''habitat:  leur population se situe en général entre 1 800 et 5 000 habitants. Ils sont homogènes quant au type d''habitat et leurs limites s''appuient sur les grandes coupures du tissu urbain (voies principales, voies ferrées, cours d''eau, ...)' OR
             b.VALEUR = 'D' AND c.VALEUR = 'IRIS divers: il s''agit de grandes zones spécifiques peu habitées et ayant une superficie importante (parcs de loisirs, zones portuaires, forêts, ....' OR
-            b.VALEUR = 'A' AND c.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moINs deux fois plus d''emplois salariés que de population résidente' OR
+            b.VALEUR = 'A' AND c.VALEUR = 'IRIS d''activité: ils regroupent environ 1 000 salariés et comptent au moins deux fois plus d''emplois salariés que de population résidente' OR
             b.VALEUR = 'Z' AND c.VALEUR = 'Communes non découpées en IRIS' AND
             e.VALEUR = 'type de zone IRIS'
     )b
