@@ -18,7 +18,7 @@ Exemple: code_iris 024080801.
 
 ## Phasage:
 
-1. Insertion des données IRIS dans une table d'import dans la base Oracle
+1. Insertion des données IRIS dans une table d'import dans la base Oracle.
 2. Création des tables du schéma nécessaire à l'insertion des données IRIS.
 3. Insertion de la nomenclature propre aux IRIS.
 4. Normalisation des données dans le schéma.
