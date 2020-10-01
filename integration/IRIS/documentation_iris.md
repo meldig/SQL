@@ -4,12 +4,17 @@ Ce document a pour but d'expliciter la méthode utilisée pour intégrer les don
 * <em>iris_structure.sql:</em> fichier regroupant les requêtes de création de la structure nécessaire à l'intégration des IRIS.
 * <em>iris_nomenclature.sql:</em> fichier regroupant les commandes utilisées pour insérer la nomenclature des données IRIS dans la base oracle.
 * <em>iris_normalisation.sql:</em> fichier regroupant les instructions nécessaires à la normalisation des données IRIS dans la base oracle.
-* <em>admin_iris.sql:</em> vue restituant les données IRIS
-* <em>iris_traitement.bat:</em> fichier permettant l'insertion des IRIS en base et le traitement des données
+* <em>admin_iris.sql:</em> vue restituant les données IRIS.
+* <em>iris_traitement.bat:</em> fichier permettant l'insertion des IRIS en base et le traitement des données.
 
-## Prerequis.
+## Prérequis.
 
-Necessite les communes de la BDTOPO au meme millesime dans la table Oracle
+Nécessite les communes de la BDTOPO au même millesime dans la table oracle.
+
+## Observation.
+
+Certain IRIS sont des polygones multipartis:
+Exemple: code_iris 024080801.
 
 ## Phasage:
 
@@ -100,11 +105,11 @@ Suppression des zones IRIS qui ne sont pas dans les Hauts-de-France. Autrement d
 
 #### 4.2 Insertion des noms IRIS dans le table G_GEO.TA_NOM
 
-Certain IRIS, ont pour nom le nom de leurs communes (IRIS de type Z: Communes non découpées en IRIS). Il est donc préférable d'utilisé une commande MERGE plutot que la commande Insert pour éviter des doublons de valeurs dans la table.
+Certain IRIS, ont pour nom les noms de leurs communes (IRIS du type Z: Communes non découpées en IRIS). Il est donc préférable d'utiliser une commande MERGE plutôt que la commande INSERT pour éviter des doublons de valeurs dans la table.
 
 #### 4.3. Insertion des codes IRIS dans la table G_GEO.TA_CODE.
 
-Le chaque IRIS à un code en 4 chiffre ainsi qu'un code complet en 9 chiffres(concaténation du code INSEE et du code IRIS). Comme il est possible par requete spatiale de reconstituer le code IRIS complet le parti pris a été de n'insérer en base que le code IRIS.
+Chaque IRIS a un code en 4 chiffres ainsi qu'un code complet en 9 chiffres(concaténation du code INSEE et du code IRIS). Comme il est possible par requête spatiale de reconstituer le code IRIS complet le parti pris a été de n'insérer en base que le code IRIS.
 
 #### 4.4. Insertion des géométries des IRIS dans la table G_GEO.TA_IRIS_GEOM.
 
@@ -112,7 +117,7 @@ Insertion avec une clause WHERE pour éviter d'inserer dans la table des géomé
 
 #### 4.5. Normalisation des données IRIS dans la table G_GEO.TA_IRIS
 
-Requete qui reconstitue les IRIS et leurs attribut dans la table TA_IRIS_GEOM. La sous requete présente dans le troisième AND permet de selectionner le fid_metadonnee pour les IRIS au millesime le plus récent. En cas d'insertion d'un millesime antérieur, il faudra corriger la requete. 
+Requête qui reconstitue les IRIS et leurs attributs dans la table TA_IRIS. La sous-requête présente dans le troisième AND permet de sélectionner le fid_metadonnee pour les IRIS au millésime le plus récent. En cas d'insertion d'un millésime antérieur, il faudra adapter la requête. 
 
 	        -- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
         AND 
@@ -145,19 +150,19 @@ Suppression de la table IRIS_CONTOURS et de ses métadonnées spatiales.
 
 ### 5. Création de la vue admin_iris.
 
-La requete permettant de creer la vue est contenue dans le fichier admin_iris.sql. A cause du temps de traitement des tables intermediaire sont créer. L'ensemble de ces tables sont supprimées à la fin du traitement.
+La requête permettant de créer la vue est contenue dans le fichier <em>admin_iris.sql</em>. A cause du temps de traitement des tables intermediaires sont créées. L'ensemble de ces tables seront supprimées à la fin du traitement.
 
 #### 5.1. Creation de la table TEMP_COMMUNES_VM.
 
-insertion des communes du même millesime que les IRIS dans une table temporaire appelé TEMP_COMMUNES_VM. Les metadonnées de la table sont crées ainsi qu'un index sur la colonne GEOM
+Insertion des communes du même millésime que les IRIS dans une table temporaire appelée TEMP_COMMUNES_VM. Les métadonnées de la table sont créées ainsi qu'un index sur la colonne GEOM
 
 #### 5.2. Creation de la table TEMP_COMMUNES_SURFACES.
 
-Cette table sert à calculé les surfaces d'intersection entre les communes et les IRIS. La communes avec laquelle l'IRIS obtient la plus grande surface d'intersection sera considéré comme la commune d'appartenance de l'IRIS.
+Cette table sert à calculer les surfaces d'intersection entre les communes et les IRIS. La commune avec laquelle l'IRIS obtient la plus grande surface d'intersection sera considérée comme la commune d'appartenance de l'IRIS.
 
 #### 5.3. Detection des aires maximales dans la table G_GEO.TEMP_COMMUNES_SURFACES_MAX.
 
-Table qui sert à distinguer la surface d'intersection maximale afin de distinguer la commune d'appartenance de l'IRIS. Ces requetes spatiales sont necessaires afin de recomposer le code IRIS complet de la zone IRIS.
+Table qui sert à distinguer la surface d'intersection maximale afin de distinguer la commune d'appartenance de l'IRIS. Ces requêtes spatiales sont nécessaires afin de recomposer le code IRIS complet de la zone IRIS.
 
 #### 5.4. Création de la vue matérialisée.
 
