@@ -504,7 +504,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
 
-*/
+
 -- 5. Création des zones supra-communales, des territoires et des unités territoriales
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
     USING(
@@ -542,7 +542,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.fid_nom, t.fid_libelle);
 
-/*
+
 -- 6. Insertion des géométries des communes dans la table TA_COMMUNE
 MERGE INTO G_GEO.TA_COMMUNES a
     USING(
@@ -689,8 +689,8 @@ WHEN NOT MATCHED THEN
     
 -- Insertion dans la table TA_IDENTIFIANT_ZONE_ADMINISTRATIF
 -- Département de l'Aisne
-*/
 
+*/
 MERGE INTO G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE a
 USING(
     SELECT *
