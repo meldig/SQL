@@ -41,6 +41,41 @@ SET SERVEROUTPUT ON
 BEGIN
 SAVEPOINT POINT_SAUVEGARDE_INSERTION_COMMUNES;
 
+-- Correctif servant à supprimer les doublons de noms dans la table G_GEO.TA_NOM
+UPDATE G_GEO.TA_IRIS
+SET FID_NOM = (
+			CASE
+				-- est vers Est
+				WHEN FID_NOM = 9024 THEN 6108
+				-- gare vers Gare
+				WHEN FID_NOM = 9049 THEN 6367
+				-- jardins vers Jardins
+				WHEN FID_NOM = 9081 THEN 6717
+				-- justice vers Justice
+				WHEN FID_NOM = 9082 THEN 6739
+				-- nord vers Nord
+				WHEN FID_NOM = 9147 THEN 224
+				-- nord est vers Nord Est
+				WHEN FID_NOM = 9148 THEN 7580
+				-- nord ouest vers Nord Ouest
+				WHEN FID_NOM = 9149 THEN 7582	
+				-- ouest vers Ouest
+				WHEN FID_NOM = 9154 THEN 7677	
+				-- sud vers Sud
+				WHEN FID_NOM = 9233 THEN 8493	
+				-- sud est vers Sud Est
+				WHEN FID_NOM = 9234 THEN 8494	
+				-- sud ouest vers Sud Ouest
+				WHEN FID_NOM = 9238 THEN 8500	
+				-- zone d'activité vers Zone d'activite
+				WHEN FID_NOM = 9282 THEN 8982				
+			END
+			)
+WHERE FID_NOM IN (9024,9049,9081,9082,9147,9148,9149,9154,9233,9234,9238,9282);
+
+DELETE FROM G_GEO.TA_NOM
+WHERE OBJECTID IN (9024,9049,9081,9082,9147,9148,9149,9154,9233,9234,9238,9282);
+
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données ;
 /*MERGE INTO G_GEO.TA_ORGANISME a
