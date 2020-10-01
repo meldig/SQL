@@ -37,6 +37,9 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
     9.3. Association des communes à leur région d'appartenance ;
 */
 
+SET SERVEROUTPUT ON
+BEGIN
+SAVEPOINT POINT_SAUVEGARDE_INSERTION_COMMUNES;
 
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données ;
@@ -51,7 +54,7 @@ ON (UPPER(a.acronyme) = UPPER(t.acronyme) AND UPPER(a.nom_organisme) = UPPER(t.v
 WHEN NOT MATCHED THEN
     INSERT(a.acronyme, a.nom_organisme)
     VALUES(t.acronyme, t.valeur);
-COMMIT;
+
 
 -- 1.2. Insertion de la source des données ;
 MERGE INTO G_GEO.TA_SOURCE a
@@ -65,7 +68,7 @@ ON (UPPER(a.nom_source) = UPPER(t.nom) AND UPPER(a.description) = UPPER(t.descri
 WHEN NOT MATCHED THEN
     INSERT(a.nom_source, a.description)
     VALUES(t.nom, t.description);
-COMMIT;
+
 
 -- 1.3. Insertion du millésime, date d'insertion et nom de l'obtenteur des données ;
 MERGE INTO G_GEO.TA_DATE_ACQUISITION a
@@ -84,7 +87,7 @@ MERGE INTO G_GEO.TA_DATE_ACQUISITION a
 WHEN NOT MATCHED THEN
     INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
     VALUES(t.date_insertion, t.date_millesime, t.nom_obtenteur);
-COMMIT;
+
 
 -- 1.4. Insertion de la provenance des données ;
 MERGE INTO G_GEO.TA_PROVENANCE a
@@ -101,7 +104,7 @@ MERGE INTO G_GEO.TA_PROVENANCE a
 WHEN NOT MATCHED THEN
     INSERT(a.url, a.methode_acquisition)
     VALUES(t.url, t.methode);
-COMMIT;
+
     
 -- 1.5. Insertion des clés étrangères dans la table pivot TA_METADONNEE ;
 MERGE INTO G_GEO.TA_METADONNEE a
@@ -130,7 +133,7 @@ MERGE INTO G_GEO.TA_METADONNEE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_source, a.fid_acquisition, a.fid_provenance)
     VALUES(t.fid_source, t.fid_acquisition, t.fid_provenance);
-COMMIT;
+
 
 -- 1.6. Insertion des clés étrangères dans la table pivot TA_METADONNEE_RELATION_ORGANISME
 MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
@@ -160,7 +163,7 @@ MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
 WHEN NOT MATCHED THEN
     INSERT (a.fid_metadonnee, a.fid_organisme)
     VALUES (t.fid_metadonnee, t.fid_organisme);
-COMMIT;
+
 */
 -- 2. Création des familles et libelles ;
 -- 2.1. Insertion de toutes les familles requises pour les communes ;
@@ -184,7 +187,7 @@ MERGE INTO G_GEO.TA_FAMILLE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.famille);
-COMMIT;
+
 
 -- 2.2. Insertion de tous les libelles longs requis pour les communes ;
 MERGE INTO G_GEO.TA_LIBELLE_LONG a
@@ -217,7 +220,7 @@ MERGE INTO G_GEO.TA_LIBELLE_LONG a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.libelle);
-COMMIT;
+
 
 -- 2.3. Insertion des clés étrangères dans la table pivot TA_FAMILLE_LIBELLE ;
 MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
@@ -266,7 +269,7 @@ MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_famille, a.fid_libelle_long)
     VALUES(t.fid_famille, t.fid_libelle_long);
-COMMIT;
+
 
 -- 2.4. Insertion des clés étrangères dans la table pivot TA_LIBELLE
 MERGE INTO G_GEO.TA_LIBELLE a
@@ -294,7 +297,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_libelle_long)
     VALUES(t.fid_libelle_long);
-COMMIT;
+
 
 -- 3. Création des noms requis pour les communes
 -- 3.1. Insertion des noms des zones supra-communales ;
@@ -353,7 +356,7 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
-COMMIT;
+
 
 -- 3.2. Insertion des noms des communes ;
 MERGE INTO G_GEO.TA_NOM a
@@ -369,7 +372,7 @@ MERGE INTO G_GEO.TA_NOM a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
-COMMIT;
+
 */
 -- 4. Mise en base des codes requis pour les communes
 -- 4.1. Insertion des codes départementaux, régionaux, territoriaux et des unités territoriales ;
@@ -443,7 +446,7 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.code, t.libelle);
-COMMIT;
+
 
 
 /*
@@ -465,7 +468,7 @@ MERGE INTO G_GEO.TA_CODE a
 WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
-COMMIT;
+
 */
 -- 5. Création des zones supra-communales, des territoires et des unités territoriales
 MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
@@ -503,7 +506,7 @@ MERGE INTO G_GEO.TA_ZONE_ADMINISTRATIVE a
 WHEN NOT MATCHED THEN
     INSERT(a.fid_nom, a.fid_libelle)
     VALUES(t.fid_nom, t.fid_libelle);
-COMMIT;
+
 /*
 -- 6. Insertion des géométries des communes dans la table TA_COMMUNE
 MERGE INTO G_GEO.TA_COMMUNES a
@@ -541,7 +544,7 @@ MERGE INTO G_GEO.TA_COMMUNES a
 WHEN NOT MATCHED THEN
     INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
     VALUES(t.ORA_GEOMETRY, t.fid_libelle, t.fid_nom, t.fid_metadonnee);
-COMMIT;
+
 
 -- 7. Association des géométries communales avec leur code INSEE
 
@@ -719,7 +722,7 @@ ON (a.fid_zone_administrative = t.ID_ZONE_ADMIN AND a.fid_identifiant = t.ID_COD
 WHEN NOT MATCHED THEN
     INSERT(a.fid_zone_administrative, a.fid_identifiant)
     VALUES(t.id_zone_admin, t.id_code);
-COMMIT;
+
 
 /*-- Insertion dans la table ta_za_communes des communes par département et région
 -- Département de l'Aisne
@@ -865,3 +868,13 @@ WHEN NOT MATCHED THEN
     INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
     VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
 */
+
+COMMIT;
+
+-- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
+        ROLLBACK TO POINT_SAUVEGARDE_INSERTION_COMMUNES;
+END;
+/
