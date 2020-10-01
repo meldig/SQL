@@ -365,7 +365,7 @@ MERGE INTO G_GEO.TA_NOM a
             WHERE
                 a.INSEE_DEP IN('02', '59', '60', '62', '80')
             ) t
-    ON (a.valeur = t.NOM)
+    ON (UPPER(a.valeur) = UPPER(t.NOM))
 WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.NOM);
