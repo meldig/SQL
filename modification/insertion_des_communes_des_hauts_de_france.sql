@@ -79,17 +79,18 @@ WHERE OBJECTID IN (9024,9049,9081,9082,9147,9148,9149,9154,9233,9234,9238,9282);
 -- Correctif de libelle BPE
 UPDATE G_GEO.TA_LIBELLE_LONG
 SET VALEUR = (
-               CASE
-                   WHEN OBJECTID = 38 THEN 'Aide sociale à l''enfance : action éducative'
-                   WHEN OBJECTID = 63 THEN 'CHRS Centre d''hébergement et de réadaptation sociale'
-                   WHEN OBJECTID = 95 THEN 'Enfants handicapés : services à domicile ou ambulatoires'
-                   WHEN OBJECTID = 134 THEN 'Lycée d''enseignement général et/ou technologique'
-                   WHEN OBJECTID = 137 THEN 'Magasin d''article de sports et de loisirs'
-                   WHEN OBJECTID = 188 THEN 'SGT : Section enseignement général et technologique'
-                   WHEN OBJECTID = 204 THEN 'Spécialiste en radiodiagnostic et imagerie médicale'
-               END
-               )
-WHERE OBJECTID IN (38,63,95,134,137,188,204);
+            CASE
+                WHEN OBJECTID = 38 THEN 'Aide sociale à l''enfance : action éducative'
+                WHEN OBJECTID = 63 THEN 'CHRS Centre d''hébergement et de réadaptation sociale'
+                WHEN OBJECTID = 95 THEN 'Enfants handicapés : services à domicile ou ambulatoires'
+                WHEN OBJECTID = 134 THEN 'Lycée d''enseignement général et/ou technologique'
+                WHEN OBJECTID = 137 THEN 'Magasin d''articles de sports et de loisirs'
+                WHEN OBJECTID = 182 THEN 'Réparation automobile et de matériel agricole'
+                WHEN OBJECTID = 188 THEN 'SGT : Section enseignement général et technologique'
+                WHEN OBJECTID = 204 THEN 'Spécialiste en radiodiagnostic et imagerie médicale'
+            END
+            )
+WHERE OBJECTID IN (38,63,95,134,137,182,188,204);
 
 
 -- 1. Création des métadonnées ;
