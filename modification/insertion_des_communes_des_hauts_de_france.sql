@@ -240,7 +240,6 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.famille);
 
-
 -- 2.2. Insertion de tous les libelles longs requis pour les communes ;
 MERGE INTO G_GEO.TA_LIBELLE_LONG a
     USING(
