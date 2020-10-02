@@ -3,12 +3,11 @@ Création de la vue matérialisée des Territoires (faite à partir de l'aggrég
 */
 
 /*
-DROP MATERIALIZED VIEW admin_territoire_mel;
+DROP MATERIALIZED VIEW G_REFERENTIEL.ADMIN_TERRITOIRE_MEL;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'ADMIN_TERRITOIRE_MEL';
 */
-
 -- 1. Création de la vue matérialisée
-CREATE MATERIALIZED VIEW g_referentiel.admin_territoire_mel(
+CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_TERRITOIRE_MEL(
     identifiant,
     code_adm,
     nom,
@@ -18,23 +17,26 @@ REFRESH ON DEMAND
 FORCE
 DISABLE QUERY REWRITE AS
 SELECT
-        c.objectid AS identifiant,
-        g.code_adm,
-        e.nom AS nom_a,
-        SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
-    FROM
-        g_geo.ta_commune a
-        INNER JOIN g_geo.ta_za_communes b ON a.objectid = b.fid_commune
-        INNER JOIN g_geo.ta_zone_administrative c ON b.fid_zone_administrative = c.objectid
-        INNER JOIN g_geo.ta_libelle d ON c.fid_libelle = d.objectid
-        INNER JOIN g_geo.ta_nom e ON c.fid_nom = e.objectid
-        INNER JOIN g_geo.ta_identifiant_zone_administrative f ON c.objectid = f.fid_zone_administrative
-        INNER JOIN g_geo.ta_code g ON f.fid_identifiant = g.objectid
-    WHERE
-        d.libelle = 'Territoire'
-        AND sysdate BETWEEN b.debut_validite AND b.fin_validite
-GROUP BY e.nom, c.objectid
-;
+    c.objectid AS identifiant,
+    h.valeur AS code_adm,
+    f.valeur AS nom_a,
+    SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
+FROM
+    G_GEO.ta_commune a
+    INNER JOIN G_GEO.TA_ZA_COMMUNES b ON a.objectid = b.fid_commune
+    INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE c ON b.fid_zone_administrative = c.objectid
+    INNER JOIN G_GEO.TA_LIBELLE d ON c.fid_libelle = d.objectid
+    INNER JOIN G_GEO.TA_LIBELLE_long e ON e.objectid = d.fid_libelle_long
+    INNER JOIN G_GEO.TA_NOM f ON f.objectid = c.fid_nom
+    INNER JOIN G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE g ON g.fid_zone_administrative = c.objectid
+    INNER JOIN G_GEO.TA_CODE h ON h.objectid = g.fid_identifiant
+WHERE
+    e.valeur = 'Territoire'
+    AND sysdate BETWEEN b.debut_validite AND b.fin_validite
+GROUP BY 
+    f.valeur, 
+    c.objectid, 
+    h.valeur;
 
 -- 2. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -44,20 +46,20 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'admin_territoire_mel',
+    'ADMIN_TERRITOIRE_MEL',
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
 
 -- 3. Création de la clé primaire
-ALTER MATERIALIZED VIEW admin_territoire_mel 
-ADD CONSTRAINT admin_territoire_mel_PK 
+ALTER MATERIALIZED VIEW ADMIN_TERRITOIRE_MEL 
+ADD CONSTRAINT ADMIN_TERRITOIRE_MEL_PK 
 PRIMARY KEY (IDENTIFIANT);
 
 -- 4. Création de l'index spatial
-CREATE INDEX admin_territoire_mel_SIDX
-ON admin_territoire_mel(GEOM)
+CREATE INDEX ADMIN_TERRITOIRE_MEL_SIDX
+ON G_REFERENTIEL.ADMIN_TERRITOIRE_MEL(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS(
   'sdo_indx_dims=2, 
@@ -67,12 +69,13 @@ PARAMETERS(
 );
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW g_referentiel.admin_territoire_mel IS 'Vue matérialisée proposant les Territoires de la MEL.';
-COMMENT ON COLUMN g_referentiel.admin_territoire_mel.identifiant IS 'Clé primaire de chaque enregistrement.';
-COMMENT ON COLUMN g_referentiel.admin_territoire_mel.code_adm IS 'Code unique de chaque territoire (CODTER).';
-COMMENT ON COLUMN g_referentiel.admin_territoire_mel.nom IS 'Nom des Territoires.';
-COMMENT ON COLUMN g_referentiel.admin_territoire_mel.geom IS 'Géométrie de chaque Territoire.';
+COMMENT ON MATERIALIZED VIEW G_REFERENTIEL.ADMIN_TERRITOIRE_MEL IS 'Vue matérialisée proposant les Territoires de la MEL.';
+COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.identifiant IS 'Clé primaire de chaque enregistrement.';
+COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.code_adm IS 'Code unique de chaque territoire (CODTER).';
+COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.nom IS 'Nom des Territoires.';
+COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.geom IS 'Géométrie de chaque Territoire.';
 
 -- 6. Don du droit de lecture de la vue matérialisée au schéma G_REFERENTIEL_LEC et aux administrateurs
-GRANT SELECT ON admin_territoire_mel TO G_REFERENTIEL_LEC;
-GRANT SELECT ON admin_territoire_mel TO G_ADMIN_SIG;
+GRANT SELECT ON G_REFERENTIEL.ADMIN_TERRITOIRE_MEL TO G_REFERENTIEL_LEC;
+GRANT SELECT ON G_REFERENTIEL.ADMIN_TERRITOIRE_MEL TO G_REFERENTIEL_MAJ;
+GRANT SELECT ON G_REFERENTIEL.ADMIN_TERRITOIRE_MEL TO G_ADMIN_SIG;

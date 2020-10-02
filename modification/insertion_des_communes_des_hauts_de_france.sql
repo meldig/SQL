@@ -92,7 +92,6 @@ SET VALEUR = (
             )
 WHERE OBJECTID IN (38,63,95,134,137,182,188,204);
 
-
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données ;
 /*MERGE INTO G_GEO.TA_ORGANISME a
