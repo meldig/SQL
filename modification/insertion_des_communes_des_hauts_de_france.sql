@@ -579,7 +579,7 @@ MERGE INTO G_GEO.TA_COMMUNES a
                 AND h.nom_source = 'BDTOPO'
         )t
         ON(
-            t.fid_metadonnee <> (SELECT
+            t.fid_metadonnee = (SELECT
                                     x.objectid
                                 FROM
                                     G_GEO.TA_METADONNEE x
@@ -600,6 +600,33 @@ WHEN NOT MATCHED THEN
 
   
 -- Insertion dans la table TA_identifiant_commune pour faire le lien entre les géométries et les codes insee des communes
+-- code en test :
+SELECT
+    a.objectid,
+    g.INSEE_COM,
+    f.objectid,
+    h.valeur
+FROM
+    g_geo.temp_test_communes a
+    INNER JOIN g_geo.ta_libelle b ON b.objectid = a.fid_lib_type_commune
+    INNER JOIN g_geo.ta_libelle_long c ON c.objectid = b.fid_libelle_long
+    INNER JOIN g_geo.ta_metadonnee d ON d.objectid = a.fid_metadonnee
+    INNER JOIN g_geo.ta_source e ON e.objectid = d.fid_source
+    INNER JOIN g_geo.ta_date_acquisition f ON f.objectid = d.fid_acquisition,
+    g_geo.temp_communes g,
+    g_geo.temp_code h
+    INNER JOIN g_geo.ta_libelle i ON i.objectid = h.fid_libelle
+    INNER JOIN g_geo.ta_libelle_long j ON j.objectid = i.fid_libelle_long
+WHERE
+    SDO_RELATE(a.geom, g.ora_geometry, 'mask=equal') = 'TRUE'
+    AND f.date_acquisition = '22/07/20'--= sysdate 
+    AND f.nom_obtenteur = 'bjacq' 
+    AND e.nom_source = 'BDTOPO'
+    AND UPPER(c.valeur) LIKE UPPER('commune%')
+    AND UPPER(j.valeur) = UPPER('code INSEE')
+GROUP BY
+    g.INSEE_COM, h.valeur, a.objectid, f.objectid;
+
 -- Insertion dans TA_IDENTIFIANT_COMMUNE pour l'Aisne
 MERGE INTO TA_IDENTIFIANT_COMMUNE a
     USING(SELECT b.objectid AS id_commune, p.valeur AS nom_base, h.nom AS nom_commune, e.objectid AS id_code_insee, e.valeur AS valeur_insee_base, h.INSEE_COM AS valeur_insee_commune
