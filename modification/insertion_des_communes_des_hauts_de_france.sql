@@ -31,10 +31,8 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
 
 8. Insertion des id_zone_administrative et des id_code dans la table pivot TA_IDENTIFIANT_ZONE_ADMINISTRATIVE ;
 
-9. Association des communes avec leur zone supra-communales respectives
-    9.1. Association des communes à leur département d'appartenance ;
-    9.2. Associaition des communes à la MEL d'appartenance ;
-    9.3. Association des communes à leur région d'appartenance ;
+9. Association des communes avec leur zone supra-communales respectives (Région, département, UT, Territoire et Métropole)
+    
 */
 
 SET SERVEROUTPUT ON
@@ -703,156 +701,144 @@ WHEN NOT MATCHED THEN
 
 
 /*
--- 9. Association des communes avec leur zone supra-communales respectives
--- 9.1. Association des communes à leur département d'appartenance ;
--- 9.2. Associaition des communes à la MEL d'appartenance ;
--- 9.3. Association des communes à leur région d'appartenance ;
-
-
-
-SELECT 
-    CASE
-        WHEN SUBSTR(d.valeur, 0, 2) = '02' AND g.valeur = '02'
-            THEN b.objectid
-        WHEN SUBSTR(d.valeur, 0, 2) = '59' AND g.valeur = '59'
-            THEN b.objectid
-        WHEN SUBSTR(d.valeur, 0, 2) = '60' AND g.valeur = '60'
-            THEN b.objectid
-        WHEN SUBSTR(d.valeur, 0, 2) = '62' AND g.valeur = '62'
-            THEN b.objectid
-        WHEN SUBSTR(d.valeur, 0, 2) = '80' AND g.valeur = '80'
-            THEN b.objectid
-    END AS fid_commune, 
-    e.objectid AS zone_admin, 
-    '01/01/2020' AS debut_validite, 
-    '01/01/2999' AS fin_validite  
-FROM G_GEO.TEMP_TEST_COMMUNES b
-    INNER JOIN G_GEO.TEMP_IDENTIFIANT_COMMUNE c ON c.fid_commune = b.objectid
-    INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-    INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-    INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-    G_GEO.TA_ZONE_ADMINISTRATIVE e
-    INNER JOIN G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE f ON f.fid_zone_administrative = e.objectid
-    INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-    INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-    INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-WHERE 
-    UPPER(i.valeur) = UPPER('code insee')
-    AND UPPER(k.valeur) = UPPER('code département');
-    
--- Département du Nord
-MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                SUBSTR(d.valeur, 0, 2) = '59' 
-                AND i.valeur = 'code insee'
-                AND g.valeur = '59'
-                AND k.valeur = 'code département') t
-    ON (a.fid_zone_administrative = t.zone_admin)
+9. Association des communes avec leur zone supra-communales respectives (Région, département, UT, Territoire et Métropole
+MERGE INTO G_GEO.TEMP_ZA_COMMUNES a
+    USING(
+        SELECT *
+        FROM
+            (
+                SELECT 
+                    CASE
+                        -- Gestion des départements
+                        WHEN SUBSTR(d.valeur, 0, 2) = '02' AND g.valeur = '02'
+                            THEN b.objectid
+                        WHEN SUBSTR(d.valeur, 0, 2) = '59' AND g.valeur = '59'
+                            THEN b.objectid
+                        WHEN SUBSTR(d.valeur, 0, 2) = '60' AND g.valeur = '60'
+                            THEN b.objectid
+                        WHEN SUBSTR(d.valeur, 0, 2) = '62' AND g.valeur = '62'
+                            THEN b.objectid
+                        WHEN SUBSTR(d.valeur, 0, 2) = '80' AND g.valeur = '80'
+                            THEN b.objectid
+                        -- Gestion des Unités Territoriales
+                        WHEN d.valeur IN('59011','59346','59368','59648','59256','59609','59350','59360','59477','59005','59193',
+                                        '59220','59437','59133','59052','59585','59316','59507','59560','59343'
+                                )
+                                AND g.valeur = '1'
+                                AND UPPER(k.valeur) = UPPER('code Unité Territoriale')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59051', '59056', '59128', '59670', '59195', '59196', '59201', '59208', '59250', '59278', 
+                                        '59281', '59286', '59303', '59320', '59328', '59356', '59378', '59386', '59388', '59457', 
+                                        '59470', '59524', '59527', '59550', '59553', '59566', '59611', '59636', '59653', '59658', 
+                                        '59088', '59025', '59257', '59487', '59371'
+                                )
+                                AND g.valeur = '2'
+                                AND UPPER(k.valeur) = UPPER('code Unité Territoriale')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59275','59339','59523','59522','59044','59367','59163','59512','59299','59146','59410',
+                                        '59650','59106','59247','59602','59013','59458','59332','59009','59646','59598','59660'
+                                )
+                                AND g.valeur = '3'
+                                AND UPPER(k.valeur) = UPPER('code Unité Territoriale')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59017','59252','59656','59508','59352','59482','59173','59143','59090','59317','59098',
+                                        '59643','59152','59599','59421','59202','59279','59426'
+                                )
+                                AND g.valeur = '4'
+                                AND UPPER(k.valeur) = UPPER('code Unité Territoriale')
+                            THEN b.objectid
+                        -- Gestion des Territoires
+                        WHEN d.valeur IN('59051','59056','59670','59195','59196','59201','59208','59250','59278','59281','59286',
+                                        '59303','59320','59388','59524','59550','59553','59566','59653','59658','59088','59025',
+                                        '59257','59487','59371'
+                                )
+                                AND g.valeur = '1'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59090','59279','59421','59426','59508','59599')
+                                AND g.valeur = '2'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59163','59299','59332','59339','59367','59512','59598','59646','59650')
+                                AND g.valeur = '3'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59017', '59098', '59143', '59152', '59173', '59202', '59252', '59317', '59352', '59482', '59643', '59656')
+                                AND g.valeur = '4'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59013','59044','59106','59146','59247','59275','59410','59522','59523','59602','59009','59660','59458')
+                                AND g.valeur = '5'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59128','59328','59356','59368','59378','59386','59457','59470','59527','59611','59636')
+                                AND g.valeur = '6'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59193','59220','59256','59316','59343','59346','59360','59437','59507','59560','59585',
+                                        '59648','59609', '59185', '59112', '59221', '59251', '59112', '59011', '59005', '59052', '59133', '59477'
+                                )
+                                AND g.valeur = '7'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59350')
+                                AND g.valeur = '8'
+                                AND UPPER(k.valeur) = UPPER('code Territoire')
+                            THEN b.objectid
+                        -- Gestion de la région Hauts-de-France
+                        WHEN SUBSTR(d.valeur, 0, 2) IN('02', '59', '60', '62', '80')
+                                AND g.valeur = '32'
+                                AND UPPER(k.valeur) = UPPER('code région')
+                            THEN b.objectid
+                        WHEN d.valeur IN('59247','59332','59650','59173','59356','59257','59566','59133','59056','59470','59550',
+                                        '59303','59196','59648','59477','59410','59585','59602','59017','59508','59009','59598',
+                                        '59106','59195','59643','59507','59088','59220','59670','59609','59317','59523','59660',
+                                        '59275','59044','59343','59350','59011','59487','59208','59346','59146','59013','59360',
+                                        '59560','59437','59286','59193','59458','59281','59025','59250','59653','59524','59388',
+                                        '59512','59005','59143','59201','59658','59052','59316','59278','59320','59553','59252',
+                                        '59457','59051','59128','59611','59163','59368','59421','59339','59599','59098','59152',
+                                        '59367','59352','59386','59328','59527','59378','59656','59522','59426','59090','59299',
+                                        '59636','59646','59482','59256','59202','59371','59279'
+                                    )
+                                AND UPPER(p.valeur) = UPPER('Métropole Européenne de Lille')
+                            THEN b.objectid
+                    END AS fid_commune, 
+                    e.objectid AS fid_zone_administrative,
+                    g.valeur AS code_zone_admin,
+                    k.valeur AS type_code_zone_admin,
+                    '01/01/2020' AS debut_validite, 
+                    '01/01/2999' AS fin_validite  
+                FROM G_GEO.TEMP_TEST_COMMUNES b
+                    INNER JOIN G_GEO.TEMP_IDENTIFIANT_COMMUNE c ON c.fid_commune = b.objectid
+                    INNER JOIN G_GEO.TEMP_CODE d ON d.objectid = c.fid_identifiant
+                    INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                    INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long
+                    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = b.fid_metadonnee
+                    INNER JOIN G_GEO.TA_SOURCE n ON n.objectid = m.fid_source
+                    INNER JOIN G_GEO.TA_DATE_ACQUISITION o ON o.objectid = m.fid_acquisition, 
+                    G_GEO.TEMP_ZONE_ADMINISTRATIVE e
+                    INNER JOIN G_GEO.TEMP_IDENTIFIANT_ZONE_ADMINISTRATIVE f ON f.fid_zone_administrative = e.objectid
+                    INNER JOIN G_GEO.TEMP_CODE g ON g.objectid = f.fid_identifiant
+                    INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
+                    INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
+                    INNER JOIN G_GEO.TA_NOM p ON p.objectid = e.fid_nom
+                WHERE 
+                    UPPER(i.valeur) = UPPER('code insee')
+                    --AND UPPER(k.valeur) IN (UPPER('code département'), UPPER('code Territoire'), UPPER('code Unité Territoriale'), UPPER('code région'))
+                    AND UPPER(n.nom_source) = UPPER('BdTopo')
+                    AND o.millesime = '01/01/19'
+                    AND o.date_acquisition = '22/07/20'
+            )t
+        WHERE
+            t.fid_commune IS NOT NULL
+        ORDER BY
+            t.type_code_zone_admin,
+            t.code_zone_admin
+    )t
+ON (a.fid_commune = t.fid_commune AND a.fid_zone_administrative = t.fid_zone_administrative AND a.debut_validite = t.debut_validite AND a.fin_validite = t.fin_validite)
 WHEN NOT MATCHED THEN
-    INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
-    VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
-    
--- Département de l'Oise
-MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                SUBSTR(d.valeur, 0, 2) = '60' 
-                AND i.valeur = 'code insee'
-                AND g.valeur = '60'
-                AND k.valeur = 'code département') t
-    ON (a.fid_zone_administrative = t.zone_admin)
-WHEN NOT MATCHED THEN
-    INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
-    VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
-    
--- Département du Pas-de-Calais
-MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                SUBSTR(d.valeur, 0, 2) = '62' 
-                AND i.valeur = 'code insee'
-                AND g.valeur = '62'
-                AND k.valeur = 'code département') t
-    ON (a.fid_zone_administrative = t.zone_admin)
-WHEN NOT MATCHED THEN
-    INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
-    VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
-    
--- Département de la Somme
-MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                SUBSTR(d.valeur, 0, 2) = '80' 
-                AND i.valeur = 'code insee'
-                AND g.valeur = '80'
-                AND k.valeur = 'code département') t
-    ON (a.fid_zone_administrative = t.zone_admin)
-WHEN NOT MATCHED THEN
-    INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
-    VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
-    
--- Région Hauts-de-France
-MERGE INTO TA_ZA_COMMUNES a
-    USING(SELECT b.objectid AS commune, e.objectid AS zone_admin, '01/01/2020' AS debut_validite, '01/01/2999' AS fin_validite  
-            FROM ta_commune b
-                INNER JOIN ta_identifiant_commune c ON c.fid_commune = b.objectid
-                INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long, 
-                G_GEO.TA_ZONE_ADMINISTRATIVE e
-                INNER JOIN ta_identifiant_zone_administrative f ON f.fid_zone_administrative = e.objectid
-                INNER JOIN G_GEO.TA_CODE g ON g.objectid = f.fid_identifiant
-                INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = g.fid_libelle
-                INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-            WHERE 
-                i.valeur = 'code insee'
-                AND g.valeur = '32'
-                AND k.valeur = 'code région') t
-    ON (a.fid_zone_administrative = t.zone_admin)
-WHEN NOT MATCHED THEN
-    INSERT(FID_COMMUNE, FID_ZONE_ADMINISTRATIVE, DEBUT_VALIDITE, FIN_VALIDITE)
-    VALUES(t.commune, t.zone_admin, t.debut_validite, t.fin_validite);
+    INSERT(a.FID_COMMUNE, a.FID_ZONE_ADMINISTRATIVE, a.DEBUT_VALIDITE, a.FIN_VALIDITE)
+    VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);
 */
 
 COMMIT;
