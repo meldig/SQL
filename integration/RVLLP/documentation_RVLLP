@@ -1,0 +1,33 @@
+Note sur la création des données RVLLP
+
+les données RVLLP sont des données a télécharger sur 
+
+
+A noter que la donnée source, téléchargeable au format .ODS pour le département du Nord tout entier a dû être travaillée pour générer un .SHP à l’échelle MEL.
+
+données source:
+* secteur.ods: fichier qui recense l'ensemble des sections cadastrale ainsi que leurs secteurs. la données peut se récupérer avec le lien
+https://www.impots.gouv.fr/portail/revision-des-valeurs-locatives-des-locaux-professionnels.
+Une documentation de la données est disponible ici: https://www.impots.gouv.fr/portail/professionnel/les-grands-principes-de-la-revision-des-valeurs-locatives-des-locaux-professionnels.
+* section cadastrale: Necessaire afin de spatialiser l'information.
+
+traitements réalisés actuellement:
+* récupération des données
+* correction du code commune pour ajouter pour mettre le code commune sous la forme 591XXX
+* attention aux préfixes de la colonne PRE qui correspondent aux communes fusionnées.
+
+
+Description des champs :
+* CODE_SEC: code de la section cadastrale DGFIP
+* CODE_COM: code de la commune au sens DGFIP c’est-à-dire DEP + Secteur fiscale + INSEE
+* NOM_COM: nom de commune en majuscule (sans accent et sans tiré) (Lille/Lomme/Hellemmes = LILLE)
+* RVLLP: numéro du secteur au sens de la taxe RVLLP
+* SOURCE: lien vers la donnée source
+
+
+Observations diverses:
+* La donnée va-t-elle être modifiée en base via des outils SIG ? Si oui lesquels ? => NON
+* La donnée va-t-elle être uniquement disponible en consultation ? Si oui via quel(s) outil(s) ? => OUI, via MelMap dans un premier temps (voir carto géo « métier » dans un second temps)
+* Y-a-t-il d’autre processus automatisé à mettre en place sur cette donnée (ex : calcul de champs automatique à la mise à jour de la donnée, attribution automatique du nom de la commune où se trouve la géométrie d’une entrée, etc.) => NON mais :
+** la donnée est à surveiller (1 fois par trimestre ?) pour s’assurer que les secteurs ne sont pas modifiés par MINISTÈRE DE L'ACTION ET DES COMPTES PUBLICS
+** le site fournit aussi des fichiers de « grilles tarifaires » et « coefficients de localisation / neutralisation » pour lesquels il y aura peut-être des jointures à faire si on fait des cartes ou une appli « métier » dédiée
