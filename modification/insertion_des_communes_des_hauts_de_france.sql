@@ -1,5 +1,5 @@
 /*
-Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et création des départements et des régions
+Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et création des régions, des départements, des UT, des Territoires et de la Métropole
 
 1. Création des métadonnées ;
     1.1. Insertion de l'organisme créateur des données dans TA_ORGANISME ;
