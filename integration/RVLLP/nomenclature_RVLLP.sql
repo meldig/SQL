@@ -48,7 +48,7 @@ VALUES (b.date_acquisition, b.millesime, b.nom_obtenteur)
 MERGE INTO ta_organisme a
 USING
 	(
-		SELECT 'DGFIP' AS ACRONYME, 'Direction Générale des Finances Publiques' AS NOM_ORGANISME FROM DUAL
+		SELECT 'DGFIP' AS ACRONYME, 'direction générale des finances publiques' AS NOM_ORGANISME FROM DUAL
 	) temp
 ON (UPPER(a.acronyme) = UPPER(temp.acronyme)
 AND UPPER(a.nom_organisme) = UPPER(b.nom_organisme))
