@@ -192,7 +192,7 @@ MERGE INTO G_GEO.TA_NOM a
 	USING(
 		SELECT
 			b.nom
-		FROM G_GEO.MUNICIPALITE_BELGE b
+		FROM G_GEO.TEMP_MUNICIPALITE_BELGE b
 	)t
 	ON(UPPER(a.valeur) = UPPER(t.nom))
 WHEN NOT MATCHED THEN
@@ -266,7 +266,7 @@ MERGE INTO G_GEO.TA_CODE a
 			a.code_ins AS valeur,
 			b.objectid AS fid_libelle
 		FROM
-			G_GEO.MUNICIPALITE_BELGE a,
+			G_GEO.TEMP_MUNICIPALITE_BELGE a,
 			G_GEO.TA_LIBELLE b
 		INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
 		WHERE
@@ -289,7 +289,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
 		    d.objectid AS fid_lib_type_commune,
 		    f.objectid AS fid_metadonnee
 		FROM
-			G_GEO.MUNICIPALITE_BELGE a
+			G_GEO.TEMP_MUNICIPALITE_BELGE a
 		    INNER JOIN G_GEO.TA_NOM b ON b.valeur = a.nom,
 		    G_GEO.TA_LIBELLE d
 		    INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long,
@@ -322,7 +322,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             h.valeur AS prod_code_ins
         FROM
             -- Sélection des géométries de communes et de leur code INSEE dans la table d'import
-            G_GEO.MUNICIPALITE_BELGE a,
+            G_GEO.TEMP_MUNICIPALITE_BELGE a,
             -- Sélection des géométries de communes de TA_COMMUNE que l'on vient d'insérer
             G_GEO.TA_COMMUNE b
             INNER JOIN G_GEO.TA_METADONNEE e ON e.objectid = b.fid_metadonnee
