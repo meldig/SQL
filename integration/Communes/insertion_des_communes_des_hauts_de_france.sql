@@ -490,41 +490,37 @@ WHEN NOT MATCHED THEN
     VALUES(t.fid_nom, t.fid_libelle);
 
 -- 6. Insertion des géométries des communes dans la table TA_COMMUNE ;
-MERGE INTO G_GEO.TA_COMMUNES a
+MERGE INTO G_GEO.TA_COMMUNE a
     USING(
-        SELECT a.ORA_GEOMETRY, b.objectid AS fid_libelle, d.objectid AS fid_nom, a.INSEE_COM, f.objectid AS fid_metadonnee
-            FROM 
-                G_GEO.TEMP_COMMUNES a
-                INNER JOIN G_GEO.TA_NOM d ON d.valeur = a.nom,
-                G_GEO.TA_LIBELLE b
-                INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
-                G_GEO.TA_METADONNEE f 
-                INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
-                INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
-            WHERE 
-                INSEE_DEP IN('02', '59', '60', '62', '80')
-                AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-                AND g.millesime = '01/01/19'
-                AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
-                AND c.valeur = 'commune simple'
-                AND h.nom_source = 'BDTOPO'
-        )t
-        ON(
-            t.fid_metadonnee = (SELECT
-                                    x.objectid
-                                FROM
-                                    G_GEO.TA_METADONNEE x
-                                    INNER JOIN G_GEO.TA_DATE_ACQUISITION y ON y.objectid = x.fid_acquisition
-                                    INNER JOIN G_GEO.TA_SOURCE z ON z.objectid = x.fid_source
-                                WHERE
-                                    y.millesime = '01/01/19'
-                                    AND y.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-                                    AND z.nom_source = 'BDTOPO'
-                                )
-        )
+        SELECT a.ORA_GEOMETRY, 
+            b.objectid AS fid_lib_type_commune, 
+            d.objectid AS fid_nom, 
+            a.INSEE_COM, 
+            f.objectid AS fid_metadonnee
+        FROM 
+            G_GEO.TEMP_COMMUNES a
+            INNER JOIN G_GEO.TA_NOM d ON d.valeur = a.nom,
+            G_GEO.TA_LIBELLE b
+            INNER JOIN G_GEO.TA_LIBELLE_LONG c ON b.fid_libelle_long = c.objectid,
+            G_GEO.TA_METADONNEE f 
+            INNER JOIN G_GEO.TA_DATE_ACQUISITION g ON g.objectid = f.fid_acquisition
+            INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
+        WHERE 
+            INSEE_DEP IN('02', '59', '60', '62', '80')
+            AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+            AND g.millesime = '01/01/19'
+            AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
+            AND UPPER(c.valeur) = UPPER('commune simple')
+            AND UPPER(h.nom_source) = UPPER('BdTopo')
+    )t
+    ON(
+        a.fid_lib_type_commune = t.fid_lib_type_commune
+        AND a.fid_nom = t.fid_nom
+        AND a.fid_metadonnee = t.fid_metadonnee
+    )
 WHEN NOT MATCHED THEN
     INSERT(geom, fid_lib_type_commune, fid_nom, fid_metadonnee)
-    VALUES(t.ORA_GEOMETRY, t.fid_libelle, t.fid_nom, t.fid_metadonnee);
+    VALUES(t.ORA_GEOMETRY, t.fid_lib_type_commune, t.fid_nom, t.fid_metadonnee);
 
 -- 7. Insertion des id_commune et id_code dans la table pivot TA_IDENTIFIANT_COMMUNE ;
 /*Objectif : associer la géométrie des communes avec leur code insee respectif.
