@@ -4,7 +4,7 @@ SET /p chemin=indiquez le repertoire de travail sans le dernier '\':
 
 :: 2. Concatenation des fichiers SQL en un seul pour pour permettre l'execution des commandes par Oracle
 type %chemin%\format_date.sql > iris_temp.sql | echo. >> iris_temp.sql ^
-| type %chemin%\iris_structure.sql >> iris_temp.sql | echo. >> iris_temp.sql
+| type %chemin%\iris_structure.sql >> iris_temp.sql | echo. >> iris_temp.sql ^
 | type %chemin%\iris_nomenclature.sql >> iris_temp.sql | echo. >> iris_temp.sql ^
 | type %chemin%\iris_normalisation.sql >> iris_temp.sql | echo. >> iris_temp.sql
 
