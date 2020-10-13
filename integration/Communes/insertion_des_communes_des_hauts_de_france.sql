@@ -1,6 +1,8 @@
 /*
 Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et création des régions, des départements, des UT, des Territoires et de la Métropole
 
+Prérequis : création d'un index spatial sur la table d'import des communes TEMP_COMMUNES ;
+
 1. Création des métadonnées ;
     1.1. Insertion de l'organisme créateur des données dans TA_ORGANISME ;
     1.2. Insertion de la source des données dans TA_SOURCE ;
@@ -34,11 +36,19 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
 9. Association des communes avec leur zone supra-communales respectives dans TA_ZA_COMMUNES ;
     9.1. Association des communes à leurs régions, départements, UT et Territoires respectifs ;
     9.2. Association des communes à leur Métropole (MEL) ;
+
+Suppression de la table d'import des communes TEMP_COMMUNES
 */
 
 SET SERVEROUTPUT ON
 BEGIN
 SAVEPOINT POINT_SAUVEGARDE_INSERTION_COMMUNES;
+
+-- Prérequis : création d'un index spatial sur la table d'import des communes TEMP_COMMUNES ;
+CREATE INDEX temp_communes_SIDX
+ON temp_communes(GEOM)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX
+PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
 -- 1. Création des métadonnées ;
 -- 1.1. Insertion de l'organisme créateur des données dans TA_ORGANISME ;
@@ -833,6 +843,10 @@ ON (a.fid_commune = t.fid_commune AND a.fid_zone_administrative = t.fid_zone_adm
 WHEN NOT MATCHED THEN
     INSERT(a.FID_COMMUNE, a.FID_ZONE_ADMINISTRATIVE, a.DEBUT_VALIDITE, a.FIN_VALIDITE)
     VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);
+
+-- Suppression de la table d'import des communes TEMP_COMMUNES
+DROP TABLE G_GEO.TEMP_COMMUNES CASCADE CONSTRAINTS;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TEMP_COMMUNES';
 
 COMMIT;
 
