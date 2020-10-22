@@ -142,10 +142,7 @@ DECLARE
     chantier_termine NUMBER(38,0);
     permis_construire NUMBER(38,0);
     demolition NUMBER(38,0);
-    prioritaire NUMBER(38,0);
-    non_prioritaire NUMBER(38,0);
-    gros_chantier NUMBER(38,0);
-    petit_chantier NUMBER(38,0);
+    bati NUMBER(38,0);
     voirie NUMBER(38,0);
 
 
@@ -234,39 +231,12 @@ BEGIN
 
     SELECT
         a.objectid
-        INTO prioritaire
+        INTO bati
     FROM
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('prioritaire');
-
-    SELECT
-        a.objectid
-        INTO non_prioritaire
-    FROM
-        G_GEO.TA_LIBELLE a
-        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-    WHERE
-        UPPER(b.valeur) = UPPER('non-prioritaire');
-
-    SELECT
-        a.objectid
-        INTO gros_chantier
-    FROM
-        G_GEO.TA_LIBELLE a
-        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-    WHERE
-        UPPER(b.valeur) = UPPER('bâti - gros chantier');
-
-    SELECT
-        a.objectid
-        INTO petit_chantier
-    FROM
-        G_GEO.TA_LIBELLE a
-        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-    WHERE
-        UPPER(b.valeur) = UPPER('bâti - petit chantier');
+        UPPER(b.valeur) = UPPER('bâti');
 
     SELECT
         a.objectid
@@ -278,8 +248,8 @@ BEGIN
         UPPER(b.valeur) = UPPER('voirie (clôture,fossé et bordure)');
 
  -- Contrôle des associations improbables
-    
-    IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_LIBELLE IN(gros_chantier, petit_chantier, voirie) AND :new.FID_VERIFICATION <> chantier_termine) THEN 
+
+    IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_LIBELLE IN(bati, voirie) AND :new.FID_VERIFICATION <> chantier_termine) THEN 
         RAISE_APPLICATION_ERROR(-20001, 'Une modification manuelle sur un bâti ou une voirie est forcément un chantier terminé');
     END IF;
     IF (:new.FID_TYPE_SIGNALEMENT = creation AND :new.FID_VERIFICATION = demolition) THEN 
@@ -306,7 +276,7 @@ BEGIN
     IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_VERIFICATION = chantier_potentiel) THEN
         RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type modification manuelle ne peut pas aller avec une vérification de type chantier potentiel');
     END IF;
-    
+
     IF UPDATING THEN
         IF (:old.FID_TYPE_SIGNALEMENT = creation AND :new.FID_TYPE_SIGNALEMENT = modification_manuelle) THEN
             RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas être changé en modification manuelle');
@@ -315,7 +285,7 @@ BEGIN
             RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas être changé en vérification');
         END IF;
     END IF;
-    
+
     EXCEPTION
             WHEN OTHERS THEN
                 mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');
