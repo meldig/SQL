@@ -1,7 +1,7 @@
 -- Création de la vue des communes actuelles de la MEL via la BdTopo de l'IGN avec les données historiques des populations communales 1876-2017 calculées sur la base de la géographie des communes en 2019. 
 
 -- 1. Création de la vue
-CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_COMMUNE_RECENSEMENT_HISTORIQUE(
+CREATE MATERIALIZED VIEW G_REFERENTIEL.VM_ADMIN_COMMUNE_RECENSEMENT_HISTORIQUE(
     identifiant, 
     code_insee, 
     nom, 
@@ -52,15 +52,13 @@ FROM
     INNER JOIN G_GEO.TA_ORGANISME v ON v.objectid = u.fid_organisme
     INNER JOIN G_GEO.TA_DATE_ACQUISITION w ON w.objectid = s.fid_acquisition
     WHERE
-        f.nom_source = 'BDTOPO'
+        UPPER(f.nom_source) = 'BDTOPO'
     AND
         i.millesime = '01/01/2019'
     AND
-        k.valeur = 'code insee'
+        UPPER(k.valeur) = UPPER('code insee')
     AND
-        UPPER(p.valeur) = 'RECENSEMENT'
-    AND
-        t.description = 'Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.'
+        UPPER(p.valeur) = UPPER('recensement')
 ;
 
 -- 2. Création des commentaires de table et de colonnes
@@ -105,4 +103,10 @@ PARAMETERS(
     layer_gtype=MULTIPOLYGON, 
     tablespace=G_ADT_INDX, 
     work_tablespace=DATA_TEMP'
-    );
+    )
+
+
+-- 6. Création de l'index multicolonne
+CREATE INDEX vm_admin_commune_recensement_historique_code_insee_nom_recensement ON vm_admin_commune_recensement_historique (CODE_INSEE, NOM, RECENSEMENT)
+TABLESPACE G_ADT_INDX;
+;
