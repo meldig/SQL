@@ -41,13 +41,13 @@ Cette insertion se fait en 6 étapes:
 4. Insertion de l'organisme producteur dans la table TA_ORGANISME.
 5. Insertion des métadonnées dans la table TA_METADONNEE.
 6. Insertion des relation entre les métadonnées et l'organisme producteur dans la table TA_METADONNEE_RELATION_ORGANISME.
-7. Insertion des codes et des fid_codes dans la table TA_CODE, des communes à partir des données brutes. La requête utilisée est un MERGE. Si le code insee est déjà présent dans la table, il ne sera pas ajouté.
+7. Insertion des codes et des fid_libelle dans la table TA_CODE, des communes à partir des données brutes. La requête utilisée est un MERGE. Si le code insee est déjà présent dans la table, il ne sera pas ajouté.
 8. Insertion des libellés courts des recensements dans TA_LIBELLE_COURT.
 * Exemple:
 ** PMUN17,
 ** PSDC82,
 ** PTOT1876
-9. Insertion des libellés courts des recensements dans TA_LIBELLE_LONG.
+9. Insertion des libellés longs des recensements dans TA_LIBELLE_LONG.
 * Exemple:
 ** Population municipale en 2017,
 ** Population sans double compte en 1982
@@ -59,4 +59,4 @@ Cette insertion se fait en 6 étapes:
 
 ### 3. Normalisation des données de la base historique des populations 1876 à 2017 avec la géographie de 2019
 
-La requête permettant la normalisation des données de la base historique des populations 1876 à 2017 avec la géographie de 2019 et leurs insertions dans la table TA_RECENSEMENT est contenue dans le fichier <em>normalisation_recensement_donnees_historique.sql</em>
+La requête permettant la normalisation des données de la base historique des populations 1876 à 2017 avec la géographie de 2019 et leur insertion dans la table TA_RECENSEMENT est contenue dans le fichier <em>normalisation_recensement_donnees_historique.sql</em>
