@@ -10,7 +10,7 @@
 -- TA_GG_PERMIS_CONSTRUIRE
 CREATE SEQUENCE  "G_GEO"."SEQ_TA_GG_PERMIS_CONSTRUIRE"  
 INCREMENT BY 1 START WITH 1;
-
+/
 CREATE OR REPLACE TRIGGER "G_GEO"."BEF_TA_GG_PERMIS_CONSTRUIRE" 
 BEFORE INSERT ON G_GEO.TA_GG_PERMIS_CONSTRUIRE
 FOR EACH ROW
@@ -74,7 +74,7 @@ FOR EACH ROW
             G_GEO.TA_LIBELLE a 
             INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
         WHERE
-            UPPER(b.valeur) = UPPER('Création');
+            UPPER(b.valeur) = UPPER('création');
 
         -- Stockage de l'id édition    
         SELECT 
@@ -84,7 +84,7 @@ FOR EACH ROW
             G_GEO.TA_LIBELLE a 
             INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
         WHERE
-            UPPER(b.valeur) = UPPER('Edition');
+            UPPER(b.valeur) = UPPER('édition');
 
         -- Stockage de l'id clôture   
         SELECT 
