@@ -103,17 +103,17 @@ SELECT
                 SELECT
                     a.objectid AS id_mtd
                 FROM
-                    ta_metadonnee a
-                    INNER JOIN ta_source b ON a.fid_source = b.objectid
-                    INNER JOIN ta_date_acquisition c ON c.objectid = a.fid_acquisition
+                    G_GEO.TA_METADONNEE a
+                    INNER JOIN G_GEO.TA_SOURCE b ON a.fid_source = b.objectid
+                    INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON c.objectid = a.fid_acquisition
                 WHERE
                     c.millesime IN(
                                 SELECT
                                     MAX(b.millesime) as MILLESIME
                                 FROM
-                                    ta_metadonnee a
-                                INNER JOIN ta_date_acquisition  b ON a.fid_acquisition = b.objectid 
-                                INNER JOIN ta_source c ON c.objectid = a.fid_source
+                                    G_GEO.TA_METADONNEE a
+                                INNER JOIN G_GEO.TA_DATE_ACQUISITION b ON a.fid_acquisition = b.objectid 
+                                INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = a.fid_source
                                 WHERE c.nom_source = 'Contours...IRIS'
                                 )
                 AND
