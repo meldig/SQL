@@ -73,11 +73,7 @@ USING
 			                )
 		AND
 		    UPPER(s.nom_source) = 'RVLLP'
-		
-
 		UNION ALL SELECT
-
-
 			a.IDU AS FID_IDU,
 			c.objectid AS FID_CODE_RVLLP,
 			m.objectid AS FID_METADONNEE
