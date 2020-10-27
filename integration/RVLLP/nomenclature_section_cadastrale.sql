@@ -6,8 +6,8 @@ USING
     (
         SELECT 'PCI' AS nom_source, 'Plan Cadastral Informatisé' AS description FROM DUAL
     ) b
-ON (a.nom_source = b.nom_source
-AND a.description = b.description)
+ON (UPPER(a.nom_source) = UPPER(b.nom_source)
+    AND UPPER(a.description) = UPPER(b.description))
 WHEN NOT MATCHED THEN
 INSERT (a.nom_source,a.description)
 VALUES (b.nom_source,b.description)
@@ -20,8 +20,8 @@ USING
     (
         SELECT 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#contoursiris' AS url, 'Donnée à télécharger en libre accès' AS methode_acquisition FROM DUAL
     ) b
-ON (a.url = b.url
-AND a.methode_acquisition = b.methode_acquisition)
+ON (UPPER(a.url) = UPPER(b.url)
+    AND UPPER(a.methode_acquisition) = UPPER(b.methode_acquisition))
 WHEN NOT MATCHED THEN
 INSERT (a.url,a.methode_acquisition)
 VALUES(b.url,b.methode_acquisition)
@@ -35,8 +35,8 @@ USING
         SELECT TO_DATE(SYSDATE,'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/17') AS MILLESIME, SYS_CONTEXT('USERENV', 'OS_USER') AS NOM_OBTENTEUR FROM DUAL
     ) b
 ON (a.date_acquisition = b.date_acquisition
-AND a.millesime = b.millesime
-AND a.nom_obtenteur = b.nom_obtenteur)
+    AND a.millesime = b.millesime
+    AND a.nom_obtenteur = b.nom_obtenteur)
 WHEN NOT MATCHED THEN
 INSERT (a.date_acquisition,a.millesime, a.nom_obtenteur)
 VALUES (b.date_acquisition, b.millesime, b.nom_obtenteur)
@@ -44,13 +44,13 @@ VALUES (b.date_acquisition, b.millesime, b.nom_obtenteur)
 
 
 -- 4. Insertion des données dans TA_ORGANISME
-MERGE INTO ta_organisme a
+MERGE INTO G_GEO.TA_ORGANISME a
 USING
-	(
-		SELECT 'DGFIP' AS ACRONYME, 'direction générale des finances publiques' AS NOM_ORGANISME FROM DUAL
-	) temp
+    (
+        SELECT 'DGFIP' AS ACRONYME, 'Direction Générale des Finances Publiques' AS NOM_ORGANISME FROM DUAL
+    ) temp
 ON (UPPER(a.acronyme) = UPPER(temp.acronyme)
-AND UPPER(a.nom_organisme) = UPPER(b.nom_organisme))
+    AND UPPER(a.nom_organisme) = UPPER(b.nom_organisme))
 WHEN NOT MATCHED THEN
 INSERT (a.acronyme,a.nom_organisme)
 VALUES(temp.acronyme,temp.nom_organisme)
@@ -70,7 +70,7 @@ USING
             G_GEO.TA_DATE_ACQUISITION b,
             G_GEO.TA_PROVENANCE c
         WHERE
-            a.nom_source = 'RVLLP'
+            a.nom_source = 'PCI'
         AND
             b.millesime IN ('01/01/2017')
         AND
@@ -104,17 +104,17 @@ USING
             G_GEO.TA_ORGANISME e
         WHERE
             b.nom_source = 'PCI'
-		AND
-		    c.millesime IN ('01/01/2017')
-		AND
-		    c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
+        AND
+            c.millesime IN ('01/01/2017')
+        AND
+            c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
         AND
             d.url = 'https://www.impots.gouv.fr/portail/revision-des-valeurs-locatives-des-locaux-professionnels'
         AND
             e.nom_organisme = 'Direction Générale des Finances Publiques'
     )b
 ON(a.fid_metadonnee = b.fid_metadonnee
-AND a.fid_organisme = b.fid_organisme)
+    AND a.fid_organisme = b.fid_organisme)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_metadonnee, a.fid_organisme)
 VALUES(b.fid_metadonnee, b.fid_organisme)
@@ -131,7 +131,7 @@ USING
     UNION
     SELECT 'code insee' AS VALEUR FROM dual
     ) b
-  ON (UPPER(a.VALEUR) = UPPER(b.VALEUR)
+  ON (UPPER(a.VALEUR) = UPPER(b.VALEUR))
   WHEN NOT MATCHED THEN
   INSERT (a.VALEUR)
   VALUES (b.VALEUR)
@@ -144,7 +144,7 @@ USING
     (
     SELECT 'pre' AS VALEUR FROM dual
     ) b
-  ON (UPPER(a.VALEUR) = UPPER(b.VALEUR)
+  ON (UPPER(a.VALEUR) = UPPER(b.VALEUR))
   WHEN NOT MATCHED THEN
   INSERT (a.VALEUR)
   VALUES (b.VALEUR)
@@ -157,7 +157,7 @@ USING
     (
     SELECT 'identifiants de zone cadastrale' AS VALEUR FROM dual
     ) b
-ON (a.VALEUR = b.VALEUR)
+ON (UPPER(a.VALEUR) = UPPER(b.VALEUR))
 WHEN NOT MATCHED THEN
 INSERT (a.VALEUR)
 VALUES (b.VALEUR);
@@ -179,7 +179,7 @@ USING
         OR UPPER(a.VALEUR) = 'IDENTIFIANTS DE ZONE ADMINISTRATIVE' AND UPPER(b.VALEUR) = 'CODE_INSEE'
     ) b
 ON (a.fid_famille = b.fid_famille
-AND a.fid_libelle_long = b.fid_libelle_long)
+    AND a.fid_libelle_long = b.fid_libelle_long)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_famille,a.fid_libelle_long)
 VALUES (b.fid_famille,b.fid_libelle_long);
@@ -190,8 +190,7 @@ MERGE INTO G_GEO.TA_LIBELLE a
 USING
     (
     SELECT
-        a.objectid AS fid_libelle_long,
-        a.VALEUR AS libelle_long
+        a.objectid AS fid_libelle_long
     FROM
         G_GEO.TA_LIBELLE_LONG a
     INNER JOIN
@@ -226,10 +225,10 @@ USING
             G_GEO.TA_FAMILLE e ON e.objectid = d.fid_famille
         WHERE
             UPPER(b.VALEUR) = 'PRE' AND UPPER(c.VALEUR) = 'PREFIXE'
-        AND UPPER(e.VALEUR) = 'IDENTIFIANTS DE ZONE ADMINISTRATIVE' 
+        AND UPPER(e.VALEUR) = 'IDENTIFIANTS DE ZONE CADASTRALE' 
     )b
 ON(a.fid_libelle = b.fid_libelle
-AND a.fid_libelle_court = b.fid_libelle_court)
+    AND a.fid_libelle_court = b.fid_libelle_court)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_libelle, a.fid_libelle_court)
 VALUES(b.fid_libelle, b.fid_libelle_court);
