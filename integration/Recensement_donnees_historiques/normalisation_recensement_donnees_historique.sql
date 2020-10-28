@@ -26,7 +26,7 @@ USING
             AND b.millesime BETWEEN '01/01/1876' AND '01/01/2017'
             AND b.nom_obtenteur = SYS_CONTEXT('USERENV','OS_USER')
             AND UPPER(c.nom_source) = UPPER('Recensements de la population 1876-2017')
-            AND d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
+            AND UPPER(d.url) = UPPER('https://www.insee.fr/fr/statistiques/3698339#consulter')
             AND UPPER(f.nom_organisme) = UPPER('Institut National de la Statistique et des Etudes Economiques')
             ),
     -- CTE pour mettre les données de la table de recensement en forme avant insertion. Mettre les données dans une colonne plutot que d'avoir une colonne par recensement
@@ -36,7 +36,7 @@ USING
                 recensement,
                 habitant
             FROM
-            recensement
+            temp_recensement
             UNPIVOT
                 (habitant for (recensement) IN
                 (PMUN17 AS 'PMUN17',
@@ -255,7 +255,8 @@ ON (
     a.fid_code = b.fid_code
     AND a.population = b.population
     AND a.fid_lib_recensement = b.fid_lib_recensement
-    AND a.fid_metadonnee = b.fid_metadonnee)
+    AND a.fid_metadonnee = b.fid_metadonnee
+    )
 WHEN NOT MATCHED THEN
 INSERT (a.fid_code, a.population, a.fid_lib_recensement, a.fid_metadonnee)
 VALUES (b.fid_code, b.population, b.fid_lib_recensement, b.fid_metadonnee)
