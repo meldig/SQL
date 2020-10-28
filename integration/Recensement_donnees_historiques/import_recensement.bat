@@ -19,4 +19,4 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 
 :: 5. Import de la donnée avec ogr2ogr.
-ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_insertion%\historique_pop_oracle.xlsx -nln recensement
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_insertion%\historique_pop_oracle.xlsx -nln temp_recensement
