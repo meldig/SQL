@@ -13,7 +13,7 @@ CREATE TABLE G_GEO.TA_RECENSEMENT(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE G_GEO.TA_RECENSEMENT IS 'Table qui regroupe toutes les valeurs des différents récensements comptabilisées par les communes des Hauts-de-France.';
+COMMENT ON TABLE G_GEO.TA_RECENSEMENT IS 'Table qui regroupe toutes les valeurs des différents recensements comptabilisées par les communes des Hauts-de-France.';
 COMMENT ON COLUMN G_GEO.TA_RECENSEMENT.objectid IS 'Clé primaire de la table.';
 COMMENT ON COLUMN G_GEO.TA_RECENSEMENT.fid_code IS 'Clé étrangère vers la table TA_CODE pour connaitre la commune concernée par la valeur du recensement.';
 COMMENT ON COLUMN G_GEO.TA_RECENSEMENT.fid_lib_recensement IS 'Clé étrangère vers la table TA_LIBELLE pour connaitre le recensement concerné par la valeur du nombre d''habitant.';
