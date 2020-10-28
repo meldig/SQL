@@ -16,7 +16,8 @@ USING
     ) b
 ON (
 	UPPER(a.nom_source) = UPPER(b.nom_source)
-	AND UPPER(a.description) = UPPER(b.description))
+	AND UPPER(a.description) = UPPER(b.description)
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.nom_source,a.description)
 VALUES (b.nom_source,b.description)
@@ -35,7 +36,8 @@ USING
    	) b
 ON (
 	UPPER(a.url) = UPPER(b.url)
-	AND UPPER(a.methode_acquisition) = UPPER(b.methode_acquisition))
+	AND UPPER(a.methode_acquisition) = UPPER(b.methode_acquisition)
+	)
 WHEN NOT MATCHED THEN
 INSERT(a.url,a.methode_acquisition)
 VALUES(b.url,b.methode_acquisition)
@@ -81,7 +83,8 @@ USING
 ON (
 	a.date_acquisition = b.date_acquisition
 	AND a.millesime = b.millesime
-	AND a.nom_obtenteur = b.nom_obtenteur)
+	AND a.nom_obtenteur = b.nom_obtenteur
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
 VALUES (b.date_acquisition, b.millesime, b.nom_obtenteur)
@@ -100,7 +103,8 @@ USING
 	) b
 ON (
 	UPPER(a.acronyme) = UPPER(b.acronyme)
-	AND UPPER(a.nom_organisme) = UPPER(b.nom_organisme))
+	AND UPPER(a.nom_organisme) = UPPER(b.nom_organisme)
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.acronyme,a.nom_organisme)
 VALUES(b.acronyme,b.nom_organisme)
@@ -130,7 +134,8 @@ USING
 ON (
 	a.fid_source = b.fid_source
 	AND a.fid_acquisition = b.fid_acquisition
-	AND a.fid_provenance = b.fid_provenance)
+	AND a.fid_provenance = b.fid_provenance
+	)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_source, a.fid_acquisition, a.fid_provenance)
 VALUES(b.fid_source, b.fid_acquisition, b.fid_provenance)
@@ -159,7 +164,8 @@ USING
 	)b
 ON (
 	a.fid_metadonnee = b.fid_metadonnee
-	AND a.fid_organisme = b.fid_organisme)
+	AND a.fid_organisme = b.fid_organisme
+	)
 WHEN NOT MATCHED THEN
 INSERT(a.fid_metadonnee, a.fid_organisme)
 VALUES(b.fid_metadonnee, b.fid_organisme)
@@ -182,7 +188,8 @@ USING
     )b
 ON (
 	a.valeur = b.valeur
-	AND a.fid_libelle = b.fid_libelle)
+	AND a.fid_libelle = b.fid_libelle
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.valeur,a.fid_libelle)
 VALUES (b.valeur,b.fid_libelle)
@@ -193,39 +200,41 @@ VALUES (b.valeur,b.fid_libelle)
 MERGE INTO G_GEO.TA_LIBELLE_COURT a
 USING
 	(
-		SELECT 'PMUN17' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN16' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN15' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN14' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN13' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN12' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN11' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN10' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN09' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN08' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN07' AS VALEUR FROM DUAL
-		UNION SELECT 'PMUN06' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC99' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC90' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC82' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC75' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC68' AS VALEUR FROM DUAL
-		UNION SELECT 'PSDC62' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT54' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT36' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1931' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1926' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1921' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1911' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1906' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1901' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1896' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1891' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1886' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1881' AS VALEUR FROM DUAL
-		UNION SELECT 'PTOT1876' AS VALEUR FROM DUAL
+	SELECT 'PMUN17' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN16' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN15' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN14' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN13' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN12' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN11' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN10' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN09' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN08' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN07' AS VALEUR FROM DUAL
+	UNION SELECT 'PMUN06' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC99' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC90' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC82' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC75' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC68' AS VALEUR FROM DUAL
+	UNION SELECT 'PSDC62' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT54' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT36' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1931' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1926' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1921' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1911' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1906' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1901' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1896' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1891' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1886' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1881' AS VALEUR FROM DUAL
+	UNION SELECT 'PTOT1876' AS VALEUR FROM DUAL
 	) b
-ON (UPPER(a.valeur) = UPPER(b.valeur))
+ON (
+	UPPER(a.valeur) = UPPER(b.valeur)
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
@@ -268,7 +277,9 @@ USING
 		UNION SELECT 'Population totale en 1881' AS valeur FROM DUAL
 		UNION SELECT 'Population totale en 1876' AS valeur FROM DUAL
 	) b
-ON (UPPER(a.valeur) = UPPER(b.valeur))
+ON (
+	UPPER(a.valeur) = UPPER(b.valeur)
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
@@ -284,7 +295,9 @@ USING
 	FROM
 		DUAL
 	)b
-ON (UPPER(a.valeur) = UPPER(b.valeur))
+ON (
+	UPPER(a.valeur) = UPPER(b.valeur)
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
@@ -309,7 +322,8 @@ USING
 	)b
 ON (
 	a.fid_famille = b.fid_famille
-	AND a.fid_libelle_long = b.fid_libelle_long)
+	AND a.fid_libelle_long = b.fid_libelle_long
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_famille, a.fid_libelle_long)
 VALUES (b.fid_famille, b.fid_libelle_long)
@@ -332,7 +346,9 @@ USING
 		OR UPPER(a.valeur) LIKE UPPER('Population sans double compte%')
 		OR UPPER(a.valeur) LIKE UPPER('Population totale%'))
 	)b
-ON (a.fid_libelle_long = b.fid_libelle_long)
+ON (
+	a.fid_libelle_long = b.fid_libelle_long
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_libelle_long)
 VALUES (b.fid_libelle_long);
@@ -343,51 +359,56 @@ VALUES (b.fid_libelle_long);
 MERGE INTO G_GEO.TA_LIBELLE_CORRESPONDANCE a
 USING
 	(
-		SELECT
-			a.objectid AS fid_libelle,
-			e.objectid AS fid_libelle_court
-		FROM
-			G_GEO.TA_LIBELLE a
-		INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON c.fid_libelle_long = b.objectid
-		INNER JOIN G_GEO.TA_FAMILLE d ON d.objectid = c.fid_famille,
-			G_GEO.TA_LIBELLE_COURT e
-		WHERE
-			UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN17') AND UPPER(b.valeur) = UPPER('Population municipale en 2017'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN16') AND UPPER(b.valeur) = UPPER('Population municipale en 2016'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN15') AND UPPER(b.valeur) = UPPER('Population municipale en 2015'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN14') AND UPPER(b.valeur) = UPPER('Population municipale en 2014'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN13') AND UPPER(b.valeur) = UPPER('Population municipale en 2013'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN12') AND UPPER(b.valeur) = UPPER('Population municipale en 2012'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN11') AND UPPER(b.valeur) = UPPER('Population municipale en 2011'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN10') AND UPPER(b.valeur) = UPPER('Population municipale en 2010'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN09') AND UPPER(b.valeur) = UPPER('Population municipale en 2009'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN08') AND UPPER(b.valeur) = UPPER('Population municipale en 2008'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN07') AND UPPER(b.valeur) = UPPER('Population municipale en 2007'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PMUN06') AND UPPER(b.valeur) = UPPER('Population municipale en 2006'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC99') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1999'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC90') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1990'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC82') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1982'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC75') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1975'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC68') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1968'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PSDC62') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1962'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT54') AND UPPER(b.valeur) = UPPER('Population totale en 1954'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT36') AND UPPER(b.valeur) = UPPER('Population totale en 1936'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1931') AND UPPER(b.valeur) = UPPER('Population totale en 1931'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1926') AND UPPER(b.valeur) = UPPER('Population totale en 1926'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1921') AND UPPER(b.valeur) = UPPER('Population totale en 1921'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1911') AND UPPER(b.valeur) = UPPER('Population totale en 1911'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1906') AND UPPER(b.valeur) = UPPER('Population totale en 1906'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1901') AND UPPER(b.valeur) = UPPER('Population totale en 1901'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1896') AND UPPER(b.valeur) = UPPER('Population totale en 1896'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1891') AND UPPER(b.valeur) = UPPER('Population totale en 1891'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1886') AND UPPER(b.valeur) = UPPER('Population totale en 1886'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1881') AND UPPER(b.valeur) = UPPER('Population totale en 1881'))
-			OR UPPER(d.valeur) = UPPER('recensement') AND (UPPER(e.valeur) = UPPER('PTOT1876') AND UPPER(b.valeur) = UPPER('Population totale en 1876'))
+	SELECT
+		a.objectid AS fid_libelle,
+		e.objectid AS fid_libelle_court
+	FROM
+		G_GEO.TA_LIBELLE a
+	INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON c.fid_libelle_long = b.objectid
+	INNER JOIN G_GEO.TA_FAMILLE d ON d.objectid = c.fid_famille,
+		G_GEO.TA_LIBELLE_COURT e
+	WHERE
+		UPPER(d.valeur) = UPPER('recensement') 
+		AND 
+			(
+			(UPPER(e.valeur) = UPPER('PMUN17') AND UPPER(b.valeur) = UPPER('Population municipale en 2017'))
+			OR (UPPER(e.valeur) = UPPER('PMUN16') AND UPPER(b.valeur) = UPPER('Population municipale en 2016'))
+			OR (UPPER(e.valeur) = UPPER('PMUN15') AND UPPER(b.valeur) = UPPER('Population municipale en 2015'))
+			OR (UPPER(e.valeur) = UPPER('PMUN14') AND UPPER(b.valeur) = UPPER('Population municipale en 2014'))
+			OR (UPPER(e.valeur) = UPPER('PMUN13') AND UPPER(b.valeur) = UPPER('Population municipale en 2013'))
+			OR (UPPER(e.valeur) = UPPER('PMUN12') AND UPPER(b.valeur) = UPPER('Population municipale en 2012'))
+			OR (UPPER(e.valeur) = UPPER('PMUN11') AND UPPER(b.valeur) = UPPER('Population municipale en 2011'))
+			OR (UPPER(e.valeur) = UPPER('PMUN10') AND UPPER(b.valeur) = UPPER('Population municipale en 2010'))
+			OR (UPPER(e.valeur) = UPPER('PMUN09') AND UPPER(b.valeur) = UPPER('Population municipale en 2009'))
+			OR (UPPER(e.valeur) = UPPER('PMUN08') AND UPPER(b.valeur) = UPPER('Population municipale en 2008'))
+			OR (UPPER(e.valeur) = UPPER('PMUN07') AND UPPER(b.valeur) = UPPER('Population municipale en 2007'))
+			OR (UPPER(e.valeur) = UPPER('PMUN06') AND UPPER(b.valeur) = UPPER('Population municipale en 2006'))
+			OR (UPPER(e.valeur) = UPPER('PSDC99') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1999'))
+			OR (UPPER(e.valeur) = UPPER('PSDC90') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1990'))
+			OR (UPPER(e.valeur) = UPPER('PSDC82') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1982'))
+			OR (UPPER(e.valeur) = UPPER('PSDC75') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1975'))
+			OR (UPPER(e.valeur) = UPPER('PSDC68') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1968'))
+			OR (UPPER(e.valeur) = UPPER('PSDC62') AND UPPER(b.valeur) = UPPER('Population sans double compte en 1962'))
+			OR (UPPER(e.valeur) = UPPER('PTOT54') AND UPPER(b.valeur) = UPPER('Population totale en 1954'))
+			OR (UPPER(e.valeur) = UPPER('PTOT36') AND UPPER(b.valeur) = UPPER('Population totale en 1936'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1931') AND UPPER(b.valeur) = UPPER('Population totale en 1931'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1926') AND UPPER(b.valeur) = UPPER('Population totale en 1926'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1921') AND UPPER(b.valeur) = UPPER('Population totale en 1921'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1911') AND UPPER(b.valeur) = UPPER('Population totale en 1911'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1906') AND UPPER(b.valeur) = UPPER('Population totale en 1906'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1901') AND UPPER(b.valeur) = UPPER('Population totale en 1901'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1896') AND UPPER(b.valeur) = UPPER('Population totale en 1896'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1891') AND UPPER(b.valeur) = UPPER('Population totale en 1891'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1886') AND UPPER(b.valeur) = UPPER('Population totale en 1886'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1881') AND UPPER(b.valeur) = UPPER('Population totale en 1881'))
+			OR (UPPER(e.valeur) = UPPER('PTOT1876') AND UPPER(b.valeur) = UPPER('Population totale en 1876'))
+			)
     ) b
 ON (
 	a.fid_libelle = b.fid_libelle
-	AND a.fid_libelle_court = b.fid_libelle_court)
+	AND a.fid_libelle_court = b.fid_libelle_court
+	)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_libelle,a.fid_libelle_court)
 VALUES (b.fid_libelle,b.fid_libelle_court)
