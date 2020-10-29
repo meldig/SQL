@@ -14,7 +14,7 @@ FORCE
 DISABLE QUERY REWRITE AS
 SELECT
     a.valeur AS identifiant,
-    a.valeur AS code_insee,
+    CAST(a.valeur AS NUMBER(38,0)) AS code_insee,
     d.valeur,
     c.geom
 FROM
