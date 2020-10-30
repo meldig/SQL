@@ -482,7 +482,7 @@ MERGE INTO G_GEO.TA_CODE a
             INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
         WHERE
             b.INSEE_DEP IN('02', '59', '60', '62', '80')
-            AND d.valeur = 'code insee'
+            AND UPPER(d.valeur) = UPPER('code insee')
     ) t
     ON (a.valeur = t.INSEE_COM AND a.fid_libelle = t.fid_libelle)
 WHEN NOT MATCHED THEN
@@ -500,7 +500,7 @@ MERGE INTO G_GEO.TA_CODE a
             G_GEO.TA_LIBELLE c 
             INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
         WHERE
-            d.valeur = 'code insee'
+            UPPER(d.valeur) = UPPER('code insee')
     ) t
     ON (a.valeur = t.INSEE_COM AND a.fid_libelle = t.fid_libelle)
 WHEN NOT MATCHED THEN
@@ -565,7 +565,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
         WHERE 
             INSEE_DEP IN('02', '59', '60', '62', '80')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND g.millesime = '01/01/19'
+            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
             AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
             AND UPPER(c.valeur) = UPPER('commune simple')
             AND UPPER(h.nom_source) = UPPER('BdTopo')
@@ -604,7 +604,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
         WHERE 
             INSEE_DEP IN('02', '59', '60', '62', '80')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND g.millesime = '01/01/19'
+            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
             AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
             AND UPPER(h.nom_source) = UPPER('BdTopo')
     )t
@@ -648,7 +648,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             -- Condition d'égalité de géométrie entre la table d'import et TA_COMMUNE
             SDO_EQUAL(a.ORA_GEOMETRY, b.GEOM) = 'TRUE'
             AND UPPER(f.nom_source) = UPPER('BdTopo')
-            AND g.millesime = '01/01/19'
+            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND UPPER(j.valeur) = UPPER('Code INSEE')
             AND h.valeur = a.INSEE_COM
@@ -682,7 +682,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             -- Condition d'égalité de géométrie entre la table d'import et TA_COMMUNE
             SDO_EQUAL(a.ORA_GEOMETRY, b.GEOM) = 'TRUE'
             AND UPPER(f.nom_source) = UPPER('BdTopo')
-            AND g.millesime = '01/01/19'
+            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND UPPER(j.valeur) = UPPER('Code INSEE')
             AND h.valeur = a.INSEE_COM
@@ -890,7 +890,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                     UPPER(i.valeur) = UPPER('code insee')
                     --AND UPPER(k.valeur) IN (UPPER('code département'), UPPER('code Territoire'), UPPER('code Unité Territoriale'), UPPER('code région'))
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = '01/01/19'
+                    AND o.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
                     AND o.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             )t
         WHERE
@@ -953,7 +953,7 @@ MERGE INTO G_GEO.TEMP_ZA_COMMUNES a
                 WHERE 
                     UPPER(i.valeur) = UPPER('code insee')
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = '01/01/19'
+                    AND o.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
                     AND o.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             )t
         WHERE
@@ -964,9 +964,12 @@ WHEN NOT MATCHED THEN
     INSERT(a.FID_COMMUNE, a.FID_ZONE_ADMINISTRATIVE, a.DEBUT_VALIDITE, a.FIN_VALIDITE)
     VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);
 
--- Suppression de la table d'import des communes TEMP_COMMUNES
+-- Suppression des tables d'import
 DROP TABLE G_GEO.TEMP_COMMUNES CASCADE CONSTRAINTS;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TEMP_COMMUNES';
+
+DROP TABLE G_GEO.TEMP_COMMUNE_ASSOCIEE_OU_DELEGUEE CASCADE CONSTRAINTS;
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TEMP_COMMUNE_ASSOCIEE_OU_DELEGUEE';
 
 COMMIT;
 
