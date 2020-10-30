@@ -19,17 +19,25 @@ Prérequis : création d'un index spatial sur la table d'import des communes TEM
   
 3. Création des noms requis pour les communes dans TA_NOM ;
     3.1. Insertion des noms des zones supra-communales ;
-    3.2. Insertion des noms des communes ;
+        3.2. Insertion des noms dans TA_NOM ; 
+            3.2.1. Communes simples ;
+            3.2.2. Communes associées ou déléguées ;
     
 4. Insertion des codes requis pour les communes dans TA_CODE ;
     4.1. Insertion des codes départementaux, régionaux, territoriaux et des unités territoriales ;
     4.2. Insertion des codes INSEE ;
-    
+        4.2.1. Communes simples ;
+        4.2.2. Communes associées ou déléguées ;
+
 5. Création des zones supra-communales, des territoires et des unités territoriales dans TA_ZONE_ADMINISTRATIVE ;
 
 6. Insertion des géométries des communes dans la table TA_COMMUNE ;
+    6.1. Communes simples ;
+    6.1. Communes associées ou déléguées ;
 
 7. Insertion des id_commune et id_code dans la table pivot TA_IDENTIFIANT_COMMUNE ;
+    7.1. Communes simples ;
+    7.1. Communes associées ou déléguées ;
 
 8. Insertion des id_zone_administrative et des id_code dans la table pivot TA_IDENTIFIANT_ZONE_ADMINISTRATIVE ;
 
@@ -481,7 +489,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
 
--- 4.2.1. Communes associées ou déléguées ;
+-- 4.2.2. Communes associées ou déléguées ;
 MERGE INTO G_GEO.TA_CODE a
     USING (
         SELECT
