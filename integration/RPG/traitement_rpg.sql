@@ -1,4 +1,8 @@
 -- insertion des données du RPG dans le schéma G_ADT_AGRI
+-- POINT DE SAUVEGARDE
+SET SERVEROUTPUT ON
+BEGIN
+SAVEPOINT POINT_SAUVERGARDE_1;
 
 ------------------------------------------------
 -- 1. Traitement SQL pour la couche RPG_2019_MEL
@@ -49,9 +53,30 @@ ON RPG_2019_MEL(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=INDX_G_ADT, work_tablespace=DATA_TEMP');
 
+-- 1.3 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_2019_MEL IS 'table contenant les parcelles agricoles issues du Registre Parcellaire Graphique dit le RPG';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.NUM_ILOT IS 'Numéro de l''ilot';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.NUM_PARCEL IS 'Numéro de la parcelle';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.CODE_CULTU IS 'Code culture principale';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.SURF_ADM IS 'Surface admissible déclarée de la parcelle en ares';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.PRECISION IS 'Précision déclarée par l''agriculteur en ares.';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.RECONVER_P IS 'Reconversion prairie ';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.RETOURNMT_ IS 'Retournement_prairie ';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.SEMENCE IS 'Production semences certifiées';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.DEST_ICHN IS 'Indemnités compensatoires de handicaps naturels';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.CULTURE_D1 IS 'Code la première culture composant le mélange SIE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.CULTURE_D2 IS 'Code la deuxième culture composant le mélange SIE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.BIO IS 'Culture en agriculture biologique';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.ENGAGEMENT IS 'renseigné si l''agriculteur demande à bénéficier d''une aide RDR3 en faveur de l''agriculture biologique';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.MARAICHAGE IS 'Renserigné si l''agiculteur à déclaré que la culture était conduite en maraichage. 0 sinon';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.AGROFOREST IS 'renseigné que si la parcelle est conduite en agroforesterie';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.FORCE_MAJE IS 'PAS DE DEFINITION TROUVEE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.DEP_ILOT IS 'Departement de l''lot';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.OBJECTID IS 'Clé primaire de la table';
 
 ------------------------------------------------
--- 2. Traitement SQL pour la couche RPG_2019_MEL
+-- 2. Traitement SQL pour la couche RPG_PARCELLE_INSTRUITES_2019_MEL
 ------------------------------------------------
 -- 2.1. creation de la clé primaire
 
@@ -82,6 +107,28 @@ ADD CONSTRAINT RPG_PARCELLE_INSTRUITES_2019_MEL_PK
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
 
+-- 2.2 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL IS 'Table contenant les surfaces instruites du Registe Parcellaire Graphique';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.NUMILOT IS 'Numéro de l''ilot';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.NUMPAR IS 'Numéro de la parcelle';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.IDPAR IS 'Identification de la parcelle concatenation NUMILOT et NUMPAR';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.DEPPAR IS 'Departement de la parcelle'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.COMMPAR IS 'Code commune de la parcelle'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.CODCULTPAR IS 'Code culture principale';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.CATEG_CULT_PR IS 'Catégorie de la culture principale'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.SURFPAR_ADMISS_CST_are IS 'Surface admissible constatée 1er pilier';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.SURFPAR_ADMISS_DEC_are IS 'Surface admissible déclarée 1er pilier';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.SURFPAR_GRAPH_CST_are IS 'Surface graphique constatée';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PRECISION_CULTURE IS 'Precision_culture';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PRECISION_CULTURE ID_PAR_RATTACH IS 'PAS DE DEFINITION TROUVEE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PRECISION_CULTURE DESTINATION_ICHN IS 'Destination Indemnités compensatoires de handicaps naturels';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PREM_CULT_SIE IS 'Première culture mélange SIE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.DEUX_CULT_SIE IS 'Deuxième culture mélange SIE';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.CULT_AB IS 'Culture AB';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.CULT_AB_MARAICH IS 'Culture AB en maraichage';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.PROD_SEM_CERTI IS 'Production semences certifiées'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PARCELLE_INSTRUITES_2019_MEL.OBJECTID IS 'Clé primaire de la table'
 
 ------------------------------------------------
 -- 3. Traitement SQL pour la couche RPG_PACAGE_FORMEJURIDIQUE_2019_MEL
@@ -115,6 +162,11 @@ ADD CONSTRAINT RPG_PACAGE_FORMEJURIDIQUE_2019_MEL_PK
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
 
+-- 3.2 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_PACAGE_FORMEJURIDIQUE_2019_MEL IS 'Table contenant les numéros de pacage des exploitant et la forme juridique de l''exploitation';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PACAGE_FORMEJURIDIQUE_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PACAGE_FORMEJURIDIQUE_2019_MEL.FORME_JURIDIQUE IS 'Forme juridique de l''exploitation';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_PACAGE_FORMEJURIDIQUE_2019_MEL.OBJECTID IS 'Clé primaire de la table';
 
 ------------------------------------------------
 -- 4. Traitement SQL pour la couche RPG_ILOTS_DESCRIPTION_2019_MEL
@@ -149,6 +201,13 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
 
 
+-- 4.2 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL IS 'Table contenant les numéros de pacage des exploitant et leurs ilots';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.NUM_ILOT IS 'Numéro d''ilot de l''exploitation';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.COMMUNE_ILOT IS 'Code insee de l''ilot'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.OBJECTID IS 'Clé primaire de la table';
+
 ------------------------------------------------
 -- 5. Traitement SQL pour la couche RPG_AIDES_2ND_PILIER_2019_MEL
 ------------------------------------------------
@@ -182,6 +241,18 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
 
 
+-- 5.2 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL IS 'Table contenant les droits des agriculteurs aux aides dites du  pilier';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.FINANCEUR IS 'Financeur';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.MONTANT_NET_PAYE_ASSUR_RECOLTE IS 'Montant net payé Assurance récolte';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.MONTANT_NET_PAYE_ICHN_BASE_RDR3 IS 'Montant net payé ichn Base (RDR 3: règlement de développement rural 3)'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.MONTANT_NET_PAYE_ICHN_MP IS 'Montant net payé ICHN Marais Poitevin'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.MONTANT_NET_PAYE_TOTAL_P2 IS 'Montant net paye total'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.N IS 'PAS DE DEFINITION TROUVE'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.OBJECTID IS 'Clé primaire de la table';
+
+
 ------------------------------------------------
 -- 6. Traitement SQL pour la couche RPG_AIDES_1ER_PILIER_2019_MEL
 ------------------------------------------------
@@ -213,3 +284,24 @@ ALTER TABLE G_ADT_AGRI.RPG_AIDES_1ER_PILIER_2019_MEL
 ADD CONSTRAINT RPG_AIDES_1ER_PILIER_2019_MEL_PK
 PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
+
+
+-- 6.2 Commentaire des tables et des colonnes
+COMMENT ON TABLE G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL IS 'Table contenant les droits des agriculteurs aux aides dites du 1er pilier';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.NB_DPB IS 'Nombre de droits attribués';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.VALEUR_UNITAIRE_2015 IS 'Montant unitaire 2015';
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.VALEUR_UNITAIRE_2016 IS 'Montant unitaire 2016'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.VALEUR_UNITAIRE_2017 IS 'Montant unitaire 2017'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.VALEUR_UNITAIRE_2018 IS 'Montant unitaire 2018'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.VALEUR_UNITAIRE_2019 IS 'Montant unitaire 2018'
+COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.OBJECTID IS 'Clé primaire de la table';
+
+COMMIT;
+-- 7. En cas d'exeption levée, faire un ROLLBACK
+EXCEPTION
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.put_line('une erreur est survenue, un rollback va être effectué: ' || SQLCODE || ' : '  || SQLERRM(SQLCODE));
+    ROLLBACK TO POINT_SAUVERGARDE_1;
+END;
+/
