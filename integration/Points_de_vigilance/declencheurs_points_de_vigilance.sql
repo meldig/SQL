@@ -1,58 +1,9 @@
 /*
-1. Déclencheurs temporaires d'auto-incrémentation des PK ;
-2. Déclencheur permettant de faire l'audit de la table G_GEO.TA_GG_POINT_VIGILANCE ;
-3. Déclencheur empêchant les associations improbables dans la table G_GEO.TA_GG_POINT_VIGILANCE ;
+1. Déclencheur permettant de faire l'audit de la table G_GEO.TA_GG_POINT_VIGILANCE ;
+2. Déclencheur empêchant les associations improbables dans la table G_GEO.TA_GG_POINT_VIGILANCE ;
+3. En cas d'exeption levée, faire un ROLLBACK ;
 */
-
--- 1. Déclencheurs temporaires d'auto-incrémentation des PK
--- Triggers temporaires d'incrémentation des clés primaires le temps que les utilisateurs passent à QGIS 3.12.
-
--- TA_GG_PERMIS_CONSTRUIRE
-CREATE SEQUENCE  "G_GEO"."SEQ_TA_GG_PERMIS_CONSTRUIRE"  
-INCREMENT BY 1 START WITH 1;
-/
-CREATE OR REPLACE TRIGGER "G_GEO"."BEF_TA_GG_PERMIS_CONSTRUIRE" 
-BEFORE INSERT ON G_GEO.TA_GG_PERMIS_CONSTRUIRE
-FOR EACH ROW
-BEGIN
-    :new.objectid := SEQ_TA_GG_PERMIS_CONSTRUIRE.nextval;
-END;
-/
--- TA_GG_POINT_VIGILANCE
-CREATE SEQUENCE  "G_GEO"."SEQ_TA_GG_POINT_VIGILANCE"  
-INCREMENT BY 1 START WITH 1;
-/
-CREATE OR REPLACE TRIGGER "G_GEO"."BEF_TA_GG_POINT_VIGILANCE" 
-BEFORE INSERT ON G_GEO.TA_GG_POINT_VIGILANCE
-FOR EACH ROW
-BEGIN
-    :new.objectid := SEQ_TA_GG_POINT_VIGILANCE.nextval;
-END;
-/
--- TA_GG_POINT_VIGILANCE_AUDIT
-CREATE SEQUENCE  "G_GEO"."SEQ_TA_GG_POINT_VIGILANCE_AUDIT"  
-INCREMENT BY 1 START WITH 1;
-/
-CREATE OR REPLACE TRIGGER "G_GEO"."BEF_TA_GG_POINT_VIGILANCE_AUDIT" 
-BEFORE INSERT ON G_GEO.TA_GG_POINT_VIGILANCE_AUDIT
-FOR EACH ROW
-BEGIN
-    :new.objectid := SEQ_TA_GG_POINT_VIGILANCE_AUDIT.nextval;
-END;
-/
--- TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE
-CREATE SEQUENCE  "G_GEO"."SEQ_TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE"  
-INCREMENT BY 1 START WITH 1;
-/
-CREATE OR REPLACE TRIGGER "G_GEO"."BEF_TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE" 
-BEFORE INSERT ON G_GEO.TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE
-FOR EACH ROW
-BEGIN
-    :new.objectid := SEQ_TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE.nextval;
-END;
-/
-
--- 2. Déclencheur permettant de faire l'audit de la table G_GEO.TA_GG_POINT_VIGILANCE
+-- 1. Déclencheur permettant de faire l'audit de la table G_GEO.TA_GG_POINT_VIGILANCE
 create or replace TRIGGER G_GEO.A_IUD_TA_GG_POINT_VIGILANCE_ACTION
 AFTER INSERT OR UPDATE OR DELETE ON TA_GG_POINT_VIGILANCE
 FOR EACH ROW
@@ -128,7 +79,7 @@ FOR EACH ROW
             mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.A_IUD_TA_GG_POINT_VIGILANCE_AUDIT','trigger@lillemetropole.fr');
     END;
 /
--- 3. Déclencheur empêchant les associations improbables dans la table G_GEO.TA_GG_POINT_VIGILANCE
+-- 2. Déclencheur empêchant les associations improbables dans la table G_GEO.TA_GG_POINT_VIGILANCE
 create or replace TRIGGER G_GEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE
 BEFORE INSERT OR UPDATE ON TA_GG_POINT_VIGILANCE
 FOR EACH ROW
