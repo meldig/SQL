@@ -37,16 +37,6 @@ FOR EACH ROW
         WHERE
             UPPER(b.valeur) = UPPER('édition');
 
-        -- Stockage de l'id clôture   
-        SELECT 
-            a.objectid 
-            INTO v_id_cloture
-        FROM 
-            G_GEO.TA_LIBELLE a 
-            INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-        WHERE
-            UPPER(b.valeur) = UPPER('Clôture');
-
 -- En cas d'insertion
         IF INSERTING THEN
             INSERT INTO G_GEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, pnom, fid_libelle, date_action)
@@ -71,12 +61,12 @@ FOR EACH ROW
             --INSERT INTO G_GEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, pnom, fid_libelle, date_action)
             --VALUES(:old.objectid, username, v_id_cloture, sysdate);
 
-            RAISE_APPLICATION_ERROR(-20001, 'Passage de l''objet '|| :old.objectid ||' en invalide.');
+            RAISE_APPLICATION_ERROR(-20001, 'Les objets de la table TA_GG_POINT_VIGILANCE ne peuvent pas être supprimés. L''objet '|| :old.objectid ||' a été restauré. Veuillez le passer en chantier terminé.');
         END IF;
 
         EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.A_IUD_TA_GG_POINT_VIGILANCE_AUDIT','trigger@lillemetropole.fr');
+            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.A_IUD_TA_GG_POINT_VIGILANCE_ACTION','trigger@lillemetropole.fr');
     END;
 /
 -- 2. Déclencheur empêchant les associations improbables dans la table G_GEO.TA_GG_POINT_VIGILANCE
@@ -95,7 +85,6 @@ DECLARE
     demolition NUMBER(38,0);
     bati NUMBER(38,0);
     voirie NUMBER(38,0);
-
 
 BEGIN
 -- Valorisation des variables
