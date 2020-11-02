@@ -355,7 +355,7 @@ USING INDEX TABLESPACE "DATA_G_ADT";
 
 
 -- 5.2 Commentaire des tables et des colonnes
-COMMENT ON TABLE G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL IS 'Table contenant les droits des agriculteurs aux aides dites du  pilier';
+COMMENT ON TABLE G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL IS 'Table contenant les droits des agriculteurs aux aides dites du 2nd pilier';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.FINANCEUR IS 'Financeur';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.MONTANT_NET_PAYE_ASSUR_RECOLTE IS 'Montant net payé Assurance récolte';
