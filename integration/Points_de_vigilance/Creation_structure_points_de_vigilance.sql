@@ -1,10 +1,16 @@
 /*
 La table TA_GG_POINT_VIGILANCE regroupe tous les points de vigilance utilisés dans GestionGeo.
+
+1. Création de la table TA_GG_POINT_VIGILANCE ;
+2. Création des commentaires sur la table et les champs ;
+3. Création de la clé primaire ;
+4. Création des métadonnées spatiales ;
+5. Création de l'index spatial sur le champ geom ;
 */
 
 -- 1. Création de la table TA_GG_POINT_VIGILANCE
-CREATE TABLE TA_GG_POINT_VIGILANCE(
-    objectid NUMBER(38,0),
+CREATE TABLE G_GEO.TA_GG_POINT_VIGILANCE(
+    objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY,
     fid_lib_categorie NUMBER(38,0),
     fid_type_signalement NUMBER(38,0),
     fid_verification NUMBER(38,0),
@@ -28,7 +34,7 @@ COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE.commentaire IS 'Champ dans lequel 
 COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE.geom IS 'géométrie de chaque objet de type point';
 
 -- 3. Création de la clé primaire
-ALTER TABLE TA_GG_POINT_VIGILANCE 
+ALTER TABLE G_GEO.TA_GG_POINT_VIGILANCE 
 ADD CONSTRAINT TA_GG_POINT_VIGILANCE_PK 
 PRIMARY KEY("OBJECTID") 
 USING INDEX TABLESPACE "G_ADT_INDX";
@@ -50,7 +56,7 @@ COMMIT;
 
 -- 5. Création de l'index spatial sur le champ geom
 CREATE INDEX TA_GG_POINT_VIGILANCE_SIDX
-ON TA_GG_POINT_VIGILANCE(GEOM)
+ON G_GEO.TA_GG_POINT_VIGILANCE(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=POINT, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
@@ -109,7 +115,7 @@ La table TA_GG_PERMIS_CONSTRUIRE permet de regrouper tous les numéros et dates 
 */
 -- 1. Création de la table TA_GG_PERMIS_CONSTRUIRE
 CREATE TABLE G_GEO.TA_GG_PERMIS_CONSTRUIRE(
-    objectid NUMBER(38,0), 
+    objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY, 
     numero VARCHAR2(100 BYTE) NOT NULL, 
     debut DATE NOT NULL, 
     fin DATE NOT NULL
@@ -153,7 +159,7 @@ COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE_AUDIT.fid_libelle IS 'Clé étrang
 COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE_AUDIT.date_action IS 'Date à laquelle une action a été effectuée sur un point de vigilance.';
 
 -- 3. Création de la clé primaire
-ALTER TABLE TA_GG_POINT_VIGILANCE_AUDIT 
+ALTER TABLE G_GEO.TA_GG_POINT_VIGILANCE_AUDIT 
 ADD CONSTRAINT TA_GG_POINT_VIGILANCE_AUDIT_PK 
 PRIMARY KEY("OBJECTID") 
 USING INDEX TABLESPACE "G_ADT_INDX";
@@ -184,7 +190,7 @@ La table TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE est une table pivot permettant 
 */
 -- 1. Création de la table TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE
 CREATE TABLE G_GEO.TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE(
-    objectid NUMBER(38,0),
+    objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY,
     fid_point_vigilance NUMBER(38,0),
     fid_permis_construire NUMBER(38,0)
 );
@@ -196,7 +202,7 @@ COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE.fid_point_vigila
 COMMENT ON COLUMN g_geo.TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE.fid_permis_construire IS 'Clé étrangère de la table TA_GG_PERMIS_CONSTRUIRE permettant d''associer un permis de construire à un point de vigilance.';
 
 -- 3. Création de la clé primaire
-ALTER TABLE TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE 
+ALTER TABLE G_GEO.TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE 
 ADD CONSTRAINT TA_GG_POINT_VIGILANCE_PERMIS_CONSTRUIRE_PK 
 PRIMARY KEY("OBJECTID") 
 USING INDEX TABLESPACE "G_ADT_INDX";
