@@ -14,7 +14,7 @@ SAVEPOINT POINT_SAUVERGARDE_1;
 
 -- 1.1.1. suppression de la contrainte de la clé primaire
 SELECT
-        CONSTRAINT_NAME
+    CONSTRAINT_NAME
     INTO v_nom
 FROM
     USER_CONSTRAINTS
@@ -114,9 +114,6 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_2019_MEL.OBJECTID IS 'Clé primaire de la table
 ------------------------------------------------
 -- 2.1. creation de la clé primaire
 -- 2.1.1. suppression de la contrainte de la clé primaire
-SET SERVEROUTPUT ON
-DECLARE
-    v_nom VARCHAR2(200);
 BEGIN
     SELECT
         CONSTRAINT_NAME
@@ -187,9 +184,6 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_PARC_INSTRUITES_2019_MEL.OBJECTID IS 'Clé prim
 ------------------------------------------------
 -- 3.1. creation de la clé primaire
 -- 3.1.1. suppression de la contrainte de la clé primaire
-SET SERVEROUTPUT ON
-DECLARE
-    v_nom VARCHAR2(200);
 BEGIN
     SELECT
         CONSTRAINT_NAME
@@ -243,9 +237,6 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL.OBJECTID IS 'Clé prima
 ------------------------------------------------
 -- 4.1. creation de la clé primaire
 -- 4.1.1. suppression de la contrainte de la clé primaire
-SET SERVEROUTPUT ON
-DECLARE
-    v_nom VARCHAR2(200);
 BEGIN
     SELECT
         CONSTRAINT_NAME
@@ -301,9 +292,6 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.OBJECTID IS 'Clé pr
 ------------------------------------------------
 -- 5.1. creation de la clé primaire
 -- 5.1.1. suppression de la contrainte de la clé primaire
-SET SERVEROUTPUT ON
-DECLARE
-    v_nom VARCHAR2(200);
 BEGIN
     SELECT
         CONSTRAINT_NAME
@@ -364,9 +352,6 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_2ND_PILIER_2019_MEL.OBJECTID IS 'Clé pri
 ------------------------------------------------
 -- 6.1. creation de la clé primaire
 -- 6.1.1. suppression de la contrainte de la clé primaire
-SET SERVEROUTPUT ON
-DECLARE
-    v_nom VARCHAR2(200);
 BEGIN
     SELECT
         CONSTRAINT_NAME
