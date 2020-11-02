@@ -12,7 +12,8 @@ SET /p INSTANCE="Veuillez saisir l'instance Oracle :"
 type %chemin_traitement%\Creation_structure_points_de_vigilance.sql > pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql ^
 | type %chemin_traitement%\nomenclature_points_de_vigilance.sql >> pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql ^
 | type %chemin_traitement%\declencheurs_points_de_vigilance.sql >> pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql ^
-| type %chemin_traitement%\conversion_donnees_points_vigilance.sql >> pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql
+| type %chemin_traitement%\conversion_donnees_points_vigilance.sql >> pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql ^
+| type %chemin_traitement%\suppression_tables_de_construction.sql >> pts_vigilance_temp.sql | echo. >> pts_vigilance_temp.sql
 
 :: 3. Se mettre dans l'environnement de QGIS ;
 c:
@@ -25,8 +26,8 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 
 :: 6. Importer les données brutes en base
-ogr2ogr -f OCI OCI:USER/MDP@INSTANCE @chemin_import\Point_interet_yann.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
-ogr2ogr -f OCI -append OCI:USER/MDP@INSTANCE @chemin_import\Point_interet.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet_yann.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
+ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
 
 :: 7. Se mettre dans l'environnement SQL plus.
 CD C:/ora12c/R1/BIN
