@@ -2,9 +2,9 @@
 
 :: 1. Déclaration et valorisation des variables
 SET /p chemin_traitement="Veuillez saisir le chemin d'accès du fichier de traitement des données du RPG traitement_rpg.sql : "
-SET /p USER="Veuillez saisir l'utilisateur Oracle : "    
-SET /p MDP="Veuillez saisir le MDP : "    
-SET /p INSTANCE="Veuillez saisir l'instance Oracle :"   
+SET /p USER="Veuillez saisir l'utilisateur Oracle : "
+SET /p MDP="Veuillez saisir le MDP : "
+SET /p INSTANCE="Veuillez saisir l'instance Oracle :"
 
 :: 2.  Deplacement de la commande dans le dossier de QGIS.
 CD C:/Program Files/QGIS 3.10/bin
