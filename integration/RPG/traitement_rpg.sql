@@ -240,7 +240,7 @@ PRIMARY KEY("OBJECTID")
 USING INDEX TABLESPACE "DATA_G_ADT";
 
 -- 3.2 Commentaire des tables et des colonnes
-COMMENT ON TABLE G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL IS 'Table contenant les numéros de pacage des exploitant et la forme juridique de l''exploitation';
+COMMENT ON TABLE G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL IS 'Table contenant les numéros de pacage des exploitants et la forme juridique de l''exploitation';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL.FORME_JURIDIQUE IS 'Forme juridique de l''exploitation';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_FORMEJURIDIQUE_2019_MEL.OBJECTID IS 'Clé primaire de la table';
@@ -297,7 +297,7 @@ USING INDEX TABLESPACE "DATA_G_ADT";
 
 
 -- 4.2 Commentaire des tables et des colonnes
-COMMENT ON TABLE G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL IS 'Table contenant les numéros de pacage des exploitant et leurs ilots';
+COMMENT ON TABLE G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL IS 'Table contenant les numéros de pacage des exploitants et leurs ilots';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.PACAGE IS 'Numéro pacage, numéro d''identification de l''exploitation agricole';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.NUMILOT IS 'Numéro d''ilot de l''exploitation';
 COMMENT ON COLUMN G_ADT_AGRI.RPG_ILOTS_DESCRIPTION_2019_MEL.COMMUNE_ILOT IS 'Code insee de l''ilot';
