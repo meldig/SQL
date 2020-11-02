@@ -1,7 +1,7 @@
 :: Fichier bat d'insertion des données du RPG sur le schéma CUDL
 
 :: 1. Déclaration et valorisation des variables
-:: SET /p chemin_traitement="Veuillez saisir le chemin d'accès du fichier de traitement des données du RPG traitement_rpg.sql : "
+SET /p chemin_traitement="Veuillez saisir le chemin d'accès du fichier de traitement des données du RPG traitement_rpg.sql : "
 SET /p USER="Veuillez saisir l'utilisateur Oracle : "    
 SET /p MDP="Veuillez saisir le MDP : "    
 SET /p INSTANCE="Veuillez saisir l'instance Oracle :"   
@@ -35,7 +35,7 @@ ogr2ogr.exe -f OCI OCI:%USER%/%MDP%@%INSTANCE% \\volt\infogeo\Donnees\Externe\DR
 ogr2ogr.exe -f OCI OCI:%USER%/%MDP%@%INSTANCE% \\volt\infogeo\Donnees\Externe\DRAAF\RPG_2019\RPG\aides_1erpilier.xlsx -nln RPG_AIDES_1ER_PILIER_2019_MEL
 
 :: 6. Lancement de SQL plus
-::CD C:/ora12c/R1/BIN
+CD C:/ora12c/R1/BIN
 
 :: 7. Lancement des traitements sous sqlplus (clé primaire, indexes...)
-::sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_traitement%\traitement_rpg.sql
+sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_traitement%\traitement_rpg.sql
