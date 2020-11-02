@@ -1,10 +1,11 @@
 -- insertion des données du RPG dans le schéma G_ADT_AGRI
 -- POINT DE SAUVEGARDE
-/*
+
 SET SERVEROUTPUT ON
+DECLARE
+	    v_nom VARCHAR2(200);
 BEGIN
 SAVEPOINT POINT_SAUVERGARDE_1;
-*/
 ------------------------------------------------
 -- 1. Traitement SQL pour la couche RPG_2019_MEL
 ------------------------------------------------
@@ -12,10 +13,7 @@ SAVEPOINT POINT_SAUVERGARDE_1;
 -- 1.1. creation de la clé primaire
 
 -- 1.1.1. suppression de la contrainte de la clé primaire
-DECLARE
-    v_nom VARCHAR2(200);
-BEGIN
-    SELECT
+SELECT
         CONSTRAINT_NAME
     INTO v_nom
 FROM
@@ -23,7 +21,6 @@ FROM
 WHERE
     TABLE_NAME = 'RPG_2019_MEL'
     AND CONSTRAINT_TYPE = 'P';
-    
 EXECUTE IMMEDIATE 'ALTER TABLE G_ADT_AGRI.RPG_2019_MEL DROP CONSTRAINT ' || v_nom;
 END;
 /
@@ -426,11 +423,10 @@ COMMENT ON COLUMN G_ADT_AGRI.RPG_AIDES_1ER_PILIER_2019_MEL.OBJECTID IS 'Clé pri
 
 COMMIT;
 -- 7. En cas d'exeption levée, faire un ROLLBACK
-/*
+
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
         ROLLBACK TO POINT_SAUVERGARDE_1;
 END;
 /
-*/
