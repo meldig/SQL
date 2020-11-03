@@ -33,5 +33,5 @@ ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet
 CD C:/ora12c/R1/BIN
 
 :: 8. Lancement des requetes SQL.
-sqlplus.exe %USER%/%MDP%@%INSTANCE% @chemin_traitement\pts_vigilance_temp.sql
+sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_traitement%\pts_vigilance_temp.sql
 pause
