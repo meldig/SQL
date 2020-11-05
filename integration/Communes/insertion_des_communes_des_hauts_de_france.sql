@@ -17,7 +17,7 @@ Insertion des communes des Hauts-de-France de la BdTopo de l'IGN en base et cré
   
 3. Création des noms requis pour les communes dans TA_NOM ;
     3.1. Insertion des noms des zones supra-communales ;
-        3.2. Insertion des noms dans TA_NOM ; 
+        3.2. Insertion des noms des communes ;
             3.2.1. Communes simples ;
             3.2.2. Communes associées ou déléguées ;
     
@@ -358,11 +358,11 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur)
     VALUES(t.nom);
 
--- 3.2. Insertion des noms dans TA_NOM ; 
+-- 3.2. Insertion des noms des communes ; 
 -- 3.2.1. Communes simples ;
 MERGE INTO G_GEO.TA_NOM a
     USING (
-            SELECT
+            SELECT DISTINCT
                 a.NOM
             FROM
                 G_GEO.TEMP_COMMUNES a
@@ -377,7 +377,7 @@ WHEN NOT MATCHED THEN
 -- 3.2.2. Communes associées ou déléguées ;
 MERGE INTO G_GEO.TA_NOM a
     USING (
-            SELECT
+            SELECT DISTINCT
                 a.NOM
             FROM
                 G_GEO.TEMP_COMMUNE_ASSOCIEE_OU_DELEGUEE a
@@ -575,9 +575,9 @@ MERGE INTO G_GEO.TA_COMMUNE a
     USING(
         SELECT 
             CASE
-                WHEN UPPER(a.NATURE) = UPPER(c.valeur) AND UPPER(c.valeur) = UPPER(commune associée)
+                WHEN UPPER(a.NATURE) = UPPER(c.valeur) AND UPPER(c.valeur) = UPPER('commune associée')
                     THEN a.ORA_GEOMETRY
-                WHEN UPPER(a.NATURE) = UPPER(c.valeur) AND UPPER(c.valeur) = UPPER(commune déléguée)
+                WHEN UPPER(a.NATURE) = UPPER(c.valeur) AND UPPER(c.valeur) = UPPER('commune déléguée')
                     THEN a.ORA_GEOMETRY
             END AS geom, 
             b.objectid AS fid_lib_type_commune, 

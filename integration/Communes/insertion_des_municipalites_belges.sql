@@ -32,7 +32,10 @@ USING(
         'Institut Géographique National Belge' AS valeur 
     FROM DUAL
     )t
-ON (UPPER(a.acronyme) = UPPER(t.acronyme) AND UPPER(a.nom_organisme) = UPPER(t.valeur))
+ON (
+		UPPER(a.acronyme) = UPPER(t.acronyme) 
+		AND UPPER(a.nom_organisme) = UPPER(t.valeur)
+	)
 WHEN NOT MATCHED THEN
     INSERT(a.acronyme, a.nom_organisme)
     VALUES(t.acronyme, t.valeur);
@@ -45,7 +48,10 @@ USING(
         'AdminVector est la série de données vectorielles qui contient les données vectorielles administratives de l''IGN les plus précises géométriquement et les plus détaillées sémantiquement. La série de données comporte 12 classes d''objets portant sur les secteurs statistiques, les anciennes communes, les communes, les arrondissements, les provinces, les régions et les limites territoriales et maritimes de la Belgique. La géométrie des données de tous ces thèmes est décrite par des coordonnées x,y ou x,y,z.' AS description 
     FROM DUAL
     )t
-ON (UPPER(a.nom_source) = UPPER(t.nom) AND UPPER(a.description) = UPPER(t.description))
+ON (
+		UPPER(a.nom_source) = UPPER(t.nom) 
+		AND UPPER(a.description) = UPPER(t.description)
+	)
 WHEN NOT MATCHED THEN
     INSERT(a.nom_source, a.description)
     VALUES(t.nom, t.description);
@@ -60,7 +66,8 @@ MERGE INTO G_GEO.TA_PROVENANCE a
             DUAL
     )t
     ON(
-        UPPER(a.url) = UPPER(t.url) AND UPPER(a.methode_acquisition) = UPPER(t.methode)
+        UPPER(a.url) = UPPER(t.url) 
+        AND UPPER(a.methode_acquisition) = UPPER(t.methode)
     )
 WHEN NOT MATCHED THEN
     INSERT(a.url, a.methode_acquisition)
@@ -76,9 +83,9 @@ MERGE INTO G_GEO.TA_DATE_ACQUISITION a
         FROM DUAL
     )t
     ON (
-            a.date_acquisition = t.date_insertion 
-            AND a.millesime = t.date_millesime
-            AND a.nom_obtenteur = t.nom_obtenteur
+	        a.date_acquisition = t.date_insertion 
+	        AND a.millesime = t.date_millesime
+	        AND a.nom_obtenteur = t.nom_obtenteur
         )
 WHEN NOT MATCHED THEN
     INSERT (a.date_acquisition, a.millesime, a.nom_obtenteur)
@@ -99,24 +106,24 @@ MERGE INTO G_GEO.TA_METADONNEE a
 USING
 	(
 		SELECT 
-	    a.objectid AS FID_SOURCE,
-	    b.objectid AS FID_ACQUISITION,
-	    c.objectid AS FID_PROVENANCE,
-	    d.objectid AS FID_ECHELLE
+		    a.objectid AS FID_SOURCE,
+		    b.objectid AS FID_ACQUISITION,
+		    c.objectid AS FID_PROVENANCE,
+		    d.objectid AS FID_ECHELLE
 		FROM
 		    G_GEO.TA_SOURCE a,
 		    G_GEO.TA_DATE_ACQUISITION b,
 		    G_GEO.TA_PROVENANCE c
 		WHERE
-		    a.nom_source = 'Inventaire topogéographique du territoire belge'
+		    UPPER(a.nom_source) = UPPER('Inventaire topogéographique du territoire belge')
 		AND
 		    b.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
 		AND
 		    b.millesime IN ('04/11/2019')
 		AND
-		    c.url = 'http://www.ngi.be/FR/FR1-5-2.shtm'
+		    UPPER(c.url) = UPPER('http://www.ngi.be/FR/FR1-5-2.shtm')
 		AND
-			c.methode_acquisition = 'Téléchargement de la donnée au format shape depuis le site de l''IGN belge.'
+			UPPER(c.methode_acquisition) = UPPER('Téléchargement de la donnée au format shape depuis le site de l''IGN belge.')
 	)t
 	ON (
 		a.fid_source = t.fid_source
@@ -192,7 +199,8 @@ MERGE INTO G_GEO.TA_NOM a
 	USING(
 		SELECT
 			b.nom
-		FROM G_GEO.TEMP_MUNICIPALITE_BELGE b
+		FROM 
+			G_GEO.TEMP_MUNICIPALITE_BELGE b
 	)t
 	ON(UPPER(a.valeur) = UPPER(t.nom))
 WHEN NOT MATCHED THEN
