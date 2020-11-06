@@ -76,17 +76,10 @@ WHEN NOT MATCHED THEN
     VALUES(t.fid_metadonnee, t.fid_organisme);
 
 -- 2 correction de la table TA_METADONNEE
--- Suppression de la contrainte TA_METADONNEE_FID_ORGANISME_FK
-ALTER TABLE G_GEO.TA_METADONNEE
-DROP CONSTRAINT TA_METADONNEE_FID_ORGANISME_FK;
-
--- Suppression de la contrainte TA_METADONNEE_FID_ECHELLE_FK
-ALTER TABLE G_GEO.TA_METADONNEE
-DROP CONSTRAINT TA_METADONNEE_FID_ECHELLE_FK;
 
 -- 3. Suppression des indexes
 -- 3.1. suppression de l'index de la colonne FID_ORGANISME
-DROP INDEX ta_metadonnee_fid_organisme_IDX
+DROP INDEX ta_metadonnee_fid_organisme_IDX;
 
 -- 3.2. Suppression de l'index de la colonne FID_ECHELLE
 DROP INDEX ta_metadonnee_fid_echelle_IDX;
