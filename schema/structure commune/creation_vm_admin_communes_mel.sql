@@ -1,7 +1,6 @@
 /*
 Création de la VM ADMIN_COMMUNES_MEL qui regroupe toutes les communes actuelles de la MEL.
 */
-
 -- 1. Création de la vue matérialisée
 CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_COMMUNES_MEL (
     identifiant,
@@ -31,18 +30,18 @@ FROM
     INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = c.fid_lib_type_commune
     INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
     -- MTD -> Les commentaires de cette partie de FROM seront enlevés une fois les correctifs appliqués en prod
-    /*INNER JOIN G_GEO.TA_METADONNEE l ON k.objectid = c.fid_metadonnee
+    INNER JOIN G_GEO.TA_METADONNEE l ON l.objectid = c.fid_metadonnee
     INNER JOIN G_GEO.TA_SOURCE m ON m.objectid = l.fid_source
     INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME n ON n.fid_metadonnee = l.objectid
     INNER JOIN G_GEO.TA_ORGANISME o ON o.objectid = n.fid_organisme
-    INNER JOIN G_GEO.TA_DATE_ACQUISITION p ON p.objectid = l.fid_acquisition*/
+    INNER JOIN G_GEO.TA_DATE_ACQUISITION p ON p.objectid = l.fid_acquisition
 WHERE
     UPPER(f.valeur) = UPPER('code insee')
     AND UPPER(k.valeur) = UPPER('commune simple')
     AND UPPER(i.acronyme) = UPPER('mel')
     AND sysdate BETWEEN g.debut_validite AND g.fin_validite
-    /*AND UPPER(m.nom_source) = UPPER('bdtopo')
-    AND UPPER(o.acronyme) = UPPER('ign')*/;
+    AND UPPER(m.nom_source) = UPPER('bdtopo')
+    AND UPPER(o.acronyme) = UPPER('ign');
 
 -- 2. Création des commentaires de VM et des colonnes
 COMMENT ON MATERIALIZED VIEW G_REFERENTIEL.ADMIN_COMMUNES_MEL IS 'Vue matérialisée proposant les communes actuelles de la MEL extraites de la BdTopo de l''IGN.';
