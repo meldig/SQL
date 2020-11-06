@@ -13,29 +13,9 @@ BEGIN
     MERGE INTO G_GEO.TA_FAMILLE a
         USING(
             SELECT
-                'éléments de vigilance' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'type de signalement des points de vigilance' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'type de vérification des points de vigilance' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'statut du dossier' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'catégories des points de vigilance' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'type des actions des pnoms' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'type de dates' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'type de points de vigilance' AS valeur
-            FROM DUAL
+                valeur
+            FROM
+                G_GEO.TEMP_FAMILLE_POINT_VIGILANCE
         )t
         ON (UPPER(a.valeur) = UPPER(t.valeur))
     WHEN NOT MATCHED THEN
@@ -46,71 +26,9 @@ BEGIN
     MERGE INTO G_GEO.TA_LIBELLE_LONG a
         USING(
             SELECT
-                'bâti - gros chantier' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'bâti - petit chantier' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'voirie (clôture,fossé et bordure)' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'Création' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'Modification manuelle' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'Vérification terrain' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'Vérification ortho2020' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'chantier potentiel' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'chantier en cours' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'chantier terminé' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'démolition' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'permis de construire' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'erreur carto' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'erreur topo' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'point de vigilance' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'insertion' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'édition' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'clôture' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'prioritaire' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'non-prioritaire' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'traité' AS valeur
-            FROM DUAL UNION
-            SELECT
-                'non-traité' AS valeur
-            FROM DUAL
+                valeur
+            FROM
+                G_GEO.TEMP_LIBELLE_POINT_VIGILANCE
         )t
         ON (UPPER(a.valeur) = UPPER(t.valeur))
     WHEN NOT MATCHED THEN
@@ -128,16 +46,16 @@ BEGIN
                             b.valeur AS famille,
                             CASE
                                 WHEN UPPER(b.valeur) = UPPER('type de signalement des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('Création'), UPPER('Modification manuelle'), UPPER('Vérification terrain'), UPPER('Vérification ortho2020'))
+                                        AND UPPER(c.valeur) IN (UPPER('Création dossier'), UPPER('Modification manuelle par les topos'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('type de vérification des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('chantier potentiel'), UPPER('chantier en cours'), UPPER('chantier terminé'), UPPER('permis de construire'), UPPER('démolition'))
+                                        AND UPPER(c.valeur) IN (UPPER('chantier potentiel'), UPPER('chantier en cours'), UPPER('chantier terminé'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('catégories des points de vigilance') 
                                         AND UPPER(c.valeur) IN (UPPER('prioritaire'), UPPER('non-prioritaire'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('éléments de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('bâti - gros chantier'), UPPER('bâti - petit chantier'), UPPER('voirie (clôture,fossé et bordure)'))
+                                        AND UPPER(c.valeur) IN (UPPER('bâti'), UPPER('voirie (clôture,fossé et bordure)'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('statut du dossier') 
                                         AND UPPER(c.valeur) IN (UPPER('traité'), UPPER('non-traité'))
@@ -175,18 +93,15 @@ BEGIN
                 G_GEO.TA_LIBELLE_LONG b
             WHERE
                 UPPER(b.valeur) IN(
-                    UPPER('bâti - gros chantier'), 
-                    UPPER('bâti - petit chantier'), 
+                    UPPER('bâti'),
                     UPPER('voirie (clôture,fossé et bordure)'), 
-                    UPPER('Création'), 
-                    UPPER('Modification manuelle'),
+                    UPPER('Création dossier'), 
+                    UPPER('Modification manuelle par les topos'),
                     UPPER('Vérification terrain'), 
-                    UPPER('Vérification ortho2020'),
+                    UPPER('Vérification orthophoto'),
                     UPPER('chantier potentiel'),
                     UPPER('chantier en cours'),
                     UPPER('chantier terminé'),
-                    UPPER('démolition'),
-                    UPPER('permis de construire'),
                     UPPER('erreur carto'),
                     UPPER('erreur topo'),
                     UPPER('point de vigilance'),

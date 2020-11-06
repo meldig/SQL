@@ -26,9 +26,13 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 
 :: 6. Importer les données brutes en base
+:: 6.1. Import des points de vigilance
 ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet_yann.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
 ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
 
+:: 6.2. Import de la nomenclature
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\nomenclature_famille.csv -nln TEMP_FAMILLE_POINT_VIGILANCE
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\nomenclature_libelle_long.csv -nln TEMP_LIBELLE_POINT_VIGILANCE
 :: 7. Se mettre dans l'environnement SQL plus.
 CD C:/ora12c/R1/BIN
 

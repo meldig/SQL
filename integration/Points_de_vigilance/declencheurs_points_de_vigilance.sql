@@ -10,7 +10,7 @@ FOR EACH ROW
     DECLARE
         username VARCHAR2(100);
         v_test NUMBER(38,0);
-        v_id_creation NUMBER(38,0);
+        v_id_insertion NUMBER(38,0);
         v_id_edition NUMBER(38,0);
         v_id_cloture NUMBER(38,0);
     BEGIN
@@ -20,12 +20,12 @@ FOR EACH ROW
         -- Stockage de l'id création
         SELECT 
             a.objectid 
-            INTO v_id_creation
+            INTO v_id_insertion
         FROM 
             G_GEO.TA_LIBELLE a 
             INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
         WHERE
-            UPPER(b.valeur) = UPPER('création');
+            UPPER(b.valeur) = UPPER('insertion');
 
         -- Stockage de l'id édition    
         SELECT 
@@ -40,7 +40,7 @@ FOR EACH ROW
 -- En cas d'insertion
         IF INSERTING THEN
             INSERT INTO G_GEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, pnom, fid_libelle, date_action)
-            VALUES(:new.objectid, username, v_id_creation, sysdate);
+            VALUES(:new.objectid, username, v_id_insertion, sysdate);
         END IF;
 -- En cas d'édition
         IF UPDATING THEN
@@ -61,7 +61,7 @@ FOR EACH ROW
             --INSERT INTO G_GEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, pnom, fid_libelle, date_action)
             --VALUES(:old.objectid, username, v_id_cloture, sysdate);
 
-            RAISE_APPLICATION_ERROR(-20001, 'Les objets de la table TA_GG_POINT_VIGILANCE ne peuvent pas être supprimés. L''objet '|| :old.objectid ||' a été restauré. Veuillez le passer en chantier terminé.');
+            RAISE_APPLICATION_ERROR(-20001, 'Les objets de la table TA_GG_POINT_VIGILANCE ne peuvent pas être supprimés. L''objet '|| :old.objectid ||' a été restauré. Veuillez le modifier ou le déplacer.');
         END IF;
 
         EXCEPTION
@@ -77,14 +77,13 @@ DECLARE
     modification_manuelle NUMBER(38,0);
     creation NUMBER(38,0);
     verification_terrain NUMBER(38,0);
-    verification_ortho2020 NUMBER(38,0);
+    verification_orthophoto NUMBER(38,0);
     chantier_potentiel NUMBER(38,0);
     chantier_en_cours NUMBER(38,0);
     chantier_termine NUMBER(38,0);
-    permis_construire NUMBER(38,0);
-    demolition NUMBER(38,0);
     bati NUMBER(38,0);
     voirie NUMBER(38,0);
+    traite NUMBER(38,0);
 
 BEGIN
 -- Valorisation des variables
@@ -95,7 +94,7 @@ BEGIN
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('Modification manuelle');
+        UPPER(b.valeur) = UPPER('Modification manuelle par les topos');
 
     SELECT
         a.objectid
@@ -104,7 +103,7 @@ BEGIN
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('Création');
+        UPPER(b.valeur) = UPPER('Création dossier');
 
     SELECT
         a.objectid
@@ -117,12 +116,12 @@ BEGIN
 
     SELECT
         a.objectid
-        INTO verification_ortho2020
+        INTO verification_orthophoto
     FROM
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('Vérification ortho2020');
+        UPPER(b.valeur) = UPPER('Vérification orthophoto');
 
     SELECT
         a.objectid
@@ -153,24 +152,6 @@ BEGIN
 
     SELECT
         a.objectid
-        INTO permis_construire
-    FROM
-        G_GEO.TA_LIBELLE a
-        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-    WHERE
-        UPPER(b.valeur) = UPPER('permis de construire');
-
-    SELECT
-        a.objectid
-        INTO demolition
-    FROM
-        G_GEO.TA_LIBELLE a
-        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-    WHERE
-        UPPER(b.valeur) = UPPER('démolition');
-
-    SELECT
-        a.objectid
         INTO bati
     FROM
         G_GEO.TA_LIBELLE a
@@ -187,44 +168,40 @@ BEGIN
     WHERE
         UPPER(b.valeur) = UPPER('voirie (clôture,fossé et bordure)');
 
+    SELECT
+        a.objectid
+        INTO traite
+    FROM
+        G_GEO.TA_LIBELLE a
+        INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
+    WHERE
+        UPPER(b.valeur) = UPPER('traité');
+
  -- Contrôle des associations improbables
 
-    IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_LIBELLE IN(bati, voirie) AND :new.FID_VERIFICATION <> chantier_termine) THEN 
-        RAISE_APPLICATION_ERROR(-20001, 'Une modification manuelle sur un bâti ou une voirie est forcément un chantier terminé');
-    END IF;
-    IF (:new.FID_TYPE_SIGNALEMENT = creation AND :new.FID_VERIFICATION = demolition) THEN 
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas aller avec une vérification de type démolition');
-    END IF;
-    IF (:new.FID_TYPE_SIGNALEMENT = creation AND :new.FID_VERIFICATION = permis_construire) THEN 
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas aller avec une vérification de type permis de construire');   
-    END IF;
     IF (:new.FID_TYPE_SIGNALEMENT = creation AND :new.FID_VERIFICATION = chantier_potentiel) THEN 
         RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas aller avec une vérification de type chantier potentiel');   
     END IF;
-    IF (:new.FID_TYPE_SIGNALEMENT IN(verification_terrain, verification_ortho2020) AND :new.FID_VERIFICATION = chantier_termine) THEN 
+    IF (:new.FID_TYPE_SIGNALEMENT IN(verification_terrain, verification_orthophoto) AND :new.FID_VERIFICATION = chantier_termine) THEN 
         RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type vérification ne peut pas aller avec une vérification de type chantier terminé');
     END IF;
-    IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_VERIFICATION = demolition) THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type modification manuelle ne peut pas aller avec une vérification de type démolition');
-    END IF;
-    IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_VERIFICATION = permis_construire) THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type modification manuelle ne peut pas aller avec une vérification de type permis de construire');
-    END IF;
     IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_VERIFICATION = chantier_en_cours) THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type modification manuelle ne peut pas aller avec une vérification de type chantier en cours');
+        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier en cours');
     END IF;
     IF (:new.FID_TYPE_SIGNALEMENT = modification_manuelle AND :new.FID_VERIFICATION = chantier_potentiel) THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type modification manuelle ne peut pas aller avec une vérification de type chantier potentiel');
+        RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier potentiel');
     END IF;
 
     IF UPDATING THEN
-        IF (:old.FID_TYPE_SIGNALEMENT = creation AND :new.FID_TYPE_SIGNALEMENT = modification_manuelle) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas être changé en modification manuelle');
-        END IF;
-        IF (:old.FID_TYPE_SIGNALEMENT = creation AND :new.FID_TYPE_SIGNALEMENT IN(verification_terrain, verification_ortho2020)) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type création ne peut pas être changé en vérification');
+        IF (:new.FID_TYPE_SIGNALEMENT IN(verification_terrain, verification_orthophoto) AND :new.FID_LIB_STATUT = traite) THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type vérification ne peut pas passer en traité. Veuillez passer le signalement en "création de dossier" ou "modification manuelle par les topos" d''abord.');
         END IF;
     END IF;
+
+    EXCEPTION
+            WHEN OTHERS THEN
+                mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');
+END;
 
     EXCEPTION
             WHEN OTHERS THEN
