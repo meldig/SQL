@@ -202,9 +202,4 @@ BEGIN
             WHEN OTHERS THEN
                 mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');
 END;
-
-    EXCEPTION
-            WHEN OTHERS THEN
-                mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');
-END;
 /
