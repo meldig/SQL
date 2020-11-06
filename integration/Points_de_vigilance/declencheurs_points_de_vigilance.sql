@@ -166,7 +166,7 @@ BEGIN
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('voirie (clôture,fossé et bordure)');
+        UPPER(b.valeur) = UPPER('voirie (clôture, fossé et bordure)');
 
     SELECT
         a.objectid

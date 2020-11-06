@@ -13,7 +13,7 @@ BEGIN
     MERGE INTO G_GEO.TA_FAMILLE a
         USING(
             SELECT
-                valeur
+                "valeur"
             FROM
                 G_GEO.TEMP_FAMILLE_POINT_VIGILANCE
         )t
@@ -26,7 +26,7 @@ BEGIN
     MERGE INTO G_GEO.TA_LIBELLE_LONG a
         USING(
             SELECT
-                valeur
+                "valeur"
             FROM
                 G_GEO.TEMP_LIBELLE_POINT_VIGILANCE
         )t
@@ -55,7 +55,7 @@ BEGIN
                                         AND UPPER(c.valeur) IN (UPPER('prioritaire'), UPPER('non-prioritaire'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('éléments de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('bâti'), UPPER('voirie (clôture,fossé et bordure)'))
+                                        AND UPPER(c.valeur) IN (UPPER('bâti'), UPPER('voirie (clôture, fossé et bordure)'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('statut du dossier') 
                                         AND UPPER(c.valeur) IN (UPPER('traité'), UPPER('non-traité'))
@@ -94,7 +94,7 @@ BEGIN
             WHERE
                 UPPER(b.valeur) IN(
                     UPPER('bâti'),
-                    UPPER('voirie (clôture,fossé et bordure)'), 
+                    UPPER('voirie (clôture, fossé et bordure)'), 
                     UPPER('Création dossier'), 
                     UPPER('Modification manuelle par les topos'),
                     UPPER('Vérification terrain'), 
