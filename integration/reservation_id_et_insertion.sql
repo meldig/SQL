@@ -9,7 +9,7 @@ Objectif :
 
 Enjeux :
 - Permettre de faire des conditions sur une plage de valeurs de la PK, plutôt que des conditions d'égalité sur du varchar ; 
-- Empêcher les erreurs dues à la casse (les conditions portant désormais sur du number et nus du varchar, il n'y a plus de risque d'erreur due à la casse) ;
+- Empêcher les erreurs dues à la casse (les conditions portant désormais sur du number et non sur du varchar, il n'y a plus de risque d'erreur due à la casse) ;
 
 1. Code permettant de réserver une plage d'ids et d'insérer une liste de valeur dans la même transaction ;
 2. Code permettant de réserver une plage d'ids pour une insertion ultérieure ;
