@@ -36,7 +36,7 @@ USING
                 recensement,
                 habitant
             FROM
-            temp_recensement
+            G_GEO.TEMP_RECENSEMENT
             UNPIVOT
                 (habitant for (recensement) IN
                 (PMUN17 AS 'PMUN17',
@@ -70,6 +70,8 @@ USING
                 PTOT1886 AS 'PTOT1886',
                 PTOT1881 AS 'PTOT1881',
                 PTOT1876 AS 'PTOT1876'))
+            WHERE
+                DEP IN ('02','59','60','62','80')
                 )
     -- selection des données avec le fid metadonnee suivant l'année du recensement.
     SELECT
