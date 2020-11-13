@@ -52,7 +52,7 @@ END;
 ```
 
 **Résultat :**  
-![Tables_de_points_contours_polygones](Tables_de_points_contours_polygones.png)  
+![Tables_de_points_contours_polygones](images_topologie/Tables_de_points_contours_polygones.png)  
 
 ### 2. Création des deux topologies de construction  
 
@@ -259,10 +259,10 @@ END;
 **Résulats :**  
 
 * Avant :  
-![Avant_modification](Avant_modification.png)  
+![Avant_modification](images_topologie/Avant_modification.png)  
 
 * Après :  
-![Apres_modification](Apres_modification.png)  
+![Apres_modification](images_topologie/Apres_modification.png)  
 
 * Comparaison :  
-![Comparaison_avant_apres](Comparaison_avant_apres.png)
+![Comparaison_avant_apres](images_topologie/Comparaison_avant_apres.png)
