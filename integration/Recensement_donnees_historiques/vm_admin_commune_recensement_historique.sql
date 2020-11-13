@@ -103,9 +103,10 @@ PARAMETERS(
     tablespace=G_ADT_INDX, 
     work_tablespace=DATA_TEMP'
     )
+;
 
 
 -- 6. Création de l'index multicolonne
 CREATE INDEX vm_admin_commune_recensement_historique_code_insee_nom_recensement ON G_REFERENTIEL.VM_ADMIN_COMMUNE_RECENSEMENT_HISTORIQUE (CODE_INSEE, NOM, RECENSEMENT)
-TABLESPACE G_ADT_INDX;
+TABLESPACE G_ADT_INDX
 ;
