@@ -53,4 +53,5 @@ CREATE INDEX ta_recensement_fid_libelle_IDX ON G_GEO.TA_RECENSEMENT(fid_lib_rece
 TABLESPACE "G_ADT_INDX";
 
 CREATE INDEX ta_recensement_fid_metadonnee_IDX ON G_GEO.TA_RECENSEMENT(fid_metadonnee)
-TABLESPACE "G_ADT_INDX";
+TABLESPACE "G_ADT_INDX"
+;
