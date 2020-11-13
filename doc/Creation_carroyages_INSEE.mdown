@@ -9,7 +9,7 @@ L'INSEE proposent des statistiques démographiques à plusieurs échelles (IRIS,
 * Tables : CAR_FILOSOFI_2015_1KM / CAR_FILOSOFI_2015_200M / CAR_FILOSOFI_2015_NIV_NAT / CARROYAGE_100M_NODATA / CARROYAGE_200M_NODATA / CARROYAGE_1KM_NODATA /
 * Catégories des tables : les tables préfixées *CAR_FILOSOFI* ont été créées à partir des données INSEE, les tables préfixées *Carroyage* ont été créées et remplit par la DIG ;  
 
-![Emplacement_carroyage_insee](emplacement_carroyage_insee)
+![Emplacement_carroyage_insee](images_carroyage_insee/emplacement_carroyage_insee.png)
 
 ## Noms des workbench utilisés:
 

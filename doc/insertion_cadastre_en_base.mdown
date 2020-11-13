@@ -27,7 +27,7 @@ L'intégrateur GMC est utilisé par "MAJIC FOR FME" pour intégrer les données 
 * Les données MAJIC sont insérées dans le schéma S_MAJIC ;
 * Les données EDIGEO sont insérées dans le schéma S_EDIGEO ;
 
-![Interface_GMC](Intégrateur_GMC.png)
+![Interface_GMC](images_cadastre/Intégrateur_GMC.png)
 
 **Fonctionnement de l'intégrateur :**
 1. Lancer GMC ;
