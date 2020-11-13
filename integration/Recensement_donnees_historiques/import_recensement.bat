@@ -28,8 +28,9 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 
 :: 6. Import de la donnée avec ogr2ogr.
 ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_insertion%\base_pop_historiques_1876_2017_oracle.xlsx -nln temp_recensement
-:: 5. lancement de SQL plus.
+
+:: 7. lancement de SQL plus.
 CD C:/ora12c/R1/BIN
 
-:: 6. Execution de sqlplus. pour lancer les requetes SQL.
+:: 8. Execution de sqlplus. pour lancer les requetes SQL.
 sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_fichier_concatene%\recensement_temp.sql
