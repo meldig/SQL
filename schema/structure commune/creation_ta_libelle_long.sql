@@ -9,9 +9,9 @@ CREATE TABLE g_geo.ta_libelle_long(
 );
 
 -- 2. Création des commentaires
-COMMENT ON TABLE g_geo.ta_libelle IS 'Table regroupant les libelles long pouvant être pris par les objets, états ou actions présents dans le schéma.';
-COMMENT ON COLUMN g_geo.ta_libelle.objectid IS 'Clef primaire de la table TA_LIBELLE_LONG.';
-COMMENT ON COLUMN g_geo.ta_libelle.valeur IS 'Valeur pouvant être prises par les objets, états ou actions présents dans le schéma.';
+COMMENT ON TABLE g_geo.ta_libelle_long IS 'Table regroupant les libelles long pouvant être pris par les objets, états ou actions présents dans le schéma.';
+COMMENT ON COLUMN g_geo.ta_libelle_long.objectid IS 'Clé primaire de la table TA_LIBELLE_LONG.';
+COMMENT ON COLUMN g_geo.ta_libelle_long.valeur IS 'Valeur pouvant être prises par les objets, états ou actions présents dans le schéma.';
 
 -- 3. Création de la clé primaire
 ALTER TABLE g_geo.ta_libelle_long
