@@ -1,5 +1,5 @@
 /*
--- Creation de la table G_GEO.TA_BPE_GEOM qui recense les géométries que peuvent prendre les equipements de la Base Permanente des Equipements.
+Creation de la table G_GEO.TA_BPE_GEOM qui recense les géométries que peuvent prendre les equipements de la Base Permanente des Equipements.
 */
 -- 1. Création de la table
 CREATE TABLE G_GEO.TA_BPE_GEOM(
@@ -31,6 +31,7 @@ VALUES(
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
+COMMIT;
 
 -- 5. Création de l'index spatial sur le champ geom
 CREATE INDEX TA_BPE_GEOM_SIDX
