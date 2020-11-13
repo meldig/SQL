@@ -32,7 +32,7 @@ BEGIN
     FROM
         G_GEO.TEMP_LIBELLE_LONG;
 
--- Déompte du nombre d'objets à réserver (depuis une table d'import que l'on aurait insérée dans oracle via ogr2ogr)
+-- Décompte du nombre d'objets à réserver (depuis une table d'import que l'on aurait insérée dans oracle via ogr2ogr)
     SELECT
         COUNT(OGR_FID)
         INTO v_nb_id_reserve
