@@ -174,7 +174,7 @@ INSERT (a.CODE_INSEE, a.NOM_COMMUNE, a.iris_objectid, a.area)
 VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.iris_objectid, b.area);
 
 
--- 3.1. Création de la table temporaire G_GEO.G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
+-- 3.1. Création de la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
 
 CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX (
 CODE_INSEE VARCHAR2(4000 BYTE),
