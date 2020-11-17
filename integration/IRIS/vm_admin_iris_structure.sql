@@ -57,8 +57,8 @@ MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_VM a
 			                        MAX(b.millesime) as MILLESIME
 			                    FROM
 			                        G_GEO.TA_METADONNEE a
-			                    INNER JOIN G_GEO.TA_DATE_ACQUISITION  b ON a.fid_acquisition = b.objectid 
-			                    INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = a.fid_source
+				                    INNER JOIN G_GEO.TA_DATE_ACQUISITION  b ON a.fid_acquisition = b.objectid 
+				                    INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = a.fid_source
 			                    WHERE UPPER(c.nom_source) = UPPER('Contours...IRIS')
 			                    )
 			    AND
@@ -70,26 +70,26 @@ MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_VM a
                     co.geom
 				FROM
 					G_GEO.TA_IDENTIFIANT_COMMUNE ti
-				INNER JOIN G_GEO.TA_CODE codeco ON codeco.objectid = ti.fid_identifiant
-				INNER JOIN G_GEO.TA_COMMUNE co ON co.objectid = ti.fid_commune
-				INNER JOIN G_GEO.TA_NOM nomc ON nomc.objectid = co.fid_nom
-				INNER JOIN G_GEO.TA_LIBELLE lco ON lco.objectid = codeco.fid_libelle
-				INNER JOIN G_GEO.TA_LIBELLE_LONG llco ON llco.objectid = lco.fid_libelle_long
-				INNER JOIN G_GEO.TA_ZA_COMMUNES zc ON zc.fid_commune = co.objectid
-				INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE za ON za.objectid = zc.fid_zone_administrative
-				INNER JOIN G_GEO.TA_NOM nomza ON nomza.objectid = za.fid_nom
-				INNER JOIN G_GEO.TA_METADONNEE mc ON mc.objectid = co.fid_metadonnee
-				INNER JOIN G_GEO.TA_SOURCE so ON so.objectid = mc.fid_source
-				INNER JOIN G_GEO.TA_DATE_ACQUISITION dc ON dc.objectid = mc.fid_acquisition,
-                millesime millesime
-				WHERE
-					UPPER(llco.valeur) = UPPER('code insee')
-				AND
-					UPPER(nomza.valeur) IN (UPPER('Oise'), UPPER('Pas-de-Calais'), UPPER('Nord'), UPPER('Somme'), UPPER('Aisne'))
-				AND
-					UPPER(so.nom_source)  = UPPER('BDTOPO')
-				AND
-					dc.millesime = millesime.millesime
+					INNER JOIN G_GEO.TA_CODE codeco ON codeco.objectid = ti.fid_identifiant
+					INNER JOIN G_GEO.TA_COMMUNE co ON co.objectid = ti.fid_commune
+					INNER JOIN G_GEO.TA_NOM nomc ON nomc.objectid = co.fid_nom
+					INNER JOIN G_GEO.TA_LIBELLE lco ON lco.objectid = codeco.fid_libelle
+					INNER JOIN G_GEO.TA_LIBELLE_LONG llco ON llco.objectid = lco.fid_libelle_long
+					INNER JOIN G_GEO.TA_ZA_COMMUNES zc ON zc.fid_commune = co.objectid
+					INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE za ON za.objectid = zc.fid_zone_administrative
+					INNER JOIN G_GEO.TA_NOM nomza ON nomza.objectid = za.fid_nom
+					INNER JOIN G_GEO.TA_METADONNEE mc ON mc.objectid = co.fid_metadonnee
+					INNER JOIN G_GEO.TA_SOURCE so ON so.objectid = mc.fid_source
+					INNER JOIN G_GEO.TA_DATE_ACQUISITION dc ON dc.objectid = mc.fid_acquisition,
+	                millesime millesime
+					WHERE
+						UPPER(llco.valeur) = UPPER('code insee')
+					AND
+						UPPER(nomza.valeur) IN (UPPER('Oise'), UPPER('Pas-de-Calais'), UPPER('Nord'), UPPER('Somme'), UPPER('Aisne'))
+					AND
+						UPPER(so.nom_source)  = UPPER('BDTOPO')
+					AND
+						dc.millesime = millesime.millesime
 		)b
 ON(a.CODE_INSEE = b.CODE_INSEE
 AND a.NOM_COMMUNE = b.NOM_COMMUNE)
@@ -128,8 +128,8 @@ MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES a
 		                        MAX(b.millesime) as MILLESIME
 		                    FROM
 		                        G_GEO.TA_METADONNEE a
-		                    INNER JOIN G_GEO.TA_DATE_ACQUISITION  b ON a.fid_acquisition = b.objectid 
-		                    INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = a.fid_source
+			                    INNER JOIN G_GEO.TA_DATE_ACQUISITION  b ON a.fid_acquisition = b.objectid 
+			                    INNER JOIN G_GEO.TA_SOURCE c ON c.objectid = a.fid_source
 		                    WHERE UPPER(c.nom_source) = UPPER('Contours...IRIS')
 		                    )
 		    AND
@@ -147,25 +147,25 @@ MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES a
 			FROM
 				G_REFERENTIEL.TEMP_COMMUNES_VM co,
 				G_GEO.TA_IRIS i
-			INNER JOIN G_GEO.TA_IRIS_GEOM ig ON ig.objectid = i.fid_iris_geom
-			INNER JOIN G_GEO.TA_CODE codei ON codei.objectid = i.fid_code
-			-- distinction pour ne selectonner que les IRIS
-			INNER JOIN G_GEO.TA_LIBELLE lc ON lc.objectid = codei.fid_libelle
-			INNER JOIN G_GEO.TA_LIBELLE_LONG llc ON llc.objectid = lc.fid_libelle_long
-			INNER JOIN G_GEO.TA_FAMILLE_LIBELLE llcf ON llcf.fid_libelle_long = llc.objectid
-			INNER JOIN G_GEO.TA_FAMILLE llf ON llf.objectid = llcf.fid_famille
-			-- distinction pour le type d'IRIS
-			INNER JOIN G_GEO.TA_LIBELLE li ON li.objectid = i.fid_lib_type
-			INNER JOIN G_GEO.TA_LIBELLE_LONG lli ON lli.objectid = li.fid_libelle_long
-			INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fli ON fli.fid_libelle_long = lli.objectid
-			INNER JOIN G_GEO.TA_FAMILLE fi ON fi.objectid = fli.fid_famille
-			INNER JOIN millesime millesime ON millesime.id_mtd = i.fid_metadonnee
-			WHERE
-				SDO_RELATE(co.geom, ig.geom, 'mask=ANYINTERACT') = 'TRUE'
-			AND 
-				 UPPER(llf.valeur) =  UPPER('identifiants de zone statistique')
-			AND
-				 UPPER(fi.valeur) =  UPPER('type de zone IRIS')
+				INNER JOIN G_GEO.TA_IRIS_GEOM ig ON ig.objectid = i.fid_iris_geom
+				INNER JOIN G_GEO.TA_CODE codei ON codei.objectid = i.fid_code
+				-- distinction pour ne selectonner que les IRIS
+				INNER JOIN G_GEO.TA_LIBELLE lc ON lc.objectid = codei.fid_libelle
+				INNER JOIN G_GEO.TA_LIBELLE_LONG llc ON llc.objectid = lc.fid_libelle_long
+				INNER JOIN G_GEO.TA_FAMILLE_LIBELLE llcf ON llcf.fid_libelle_long = llc.objectid
+				INNER JOIN G_GEO.TA_FAMILLE llf ON llf.objectid = llcf.fid_famille
+				-- distinction pour le type d'IRIS
+				INNER JOIN G_GEO.TA_LIBELLE li ON li.objectid = i.fid_lib_type
+				INNER JOIN G_GEO.TA_LIBELLE_LONG lli ON lli.objectid = li.fid_libelle_long
+				INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fli ON fli.fid_libelle_long = lli.objectid
+				INNER JOIN G_GEO.TA_FAMILLE fi ON fi.objectid = fli.fid_famille
+				INNER JOIN millesime millesime ON millesime.id_mtd = i.fid_metadonnee
+				WHERE
+					SDO_RELATE(co.geom, ig.geom, 'mask=ANYINTERACT') = 'TRUE'
+					AND 
+						 UPPER(llf.valeur) =  UPPER('identifiants de zone statistique')
+					AND
+						 UPPER(fi.valeur) =  UPPER('type de zone IRIS')
 		)b
 ON(a.CODE_INSEE = b.CODE_INSEE
 AND a.iris_objectid = b.iris_objectid)
