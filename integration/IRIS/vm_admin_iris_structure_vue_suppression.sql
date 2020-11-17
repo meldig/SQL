@@ -5,7 +5,7 @@ Cette vue materialisée à pour but de restituer les données IRIS aux millesime
 
 -- 1. Table temporaire pour selectionner les communes au dernier millesime.
 -- 1.1. Création de la table temporaire TEMP_COMMUNES_VM pour selectionner les communes au dernier millesime.
-CREATE TABLE G_GEO.TEMP_COMMUNES_VM(
+CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_VM(
 	CODE_INSEE VARCHAR2(4000 BYTE),
 	NOM_COMMUNE VARCHAR2(4000 BYTE),
 	GEOM SDO_GEOMETRY
@@ -29,7 +29,7 @@ VALUES(
 
 -- 1.3. Création de l'index spatial
 CREATE INDEX TEMP_COMMUNES_VM_SIDX
-ON G_GEO.TEMP_COMMUNES_VM(GEOM)
+ON G_REFERENTIEL.TEMP_COMMUNES_VM(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS(
 	'sdo_indx_dims=2, 
@@ -39,8 +39,8 @@ PARAMETERS(
 	);
 
 
--- 1.4. Insertion des communes dans la table temporaire G_GEO.TEMP_COMMUNES_VM
-MERGE INTO G_GEO.TEMP_COMMUNES_VM a
+-- 1.4. Insertion des communes dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_VM
+MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_VM a
 	USING
 		(
 		WITH millesime AS (
@@ -100,7 +100,7 @@ VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.geom);
 
 
 -- 2.1. Table temporaire pour selectionner les aires d'intersection entre les communes et les IRIS
-CREATE TABLE G_GEO.TEMP_COMMUNES_SURFACES(
+CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES(
 	CODE_INSEE VARCHAR2(4000 BYTE),
 	NOM_COMMUNE VARCHAR2(4000 BYTE),
     iris_objectid NUMBER (38,0),
@@ -108,8 +108,8 @@ CREATE TABLE G_GEO.TEMP_COMMUNES_SURFACES(
 	);
 
 
--- 2.2. insertion des données dans la table temporaire G_GEO.TEMP_COMMUNES_SURFACES
-MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES a
+-- 2.2. insertion des données dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES
+MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES a
 	USING
 		(
 		WITH millesime AS (
@@ -143,7 +143,7 @@ MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES a
 					'unit=sq_m'
 				) area
 			FROM
-				G_GEO.TEMP_COMMUNES_VM co,
+				G_REFERENTIEL.TEMP_COMMUNES_VM co,
 				G_GEO.TA_IRIS i
 			INNER JOIN G_GEO.TA_IRIS_GEOM ig ON ig.objectid = i.fid_iris_geom
 			INNER JOIN G_GEO.TA_CODE codei ON codei.objectid = i.fid_code
@@ -172,16 +172,16 @@ INSERT (a.CODE_INSEE, a.NOM_COMMUNE, a.iris_objectid, a.area)
 VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.iris_objectid, b.area);
 
 
--- 3.1. Création de la table temporaire G_GEO.G_GEO.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
-CREATE TABLE G_GEO.TEMP_COMMUNES_SURFACES_MAX (
+-- 3.1. Création de la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
+CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX (
 CODE_INSEE VARCHAR2(4000 BYTE),
 NOM_COMMUNE VARCHAR(4000),
 IRIS_objectid VARCHAR(4000)
 );
 
 
--- 3.2. Insertion des aires maximales dans la table G_GEO.TEMP_COMMUNES_SURFACES_MAX.
-MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES_MAX a
+-- 3.2. Insertion des aires maximales dans la table G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX.
+MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX a
 	USING
 		(
 		SELECT
@@ -189,14 +189,14 @@ MERGE INTO G_GEO.TEMP_COMMUNES_SURFACES_MAX a
 			cs.NOM_COMMUNE AS NOM_COMMUNE,
 			cs.IRIS_OBJECTID AS IRIS_OBJECTID
 		FROM
-			G_GEO.TEMP_COMMUNES_SURFACES cs 
+			G_REFERENTIEL.TEMP_COMMUNES_SURFACES cs 
 		INNER JOIN
 			(
 				SELECT
 					iris_objectid,
 					MAX(area) AS maxArea
 				FROM
-					G_GEO.TEMP_COMMUNES_SURFACES
+					G_REFERENTIEL.TEMP_COMMUNES_SURFACES
 				GROUP BY IRIS_OBJECTID
 			) groupe_cs
 			ON cs.IRIS_OBJECTID = groupe_cs.IRIS_OBJECTID
@@ -325,7 +325,7 @@ WITH
     INNER JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
     INNER JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
     INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
-    INNER JOIN G_GEO.TEMP_COMMUNES_SURFACES_MAX csm ON csm.iris_objectid = i.objectid
+    INNER JOIN G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX csm ON csm.iris_objectid = i.objectid
     INNER JOIN organisme o ON o.ID_MTD = m.objectid
     WHERE
     	UPPER(fi.valeur) = UPPER('type de zone IRIS')
@@ -335,7 +335,6 @@ WITH
     
 
 -- 5. Création des commentaires de table et de colonnes
-COMMENT ON MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS IS 'Vue proposant les IRIS actuelles de la MEL extraites des données Contours...IRIS de l''INSEE coproduites avec l''IGN.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.IDENTIFIANT IS 'Clé primaire de la vue, code de la zone IRIS.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.ANNEE IS 'Annee du millesime.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.CODE_IRIS IS 'code de la zone IRIS.';
@@ -387,11 +386,11 @@ Requêtes nécessaires à la suppression des table temporaire nécessaire à la 
 
 -- 9. Suppression des tables temporaire
 -- 9.1
-DROP TABLE G_GEO.TEMP_COMMUNES_VM CASCADE CONSTRAINTS;
+DROP TABLE G_REFERENTIEL.TEMP_COMMUNES_VM CASCADE CONSTRAINTS;
 DELETE FROM USER_SDO_GEOM_METADATA WHERE table_name = 'TEMP_COMMUNES_VM';
 
 -- 9.2
-DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES CASCADE CONSTRAINTS;
+DROP TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES CASCADE CONSTRAINTS;
 
 -- 9.3
-DROP TABLE G_GEO.TEMP_COMMUNES_SURFACES_MAX CASCADE CONSTRAINTS;
+DROP TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX CASCADE CONSTRAINTS;
