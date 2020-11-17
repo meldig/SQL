@@ -30,7 +30,7 @@ USING
     (
 	SELECT
 		'https://www.insee.fr/fr/statistiques/3698339#consulter' AS url,
-    	'les données sont proposées en libre accès sous la forme d''un tableau xlxs.' AS methode_acquisition
+    	'les données sont proposées en libre accès sous la forme d''un tableau xlsx.' AS methode_acquisition
 	FROM
 		DUAL
    	) b
@@ -124,7 +124,7 @@ USING
 		G_GEO.TA_DATE_ACQUISITION b,
 		G_GEO.TA_PROVENANCE c
 	WHERE
-		a.nom_source = 'Recensements de la population 1876-2017'
+		UPPER(a.nom_source) = UPPER('Recensements de la population 1876-2017')
 		AND a.description = 'Les statistiques sont proposées dans la géographie communale en vigueur au 01/01/2019 pour la France hors Mayotte, afin que leurs comparaisons dans le temps se fassent sur un champ géographique stable.'
 		AND b.millesime BETWEEN '01/01/1876' AND '01/01/2017'
 		AND b.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
@@ -156,11 +156,11 @@ USING
     INNER JOIN G_GEO.TA_PROVENANCE d ON d.objectid = a.fid_provenance,
         G_GEO.TA_ORGANISME f
     WHERE
-        b.nom_source = 'Recensements de la population 1876-2017'
+        UPPER(b.nom_source) = UPPER('Recensements de la population 1876-2017')
     AND c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
     AND c.millesime BETWEEN '01/01/1876' AND '01/01/2017'
     AND d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
-    AND f.nom_organisme IN ('Institut National de la Statistique et des Etudes Economiques')
+    AND UPPER(f.nom_organisme) IN (UPPER('Institut National de la Statistique et des Etudes Economiques'))
 	)b
 ON (
 	a.fid_metadonnee = b.fid_metadonnee
@@ -184,7 +184,7 @@ USING
     	G_GEO.TA_LIBELLE b
     INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
     WHERE
-    	c.valeur = 'code insee'
+    	UPPER(c.valeur) = UPPER('code insee')
     )b
 ON (
 	a.valeur = b.valeur
@@ -245,37 +245,37 @@ VALUES (b.valeur)
 MERGE INTO G_GEO.TA_LIBELLE_LONG a
 USING
 	(
-		SELECT 'Population municipale en 2017' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2016' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2015' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2014' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2013' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2012' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2011' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2010' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2009' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2008' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2007' AS valeur FROM DUAL
-		UNION SELECT 'Population municipale en 2006' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1999' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1990' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1982' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1975' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1968' AS valeur FROM DUAL
-		UNION SELECT 'Population sans double compte en 1962' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1954' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1936' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1931' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1926' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1921' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1911' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1906' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1901' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1896' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1891' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1886' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1881' AS valeur FROM DUAL
-		UNION SELECT 'Population totale en 1876' AS valeur FROM DUAL
+	SELECT 'Population municipale en 2017' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2016' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2015' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2014' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2013' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2012' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2011' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2010' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2009' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2008' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2007' AS valeur FROM DUAL
+	UNION SELECT 'Population municipale en 2006' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1999' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1990' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1982' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1975' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1968' AS valeur FROM DUAL
+	UNION SELECT 'Population sans double compte en 1962' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1954' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1936' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1931' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1926' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1921' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1911' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1906' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1901' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1896' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1891' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1886' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1881' AS valeur FROM DUAL
+	UNION SELECT 'Population totale en 1876' AS valeur FROM DUAL
 	) b
 ON (
 	UPPER(a.valeur) = UPPER(b.valeur)
@@ -334,14 +334,14 @@ VALUES (b.fid_famille, b.fid_libelle_long)
 MERGE INTO G_GEO.TA_LIBELLE a
 USING
 	(
-		SELECT
-			a.objectid AS fid_libelle_long
-		FROM
-			G_GEO.TA_LIBELLE_LONG a
-		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
-		INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
-		WHERE
-			UPPER(c.valeur) = UPPER('recensement')
+	SELECT
+		a.objectid AS fid_libelle_long
+	FROM
+		G_GEO.TA_LIBELLE_LONG a
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
+	INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
+	WHERE
+		UPPER(c.valeur) = UPPER('recensement')
 		AND (UPPER(a.valeur) LIKE UPPER('Population municipale%')
 		OR UPPER(a.valeur) LIKE UPPER('Population sans double compte%')
 		OR UPPER(a.valeur) LIKE UPPER('Population totale%'))
