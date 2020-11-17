@@ -1,5 +1,5 @@
 /*
-La table TA_GG_PERMIS_CONSTRUIRE permet de regrouper tous les numéros et dates de permis de construire récupéré et utilisé par lkes photo-interprètes via GestionGeo.
+La table TA_GG_PERMIS_CONSTRUIRE permet de regrouper tous les numéros et dates de permis de construire récupéré et utilisé par les photo-interprètes via GestionGeo.
 */
 -- 1. Création de la table TA_GG_PERMIS_CONSTRUIRE ;
 CREATE TABLE G_GEO.TA_GG_PERMIS_CONSTRUIRE(
@@ -10,7 +10,7 @@ CREATE TABLE G_GEO.TA_GG_PERMIS_CONSTRUIRE(
 );
 
 -- 2. Création des commentaires sur la table et les champs ;
-COMMENT ON TABLE G_GEO.TA_GG_PERMIS_CONSTRUIRE IS 'La table TA_GG_PERMIS_CONSTRUIRE permet de regrouper tous les numéros et dates de permis de construire récupéré et utilisé par lkes photo-interprètes via GestionGeo.' ;
+COMMENT ON TABLE G_GEO.TA_GG_PERMIS_CONSTRUIRE IS 'La table TA_GG_PERMIS_CONSTRUIRE permet de regrouper tous les numéros et dates de permis de construire récupéré et utilisé par les photo-interprètes via GestionGeo.' ;
 COMMENT ON COLUMN G_GEO.TA_GG_PERMIS_CONSTRUIRE.objectid IS 'Clé primaire auto-incrémentée de la table.';
 COMMENT ON COLUMN G_GEO.TA_GG_PERMIS_CONSTRUIRE.numero IS 'Numéro du permis de construire.';
 COMMENT ON COLUMN G_GEO.TA_GG_PERMIS_CONSTRUIRE.debut IS 'Date de début de validité du permis de contruire';
