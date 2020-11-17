@@ -151,16 +151,16 @@ USING
         f.objectid AS fid_organisme
     FROM
         G_GEO.TA_METADONNEE a
-    INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
-    INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON c.objectid = a.fid_acquisition
-    INNER JOIN G_GEO.TA_PROVENANCE d ON d.objectid = a.fid_provenance,
+	    INNER JOIN G_GEO.TA_SOURCE b ON b.objectid = a.fid_source
+	    INNER JOIN G_GEO.TA_DATE_ACQUISITION c ON c.objectid = a.fid_acquisition
+	    INNER JOIN G_GEO.TA_PROVENANCE d ON d.objectid = a.fid_provenance,
         G_GEO.TA_ORGANISME f
     WHERE
         UPPER(b.nom_source) = UPPER('Recensements de la population 1876-2017')
-    AND c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
-    AND c.millesime BETWEEN '01/01/1876' AND '01/01/2017'
-    AND d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
-    AND UPPER(f.nom_organisme) IN (UPPER('Institut National de la Statistique et des Etudes Economiques'))
+	    AND c.date_acquisition = TO_DATE(SYSDATE,'dd/mm/yy')
+	    AND c.millesime BETWEEN '01/01/1876' AND '01/01/2017'
+	    AND d.url = 'https://www.insee.fr/fr/statistiques/3698339#consulter'
+	    AND UPPER(f.nom_organisme) IN (UPPER('Institut National de la Statistique et des Etudes Economiques'))
 	)b
 ON (
 	a.fid_metadonnee = b.fid_metadonnee
@@ -182,7 +182,7 @@ USING
     FROM
     	G_GEO.TEMP_RECENSEMENT a,
     	G_GEO.TA_LIBELLE b
-    INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+    	INNER JOIN G_GEO.TA_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
     WHERE
     	UPPER(c.valeur) = UPPER('code insee')
     )b
@@ -316,9 +316,9 @@ USING
 	    G_GEO.TA_LIBELLE_LONG b
 	WHERE 
 		UPPER(a.valeur) = UPPER('recensement')
-	AND (UPPER(b.valeur) LIKE UPPER('Population municipale%')
-	OR UPPER(b.valeur) LIKE UPPER('Population sans double compte%')
-	OR UPPER(b.valeur) LIKE UPPER('Population totale%'))
+		AND (UPPER(b.valeur) LIKE UPPER('Population municipale%')
+		OR UPPER(b.valeur) LIKE UPPER('Population sans double compte%')
+		OR UPPER(b.valeur) LIKE UPPER('Population totale%'))
 	)b
 ON (
 	a.fid_famille = b.fid_famille
@@ -338,8 +338,8 @@ USING
 		a.objectid AS fid_libelle_long
 	FROM
 		G_GEO.TA_LIBELLE_LONG a
-	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
-	INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
+		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE b ON b.fid_libelle_long = a.objectid
+		INNER JOIN G_GEO.TA_FAMILLE c ON c.objectid = b.fid_famille
 	WHERE
 		UPPER(c.valeur) = UPPER('recensement')
 		AND (UPPER(a.valeur) LIKE UPPER('Population municipale%')
@@ -365,9 +365,9 @@ USING
 		e.objectid AS fid_libelle_court
 	FROM
 		G_GEO.TA_LIBELLE a
-	INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
-	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON c.fid_libelle_long = b.objectid
-	INNER JOIN G_GEO.TA_FAMILLE d ON d.objectid = c.fid_famille,
+		INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
+		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE c ON c.fid_libelle_long = b.objectid
+		INNER JOIN G_GEO.TA_FAMILLE d ON d.objectid = c.fid_famille,
 		G_GEO.TA_LIBELLE_COURT e
 	WHERE
 		UPPER(d.valeur) = UPPER('recensement') 
