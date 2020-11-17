@@ -53,12 +53,14 @@ FROM
     INNER JOIN G_GEO.TA_DATE_ACQUISITION w ON w.objectid = s.fid_acquisition
     WHERE
         UPPER(f.nom_source) = 'BDTOPO'
-    AND
-        i.millesime = '01/01/2019'
-    AND
-        UPPER(k.valeur) = UPPER('code insee')
-    AND
-        UPPER(p.valeur) = UPPER('recensement')
+        AND
+        	UPPER(t.nom_source) = UPPER('Recensements de la population 1876-2017')
+	    AND
+	        i.millesime = '01/01/2019'
+	    AND
+	        UPPER(k.valeur) = UPPER('code insee')
+	    AND
+	        UPPER(p.valeur) = UPPER('recensement')
 ;
 
 -- 2. Création des commentaires de table et de colonnes
