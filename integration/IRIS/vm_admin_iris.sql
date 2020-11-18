@@ -1,18 +1,18 @@
 /*
-1 Creation de la vue
+1 Creation de la vue.
 Requêtes nécessaires à la création de la vue matérialisée G_REFERENTIEL.ADMIN_IRIS.
 Cette vue materialisée à pour but de restituer les données IRIS aux millesimes le plus récent.
 */
 
 /*
--- 1.1. Creation de la vue materialisée G_REFERENTIEL.ADMIN_IRIS.
--- 1.2. Suppression de la vue G_REFERENTIEL.ADMIN_IRIS, et des métadonnées si elle existe déjà.
-*/
+-- 1.1. Suppression de la vue G_REFERENTIEL.ADMIN_IRIS, et des métadonnées si elle existe déjà.
 DROP MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS;
+-- 1.2. Suppression des métadonnées si elles existent déjà.
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'ADMIN_IRIS';
+*/
 
 
--- 1.3. Création de la vue
+-- 1.3. Création de la vue.
 CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS
 	(
 	IDENTIFIANT,
@@ -32,10 +32,10 @@ REFRESH ON DEMAND
 FORCE  
 DISABLE QUERY REWRITE AS
 
--- sous requete pour les millesime et les organismes
+-- sous requete pour les millesime et les organismes.
 WITH 
 /*
--- 1.4. Sous requête pour selectionner le millésime le plus récent
+-- Sous requête pour selectionner le millésime le plus récent.
 */
 	millesime AS (
 	    SELECT
@@ -59,7 +59,7 @@ WITH
 	        UPPER(b.nom_source) = UPPER('Contours...IRIS')
 		),
 /*
--- 1.5. Sous requête pour selectionner les organismes producteurs sur une seule ligne
+-- Sous requête pour selectionner les organismes producteurs sur une seule ligne.
 */
   	organisme AS (
 		SELECT
@@ -79,7 +79,7 @@ WITH
 	    GROUP BY a.objectid, b.objectid
 	    )
 /*
--- 1.6. sous requete totale
+-- Sous requete pour séléctionner les éléments finaux.
 */
 	SELECT
 		CAST(csm.CODE_INSEE || codei.valeur AS INT) AS IDENTIFIANT,
@@ -96,12 +96,12 @@ WITH
 		G_GEO.TA_IRIS i
 		INNER JOIN G_GEO.TA_NOM nomi ON nomi.objectid = i.fid_nom
 		INNER JOIN G_GEO.TA_CODE codei ON codei.objectid = i.fid_code
-		-- distinction pour ne selectonner que les IRIS
+		-- distinction pour ne selectonner que les IRIS.
 		INNER JOIN G_GEO.TA_LIBELLE lc ON lc.objectid = codei.fid_libelle
 		INNER JOIN G_GEO.TA_LIBELLE_LONG llc ON llc.objectid = lc.fid_libelle_long
 		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE llcf ON llcf.fid_libelle_long = llc.objectid
 		INNER JOIN G_GEO.TA_FAMILLE llf ON llf.objectid = llcf.fid_famille
-		-- distinction pour le type d'IRIS
+		-- distinction pour le type d'IRIS.
 		INNER JOIN G_GEO.TA_LIBELLE li ON li.objectid = i.fid_lib_type
 		INNER JOIN G_GEO.TA_LIBELLE_LONG lli ON lli.objectid = li.fid_libelle_long
 		INNER JOIN G_GEO.TA_FAMILLE_LIBELLE fli ON fli.fid_libelle_long = lli.objectid
@@ -109,7 +109,7 @@ WITH
 		INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE cli ON cli.fid_libelle = li.objectid
 		INNER JOIN G_GEO.TA_LIBELLE_COURT lci ON lci.objectid = cli.fid_libelle_court
 		INNER JOIN G_GEO.TA_IRIS_GEOM g ON g.objectid = i.fid_iris_geom
-		-- jointure des metadonnees avec l'organisme INSEE
+		-- jointure des metadonnees avec l'organisme INSEE.
 		INNER JOIN millesime millesime ON millesime.id_mtd = i.fid_metadonnee
 	    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = millesime.id_mtd
 	    INNER JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
@@ -124,7 +124,7 @@ WITH
 	;
     
 
--- 2. Création des commentaires de table et de colonnes
+-- 2. Création des commentaires de table et de colonnes.
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.IDENTIFIANT IS 'Clé primaire de la vue, code de la zone IRIS.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.ANNEE IS 'Annee du millesime.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.CODE_IRIS IS 'code de la zone IRIS.';
@@ -137,7 +137,7 @@ COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.SOURCE IS 'metadonnée de la vue';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_IRIS.GEOM IS 'Géométrie de chaque iris - de type polygone.';
 
 
--- 3. Création des métadonnées spatiales
+-- 3. Création des métadonnées spatiales.
 INSERT INTO USER_SDO_GEOM_METADATA(
     TABLE_NAME, 
     COLUMN_NAME, 
@@ -152,14 +152,14 @@ VALUES(
 	);
 
 
--- 4. Création de la clé primaire
+-- 4. Création de la clé primaire.
 ALTER MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS 
 ADD CONSTRAINT admin_iris_PK
 PRIMARY KEY (IDENTIFIANT)
 USING INDEX TABLESPACE "G_ADT_INDX";
 
 
--- 5. Création de l'index spatial
+-- 5. Création de l'index spatial.
 CREATE INDEX admin_iris_SIDX
 ON G_REFERENTIEL.ADMIN_IRIS(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
