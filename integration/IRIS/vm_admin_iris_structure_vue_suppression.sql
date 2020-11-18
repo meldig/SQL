@@ -98,8 +98,8 @@ INSERT (a.CODE_INSEE, a.NOM_COMMUNE, a.geom)
 VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.geom);
 
 
-
--- 2.1. Table temporaire pour selectionner les aires d'intersection entre les communes et les IRIS
+-- 2. Selection des aires d'intersection entre les communes et les IRIS
+-- 2.1. Création de la table temporaire TEMP_COMMUNES_SURFACES pour selectionner les aires d'intersection entre les communes et les IRIS
 CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES(
 	CODE_INSEE VARCHAR2(4000 BYTE),
 	NOM_COMMUNE VARCHAR2(4000 BYTE),
@@ -172,6 +172,7 @@ INSERT (a.CODE_INSEE, a.NOM_COMMUNE, a.iris_objectid, a.area)
 VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.iris_objectid, b.area);
 
 
+-- 3. Séléction de la commune ou l'aire d'intersection avec une zone IRIS est maximale. 
 -- 3.1. Création de la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
 CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX (
 CODE_INSEE VARCHAR2(4000 BYTE),
@@ -216,11 +217,11 @@ Cette vue materialisée à pour but de restituer les données IRIS aux millesime
 */
 
 /*
--- 4.1. Creation de la vue materialisée G_REFERENTIEL.ADMIN_IRIS.
--- 4.2. Suppression de la vue G_REFERENTIEL.ADMIN_IRIS, et des métadonnées si elle existe déjà.
-*/
+-- 4.1. Suppression de la vue G_REFERENTIEL.ADMIN_IRIS, et des métadonnées si elle existe déjà.
 DROP MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS;
+-- 4.2. et des métadonnées si elles existent déjà.
 DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'ADMIN_IRIS';
+*/
 
 -- 4.3. Création de la vue
 CREATE MATERIALIZED VIEW G_REFERENTIEL.ADMIN_IRIS
@@ -245,7 +246,7 @@ DISABLE QUERY REWRITE AS
 -- sous requete pour les millesime et les organismes
 WITH 
 /*
--- 4.4. Sous requête pour selectionner le millésime le plus récent
+-- Sous requête pour selectionner le millésime le plus récent
 */
 	millesime AS (
 	    SELECT
@@ -269,7 +270,7 @@ WITH
 	        UPPER(b.nom_source) = UPPER('Contours...IRIS')
 		),
 /*
--- 4.5. Sous requête pour selectionner les organismes producteurs sur une seule ligne
+-- Sous requête pour selectionner les organismes producteurs sur une seule ligne
 */
   	organisme AS (
 		SELECT
@@ -289,7 +290,7 @@ WITH
 	    GROUP BY a.objectid, b.objectid
 	    )
 /*
--- 4.6. sous requete totale
+-- sous requete totale
 */
 	SELECT
 		CAST(csm.CODE_INSEE || codei.valeur AS INT) AS IDENTIFIANT,
