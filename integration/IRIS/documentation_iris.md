@@ -35,7 +35,9 @@ Exemple: code_iris 024080801.
 
 L'insertion des données IRIS se fait grâce à une commande ogr2ogr:
 
-	```ogr2ogr.exe -f OCI SCHEMA/MDP@USER \\volt\infogeo\Donnees\Externe\IGN\IRIS\2019\CONTOURS_IRIS.shp -nlt multipolygon -nln CONTOURS_IRIS -lco SRID=2154 -dim 2```
+```
+ogr2ogr.exe -f OCI SCHEMA/MDP@USER \\volt\infogeo\Donnees\Externe\IGN\IRIS\2019\CONTOURS_IRIS.shp -nlt multipolygon -nln CONTOURS_IRIS -lco SRID=2154 -dim 2
+```
 
 * OCI: utilisation du driver Oracle
 * SCHEMA/MDP@USER: connexion au schéma Oracle
@@ -124,29 +126,31 @@ Insertion avec une clause WHERE pour éviter d'inserer dans la table des géomé
 
 Requête qui reconstitue les IRIS et leurs attributs dans la table TA_IRIS. La sous-requête présente dans le troisième AND permet de sélectionner le fid_metadonnee pour les IRIS au millésime le plus récent. En cas d'insertion d'un millésime antérieur, il faudra adapter la requête. 
 
-	        ```-- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
-        AND 
-            n.objectid IN
-                (
-                SELECT
-                    a.objectid AS id_mtd
-                FROM
-                    ta_metadonnee a
-                    INNER JOIN ta_source b ON a.fid_source = b.objectid
-                    INNER JOIN ta_date_acquisition c ON c.objectid = a.fid_acquisition
-                WHERE
-                    c.millesime IN(
-                                SELECT
-                                    MAX(b.millesime) as MILLESIME
-                                FROM
-                                    ta_metadonnee a
-                                INNER JOIN ta_date_acquisition  b ON a.fid_acquisition = b.objectid 
-                                INNER JOIN ta_source c ON c.objectid = a.fid_source
-                                WHERE c.nom_source = 'Contours...IRIS'
-                                )
-                AND
-                    b.nom_source = 'Contours...IRIS'
-                )```
+```
+-- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
+AND 
+n.objectid IN
+    (
+    SELECT
+        a.objectid AS id_mtd
+    FROM
+        ta_metadonnee a
+        INNER JOIN ta_source b ON a.fid_source = b.objectid
+        INNER JOIN ta_date_acquisition c ON c.objectid = a.fid_acquisition
+    WHERE
+        c.millesime IN(
+                    SELECT
+                        MAX(b.millesime) as MILLESIME
+                    FROM
+                        ta_metadonnee a
+                    INNER JOIN ta_date_acquisition  b ON a.fid_acquisition = b.objectid 
+                    INNER JOIN ta_source c ON c.objectid = a.fid_source
+                    WHERE c.nom_source = 'Contours...IRIS'
+                    )
+    AND
+        b.nom_source = 'Contours...IRIS'
+    )
+```
 
 
 
