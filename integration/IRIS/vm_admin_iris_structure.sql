@@ -27,7 +27,7 @@ VALUES(
 	);
 
 
--- 1.3. Création de l'index spatial
+-- 1.3. Création de l'index spatial.
 CREATE INDEX TEMP_COMMUNES_VM_SIDX
 ON G_REFERENTIEL.TEMP_COMMUNES_VM(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
@@ -39,7 +39,7 @@ PARAMETERS(
 	);
 
 
--- 1.4. Insertion des communes dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_VM
+-- 1.4. Insertion des communes dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_VM.
 MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_VM a
 	USING
 		(
@@ -99,8 +99,8 @@ VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.geom);
 
 
 
--- 2.1. Table temporaire pour selection les aires d'intersection entre les communes et les IRIS
-
+-- 2. Selection des aires d'intersection entre les communes et les IRIS.
+-- 2.1. Création de la table temporaire TEMP_COMMUNES_SURFACES pour selectionner les aires d'intersection entre les communes et les IRIS.
 CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES(
 	CODE_INSEE VARCHAR2(4000 BYTE),
 	NOM_COMMUNE VARCHAR2(4000 BYTE),
@@ -109,8 +109,7 @@ CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES(
 	);
 
 
--- 2.2. insertion des données dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES
-
+-- 2.2. Insertion des données dans la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES.
 MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES a
 	USING
 		(
@@ -174,8 +173,8 @@ INSERT (a.CODE_INSEE, a.NOM_COMMUNE, a.iris_objectid, a.area)
 VALUES (b.CODE_INSEE, b.NOM_COMMUNE, b.iris_objectid, b.area);
 
 
+-- 3. Séléction de la commune ou l'aire d'intersection avec une zone IRIS est maximale. 
 -- 3.1. Création de la table temporaire G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX pour séléctionner la commune ou l'aire d'intersection avec l'IRIS est maximale. 
-
 CREATE TABLE G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX (
 CODE_INSEE VARCHAR2(4000 BYTE),
 NOM_COMMUNE VARCHAR(4000),
@@ -184,7 +183,6 @@ IRIS_objectid VARCHAR(4000)
 
 
 -- 3.2. Insertion des aires maximales dans la table G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX.
- 
 MERGE INTO G_REFERENTIEL.TEMP_COMMUNES_SURFACES_MAX a
 	USING
 		(
