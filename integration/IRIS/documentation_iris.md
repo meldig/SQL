@@ -126,7 +126,7 @@ Insertion avec une clause WHERE pour éviter d'inserer dans la table des géomé
 
 Requête qui reconstitue les IRIS et leurs attributs dans la table TA_IRIS. La sous-requête présente dans le troisième AND permet de sélectionner le fid_metadonnee pour les IRIS au millésime le plus récent. En cas d'insertion d'un millésime antérieur, il faudra adapter la requête. 
 
-```
+``` SQL
 -- sous requete AND pour insérer le fid_métadonnee au millesime le plus récent pour la donnée considérée
 AND 
 n.objectid IN
