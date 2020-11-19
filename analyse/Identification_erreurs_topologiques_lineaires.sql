@@ -1,71 +1,72 @@
 /*
 Cette requête permet de savoir si certaines lignes simples sont concernées par des erreurs topologiques ou non.
+Précision : ces requêtes fonctionnent avec des géométries de type SDO_GEOMETRY et non SDO_TOPO_GEOMETRY, autrement dit elles n'utilisent pas les primitives topologiques.
 */
 
-SET SERVEROUTPUT ON
-DECLARE  
-    Vmessage VARCHAR2(400);
-    Vobjet1 NUMBER(38,0);
-    Vobjet2 NUMBER(38,0);
-
-BEGIN
-        -- Vérification : des lignes s'intersectent-elles hors start/endPoint ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_LIGNE) LOOP
-        BEGIN
-            -- Vérification de l'intersection entre deux lignes
-                SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_LIGNE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_RELATE(a.geom, i.geom, 'mask=OVERLAPBDYDISJOINT') = 'TRUE';                   
-                DBMS_OUTPUT.PUT_LINE('La ligne ' || vobjet1 || ' intersecte la ligne ' || vobjet2 || ' en dehors des start/endPoints.');
-           
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;
-        
-        -- Vérification : des lignes s'intersectent-elles sur leurs start/endPoints ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_LIGNE) LOOP
-        BEGIN
-        SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_LIGNE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_RELATE(a.geom, i.geom, 'mask=TOUCH') = 'TRUE';
-                DBMS_OUTPUT.PUT_LINE('La ligne ' || vobjet1 || ' est connecté à la ligne ' || vobjet2 || ' au niveau des start/endPoints.');
-       EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;
-        
-         -- Vérification : des lignes sont-elles disjointent dans un périmètre de 25m  autours de chacune d'elle ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_LIGNE) LOOP
-        BEGIN
-        SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_LIGNE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_WITHIN_DISTANCE(a.geom, i.geom, 'distance=25 unit=m') = 'TRUE'
-                    AND SDO_FILTER(a.geom, i.geom) <> 'TRUE';
-                DBMS_OUTPUT.PUT_LINE('La ligne ' || vobjet1 || ' est disjointe de la ligne ' || vobjet2 || '.');
-       EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP; 
-END;
+ -- Sélection des lignes mal connectées (c-a-dire suffisament proches pour être censées être connectées)
+    SELECT
+        a.objectid AS ligne_1,
+        b.objectid AS ligne_2,
+        'mal connectées' AS ETAT
+    FROM
+       G_GEO.TEMP_LIGNE a,
+       G_GEO.TEMP_LIGNE b
+    WHERE 
+        a.objectid < b.objectid
+        AND SDO_WITHIN_DISTANCE(
+            b.geom, 
+            a.geom, 
+            'distance = 0.005'
+        ) = 'TRUE'
+        AND SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+                SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), 
+                SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+                0.005
+            ) = 'FALSE'
+        AND SDO_RELATE(a.geom, b.geom, 'mask=OVERLAPBDYDISJOINT') <> 'TRUE'
+    UNION ALL
+ -- Sélection des lignes bien connectées
+    SELECT
+        a.objectid AS ligne_1,
+        b.objectid AS ligne_2,
+        'connectées' AS ETAT
+    FROM
+       G_GEO.TEMP_LIGNE a,
+       G_GEO.TEMP_LIGNE b
+    WHERE 
+        a.objectid < b.objectid
+        AND SDO_WITHIN_DISTANCE(
+            b.geom, 
+            a.geom, 
+            'distance = 0.005'
+        ) = 'TRUE'
+        AND SDO_LRS.CONNECTED_GEOM_SEGMENTS(
+                SDO_LRS.CONVERT_TO_LRS_GEOM(a.geom), 
+                SDO_LRS.CONVERT_TO_LRS_GEOM(b.geom),
+                0.005
+            ) = 'TRUE'
+        AND SDO_RELATE(a.geom, b.geom, 'mask=EQUAL') <> 'TRUE'
+    UNION ALL
+-- Sélection des doublons géométriques
+        SELECT 
+            a.objectid ligne_1, 
+            b.objectid ligne_2,
+            'doublons géométriques' AS ETAT
+        FROM
+            G_GEO.TEMP_LIGNE a,
+            G_GEO.TEMP_LIGNE b
+        WHERE
+            a.objectid < b.objectid
+            AND SDO_RELATE(a.geom, b.geom, 'mask=EQUAL') = 'TRUE'  
+    UNION ALL
+ -- Sélection des mauvaises intersections (hors start/endpoint)
+        SELECT 
+            a.objectid ligne_1, 
+            b.objectid ligne_2,
+            'intersection hors start/end point' AS ETAT
+        FROM
+            G_GEO.TEMP_LIGNE a,
+            G_GEO.TEMP_LIGNE b
+        WHERE
+            a.objectid < b.objectid
+            AND SDO_RELATE(a.geom, b.geom, 'mask=OVERLAPBDYDISJOINT') = 'TRUE';
