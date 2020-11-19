@@ -1,96 +1,86 @@
 /*
 Cette requête permet de savoir si certains polygones sont concernés par des erreurs topologiques ou non.
+Précision : ces requêtes fonctionnent avec des géométries de type SDO_GEOMETRY et non SDO_TOPO_GEOMETRY, autrement dit elles n'utilisent pas les primitives topologiques.
 */
 
-SET SERVEROUTPUT ON
-DECLARE  
-    Vmessage VARCHAR2(400);
-    Vobjet1 NUMBER(38,0);
-    Vobjet2 NUMBER(38,0);
-BEGIN
-        -- Vérification : y aurait-il des doublons géométriques ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_POLYGONE) LOOP
-        BEGIN
-                SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_POLYGONE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_RELATE(a.geom, i.geom, 'mask=EQUAL') = 'TRUE';                   
-                --DBMS_OUTPUT.PUT_LINE(vobjet1);
-                DBMS_OUTPUT.PUT_LINE('Le polygone ' || vobjet1 || ' est égal au polygone ' || vobjet2 || '.');
-           
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;
-        
-        -- Vérification : des polygones recouvriraient_ils en partie d'autres polygones ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_POLYGONE) LOOP
-        BEGIN
-                SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_POLYGONE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_RELATE(a.geom, i.geom, 'mask=OVERLAPBDYINTERSECT') = 'TRUE';                   
-                --DBMS_OUTPUT.PUT_LINE(vobjet1);
-                DBMS_OUTPUT.PUT_LINE('Le polygone ' || vobjet1 || ' et le polygone ' || vobjet2 || ' se recouvrent en partie.');
-           
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;
-        
-        -- Vérification : des polygones sont-ils disjoints de 1m alors qu'ils devraient être jointifs ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_POLYGONE) LOOP
-        BEGIN
-                SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_POLYGONE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < b.objectid
-                    AND SDO_WITHIN_DISTANCE(a.geom, b.geom, 'distance=1 unit=m') = 'TRUE'
-                    AND SDO_GEOM.RELATE(a.geom, 'DISJOINT', b.geom) = 'TRUE';                   
-                --DBMS_OUTPUT.PUT_LINE(vobjet1);
-                DBMS_OUTPUT.PUT_LINE('Le polygone ' || vobjet1 || ' est disjoint du polygone ' || vobjet2 || ' dans un rayon de 1m.');
-           
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;
-        
-        /*-- Vérification : des polygones sont-ils jointifs sans se recouvrir ?
-        FOR i IN (SELECT objectid, geom FROM TA_TEST_POLYGONE) LOOP
-        BEGIN
-                SELECT i.objectid, a.objectid
-                    INTO Vobjet1, Vobjet2
-                FROM
-                    TA_TEST_POLYGONE a
-                WHERE
-                    a.objectid <> i.objectid
-                    AND a.objectid < i.objectid
-                    AND SDO_RELATE(a.geom, i.geom, 'mask=TOUCH') = 'TRUE';                   
-                --DBMS_OUTPUT.PUT_LINE(vobjet1);
-                DBMS_OUTPUT.PUT_LINE('Le polygone ' || vobjet1 || ' est joint au polygone ' || vobjet2 || ' sur les seuls contours extérieurs.');
-           
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                NULL;
-                CONTINUE;
-        END; 
-        END LOOP;*/
-END;
-
+-- Sélection des doublons géométriques
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'doublons géométriques' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid < b.objectid
+        AND SDO_RELATE(a.geom, b.geom, 'mask=EQUAL') = 'TRUE'
+    UNION ALL
+-- Sélection des polygones qui devraient être jointifs (c-a-d proches à 5 mm maximum les uns des autres)
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'disjoint mais supposé jointif' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid < b.objectid
+        AND SDO_WITHIN_DISTANCE(
+            b.geom, 
+            a.geom, 
+            'distance = 1'
+        ) = 'TRUE'
+        AND SDO_RELATE(a.geom, b.geom, 'mask=DISJOINT') = 'TRUE'
+    UNION ALL
+-- Sélection des polygones jointifs
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'jointif' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid < b.objectid
+        AND SDO_WITHIN_DISTANCE(
+            b.geom, 
+            a.geom, 
+            'distance = 0.005'
+        ) = 'TRUE'
+        AND SDO_RELATE(a.geom, b.geom, 'mask=TOUCH') = 'TRUE'
+    UNION ALL
+-- Sélection des polygones se superposant en partie
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'se superposent' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid < b.objectid
+        AND SDO_RELATE(a.geom, b.geom, 'mask=OVERLAPBDYINTERSECT') = 'TRUE'
+    UNION ALL
+-- Sélection des polygones contenus dans d'autres polygones
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'le polygone 1 est contenu dans le polygone 2' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid <> b.objectid
+        AND SDO_RELATE(a.geom, b.geom, 'mask=INSIDE') = 'TRUE'
+    UNION ALL
+-- Sélection des polygones contenus dans d'autres polygones mais avec un contour commun
+    SELECT 
+        a.objectid AS polygone_1, 
+        b.objectid AS polygone_2,
+        'le polygone 1 contient le polygone 2 et ils partagent un contour commun' AS ETAT
+    FROM
+        G_GEO.TEMP_POLYGONE a,
+        G_GEO.TEMP_POLYGONE b
+    WHERE
+        a.objectid <> b.objectid
+        AND SDO_RELATE(a.geom, b.geom, 'mask=COVERS') = 'TRUE';
