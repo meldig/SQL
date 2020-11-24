@@ -11,5 +11,7 @@ CREATE TABLE "GEO"."TA_GG_EXTERIEUR" (
  )
 TABLESPACE "DATA_GEO" ;
 
+COMMENT ON TABLE GEO.TA_GG_EXTERIEUR IS 'Table vide, mais d''après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.';
+
 CREATE INDEX "GEO"."EXT_USER_FK" ON "GEO"."TA_GG_EXTERIEUR" ("USER_ID")
 	TABLESPACE "INDX_GEO";
