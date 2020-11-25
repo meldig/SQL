@@ -38,7 +38,7 @@ dans la barre d'outil, il est possible:
 	* le périmètres.
 	* la surface en hectare.
 9. gestion des couches
-	* **EST-IL POSSIBLE D'AVOIR UNE LISTE DES TABLES UTILISES**
+	* **EST-IL POSSIBLE D'AVOIR UNE LISTE DES TABLES UTILISEES**
 
 ###### Figure n°1: Présentation de la barre d'outil des fonctions ergonomiques
 ![Illustration de la définition](images_gestiongeo/Illustration_2_1.png)
@@ -56,28 +56,28 @@ Le démarrage de l'application *dynmap* peut être long car celle-ci  interroge 
 #### 2.3.1. Rechercher:
 
 La fonction **RECHERCHER** permet aux utilisateurs de rechercher un dossier suivant les éléments contenus dans sa *fiche dossier*:
-	* numéro: numéro **DOS_NUM**
-	* detail levé:
-	* état:
-		* fiche prévisionnelle (travaux non terminé)
-		* en attente de levé géomètre(dossier actif/fin de travaux)
-		* contrôle précision prestation géomètre
-		* en attente de validation (mode topo)
-		* Actif en base topo ; attente de validation gestion
-		* Actif en base (dossier clôturé et donc visible en carto)
-		* Rejeté - En attente de rechargement
-		* Non valide
-		* En attente (robot GTF)
-	* famille:
-		* plan de recollement: plan qui décrit les travaux réellement effectués à la fin d'un chantier.
-		* IC: Investigation complémentaire
-		* MAJ carto: demande de modification par les consultants (les Unités Territoriales par exemple)
-	* remarque: seuil, nom rue(pour les dossiers ruraux), type de batiment, edifice public, immeuble, lotissement, permis de construire, dans les remarques, estimé la surface du polygone créer > aller sur qgis et modifier le polygone
-	* voie: voie sur laquelle s'étend le dossier.
-	* commune: commune du dossier
-	* maitrise d'ouvrage: qui est le maitre d'ouvrage des travaux (peut être différent du cabinet de géomètre)
-	* entreprise: Entreprise ou cabinet des levés
-	* date de création: date de création du dossier
+* numéro: numéro **DOS_NUM**
+* detail levé:
+* état:
+	* fiche prévisionnelle (travaux non terminé)
+	* en attente de levé géomètre(dossier actif/fin de travaux)
+	* contrôle précision prestation géomètre
+	* en attente de validation (mode topo)
+	* Actif en base topo ; attente de validation gestion
+	* Actif en base (dossier clôturé et donc visible en carto)
+	* Rejeté - En attente de rechargement
+	* Non valide
+	* En attente (robot GTF)
+* famille:
+	* plan de recollement: plan qui décrit les travaux réellement effectués à la fin d'un chantier.
+	* IC: Investigation complémentaire
+	* MAJ carto: demande de modification par les consultants (les Unités Territoriales par exemple)
+* remarque: seuil, nom rue(pour les dossiers ruraux), type de batiment, edifice public, immeuble, lotissement, permis de construire, dans les remarques, estimé la surface du polygone créer > aller sur qgis et modifier le polygone
+* voie: voie sur laquelle s'étend le dossier.
+* commune: commune du dossier
+* maitrise d'ouvrage: qui est le maitre d'ouvrage des travaux (peut être différent du cabinet de géomètre)
+* entreprise: Entreprise ou cabinet des levés
+* date de création: date de création du dossier
 
 ###### Figure n°2: Interface de la fonction RECHERCHER
 ![Illustration de la définition](images_gestiongeo/Illustration_2_3_1.png)
@@ -119,7 +119,6 @@ Cela permet de créer des dossiers qui sont à des stades de recollements diffé
 La création du dossier permet de générer un numéro de dossier. Comme le but d'un dossier et d'intégrer en base un fichier **dwg** correspondant à une observation, a chaque dossier correspond un seul fichier, dans le cas ou le géomètre doit intégrer plusieurs levés, plusieurs dossiers seront créés.
 
 ##### 2.3.2.3. Les différents type des dossiers.
-
 
 #### 2.3.3. Intégration
 
@@ -178,9 +177,8 @@ La fiche dossier recense toute les informations d'un dossier renseignées lors d
 |Auteur|créateur du dossier|fnaerhuysen|
 |Etat|état d'avancement du dossier|	Actif en base topo ; attente de validation gestion.|
 |Famille|type de dossier|Plan de récolement|
-|Dossier|indique le numéro d'un dossier si celui-ci à été relévé en meme temps que le dossier concerné par la fiche. Souvent ce dossier est indiqué dans le champ remarque.|144-146-148 rue du haut vinage
-plus nouveaux batis - voirien de ALL MANET LIAISON HAUT VINAGE à RUE LEON JOUHAUX|
-|Remarque|Observation liées au dossier|Clé étrangère vers la table TA_METADONNEE pour connaitre la source et le millésime de la donnée.|
+|Dossier|indique le numéro d'un dossier si celui-ci à été relévé en mme temps que le dossier concerné par la fiche. Souvent ce dossier est indiqué dans le champ remarque.||
+|Remarque|Observation liées au dossier|144-146-148 rue du haut vinage plus nouveaux batis - voirien de ALL MANET LIAISON HAUT VINAGE à RUE LEON JOUHAUX|
 |Date travaux|Date d'étendue des travaux|Du 12/02/2013 au 16/04/2014|
 |Date commande|Date de création du dossier|22/01/2018|
 |Détail levé|Remarque sur la levé|Issue de la base chantier|
@@ -234,5 +232,5 @@ Cette onglets permet de connaitre les utilisateurs de ***gestiongeo*** et pour l
 ## 3. Observation. <a name="Observation"></a>
 
 Plusieurs icone ne sont pas utilisé:
-* Les fonctions proposées par l'onglet **DOSIER** ne sont pas utilisé.
+* Les fonctions proposées par l'onglet **DOSSIERS** ne sont pas utilisé.
 * le champ **PRIORITE** proposé dans l'onglet **CREATION** et **INTEGRATION**
