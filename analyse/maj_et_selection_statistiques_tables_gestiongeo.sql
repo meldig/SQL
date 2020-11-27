@@ -53,20 +53,9 @@ FROM
     USER_TAB_COLUMNS
 WHERE 
     TABLE_NAME IN(
-        'TA_GG_APP_ADM_RIGHTS',
-        'TA_GG_ETAT',
         'TA_SUR_TOPO_G',
-        'TA_LIG_TOPO_G',
         'TA_POINT_TOPO_G',
-        'TA_POINT_TOPO_F',
-        'TA_LIG_TOPO_F',
-        'TA_LIG_TOPO_GPS',
-        'TA_LIG_TOPO_IC',
-        'TA_LIG_TOPO_IC_2D',
-        'TA_POINT_TOPO_GPS',
-        'TA_POINT_TOPO_IC',
-        'TA_PIQUAGE_GPS',
-        'TA_DOSSIER_GPS',
+        'TA_LIG_TOPO_G',
         'TA_GG_APP_ADM_RIGHTS',
         'TA_GG_DOC',
         'TA_GG_DOSSIER',
@@ -78,5 +67,13 @@ WHERE
         'TA_GG_GEO',
         'TA_GG_MEDIA',
         'TA_GG_POINT',
-        'TA_GG_SOURCE'
+        'TA_GG_SOURCE',
+        'TA_LIG_TOPO_GPS',
+        'TA_POINT_TOPO_GPS',
+        'TA_LIG_TOPO_F',
+        'TA_POINT_TOPO_F',
+        'TA_LIG_TOPO_IC',
+        'TA_POINT_TOPO_IC',
+        'TA_LIG_TOPO_IC_2D',
+        'TA_PIQUAGE_GPS'
     );
