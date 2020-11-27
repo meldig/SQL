@@ -120,7 +120,7 @@ Cet onglet permet de créer des dossiers qui sont à des stades de recolements d
 
 La création du dossier permet de générer un numéro de dossier. Comme le but d'un dossier et d'intégrer en base un fichier **dwg** correspondant à un perimetre d'intervention, a chaque dossier correspond un seul fichier *dwg*, dans le cas ou le géomètre doit intégrer plusieurs levés, plusieurs dossiers seront créés.
 
-La création d'un dossier entraine la création des numéro de dossier (**ID_DOS**) dans la table **TA_GG_DOSSIER**, d'une reférence (**GEO_REF**) ainsi que du **DOS_NUM**(comme de jointure entres les tables **TA_GG_DOSSIER** et **TA_GG_GEO**.
+La création d'un dossier entraine la création d'un numéro de dossier (**ID_DOS**) dans la table **TA_GG_DOSSIER** et d'un **DOS_NUM**(champ de jointure entres les tables **TA_GG_DOSSIER** et **TA_GG_GEO**.
 
 ##### 2.3.2.3. Les différents familles des dossiers.
 
