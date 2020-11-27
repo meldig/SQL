@@ -90,7 +90,7 @@ La fonction **RECHERCHER** permet aux utilisateurs de rechercher un dossier suiv
 Deux actions principales déclenchent l'ouverture d'un dossier:
 1. Les équipes du plan de gestion (photos-interprête) notifient après l'analyse des orthophotos une zone de fin de travaux. Un dossier prévisionnel est ouvert.
 2. L'équipe des géomètres réceptionne un fichier suite à la concrétisation de travaux publics engagé par la MEL
-Le service à essayer de mettre en place un système d'alerte avec les UT pour lors de leurs travaux sur le terrain de relever les zones en travaux afin de déclencher des ouvertures de dossier mais cette expérimentation ne s'est pas concrétisée.
+Le service a essayé de mettre en place un système d'alerte avec les UT pour que celles_ci puissent ouvrir des dossiers prévisionnels quand des travaux ont lieux sur leurs territoires. Mais cette expérimentation ne s'est pas concrétisée.
 
 ###### Figure n°3: Interface de la fonction CREATION
 ![Illustration de la définition](images_gestiongeo/Illustration_2_3_2_1.png)
