@@ -201,14 +201,16 @@ La fiche dossier recense toutes les informations d'un dossier renseignées lors 
 |Etat GTF|état de l'intégration FME|Validé|
 |Pièce(s) attaché(s) (8Mo max)|fichier ***dwg*** attaché au dossier|136460231.dwg|
 
+###### Figure n°4: Interface de la fonction DOSSIER
+![Illustration de la définition](images_gestiongeo/Illustration_2_3_3_5.png)
+
 ###### 2.3.3.5.1. les outils disponibles par l'interface des fiches dossiers
 
 L'interface de la fiche du dossier permet plusieurs actions:
-* localiser le dossier sur la carte
-* editer les informations du dossier
-* invalider le dossier
-* estimer le cout d'un levé: outil utilisable seulement quand le dossier est de type: *en attente de levé géomètre*
-
+1. localiser le dossier sur la carte
+2. editer les informations du dossier
+3. invalider le dossier
+4. estimer le cout d'un levé: outil utilisable seulement quand le dossier est de type: *en attente de levé géomètre*
 
 ##### 2.3.3.6. les différents état des dossiers.
 
@@ -234,7 +236,7 @@ Cet icône, permet de paramétrer l'affichage des dossiers visibles dans la fen�
 * le premier pour fixer le nombre d'éléments qui s'affichent sur la fenêtre.
 * le second pour restreindre le nombre suivant une expression.
 
-###### Figure n°4: Interface de la fonction DOSSIER
+###### Figure n°5: Interface de la fonction DOSSIER
 ![Illustration de la définition](images_gestiongeo/Illustration_2_3_4.png)
 
 #### 2.3.5. Validation.
