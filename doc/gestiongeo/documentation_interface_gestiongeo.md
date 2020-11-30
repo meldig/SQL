@@ -41,7 +41,7 @@ Dans la barre d'outil, il est possible:
 	* **EST-IL POSSIBLE D'AVOIR UNE LISTE DES TABLES UTILISEES**
 
 ###### Figure n°1: Présentation de la barre d'outil des fonctions ergonomiques
-![Illustration de la définition](images_gestiongeo/illustration_2_1.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_1.PNG)
 
 ### 2.2. Ouverture de gestiongeo.
 
@@ -83,7 +83,7 @@ La fonction **RECHERCHER** permet aux utilisateurs de rechercher un dossier suiv
 * date de création: date de création du dossier.
 
 ###### Figure n°2: Interface de la fonction RECHERCHER
-![Illustration de la définition](images_gestiongeo/illustration_2_3_1.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_3_1.PNG)
 
 #### 2.3.2. Création.
 
@@ -96,7 +96,7 @@ Trois actions principales déclenchent l'ouverture d'un dossier:
 Le service a essayé de mettre en place un système d'alerte avec les UT pour que celles_ci puissent ouvrir des dossiers prévisionnels quand des travaux ont lieux sur leurs territoires. Mais cette expérimentation ne s'est pas concrétisée.
 
 ###### Figure n°3: Interface de la fonction CREATION
-![Illustration de la définition](images_gestiongeo/illustration_2_3_2_1.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_3_2_1.PNG)
 
 ##### 2.3.2.2. Création d'un dossier.
 
@@ -161,7 +161,7 @@ Pour intégrer les fichiers dans la base Oracle il y a deux possiblités.
 4. Soumettre le dossier
 
 ###### Figure n°4: Interface de la fonction INTEGRATION
-![Illustration de la définition](images_gestiongeo/illustration_2_3_3_2.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_3_3_2.PNG)
 
 ##### 2.3.3.3. Soumettre le dossier.
 
@@ -205,7 +205,7 @@ La fiche dossier recense toutes les informations d'un dossier renseignées lors 
 |Pièce(s) attaché(s) (8Mo max)|fichier ***dwg*** attaché au dossier|136460231.dwg|
 
 ###### Figure n°5: Interface de la fiche dossier
-![Illustration de la définition](images_gestiongeo/illustration_2_3_3_5.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_3_3_5.PNG)
 
 ###### 2.3.3.5.1. les outils disponibles par l'interface des fiches dossiers
 
@@ -242,7 +242,7 @@ Cet icône, permet de paramétrer l'affichage des dossier que l'on a soit même 
 * le second pour restreindre le nombre suivant une expression.
 
 ###### Figure n°6: Interface de la fonction DOSSIER
-![Illustration de la définition](images_gestiongeo/illustration_2_3_4.png)
+![Illustration de la définition](images_gestiongeo/illustration_2_3_4.PNG)
 
 #### 2.3.5. Validation.
 
