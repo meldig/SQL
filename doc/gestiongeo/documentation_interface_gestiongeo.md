@@ -326,5 +326,5 @@ Une demande a été formulée pour améliorer l'intégration des IC:
 ## 3. Observation. <a name="Observation"></a>
 
 Plusieurs icone ne sont pas utilisé:
-* Les fonctions proposées par l'onglet **DOSSIERS** ne sont pas utilisé.
+* Les fonctions proposées par l'onglet **DOSSIERS** ne sont pas utilisées.
 * le champ **PRIORITE** proposé dans l'onglet **CREATION** et **INTEGRATION**
