@@ -1,0 +1,75 @@
+# Documentation des Tables GestionGeo
+
+## TA_GG_DOSSIER
+
+### Présentation générale
+La table TA_GG_DOSSIER est la table principale utilisée dans Gestiongeo pour le plan topographique de gestion et les investigations complémentaires (IC): c'est dans cette table qu'est attribué un numéro de dossier (DOS_NUM) à tous les dossiers créés dans Gestiongeo. C'est également dans cette table que l'on peut voir l'avancement du dossier, la personne qui l'a créée, le code INSEE de la commune dans laquelle il se trouve, le numéro de voie, etc.
+La table TA_GG_DOSSIER rassemble 29 champs dont seulement 6 sont non-nulles.
+
+### Les champs
+
+|Nom champ|Type de données|Commentaires|
+|:--------|:--------------|:-----------|
+|ID_DOS|NUMBER|Clé primaire de la table correspondant à l'identifiant unique de chaque dossier - le trigger se chargeant de son incrémentation (TA_GG_DOSSIER) a été désactivé car il y avait des problèmes de doublons avec DynMap.|
+|SRC_ID|NUMBER|Clé étrangère vers la table TA_GG_SOURCE permettant de savoir quel utilisateur a créé quel dossier.|
+|ETAT_ID|NUMBER|Clé étrangère vers la table TA_GG_ETAT indiquant l'état d'avancement du dossier.|
+|USER_ID|NUMBER|(null)|
+|FAM_ID|NUMBER|Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : "plan de récolement", "investigation complémentaire", "maj carto"|
+|DOS_DC|DATE|(null)|
+|DOS_PRECISION|VARCHAR2(100 BYTE)|Précision apportée au dossier telle que sa surface et l'origine de la donnée.|
+|DOS_DMAJ|DATE|Date de mise à jour du dossier|
+|DOS_RQ|VARCHAR2(2048 BYTE)|Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.|
+|DOS_DT_FIN|DATE|(null)|
+|DOS_PRIORITE|NUMBER(1,0)|Priorité de traitement des dossiers par les géomètres.|
+|DOS_IDPERE|NUMBER|(null)|
+|DOS_DT_DEB_TR|DATE|Date de début des travaux sur l'objet concerné par le dossier.|
+|DOS_DT_FIN_TR|DATE|Date de fin des travaux sur l'objet concerné par le dossier.|
+|DOS_DT_CMD_SAI|DATE|(null)|
+|DOS_INSEE|NUMBER(5,0)|Code INSEE de la commune dans laquelle se situe l'objet nécessitant un dossier.|
+|DOS_VOIE|NUMBER(8,0)|(null)|
+|DOS_MAO|VARCHAR2(200 BYTE)|(null)|
+|DOS_ENTR|VARCHAR2(200 BYTE)|(null)|
+|DOS_URL_FILE|VARCHAR2(200 BYTE)|(null)|
+|ORDER_ID|NUMBER(10,0)|(null)|
+|DOS_NUM|NUMBER|Numéro de chaque dossier - différent de son identifiant ID_DOS (PK).|
+|DOS_NUM_SHORT|NUMBER(4,0)|Numéro abrégé de chaque dossier. Ce numéro était mis à jour par le trigger TA_DOSSIER_SHORTNUM qui est désactivé (commentaire écrit le 20/11/2020). Cependant les derniers dossiers ont bien un DOS_NUM_SHORT non null signe que ce champ continu d'être renseigné.|
+|DOS_OLD_ID|VARCHAR2(8 BYTE)|(null)|
+|DOS_DT_DEB_LEVE|DATE|Date de début des levés de l'objet (du dossier) par les géomètres.|
+|DOS_DT_FIN_LEVE|DATE|Date de fin des levés de l'objet (du dossier) par les géomètres.|
+|DOS_DT_PREV|DATE|(null)|
+|DOS_DT_CTRL_PRECISION|DATE|(null)|
+|DOS_CTRL_PRECISION|NUMBER(4,0)|(null)|
+
+### Analyse Statistique
+
+NOM TABLE : TA_GG_DOSSIER							ANALYSE	
+NOM_CHAMP	TYPE_DONNEE	NBR_NULL	NBR_VALEURS_DISTINCTES	NBR_VALEURS_TOTAL/CHAMP	Nbr_lignes		Taux_de_valeurs_nulles	Taux_de_valeurs_non_nulles
+DOS_RQ	VARCHAR2	1588	3394	4181	5769		27,53	72,47
+DOS_DT_FIN	DATE	1645	910	4124	5769		28,51	71,49
+DOS_PRIORITE	NUMBER	0	3	5769	5769		0,00	100,00
+DOS_IDPERE	NUMBER	5697	66	72	5769		98,75	1,25
+DOS_DT_DEB_TR	DATE	1273	1894	4496	5769		22,07	77,93
+DOS_DT_FIN_TR	DATE	2188	1591	3581	5769		37,93	62,07
+DOS_DT_CMD_SAI	DATE	4243	479	1526	5769		73,55	26,45
+DOS_INSEE	NUMBER	0	97	5769	5769		0,00	100,00
+DOS_VOIE	NUMBER	69	3736	5700	5769		1,20	98,80
+DOS_MAO	VARCHAR2	0	19	5769	5769		0,00	100,00
+DOS_ENTR	VARCHAR2	1633	74	4136	5769		28,31	71,69
+DOS_URL_FILE	VARCHAR2	2908	2861	2861	5769		50,41	49,59
+ORDER_ID	NUMBER	3002	2767	2767	5769		52,04	47,96
+DOS_NUM	NUMBER	4	5765	5765	5769		0,07	99,93
+DOS_DMAJ	DATE	2184	601	3585	5769		37,86	62,14
+DOS_PRECISION	VARCHAR2	2731	729	3038	5769		47,34	52,66
+DOS_DC	DATE	0	706	5769	5769		0,00	100,00
+FAM_ID	NUMBER	0	3	5769	5769		0,00	100,00
+USER_ID	NUMBER	0	31	5769	5769		0,00	100,00
+ETAT_ID	NUMBER	0	7	5769	5769		0,00	100,00
+SRC_ID	NUMBER	0	24	5769	5769		0,00	100,00
+ID_DOS	NUMBER	0	5769	5769	5769		0,00	100,00
+DOS_NUM_SHORT	NUMBER	4	1094	5765	5769		0,07	99,93
+DOS_CTRL_PRECISION	NUMBER	5769	0	0	5769		100,00	0,00
+DOS_DT_CTRL_PRECISION	DATE	5769	0	0	5769		100,00	0,00
+DOS_DT_PREV	DATE	4395	431	1374	5769		76,18	23,82
+DOS_DT_FIN_LEVE	DATE	3971	642	1798	5769		68,83	31,17
+DOS_DT_DEB_LEVE	DATE	4990	333	779	5769		86,50	13,50
+DOS_OLD_ID	VARCHAR2	3416	2353	2353	5769		59,21	40,79
