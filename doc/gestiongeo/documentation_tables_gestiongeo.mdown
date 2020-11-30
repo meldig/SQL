@@ -1,10 +1,25 @@
 # Documentation des Tables GestionGeo
 
-## TA_GG_DOSSIER
+## 1. TA_GG_DOSSIER
 
-### Présentation générale
+### 1.1. Présentation générale
 La table TA_GG_DOSSIER est la table principale utilisée dans Gestiongeo pour le plan topographique de gestion et les investigations complémentaires (IC): c'est dans cette table qu'est attribué un numéro de dossier (DOS_NUM) à tous les dossiers créés dans Gestiongeo. C'est également dans cette table que l'on peut voir l'avancement du dossier, la personne qui l'a créée, le code INSEE de la commune dans laquelle il se trouve, le numéro de voie, etc.
 La table TA_GG_DOSSIER rassemble 29 champs dont seulement 6 sont non-nulles.
+
+### 1.2. Les objets liés à la table
+
+#### Les indexes
+
+|NOM INDEX|UNICITE|STATUT|TYEP INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|ETAT_GESTION_FK|NONUNIQUE|VALID|NORMAL||
+|FAMILLE_FK|NONUNIQUE|VALID|NORMAL||
+|PK_TA_GG_DOSSIER|UNIQUE|VALID|NORMAL||
+|PROFIL_FK|NONUNIQUE|VALID|NORMAL||
+|SRC_GESTION_FK|NONUNIQUE|VALID|NORMAL||
+|EU_TA_GG_DOSSIER|UNIQUE|VALID|NORMAL||
+
+
 
 ### Les champs
 
