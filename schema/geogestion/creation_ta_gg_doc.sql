@@ -11,7 +11,7 @@ CREATE TABLE "GEO"."TA_GG_DOC" (
 )
 TABLESPACE "DATA_GEO" ;
 
-COMMENT ON TABLE "GEO"."TA_GG_DOC"  IS 'Documentation numérique accompagnant le dossier';
+COMMENT ON TABLE "GEO"."TA_GG_DOC"  IS 'Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?';
 
 CREATE INDEX "GEO"."GED_FK" ON "GEO"."TA_GG_DOC" ("ID_DOS") TABLESPACE "INDX_GEO" ;
 

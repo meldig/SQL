@@ -14,3 +14,7 @@ TABLESPACE "DATA_GEO" ;
  - autres
 Dans un premier temps l''appli se limitera au plan topo et au données des IC
 ';
+COMMENT ON COLUMN GEO.TA_GG_FAMILLE.FAM_ID IS 'Clé primaire de la table (identifiant unique) sans auto-incrémentation.';
+COMMENT ON COLUMN GEO.TA_GG_FAMILLE.FAM_LIB IS 'Libellé de la famille';
+COMMENT ON COLUMN GEO.TA_GG_FAMILLE.FAM_VAL IS 'Champ permettant de savoir si la famille est encore valide ou non. 1 = oui ; 0 = non.';
+COMMENT ON COLUMN GEO.TA_GG_FAMILLE.FAM_LIB_SMALL IS 'Libellé abrégé de la famille sur 2 caractères uniquement.';

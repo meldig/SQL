@@ -1,0 +1,378 @@
+Nom_Table	Nom_Champ	Type_de_Données	Commentaires_de_Champ	Commentaire_de_Table
+TA_SUR_TOPO_G	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_DV	DATE	Date de debut de validite de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_DF	DATE	Date de fin de validite de l'objet.	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_DS	DATE	Date de creation de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G	GEO_DM	DATE	Date de deniere modification de l'objet	Objets surfaciques du plan topographique de gestion
+TA_SUR_TOPO_G_LOG	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	FID_IDENTIFIANT	NUMBER(38,0)	Identifiant de l'objet qui est/était présent dans la table de production.	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_DV	DATE	Date de debut de validite de l'objet	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_DF	DATE	Date de fin de validite de l'objet.	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	GEO_DM	DATE	Date de deniere modification de l'objet	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_SUR_TOPO_G_LOG	MODIFICATION	NUMBER(38,0)	Type de modification effectuée sur la donnée : 1 = mise à jour, 0 = suppression	Table de versionnement de la table TA_SUR_TOPO_G. Elle contient toutes les mises à jour (à partir du 31.01.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_DV	DATE	Date de debut de validite de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_DF	DATE	Date de fin de validite de l'objet.	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_POI_LN	NUMBER(8,0)	Longueur de l'objet (en cm)	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_POI_LA	NUMBER(8,0)	Largeur de l'objet (en cm)	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_POI_AG_ORIENTATION	NUMBER(5,2)	Orientation de l'objet (en degre)	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_POI_HA	NUMBER(8,0)	Hauteur de l'objet (en cm)	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_POI_AG_INCLINAISON	NUMBER(5,2)	Inclinaison de l'objet (en degre, par rapport a la verticale).	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_DS	DATE	Date de creation de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G	GEO_DM	DATE	Date de deniere modification de l'objet	Objets ponctuels du plan topographique de gestion
+TA_POINT_TOPO_G_LOG	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	FID_IDENTIFIANT	NUMBER(38,0)	Identifiant de l'objet qui est/était présent dans la table de production.	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_DV	DATE	Date de debut de validite de l'objet	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_DF	DATE	Date de fin de validite de l'objet.	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_POI_LN	NUMBER(8,0)	Longueur de l'objet (en cm)	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_POI_LA	NUMBER(8,0)	Largeur de l'objet (en cm)	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_POI_AG_ORIENTATION	NUMBER(5,2)	Orientation de l'objet (en degre)	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_POI_HA	NUMBER(8,0)	Hauteur de l'objet (en cm)	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_POI_AG_INCLINAISON	NUMBER(5,2)	Inclinaison de l'objet (en degre, par rapport a la verticale).	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	GEO_DM	DATE	Date de deniere modification de l'objet	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_POINT_TOPO_G_LOG	MODIFICATION	NUMBER(38,0)	Type de modification effectuée sur la donnée : 1 = mise à jour, 0 = suppression	Table de versionnement de la table TA_POINT_TOPO_G. Elle contient toutes les mises à jour (à partir du 14.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_DV	DATE	Date de debut de validite de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_DF	DATE	Date de fin de validite de l'objet.	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_DS	DATE	Date de creation de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G	GEO_DM	DATE	Date de deniere modification de l'objet	Objets lineaires du plan topographique de gestion
+TA_LIG_TOPO_G_LOG	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	FID_IDENTIFIANT	NUMBER(38,0)	Identifiant de l'objet qui est/était présent dans la table de production.	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_DV	DATE	Date de debut de validite de l'objet	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_DF	DATE	Date de fin de validite de l'objet.	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	GEO_DM	DATE	Date de deniere modification de l'objet	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_LIG_TOPO_G_LOG	MODIFICATION	NUMBER(38,0)	Type de modification effectuée sur la donnée : 1 = mise à jour, 0 = suppression	Table de versionnement de la table TA_LIG_TOPO_G. Elle contient toutes les mises à jour (à partir du 13.02.2020) et les suppressions de la table de production.
+TA_GG_APP_ADM_RIGHTS	GROUPE_DYNMAP	NUMBER(38,0)	Id du groupe Dynmap (cf. MySQL)	Table listant et catégorisant les types d'utilisateurs de GestionGEO.
+TA_GG_APP_ADM_RIGHTS	PROFIL	NUMBER(38,0)	Profil (0: user, 1:gest, 2:adm)	Table listant et catégorisant les types d'utilisateurs de GestionGEO.
+TA_GG_APP_ADM_RIGHTS	LABEL	VARCHAR2(20 BYTE)	Libellé expliquant le profil utilisateur.	Table listant et catégorisant les types d'utilisateurs de GestionGEO.
+TA_GG_DOC	DOC_ID	NUMBER		Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?
+TA_GG_DOC	ID_DOS	NUMBER		Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?
+TA_GG_DOC	FOR_ID	NUMBER		Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?
+TA_GG_DOC	DOC_NM	VARCHAR2(100 BYTE)		Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?
+TA_GG_DOC	DOC_REP	VARCHAR2(100 BYTE)		Documentation numérique accompagnant le dossier. Cette table est vide est-ce normal ?
+TA_GG_DOSSIER	ID_DOS	NUMBER	Clé primaire de la table correspondant à l'identifiant unique de chaque dossier - le trigger se chargeant de son incrémentation (TA_GG_DOSSIER) a été désactivé car il y avait des problèmes de doublons avec DynMap.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	SRC_ID	NUMBER	Clé étrangère vers la table TA_GG_SOURCE permettant de savoir quel utilisateur a créé quel dossier.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	ETAT_ID	NUMBER	Clé étrangère vers la table TA_GG_ETAT indiquant l'état d'avancement du dossier.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	USER_ID	NUMBER		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	FAM_ID	NUMBER	Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : plan de récolement, investigation complémentaire, maj carto	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DC	DATE		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_PRECISION	VARCHAR2(100 BYTE)	Précision apportée au dossier telle que sa surface et l'origine de la donnée.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DMAJ	DATE	Date de mise à jour du dossier	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_RQ	VARCHAR2(2048 BYTE)	Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_FIN	DATE		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_PRIORITE	NUMBER(1,0)	Priorité de traitement des dossiers par les géomètres.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_IDPERE	NUMBER		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_DEB_TR	DATE	Date de début des travaux sur l'objet concerné par le dossier.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_FIN_TR	DATE	Date de fin des travaux sur l'objet concerné par le dossier.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_CMD_SAI	DATE		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_INSEE	NUMBER(5,0)	Code INSEE de la commune dans laquelle se situe l'objet nécessitant un dossier.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_VOIE	NUMBER(8,0)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_MAO	VARCHAR2(200 BYTE)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_ENTR	VARCHAR2(200 BYTE)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_URL_FILE	VARCHAR2(200 BYTE)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	ORDER_ID	NUMBER(10,0)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_NUM	NUMBER	Numéro de chaque dossier - différent de son identifiant ID_DOS (PK).	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_NUM_SHORT	NUMBER(4,0)	Numéro abrégé de chaque dossier. Ce numéro était mis à jour par le trigger TA_DOSSIER_SHORTNUM qui est désactivé (commentaire écrit le 20/11/2020). Cependant les derniers dossiers ont bien un DOS_NUM_SHORT non null signe que ce champ continu d'être renseigné.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_OLD_ID	VARCHAR2(8 BYTE)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_DEB_LEVE	DATE	Date de début des levés de l'objet (du dossier) par les géomètres.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_FIN_LEVE	DATE	Date de fin des levés de l'objet (du dossier) par les géomètres.	Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_PREV	DATE		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_DT_CTRL_PRECISION	DATE		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_DOSSIER	DOS_CTRL_PRECISION	NUMBER(4,0)		Table principale Chaque dossier correspond à un numéro de chantier pour le plan topo et IC
+TA_GG_ETAT	ETAT_ID	NUMBER	Identifiant de chaque état d'avancement.	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_LIB	VARCHAR2(100 BYTE)	Libellés longs expliquant les états d'avancement des dossiers.	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_AFF	NUMBER(1,0)		"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_LIB_SMALL	VARCHAR2(50 BYTE)	Libellés courts.	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_STYLE	CHAR(6 BYTE)	Code couleur de chaque état d'avancement au format HTML/CSS (hexadecimal) mais sans le préfixe #.	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_COULEUR	VARCHAR2(7 BYTE)	Code couleur de chaque état d'avancement au format HTML/CSS (hexadecimal).	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_ETAT	ETAT_SMALL	VARCHAR2(25 BYTE)	Etats d'avancement des dossiers en abrégé.	"Table listant tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   0 : actif en base (visible en carto : vert)
+   1 : non valide (non visible en carto)
+   2 : prévisionnel (visible en carto : bleu)
+   3 : non vérifié (visible en carto : orange)
+   4 : vérifié, non validé (visible en carto : rouge)
+"
+TA_GG_EXTERIEUR	USER_ID	NUMBER	Identifiant de l'utilisateur extérieur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_NOM	VARCHAR2(200 BYTE)	Nom de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_DT_FIN_VAL2	DATE	Date de fin de validité du login ?	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_EMAIL	VARCHAR2(200 BYTE)	Adresse mail de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_LOGIN	VARCHAR2(100 BYTE)	Login de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_PWD	VARCHAR2(2048 BYTE)	Mot de passe de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_DT_CONS	DATE		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_FAMILLE	FAM_ID	NUMBER	Clé primaire de la table (identifiant unique) sans auto-incrémentation.	"Famille de données liées au dossier
+   - plan topo
+   - réseau (IC)
+   - autres
+Dans un premier temps l'appli se limitera au plan topo et au données des IC
+"
+TA_GG_FAMILLE	FAM_LIB	VARCHAR2(100 BYTE)	Libellé de la famille	"Famille de données liées au dossier
+   - plan topo
+   - réseau (IC)
+   - autres
+Dans un premier temps l'appli se limitera au plan topo et au données des IC
+"
+TA_GG_FAMILLE	FAM_VAL	NUMBER(38,0)	Champ permettant de savoir si la famille est encore valide ou non. 1 = oui ; 0 = non.	"Famille de données liées au dossier
+   - plan topo
+   - réseau (IC)
+   - autres
+Dans un premier temps l'appli se limitera au plan topo et au données des IC
+"
+TA_GG_FAMILLE	FAM_LIB_SMALL	VARCHAR2(2 BYTE)	Libellé abrégé de la famille sur 2 caractères uniquement.	"Famille de données liées au dossier
+   - plan topo
+   - réseau (IC)
+   - autres
+Dans un premier temps l'appli se limitera au plan topo et au données des IC
+"
+TA_GG_FILES	OBJECTID	NUMBER(38,0)	Clé primaire de la table (identifiant unique) auto-incrémentée par un trigger.	Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC - Commentaire à faire confirmer.
+TA_GG_FILES	DOS_NUM	NUMBER(9,0)	Numéro de dossier associé au fichier dont le lien se trouve dans le champ LIEN. Attention il n'y a pas de contrainte de clé étrangère vers la table TA_GG_DOSSIER sur ce champ.	Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC - Commentaire à faire confirmer.
+TA_GG_FILES	LIEN	VARCHAR2(2000 BYTE)	Lien hypertexte d'une image, concernant le récollement ou les IC, liée au dossier utilisé dans GestionGeo	Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC - Commentaire à faire confirmer.
+TA_GG_FORMAT	FOR_ID	NUMBER	Clé primaire (identifiant unique) de la table. ce champ n'est pas auto-incrémenté.	"Liste des formats acceptable pour l'upload
+  - dwg, dxf
+   - shp
+   - dgn
+   - csv, geo
+   - doc, odt
+   - pdf
+   - gif, jpeg, png
+"
+TA_GG_FORMAT	FOR_LIB	VARCHAR2(100 BYTE)	Libellé des formats utilisés pour la publication de données.	"Liste des formats acceptable pour l'upload
+  - dwg, dxf
+   - shp
+   - dgn
+   - csv, geo
+   - doc, odt
+   - pdf
+   - gif, jpeg, png
+"
+TA_GG_FORMAT	FOR_VAL	NUMBER(38,0)	Champ permettant de savoir si le format est valide (pouvant être utilisé) ou non. 1 = oui ; 0 = non.	"Liste des formats acceptable pour l'upload
+  - dwg, dxf
+   - shp
+   - dgn
+   - csv, geo
+   - doc, odt
+   - pdf
+   - gif, jpeg, png
+"
+TA_GG_GEO	ID_GEOM	NUMBER	Clé primaire (identifiant unique) de la table auto-incrémentée par un trigger.	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_GEO	ID_DOS	NUMBER	Clé étrangère vers la table TA_GG_DOSSIER permettant d'associer un dossier à une géométrie.	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_GEO	CLASSE_DICT	VARCHAR2(1 BYTE)		Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_GEO	GEOM	SDO_GEOMETRY	Champ géométrique de la table (mais sans contrainte de type de géométrie)	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_GEO	ETAT_ID	NUMBER(1,0)	Identifiant de l'état d'avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n'y a pas de contrainte de clé étrangère dessus pour autant.	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_GEO	DOS_NUM	NUMBER(10,0)	Numéro de dossier associé à la géométrie de la table. Attention il n'y a pas de contrainte de clé étrangère vers la table TA_GG_DOSSIER dans laquelle ne numéro de dossier est créé	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
+TA_GG_MEDIA	ID	NUMBER(38,0)	Identifiant de la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	ID_OBJET	NUMBER(38,0)	Identifiant de l'objet sur lequel porte la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	MEDIA	VARCHAR2(2000 BYTE)	nom et/ou chemin d'accès du fichier contenant la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	MINIATURE	BLOB	Champ devant surement contenir la miniature en elle-même (vu le type du champ)	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	TYPE	VARCHAR2(15 BYTE)	Format du fichier	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_POINT	ID_GEOM	NUMBER	Identifiant de la géométrie présente dans TA_GG_GEO et à partir de laquelle est issue chaque point de la table. Attention, il n'y a pas de contrainte de clé étrangère sur ce champ.	Table des centroïdes des objets présents dans TA_GG_GEO.
+TA_GG_POINT	ID_DOS	NUMBER	Identifiant du dossier GestionGeo présent dans TA_GG_DOSSIER. Attention, il n'y a pas de contrainte de clé étrangère sur ce champ.	Table des centroïdes des objets présents dans TA_GG_GEO.
+TA_GG_POINT	CLASSE_DICT	VARCHAR2(1 BYTE)		Table des centroïdes des objets présents dans TA_GG_GEO.
+TA_GG_POINT	GEOM	SDO_GEOMETRY	Champ géométrique rassemblant tous les centroïdes des objets de la table TA_GG_GEO.	Table des centroïdes des objets présents dans TA_GG_GEO.
+TA_GG_SOURCE	SRC_ID	NUMBER	Clé primaire de la table (identifiant unique) sans auto-incrémentation. Je ne sais pas d'où viennent ces numéros, peut-être du schéma annuaire.	Table recensant tous les agents participant à la création, l'édition et la suppression des dossiers dans GestionGeo.
+TA_GG_SOURCE	SRC_LIBEL	VARCHAR2(100 BYTE)	Pnom de chaque agent.	Table recensant tous les agents participant à la création, l'édition et la suppression des dossiers dans GestionGeo.
+TA_GG_SOURCE	SRC_VAL	NUMBER(38,0)	Champ booléen permettant de savoir si l'agent participe encore à la vie des données de GestionGeo : 1 = oui ; 0 = non.	Table recensant tous les agents participant à la création, l'édition et la suppression des dossiers dans GestionGeo.
+TA_LIG_TOPO_GPS	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_DV	DATE	Date de debut de validite de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_DF	DATE	Date de fin de validite de l'objet.	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_LIG_OFFSET_D	NUMBER(8,0)	Champ utilisé pour les mégaconstituants (caniveau ou mur avec une grande épaisseur) permettant de connaître l'encombrement de l'objet à sa droite	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_LIG_OFFSET_G	NUMBER(8,0)	Champ utilisé pour les mégaconstituants (caniveau ou mur avec une grande épaisseur) permettant de connaître l'encombrement de l'objet à sa gauche	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_DS	DATE	Date de creation de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_GPS	GEO_DM	DATE	Date de deniere modification de l'objet	Table servant à enregistrer les données (avec une géométrie linéaire) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe.	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_DV	DATE	Date de debut de validite de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_DF	DATE	Date de fin de validite de l'objet.	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_POI_LN	NUMBER(8,0)	longeur de l'objet (en cm)	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_POI_LA	NUMBER(8,0)	Largeur de l'objet (en cm)	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_POI_AG_ORIENTATION	NUMBER(5,2)	Orientation de l'objet (en degre)	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_POI_HA	NUMBER(8,0)	Hauteur de l'objet (en cm)	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_POI_AG_INCLINAISON	NUMBER(5,2)	Inclinaison de l'objet (en degre, par rapport a la verticale).	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_DS	DATE	Date de creation de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_POINT_TOPO_GPS	GEO_DM	DATE	Date de deniere modification de l'objet	Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+TA_LIG_TOPO_F	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_DV	DATE	Date de debut de validite de l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_DF	DATE	Date de fin de validite de l'objet.	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_DS	DATE	Date de creation de l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets lineaire du plan topographique fin
+TA_LIG_TOPO_F	GEO_DM	DATE	Date de deniere modification de l'objet	Objets lineaire du plan topographique fin
+TA_POINT_TOPO_F	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_DV	DATE	Date de debut de validite de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_DF	DATE	Date de fin de validite de l'objet.	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_POI_LN	NUMBER(8,0)	Longueur de l'objet (en cm)	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_POI_LA	NUMBER(8,0)	Largeur de l'objet (en cm)	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_POI_AG_ORIENTATION	NUMBER(5,2)	Orientation de l'objet (en degre)	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_POI_HA	NUMBER(8,0)	Hauteur de l'objet (en cm)	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_POI_AG_INCLINAISON	NUMBER(5,2)	Inclinaison de l'objet (en degre, par rapport a la verticale).	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_DS	DATE	Date de creation de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_POINT_TOPO_F	GEO_DM	DATE	Date de deniere modification de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_LIG_TOPO_IC	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DV	DATE	Date de debut de validite de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DF	DATE	Date de fin de validite de l'objet.	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DS	DATE	Date de creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DM	DATE	Date de deniere modification de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet 	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_POINT_TOPO_IC	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	CALQUE_RESEAU	VARCHAR2(250 BYTE)	nom du calque du fichier dwg dans lequel se trouve l'IC à faire	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	TYPE_RESEAU	VARCHAR2(250 BYTE)	Type du réseau sur lequel faire l'IC	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	SOURCE_FICHIER	VARCHAR2(2000 BYTE)	nom du fichier dwg contenant le calque dans lequel se trouve l'IC à faire	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	X	NUMBER(38,11)	Coordonnées en abscisse du point	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Y	NUMBER(38,11)	Coordonnées en ordonnées du point	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Z_TERRAIN_NAT	NUMBER(38,11)		Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Z_PROF	NUMBER(38,11)		Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	PROFONDEUR	VARCHAR2(50 BYTE)	profondeur de l'IC à faire - je suppose	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	TYPE_RESEAU_CHARTE	VARCHAR2(3 BYTE)	Type de réseau selon la charte MEL des réseaux - je suppose qu'il s'agit de la charte graphique	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_LIG_TOPO_IC_2D	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DV	DATE	Date de debut de validite de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DF	DATE	Date de fin de validite de l'objet.	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DS	DATE	Date de creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DM	DATE	Date de deniere modification de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_PIQUAGE_GPS	DOS_ID	NUMBER(38,0)		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	DOSSIER	VARCHAR2(255 BYTE)		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	NB_POINTS	NUMBER		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	GEOM	SDO_GEOMETRY		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée

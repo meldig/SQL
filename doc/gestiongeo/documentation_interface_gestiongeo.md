@@ -53,7 +53,6 @@ Le démarrage de l'application *dynmap* peut être long car celle-ci interroge l
 * **TA_POINT_TOPO_IC**: Table contenant les éléments ponctuels des investigations complémentaires (trappe à vantaux par exemple).
 * **TA_LIG_TOPO_IC**: Table contenant les éléments linéaires des investigations complémentaires.
 
-
 ### 2.3. Fonction disponible sur *Dynmap*.
 
 #### 2.3.1. Rechercher:
@@ -128,6 +127,7 @@ La création d'un dossier entraine la création d'un numéro de dossier (**ID_DO
 ##### 2.3.2.3. Les différents familles des dossiers.
 
 * plan de recolement: plan qui décrit les travaux réellement effectués à la fin d'un chantier.
+
 * IC: une investigation complémentaire permet de connaitre avec précision la localisation et la nature des réseaux soutterains situés sur la parcelle ou des travaux s'effectuent.
 * MAJ carto: demande de modification par les consultants (les photos-interprètes par exemple), pas utiliser, dossier dans lesquels il n'y aura pas d'intervention des géomètres.
 
