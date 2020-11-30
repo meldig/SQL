@@ -180,12 +180,12 @@ TA_GG_ETAT	ETAT_SMALL	VARCHAR2(25 BYTE)	Etats d'avancement des dossiers en abré
    3 : non vérifié (visible en carto : orange)
    4 : vérifié, non validé (visible en carto : rouge)
 "
-TA_GG_EXTERIEUR	USER_ID	NUMBER		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
-TA_GG_EXTERIEUR	EXT_NOM	VARCHAR2(200 BYTE)		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
-TA_GG_EXTERIEUR	EXT_DT_FIN_VAL2	DATE		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
-TA_GG_EXTERIEUR	EXT_EMAIL	VARCHAR2(200 BYTE)		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
-TA_GG_EXTERIEUR	EXT_LOGIN	VARCHAR2(100 BYTE)		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
-TA_GG_EXTERIEUR	EXT_PWD	VARCHAR2(2048 BYTE)		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	USER_ID	NUMBER	Identifiant de l'utilisateur extérieur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_NOM	VARCHAR2(200 BYTE)	Nom de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_DT_FIN_VAL2	DATE	Date de fin de validité du login ?	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_EMAIL	VARCHAR2(200 BYTE)	Adresse mail de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_LOGIN	VARCHAR2(100 BYTE)	Login de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+TA_GG_EXTERIEUR	EXT_PWD	VARCHAR2(2048 BYTE)	Mot de passe de l'utilisateur	Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
 TA_GG_EXTERIEUR	EXT_DT_CONS	DATE		Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
 TA_GG_FAMILLE	FAM_ID	NUMBER	Clé primaire de la table (identifiant unique) sans auto-incrémentation.	"Famille de données liées au dossier
    - plan topo
@@ -247,11 +247,11 @@ TA_GG_GEO	CLASSE_DICT	VARCHAR2(1 BYTE)		Table rassemblant les géométries des d
 TA_GG_GEO	GEOM	SDO_GEOMETRY	Champ géométrique de la table (mais sans contrainte de type de géométrie)	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
 TA_GG_GEO	ETAT_ID	NUMBER(1,0)	Identifiant de l'état d'avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n'y a pas de contrainte de clé étrangère dessus pour autant.	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
 TA_GG_GEO	DOS_NUM	NUMBER(10,0)	Numéro de dossier associé à la géométrie de la table. Attention il n'y a pas de contrainte de clé étrangère vers la table TA_GG_DOSSIER dans laquelle ne numéro de dossier est créé	Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.
-TA_GG_MEDIA	ID	NUMBER(38,0)		
-TA_GG_MEDIA	ID_OBJET	NUMBER(38,0)		
-TA_GG_MEDIA	MEDIA	VARCHAR2(2000 BYTE)		
-TA_GG_MEDIA	MINIATURE	BLOB		
-TA_GG_MEDIA	TYPE	VARCHAR2(15 BYTE)		
+TA_GG_MEDIA	ID	NUMBER(38,0)	Identifiant de la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	ID_OBJET	NUMBER(38,0)	Identifiant de l'objet sur lequel porte la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	MEDIA	VARCHAR2(2000 BYTE)	nom et/ou chemin d'accès du fichier contenant la miniature	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	MINIATURE	BLOB	Champ devant surement contenir la miniature en elle-même (vu le type du champ)	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
+TA_GG_MEDIA	TYPE	VARCHAR2(15 BYTE)	Format du fichier	Il s'agit surement d'une table permettant de stocker les chemins d'accès à des miniatures utilisées dans GestionGeo (pour des vignettes par exemple)
 TA_GG_POINT	ID_GEOM	NUMBER	Identifiant de la géométrie présente dans TA_GG_GEO et à partir de laquelle est issue chaque point de la table. Attention, il n'y a pas de contrainte de clé étrangère sur ce champ.	Table des centroïdes des objets présents dans TA_GG_GEO.
 TA_GG_POINT	ID_DOS	NUMBER	Identifiant du dossier GestionGeo présent dans TA_GG_DOSSIER. Attention, il n'y a pas de contrainte de clé étrangère sur ce champ.	Table des centroïdes des objets présents dans TA_GG_GEO.
 TA_GG_POINT	CLASSE_DICT	VARCHAR2(1 BYTE)		Table des centroïdes des objets présents dans TA_GG_GEO.
@@ -329,3 +329,50 @@ TA_POINT_TOPO_F	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Obj
 TA_POINT_TOPO_F	GEO_DS	DATE	Date de creation de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
 TA_POINT_TOPO_F	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
 TA_POINT_TOPO_F	GEO_DM	DATE	Date de deniere modification de l'objet	Objets ponctuels du Objets ponctuels du plan topographique fin
+TA_LIG_TOPO_IC	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DV	DATE	Date de debut de validite de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DF	DATE	Date de fin de validite de l'objet.	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DS	DATE	Date de creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEO_DM	DATE	Date de deniere modification de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_LIG_TOPO_IC	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet 	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 3D
+TA_POINT_TOPO_IC	OBJECTID	NUMBER(38,0)	Identifiant interne de l'objet geographique	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	CALQUE_RESEAU	VARCHAR2(250 BYTE)	nom du calque du fichier dwg dans lequel se trouve l'IC à faire	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	TYPE_RESEAU	VARCHAR2(250 BYTE)	Type du réseau sur lequel faire l'IC	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	SOURCE_FICHIER	VARCHAR2(2000 BYTE)	nom du fichier dwg contenant le calque dans lequel se trouve l'IC à faire	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	X	NUMBER(38,11)	Coordonnées en abscisse du point	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Y	NUMBER(38,11)	Coordonnées en ordonnées du point	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Z_TERRAIN_NAT	NUMBER(38,11)		Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	Z_PROF	NUMBER(38,11)		Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	PROFONDEUR	VARCHAR2(50 BYTE)	profondeur de l'IC à faire - je suppose	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_POINT_TOPO_IC	TYPE_RESEAU_CHARTE	VARCHAR2(3 BYTE)	Type de réseau selon la charte MEL des réseaux - je suppose qu'il s'agit de la charte graphique	Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+TA_LIG_TOPO_IC_2D	OBJECTID	NUMBER(8,0)	Identifiant interne de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	CLA_INU	NUMBER(8,0)	Reference a la classe a laquelle appartient l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_REF	VARCHAR2(13 BYTE)	Identifiant metier. Non obligatoire car certain objet geographique n'ont pas d'objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d'origine du levé	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_INSEE	CHAR(3 BYTE)	Code insee de la commune sur laquelle se situe l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DV	DATE	Date de debut de validite de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DF	DATE	Date de fin de validite de l'objet.	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_ON_VALIDE	NUMBER(1,0)	Statut valide O/N de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_TEXTE	VARCHAR2(2048 BYTE)	Texte de commentaire	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_LIG_OFFSET_D	NUMBER(8,0)	Decallage a droite par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_LIG_OFFSET_G	NUMBER(8,0)	Decallage a gauche par rapport a la generatrice	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_TYPE	CHAR(1 BYTE)	Type de geometrie de l'objet geographique	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_NMN	VARCHAR2(20 BYTE)	Auteur de la derniere modification	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DS	DATE	Date de creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_NMS	VARCHAR2(20 BYTE)	Auteur de la creation de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEO_DM	DATE	Date de deniere modification de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_LIG_TOPO_IC_2D	GEOM	SDO_GEOMETRY	Geometrie ORACLE de l'objet	Table regroupant toutes les investigations complémentaires avec une géométrie de type linéaire en 2D - Elle est remplie par le trigger TA_LIG_TOPO_IC_2D
+TA_PIQUAGE_GPS	DOS_ID	NUMBER(38,0)		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	DOSSIER	VARCHAR2(255 BYTE)		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	NB_POINTS	NUMBER		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+TA_PIQUAGE_GPS	GEOM	SDO_GEOMETRY		Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
