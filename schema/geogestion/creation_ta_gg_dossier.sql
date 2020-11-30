@@ -37,6 +37,21 @@ CREATE TABLE "GEO"."TA_GG_DOSSIER" (
 TABLESPACE "DATA_GEO" ;
 
 COMMENT ON TABLE "GEO"."TA_GG_DOSSIER"  IS 'Table principale. Chaque dossier correspond à un numéro de chantier pour le plan topo et IC';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.ETAT_ID IS 'Clé étrangère vers la table TA_GG_ETAT indiquant l''état d''avancement du dossier.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_RQ IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_DMAJ IS 'Date de mise à jour du dossier';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.FAM_ID IS 'Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : "plan de récolement", "investigation complémentaire", "maj carto"';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.SRC_ID IS 'Clé étrangère vers la table TA_GG_SOURCE permettant de savoir quel utilisateur a créé quel dossier.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.ID_DOS IS 'Clé primaire de la table correspondant à l''identifiant unique de chaque dossier - le trigger se chargeant de son incrémentation (TA_GG_DOSSIER) a été désactivé car il y avait des problèmes de doublons avec DynMap.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_PRIORITE IS 'Priorité de traitement des dossiers par les géomètres.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_INSEE IS 'Code INSEE de la commune dans laquelle se situe l''objet nécessitant un dossier.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_DT_DEB_TR IS 'Date de début des travaux sur l''objet concerné par le dossier.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_DT_FIN_TR IS 'Date de fin des travaux sur l''objet concerné par le dossier.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_DT_DEB_LEVE IS 'Date de début des levés de l''objet (du dossier) par les géomètres.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_DT_FIN_LEVE IS 'Date de fin des levés de l''objet (du dossier) par les géomètres.';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_NUM IS 'Numéro de chaque dossier - différent de son identifiant ID_DOS (PK).';
+COMMENT ON COLUMN GEO.TA_GG_DOSSIER.DOS_NUM_SHORT IS 'Numéro abrégé de chaque dossier. Ce numéro était mis à jour par le trigger TA_DOSSIER_SHORTNUM qui est désactivé (commentaire écrit le 20/11/2020). Cependant les derniers dossiers ont bien un DOS_NUM_SHORT non null signe que ce champ continu d''être renseigné.';
 
 CREATE INDEX "GEO"."ETAT_GESTION_FK" ON "GEO"."TA_GG_DOSSIER" ("ETAT_ID") TABLESPACE "INDX_GEO" ;
 

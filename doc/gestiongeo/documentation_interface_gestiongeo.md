@@ -1,4 +1,6 @@
+
 ﻿# dynmap gestiongeo.
+
 
 ## Table des matières
 1. [Historique](#historique)
@@ -7,7 +9,9 @@
 
 ## 1. Historique. <a name="historique"></a>
 
+
 L'outil gestiongeo a été mise en place par Serge Hombert avec l'aide de Jérémy Renard dans le but de développer un outil qui permet de gérer les paramètres des dossiers et de mettre en relation un numéro de dossier avec son périmètre.
+
 
 Il existe sur *dynmap* trois profils différents:
 * consultant: utilisation de *dynmap* pour visualiser les dossiers existants.
@@ -15,8 +19,10 @@ Il existe sur *dynmap* trois profils différents:
 * administateur: création de nouveaux profils.
 
 *Dynmap* est utilisé par plusieurs agents de la MEL:
+
 * l'équipe des géomètres: pour créer des nouveaux dossiers suite à la réception de levés, pour pouvoir mettre à jour les tables **TA_LIG_TOPO_F** et **TA_POINT_TOPO_F**.
 * l'équipe des photos-interprète: pour créer des dossiers de vérifications à l'intention des géomètres.
+
 * il a été prévu de former les agents des UT à l'utilisation de *gestiongeo* pour leur permettre de créer des dossiers prévisionnels mais cela ne s'est pas concrétisé.
 
 ## 2. Utilisation de gestiongeo. <a name="utilisationgestiongeo"></a>
@@ -41,7 +47,9 @@ Dans la barre d'outil, il est possible:
 	* **EST-IL POSSIBLE D'AVOIR UNE LISTE DES TABLES UTILISEES**
 
 ###### Figure n°1: Présentation de la barre d'outil des fonctions ergonomiques
+
 ![Illustration de la définition](images_gestiongeo/illustration_2_1.png)
+
 
 ### 2.2. Ouverture de gestiongeo.
 
@@ -50,6 +58,7 @@ Le démarrage de l'application *dynmap* peut être long car celle-ci interroge l
 * **TA_POINT_TOPO_F**: géométrie point des éléments.
 * **TA_GG_DOSSIER**: liste des dossiers en base et leurs attributs.
 * **TA_GG_GEO**: table regroupant les périmètres des dossiers.
+
 * **TA_POINT_TOPO_IC**: Table contenant les éléments ponctuels des investigations complémentaires (trappe à vantaux par exemple).
 * **TA_LIG_TOPO_IC**: Table contenant les éléments linéaires des investigations complémentaires.
 
@@ -63,7 +72,9 @@ La fonction **RECHERCHER** permet aux utilisateurs de rechercher un dossier suiv
 * detail levé:
 * état:
 	* fiche prévisionnelle (travaux non terminé)
+
 	* en attente du levé des géomètres(dossier actif/fin de travaux)
+
 	* contrôle précision prestation géomètre
 	* en attente de validation (mode topo)
 	* Actif en base topo ; attente de validation gestion
@@ -79,15 +90,18 @@ La fonction **RECHERCHER** permet aux utilisateurs de rechercher un dossier suiv
 * voie: voie sur laquelle s'étend le dossier.
 * commune: commune du dossier.
 * maitrise d'ouvrage: maitre d'ouvrage des travaux (peut être différent du cabinet de géomètre).
+
 * entreprise: Entreprise ou cabinet responsable des levés.
 * date de création: date de création du dossier.
 
 ###### Figure n°2: Interface de la fonction RECHERCHER
 ![Illustration de la définition](images_gestiongeo/illustration_2_3_1.png)
 
+
 #### 2.3.2. Création.
 
 ##### 2.3.2.1. Ouverture d'un dossier.
+
 
 Trois actions principales déclenchent l'ouverture d'un dossier:
 1. Les équipes du plan de gestion (photos-interprête) notifient après l'analyse des orthophotos une zone de fin de travaux. Un dossier prévisionnel est ouvert.
@@ -98,11 +112,14 @@ Le service a essayé de mettre en place un système d'alerte avec les UT pour qu
 ###### Figure n°3: Interface de la fonction CREATION
 ![Illustration de la définition](images_gestiongeo/illustration_2_3_2_1.png)
 
+
 ##### 2.3.2.2. Création d'un dossier.
 
 L'onglet **création** permet de créer un dossier qui va servir à intégrer les fichiers autocad *dwg* des relevés. Les dossiers peuvent être créés en avance. L'obtention d'un fichier *dwg* n'est pas obligatoire pour créer un dossier. 
 Plusieurs étapes sont nécessaires pour créer un dossier:
+
 * indiquer un nom de rue: permet de localiser le dossier. Si une rue existe dans plusieurs communes, plusieurs choix sont disponibles. Les noms des rues sont gérés par les données contenues dans la base voie, répertoire des voies agrégées.
+
 * dessiner: dessiner un périmètre à la zone d'étendue du dossier.
 * remplir sa fiche dossier:
 	* auteur: acteur qui ouvre le dossier.
@@ -119,17 +136,21 @@ Plusieurs étapes sont nécessaires pour créer un dossier:
 	* entreprise: Entreprise ou cabinet des levés.
 * créer le dossier: le dossier est créé.
 
+
 Cet onglet permet de créer des dossiers qui sont à des stades de recolements différents. Si les données prochainement intégrées dépassent le périmètre, celui-ci est redessiné.
 
 La création du dossier permet de générer un numéro de dossier. Comme le but d'un dossier et d'intégrer en base un fichier *dwg* correspondant à un périmètre d'intervention, a chaque dossier correspond un seul fichier *dwg*, dans le cas ou le géomètre doit intégrer plusieurs levés, plusieurs dossiers seront créés.
+
 
 La création d'un dossier entraine la création d'un numéro de dossier (**ID_DOS**) dans la table **TA_GG_DOSSIER** et d'un **DOS_NUM**(champ de jointure entres les tables **TA_GG_DOSSIER** et **TA_GG_GEO**.
 
 ##### 2.3.2.3. Les différents familles des dossiers.
 
 * plan de recolement: plan qui décrit les travaux réellement effectués à la fin d'un chantier.
+
 * IC: une investigation complémentaire permet de connaitre avec précision la localisation et la nature des réseaux soutterains situés sur la parcelle ou des travaux s'effectuent.
 * MAJ carto: demande de modification par les consultants (les photos-interprètes par exemple), pas utiliser, dossier dans lesquels il n'y aura pas d'intervention des géomètres.
+
 
 #### 2.3.3. Intégration
 
@@ -145,7 +166,9 @@ L'onglet intégration permet par l'intermédiaire de FME:
 
 Pour intégrer les fichiers dans la base Oracle il y a deux possiblités.
 1. Intégrer les données dans un dossier existant à partir de l'onglet **récupérer un dossier existant** créé à partir de l'onget **CREATION**
+
 2. Créer un dossier directement à cette étape pour intégrer les données *dwg*
+
 3. Le choix opéré, la fiche du dossier va s'ouvrir et des informations vont être à compléter:
 	* auteur du dossier.
 	* choisir le fichier *dwg* à intégrer.
@@ -159,6 +182,7 @@ Pour intégrer les fichiers dans la base Oracle il y a deux possiblités.
 	* Maitrise d'ouvrage
 	* Entreprise
 4. Soumettre le dossier
+
 
 ###### Figure n°4: Interface de la fonction INTEGRATION
 ![Illustration de la définition](images_gestiongeo/illustration_2_3_3_2.png)
@@ -178,6 +202,7 @@ Une fois le dossier créé, les dossiers sont vérifiés par les géomètres. Le
 * **TA_LIG_TOPO_GPS**, 
 * **TA_POINT_TOPO_GPS**
 après vérification sont bonnes, leurs attributs ***GEO_ON_VALIDE*** est mis à 0 et sont ainsi copiées dans les tables:
+
 * **TA_LIG_TOPO_F**
 * **TA_POINT_TOPO_F**
 
@@ -204,8 +229,10 @@ La fiche dossier recense toutes les informations d'un dossier renseignées lors 
 |Etat GTF|état de l'intégration FME|Validé|
 |Pièce(s) attaché(s) (8Mo max)|fichier ***dwg*** attaché au dossier|136460231.dwg|
 
+
 ###### Figure n°5: Interface de la fiche dossier
 ![Illustration de la définition](images_gestiongeo/illustration_2_3_3_5.png)
+
 
 ###### 2.3.3.5.1. les outils disponibles par l'interface des fiches dossiers
 
@@ -213,6 +240,7 @@ L'interface de la fiche du dossier permet plusieurs actions:
 1. localiser le dossier sur la carte
 2. editer les informations du dossier
 3. invalider le dossier
+
 4. estimer le cout d'un levé: outil utilisable seulement quand le dossier est de type: *en attente de levé géomètre*.
 
 ##### 2.3.3.6. les différents état des dossiers. (voir les codes dans TA_GG_ETAT
@@ -231,11 +259,13 @@ L'interface de la fiche du dossier permet plusieurs actions:
 
 Les trois derniers états ne sont pas utilisés, ils ne sont pas implémentés dans l'application.
 
+
 ##### 2.3.3.7. Cloture du dossier.
 
 Suite à la vérification des géomètres, les dossiers sont vérifiés par les photos-interprêtes pour vérifier leurs calages avec la table **TA_SUR_TOPO_G**. La table **TA_SUR_TOPO_G** s'appuie sur la table **TA_LIG_TOPO_F**. Après cette dernière phase de vérification les dossiers sont clôturés(dossier clôturé et donc visible en carto). La responsable de la clôture des dossiers est G.Dartois. Clôturer un dossier signifie le passer à l'état **Actif en base (dossier clôturé et donc visible en carto)**
 
 #### 2.3.4. Dossiers.
+
 
 Cet icône, permet de paramétrer l'affichage des dossier que l'on a soit même créés et qui ne sont pas en état 9 (Actif en base (dossier clôturé et donc visible en carto)). Deux champs sont aussi disponibles pour paramétrer cet affichage:
 * le premier pour fixer le nombre d'éléments qui s'affichent sur la fenêtre.
@@ -247,6 +277,7 @@ Cet icône, permet de paramétrer l'affichage des dossier que l'on a soit même 
 #### 2.3.5. Validation.
 
 Tableau de bord des dossiers à valider.
+
 
 #### 2.3.6. Utilisateurs.
 
@@ -262,11 +293,13 @@ La MEL est dans l'obligation de fournir à chaque entreprise réalisant des trav
 
 #### 2.4.1. Ouverture d'un dossier IC.
 
+
 L'ouverture d'un dossier est réalisé suite à l'obtention de la part du maitre d'ouvrage: La MEL, par l'intermédiaire des services qui réalisent des travaux: assainissement, voirie, energie, d'une copie des IC réalisées dans le cadre de leur travaux.
 
 #### 2.4.2. Utilisation d'autocad pour contrôler les plans.
 
 Avant d'intégrer les plans par l'intermédiaire de **GESTIONGEO** les plans sont controlés sur *autocad*. Est controlés sur *autocad*:
+
 * que chaque réseau est dans son propre calque autocad 
 * que chaque réseau à un identifiant présent dans la liste des réseaux contenues dans la ***charte topographique et réseaux de la DSIG***.
 * que les polylignes des réseaux de classe **A** doivent avoir une donnée **Z**. Les seuls réseaux qui n'ont pas de réseaux Z sont les réseaux AR(déjà connus)
@@ -308,19 +341,25 @@ La soumission du dossier entraine plusieurs conséquences:
 
 #### 2.4.5. Vérification.
 
+
 Il s'agit de vérifier visuellement que l'intégration s'est bien déroulée, que l'outil a intégré tous les réseaux du fichier *dwg* dans la bonne charte graphique determinée dans le document ***charte topographique et réseaux de la DSIG***..
+
 
 #### 2.4.6. Mise à jour.
 
 Une fois la vérification réalisée, il faut revenir sur la fiche du dossier afin de mettre à jour des éléments que l'on ne peut pas renseigner lors de la création du dossier:
+
 * ajout de la date du levé (pas importante, il est juste nécessaire d'avoir une date approximative).
 * modifier l'état du dossier de *en attente de validation(mode topo)* à *actif en base(dossier cloturé et donc visible en carto).*
 * le champ *piece(s) jointe(s)* de l'onglet **DOSSIER** ne fonctionne pas. Il est nécessaire de copier manuellement le rapport du dossier dans le dossier **infogeo/appli_gg/ic**. A la livraison les plans *dwg* peuvent être accompagné de plusieurs fichiers. Seul le rapport est gardé.
+
 * Copier les fichiers *dwg* d'origines dans **infogeo/IC/** pour garder une trace des données livrées par l'entreprise.
 
 #### 2.4.7. Demande
 
+
 Une demande a été formulée pour améliorer l'intégration des IC:
+
 * Est il possible de créer un outil pour controler les réseaux intégrer et vérifier qu'il soit dans la ***charte topographique et réseaux de la DSIG***.
 
 ## 3. Observation. <a name="Observation"></a>

@@ -12,6 +12,13 @@ CREATE TABLE "GEO"."TA_GG_GEO" (
 )
 TABLESPACE "DATA_GEO" ;
 
+COMMENT ON TABLE GEO.TA_GG_GEO IS 'Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.';
+COMMENT ON COLUMN GEO.TA_GG_GEO.ID_GEOM IS 'Clé primaire (identifiant unique) de la table auto-incrémentée par un trigger.';
+COMMENT ON COLUMN GEO.TA_GG_GEO.ID_DOS IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un dossier à une géométrie.';
+COMMENT ON COLUMN GEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
+COMMENT ON COLUMN GEO.TA_GG_GEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
+COMMENT ON COLUMN GEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Attention il n''y a pas de contrainte de clé étrangère vers la table TA_GG_DOSSIER dans laquelle ne numéro de dossier est créé';
+
 CREATE INDEX "GEO"."TA_GG_GEO_SIDX" ON "GEO"."TA_GG_GEO" ("GEOM")
  INDEXTYPE IS "MDSYS"."SPATIAL_INDEX"  PARAMETERS (' LAYER_GTYPE = COLLECTION WORK_TABLESPACE=DATA_TEMP TABLESPACE=ISPA_GEO');
 
