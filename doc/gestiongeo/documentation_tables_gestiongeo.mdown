@@ -107,10 +107,11 @@ La table TA_GG_GEO contient la géométrie de chaque dossier créé dans l'appli
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
-|FK_TA_GG_GEO_TA_GG_DOS|Foreign_Key|TA_GG_DOSSIER|ENABLED|VALIDATED||
-|PK_TA_GG_GEOM|Primary_Key||ENABLED|VALIDATED|GEO|PK_TA_GG_GEOM|
-|SYS_C006023933|Check|ID_GEOM IS NOT NULL|ENABLED|VALIDATED||
-|SYS_C006023934|Check|ID_DOS IS NOT NULL|ENABLED|VALIDATED||
+|PK_TA_GG_GEOM|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_GEOM|
+|SYS_C006023934|CHECK|ID_DOS IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023933|CHECK|ID_GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|FK_TA_GG_GEO_TA_GG_DOS|REFERENTIAL INTEGRITY|(null)|TA_GG_DOSSIER|ENABLED|VALIDATED|(null)|(null)|
+
 
 #### Les indexes
 |NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
@@ -173,7 +174,7 @@ La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier 
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
 |TA_DOSSIER_GPS_UK1|UNIQUE KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_DOSSIER_GPS_UK1|
 |TA_DOSSIER_GPS_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_DOSSIER_GPS_PK|
-|SYS_C006023898|CHECK|DOS_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)||
+|SYS_C006023898|CHECK|DOS_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
 
 
 #### Les indexes
@@ -187,7 +188,7 @@ La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier 
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_DOSSIER_GPS_TRG|BEFORE EACH ROW|INSERT|GEO|ENABLED|
+|TA_DOSSIER_GPS_TRG|BEFORE EACH ROW|INSERT|GEO|ENABLED|Incrémentation de la PK (DOS_ID) de 1
 
 #### Les fonctions
 Aucune
@@ -212,9 +213,9 @@ Aucune
 ### 3.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
-|GEOM|SDO_GEOMETRY|0|753|790|790||0,00|100,00|
-|DOS_ID|NUMBER|0|790|790|790||0,00|100,00|
-|DOSSIER|VARCHAR2|0|790|790|790||0,00|100,00|
+|GEOM|SDO_GEOMETRY|0|753|790|790|0,00|100,00|
+|DOS_ID|NUMBER|0|790|790|790|0,00|100,00|
+|DOSSIER|VARCHAR2|0|790|790|790|0,00|100,00|
 
 #### Observations :
 
@@ -249,8 +250,1041 @@ Aucune
 ### 4.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
-|LABEL|VARCHAR2|0|3|3|3||0,00|100,00|
-|PROFIL|NUMBER|0|3|3|3||0,00|100,00|
-|GROUPE_DYNMAP|NUMBER|0|3|3|3||0,00|100,00|
+|LABEL|VARCHAR2|0|3|3|3|0,00|100,00|
+|PROFIL|NUMBER|0|3|3|3|0,00|100,00|
+|GROUPE_DYNMAP|NUMBER|0|3|3|3|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_DOC
+### 5.1. Présentation générale
+Cette table est supposée contenir la documentation numérique des dossiers, mais elle est vide. Est-ce normal ?
+
+### 5.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|PK_TA_GG_DOC|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_DOC|
+|SYS_C006023727|CHECK|DOC_NM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023728|CHECK|DOC_REP IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023726|CHECK|FOR_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023725|CHECK|DOC_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|FK_TA_GG_DO_RELATION__TA_GG_FO|REFERENTIAL INTEGRITY|(null)|TA_GG_FORMAT|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|GED_FK|NONUNIQUE|VALID|NORMAL|(null)|
+|PK_TA_GG_DOC|UNIQUE|VALID|NORMAL|(null)|
+|RELATION_8_FK|NONUNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 5.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|DOC_ID|NUMBER|0|0|0|0|#DIV/0!|#DIV/0!|
+|ID_DOS|NUMBER|0|0|0|0|#DIV/0!|#DIV/0!|
+|FOR_ID|NUMBER|0|0|0|0|#DIV/0!|#DIV/0!|
+
+#### Observations :
+
+## TA_GG_ETAT
+### 6.1. Présentation générale
+Cette table liste tous les états d'avancement que peuvent prendre les dossiers créés dans GestionGeo, avec leur code couleur respectif :
+   - 0 : actif en base (visible en carto : vert) ;
+   - 1 : non valide (non visible en carto) ;
+   - 2 : prévisionnel (visible en carto : bleu) ;
+   - 3 : non vérifié (visible en carto : orange) ;
+   - 4 : vérifié, non validé (visible en carto : rouge) ;
+
+### 6.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023735|CHECK|ETAT_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_GG_ETAT|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_ETAT|
+|SYS_C006023736|CHECK|ETAT_LIB IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_GG_ETAT|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_GG_DOSSIER_GEO|GEO|
+|V_ACQ_GG_STAT_COM|GEO|
+|V_ACQ_GG_STAT_ZONE|GEO|
+|V_GG_DOSSIER_GEO_MELMAP|GEO|
+|V_GG_DOSSIER_GEO_PT_MELMAP|GEO|
+|V_ACQ_GG_DOSSIER_CLOTURE|GEO|
+|V_ACQ_GG_STAT_DOSSIERS|GEO|
+
+
+### 6.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|ETAT_SMALL|VARCHAR2|0|9|9|9|0,00|100,00|
+|ETAT_COULEUR|VARCHAR2|0|9|9|9|0,00|100,00|
+|ETAT_ID|NUMBER|0|9|9|9|0,00|100,00|
+|ETAT_LIB|VARCHAR2|0|9|9|9|0,00|100,00|
+|ETAT_AFF|NUMBER|0|9|9|9|0,00|100,00|
+|ETAT_LIB_SMALL|VARCHAR2|0|9|9|9|0,00|100,00|
+|ETAT_STYLE|CHAR|0|9|9|9|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_EXTERIEUR
+### 7.1. Présentation générale
+Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+
+### 7.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023740|CHECK|EXT_EMAIL IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023739|CHECK|EXT_DT_FIN_VAL2 IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023738|CHECK|EXT_NOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023742|CHECK|EXT_PWD IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023737|CHECK|USER_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023741|CHECK|EXT_LOGIN IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|EXT_USER_FK|NONUNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 7.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|USER_ID|NUMBER|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_NOM|VARCHAR2(200 BYTE)|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_DT_FIN_VAL2|DATE|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_EMAIL|VARCHAR2(200 BYTE)|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_LOGIN|VARCHAR2(100 BYTE)|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_PWD|VARCHAR2(2048 BYTE)|0|0|0|0|#VALEUR!|#DIV/0!|
+|EXT_DT_CONS|DATE|0|0|0|0|#VALEUR!|#DIV/0!|
+
+#### Observations :
+
+## TA_GG_FAMILLE
+### 8.1. Présentation générale
+Cette table regroupe les familles de données liées au dossier, c'est-à-dire :
+   - plan topo
+   - réseau (IC)
+   - autres
+
+### 8.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023743|CHECK|FAM_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023744|CHECK|FAM_LIB IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023745|CHECK|FAM_VAL IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_GG_FAMILLE|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_FAMILLE|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_GG_FAMILLE|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_GG_DOSSIER_GEO|GEO|
+|V_GG_DOSSIER_IC|GEO|
+|V_GG_DOSSIER_PR|GEO|
+|V_GG_DOSSIER_MC|GEO|
+|V_ACQ_GG_STAT_COM|GEO|
+|V_ACQ_GG_STAT_ZONE|GEO|
+|V_GG_GEO_PROBLEM|GEO|
+|V_GG_DOSSIER_GEO_MELMAP|GEO|
+|V_GG_DOSSIER_GEO_PT_MELMAP|GEO|
+|V_ACQ_GG_STAT_DOSSIERS|GEO|
+|V_GG_DOSSIER_GEO2|GEO|
+
+### 8.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|FAM_ID|NUMBER|0|3|3|3|0,00|100,00|
+|FAM_LIB_SMALL|VARCHAR2|0|3|3|3|0,00|100,00|
+|FAM_VAL|NUMBER|0|1|3|3|0,00|100,00|
+|FAM_LIB|VARCHAR2|0|3|3|3|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_FILES
+### 9.1. Présentation générale
+Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC. Le lien renvoie, pour chaque entité, vers une image stockée sur le serveur de la direction.
+
+### 9.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_GG_FILES_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_GG_FILES_PK|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_GG_FILES_DOS_NUM_IDX|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_GG_FILES_PK|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|BEF_TA_GG_FILES|BEFORE EACH ROW|INSERT|GEO|ENABLED|Auto-incrémentation de la PK(OBJECTID) de 1.|
+
+#### Les fonctions
+Aucune.
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 9.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|LIEN|VARCHAR2|0|3647|3647|3647|0,00|100,00|
+|DOS_NUM|NUMBER|0|2219|3647|3647|0,00|100,00|
+|OBJECTID|NUMBER|0|3647|3647|3647|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_FORMAT
+### 10.1. Présentation générale
+Table listant les formats acceptables pour le téléchargement
+	- dwg ; 
+	- dxf ;
+	- shp ;
+	- dgn ;
+	- csv ; 
+	- geo ;
+	- doc ;
+	- odt ;
+	- pdf ;
+	- gif ; 
+	- jpeg ;
+	- png
+
+### 10.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023748|CHECK|FOR_VAL IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023747|CHECK|FOR_LIB IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023746|CHECK|FOR_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_GG_FORMAT|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_FORMAT|
+
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_GG_FORMAT|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 10.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|FOR_LIB|VARCHAR2|0|1|1|1|0,00|100,00|
+|FOR_VAL|NUMBER|0|1|1|1|0,00|100,00|
+|FOR_ID|NUMBER|0|1|1|1|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_MEDIA
+### 11.1. Présentation générale
+Cette table rassemble, je suppose, tous les liens vers les images utilisées en tant que vignettes (ou symbole) dans GestionGeo.
+
+### 11.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_GG_MEDIA_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_GG_MEDIA_PK|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_GG_MEDIA_PK|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 11.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|MINIATURE|BLOB|4|0|0|4|100,00|0,00|
+|MEDIA|VARCHAR2|0|4|4|4|0,00|100,00|
+|ID_OBJET|NUMBER|0|2|4|4|0,00|100,00|
+|ID|NUMBER|0|4|4|4|0,00|100,00|
+|TYPE|VARCHAR2|0|1|4|4|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_POINT
+### 12.1. Présentation générale
+Table des centroïdes des objets présents dans TA_GG_GEO. Elle est remplie/vidée automatiquement par le trigger "" lors de l'ajout ou de suppression de donnée dans TA_GG_GEO.
+
+### 12.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023960|CHECK|ID_DOS IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|TA_GG_POINT_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_GG_POINT_PK|
+|SYS_C006023959|CHECK|ID_GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_GG_POINT_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_GG_POINT_SIDX|NONUNIQUE|VALID|DOMAIN|LAYER_GTYPE = COLLECTION WORK_TABLESPACE=DATA_TEMP TABLESPACE=ISPA_GEO|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_GG_DOSSIER_IC|GEO|
+|V_GG_DOSSIER_PR|GEO|
+|V_GG_DOSSIER_MC|GEO|
+|V_GG_DOSSIER_GEO_PT_MELMAP|GEO|
+|V_GG_DOSSIER_GEO2|GEO|
+
+### 12.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|ID_GEOM|NUMBER|0|8117|8117|8117|0,00|100,00|
+|ID_DOS|NUMBER|0|5380|8117|8117|0,00|100,00|
+|CLASSE_DICT|VARCHAR2|2845|3|5272|8117|35,05|64,95|
+|GEOM|SDO_GEOMETRY|0|8085|8117|8117|0,00|100,00|
+
+#### Observations :
+
+## TA_GG_SOURCE
+### 13.1. Présentation générale
+Table recensant tous les agents participant à la création, l'édition et la suppression des dossiers dans GestionGeo.
+
+### 13.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023750|CHECK|SRC_LIBEL IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023751|CHECK|SRC_VAL IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023749|CHECK|SRC_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_GG_SOURCE|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_GG_SOURCE|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_GG_SOURCE|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_ACQ_GG_DOSSIER_CLOTURE|GEO|
+
+### 13.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|SRC_ID|NUMBER|0|25|25|25|0,00|100,00|
+|SRC_VAL|NUMBER|0|2|25|25|0,00|100,00|
+|SRC_LIBEL|VARCHAR2|0|25|25|25|0,00|100,00|
+
+#### Observations :
+
+## TA_LIG_TOPO_F
+### 14.1. Présentation générale
+Cette table contient les objets linéaires du plan topographique fin.
+
+### 14.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023785|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_LIG_TOPO_F|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_LIG_TOPO_F|
+|SYS_C006023786|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_LIG_TOPO_F_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_F_SIDX|NONUNIQUE|VALID|DOMAIN| LAYER_GTYPE = COLLECTION WORK_TABLESPACE=DATA_TEMP TABLESPACE=ISPA_GEO|
+|PK_TA_LIG_TOPO_F|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TA_LIG_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_F_2D|AFTER EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TRIG_TA_LIG_TOPO_F_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_GEO_TOPO_BORDURE|ELYX_DATA|
+|V_GEO_TOPO_BORDURE|GEO|
+|V_TMP_TOPO_PMR|GEO|
+|V_TMP_TOPO_ERR|GEO|
+|V_ETAT_DES_LIEUX_TOPO|GEO|
+|LM_FIN|GEO|
+
+### 14.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+||GEO_TYPE|CHAR|1|1|2221300|2221301|#VALEUR!|0,00||
+||GEO_LIG_OFFSET_G|NUMBER|1952057|155|269244|2221301|#VALEUR!|0,06||
+||GEO_LIG_OFFSET_D|NUMBER|2173810|96|47491|2221301|#VALEUR!|0,20||
+||GEO_TEXTE|VARCHAR2|2221301|0|0|2221301|#VALEUR!|#DIV/0!||
+||GEO_ON_VALIDE|NUMBER|0|2|2221301|2221301|#VALEUR!|0,00||
+||GEO_DF|DATE|0|44624|2221301|2221301|#VALEUR!|2,01||
+||GEO_DV|DATE|0|26626|2221301|2221301|#VALEUR!|1,20||
+||GEO_INSEE|CHAR|2221301|0|0|2221301|#VALEUR!|#DIV/0!||
+||GEO_REF|VARCHAR2|625889|182432|1595412|2221301|#VALEUR!|11,43||
+||CLA_INU|NUMBER|0|62|2221301|2221301|#VALEUR!|0,00||
+||OBJECTID|NUMBER|0|2221301|2221301|2221301|#VALEUR!|100,00||
+||GEOM|SDO_GEOMETRY||||2221301|#VALEUR!|#DIV/0!||
+||GEO_NMN|VARCHAR2|1769806|31|451495|2221301|#VALEUR!|0,01||
+||GEO_DS|DATE|0|26626|2221301|2221301|#VALEUR!|1,20||
+||GEO_NMS|VARCHAR2|0|27|2221301|2221301|#VALEUR!|0,00||
+||GEO_DM|DATE|1769806|66008|451495|2221301|#VALEUR!|14,62||
+
+#### Observations :
+
+## TA_LIG_TOPO_G
+### 15.1. Présentation générale
+Cette table contient les objets linéaires du plan topographique de gestion.
+
+### 15.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|PK_TA_LIG_TOPO_G|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_LIG_TOPO_G|
+|SYS_C006023788|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023787|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_LIG_TOPO_G|UNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_G_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_G_SIDX|NONUNIQUE|VALID|DOMAIN|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TRIG_TA_LIG_TOPO_G|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TRIG_TA_LIG_TOPO_G_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_ACQ_SUIVI_LNE|GEO|
+|LM_LIMITE_MATERIALISEE|GEO|
+|LM_OUVRAGE_D_ART|GEO|
+
+### 15.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEOM|SDO_GEOMETRY||||384779|#VALEUR!|#DIV/0!|
+|GEO_DM|DATE|17147|11956|367632|384779|#VALEUR!|3,25|
+|GEO_NMS|VARCHAR2|0|17|384779|384779|#VALEUR!|0,00|
+|GEO_DS|DATE|0|15477|384779|384779|#VALEUR!|4,02|
+|GEO_NMN|VARCHAR2|17147|19|367632|384779|#VALEUR!|0,01|
+|GEO_TYPE|CHAR|28234|1|356545|384779|#VALEUR!|0,00|
+|GEO_LIG_OFFSET_G|NUMBER|384779|0|0|384779|#VALEUR!|#DIV/0!|
+|GEO_LIG_OFFSET_D|NUMBER|384779|0|0|384779|#VALEUR!|#DIV/0!|
+|GEO_TEXTE|VARCHAR2|384779|0|0|384779|#VALEUR!|#DIV/0!|
+|GEO_ON_VALIDE|NUMBER|2|2|384777|384779|#VALEUR!|0,00|
+|GEO_DF|DATE|0|16466|384779|384779|#VALEUR!|4,28|
+|GEO_DV|DATE|2|15477|384777|384779|#VALEUR!|4,02|
+|GEO_INSEE|CHAR|10031|91|374748|384779|#VALEUR!|0,02|
+|GEO_REF|VARCHAR2|28234|354400|356545|384779|#VALEUR!|99,40|
+|CLA_INU|NUMBER|0|25|384779|384779|#VALEUR!|0,01|
+|OBJECTID|NUMBER|0|384779|384779|384779|#VALEUR!|100,00|
+
+#### Observations :
+
+## TA_LIG_TOPO_GPS
+### 16.1. Présentation générale
+Table de traitement recevant les données issues du workbench déclenché par GestionGeo.
+
+### 16.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_LIG_TOPO_GPS_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_LIG_TOPO_GPS_PK|
+|SYS_C006023893|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023894|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|TA_LIG_TOPO_GPS_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_LIG_TOPO_GPS_PK|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_LIG_TOPO_GPS_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_GPS_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_GPS_SIDX|NONUNIQUE|VALID|DOMAIN|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TA_LIG_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_TEMP_GEO_GPS|GEO|
+
+### 16.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEOM|SDO_GEOMETRY||||565336|#VALEUR!|#DIV/0!|
+|GEO_REF|VARCHAR2|12670|50764|552666|565336|#VALEUR!|9,19|
+|CLA_INU|NUMBER|0|49|565336|565336|#VALEUR!|0,01|
+|GEO_DM|DATE|138|16051|565198|565336|#VALEUR!|2,84|
+|GEO_NMS|VARCHAR2|0|20|565336|565336|#VALEUR!|0,00|
+|GEO_DS|DATE|0|9699|565336|565336|#VALEUR!|1,72|
+|GEO_NMN|VARCHAR2|138|23|565198|565336|#VALEUR!|0,00|
+|GEO_TYPE|CHAR|9136|1|556200|565336|#VALEUR!|0,00|
+|GEO_LIG_OFFSET_G|NUMBER|530391|104|34945|565336|#VALEUR!|0,30|
+|GEO_LIG_OFFSET_D|NUMBER|552865|57|12471|565336|#VALEUR!|0,46|
+|GEO_TEXTE|VARCHAR2|565336|0|0|565336|#VALEUR!|#DIV/0!|
+|GEO_ON_VALIDE|NUMBER|0|2|565336|565336|#VALEUR!|0,00|
+|GEO_DF|DATE|0|15370|565336|565336|#VALEUR!|2,72|
+|GEO_DV|DATE|0|9699|565336|565336|#VALEUR!|1,72|
+|GEO_INSEE|CHAR|565336|0|0|565336|#VALEUR!|#DIV/0!|
+|OBJECTID|NUMBER|0|565336|565336|565336|#VALEUR!|100,00|
+
+#### Observations :
+
+## TA_LIG_TOPO_IC
+### 17.1. Présentation générale
+Table contenant les objets linéaires des investigations complémentaires.
+
+### 17.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_LIG_TOPO_IC_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_LIG_TOPO_IC_PK|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_LIG_TOPO_IC_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_IC_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_IC_SIDX|NONUNIQUE|VALID|DOMAIN|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|DEL_LIG_TOPO_IC_2D|BEFORE EACH ROW|DELETE|GEO|ENABLED||
+|TA_LIG_TOPO_IC|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_IC_2D|AFTER EACH ROW|INSERT OR UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_TA_LIG_TOPO_IC_CLASS|GEO|
+
+
+### 17.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEOM|SDO_GEOMETRY||||162927|#VALEUR!|#DIV/0!|
+|OBJECTID|NUMBER|0|162927|162927|162927|#VALEUR!|100,00|
+|CLA_INU|NUMBER|0|51|162927|162927|#VALEUR!|0,03|
+|GEO_REF|VARCHAR2|0|1187|162927|162927|#VALEUR!|0,73|
+|GEO_INSEE|CHAR|162927|0|0|162927|#VALEUR!|#DIV/0!|
+|GEO_DV|DATE|0|1487|162927|162927|#VALEUR!|0,91|
+|GEO_DF|DATE|0|5|162927|162927|#VALEUR!|0,00|
+|GEO_ON_VALIDE|NUMBER|0|2|162927|162927|#VALEUR!|0,00|
+|GEO_TEXTE|VARCHAR2|162927|0|0|162927|#VALEUR!|#DIV/0!|
+|GEO_LIG_OFFSET_D|NUMBER|162927|0|0|162927|#VALEUR!|#DIV/0!|
+|GEO_LIG_OFFSET_G|NUMBER|162927|0|0|162927|#VALEUR!|#DIV/0!|
+|GEO_TYPE|CHAR|0|1|162927|162927|#VALEUR!|0,00|
+|GEO_NMN|VARCHAR2|162892|2|35|162927|#VALEUR!|5,71|
+|GEO_DS|DATE|0|1487|162927|162927|#VALEUR!|0,91|
+|GEO_NMS|VARCHAR2|0|2|162927|162927|#VALEUR!|0,00|
+|GEO_DM|DATE|162892|5|35|162927|#VALEUR!|14,29|
+
+#### Observations :
+
+## TA_LIG_TOPO_IC_2D
+### 18.1. Présentation générale
+Table contenant les objets linéaires des investigations complémentaires en 2D. Elle est remplie/vidée automatiquement par les trigger "TA_LIG_TOPO_IC_2D" et "DEL_LIG_TOPO_IC_2D".
+
+### 18.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_LIG_TOPO_IC_2D_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_LIG_TOPO_IC_2D_PK|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_LIG_TOPO_IC_2D_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_LIG_TOPO_IC_2D_SIDX|NONUNIQUE|VALID|DOMAIN| LAYER_GTYPE = MULTILINE WORK_TABLESPACE=DATA_TEMP TABLESPACE=ISPA_GEO|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|V_LM_LIG_TOPO_IC_2D|GEO|
+
+### 18.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEO_REF|VARCHAR2|0|1187|160769|160769|#VALEUR!|0,74|
+|GEOM|SDO_GEOMETRY||||160769|#VALEUR!|#DIV/0!|
+|GEO_DV|DATE|0|1487|160769|160769|#VALEUR!|0,92|
+|GEO_DF|DATE|0|1|160769|160769|#VALEUR!|0,00|
+|GEO_ON_VALIDE|NUMBER|0|1|160769|160769|#VALEUR!|0,00|
+|GEO_TEXTE|VARCHAR2|160769|0|0|160769|#VALEUR!|#DIV/0!|
+|GEO_LIG_OFFSET_D|NUMBER|160769|0|0|160769|#VALEUR!|#DIV/0!|
+|GEO_LIG_OFFSET_G|NUMBER|160769|0|0|160769|#VALEUR!|#DIV/0!|
+|GEO_TYPE|CHAR|0|1|160769|160769|#VALEUR!|0,00|
+|GEO_NMN|VARCHAR2|160769|0|0|160769|#VALEUR!|#DIV/0!|
+|GEO_DS|DATE|0|1487|160769|160769|#VALEUR!|0,92|
+|GEO_NMS|VARCHAR2|0|2|160769|160769|#VALEUR!|0,00|
+|GEO_DM|DATE|160769|0|0|160769|#VALEUR!|#DIV/0!|
+|CLA_INU|NUMBER|0|48|160769|160769|#VALEUR!|0,03|
+|OBJECTID|NUMBER|0|160769|160769|160769|#VALEUR!|100,00|
+|GEO_INSEE|CHAR|160769|0|0|160769|#VALEUR!|#DIV/0!|
+
+#### Observations :
+
+## TA_PIQUAGE_GPS
+### 19.1. Présentation générale
+Je ne sais pas à quoi sert cette table : il n'y a aucun commentaire (normal…) et aucune donnée
+
+### 19.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|TA_PIQUAGE_GPS_UK1|UNIQUE KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_PIQUAGE_GPS_UK1|
+|TA_PIQUAGE_GPS_PK|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|TA_PIQUAGE_GPS_PK|
+|SYS_C006023904|CHECK|DOS_ID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_PIQUAGE_GPS_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_PIQUAGE_GPS_UK1|UNIQUE|VALID|NORMAL|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|(null)|(null)|(null)|(null)|(null)|(null)|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 19.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|DOSSIER|VARCHAR2|0|0|0|0|#DIV/0!|#DIV/0!|
+|NB_POINTS|NUMBER|0|0|0|0|#DIV/0!|#DIV/0!|
+|GEOM|SDO_GEOMETRY|0|0|0|0|#DIV/0!|#DIV/0!|
+|DOS_ID|NUMBER|0|0|0|0|#DIV/0!|#DIV/0!|
+
+#### Observations :
+
+## TA_POINT_TOPO_F
+### 21.1. Présentation générale
+Cette table contient les objets ponctuels du plan topographique fin.
+
+### 21.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|PK_TA_POINT_TOPO_F|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_POINT_TOPO_F|
+|SYS_C006023795|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023794|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_POINT_TOPO_F|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_POINT_TOPO_F|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_POINT_TOPO_F|UNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_F_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_F_SIDX|NONUNIQUE|VALID|DOMAIN| LAYER_GTYPE = MULTIPOINT WORK_TABLESPACE=DATA_TEMP TABLESPACE=ISPA_GEO|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TA_POINT_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_POINT_TOPO_F_2D|AFTER EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TRIG_TA_POINT_TOPO_F_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+- GET_POINT_TOPO_F :
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|VUE_CHAMBRES|GEO|
+|V_TMP_TOPO_PMR_PT|GEO|
+|V_TA_POINT_SEUIL|GEO|
+|V_LM_OBJ_3D_SIGN|GEO|
+|V_ETAT_DES_LIEUX_TOPO|GEO|
+|BAC_ENTERRES|GEO|
+|BAC_ENTERRES_ADR|GEO|
+|LM_OBJ|GEO|
+
+### 21.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEO_NMS|VARCHAR2|0|25|2650781|2650781|#VALEUR!|0,00|
+|GEO_DS|DATE|0|21418|2650781|2650781|#VALEUR!|0,81|
+|GEO_NMN|VARCHAR2|2147981|28|502800|2650781|#VALEUR!|0,01|
+|GEO_TYPE|CHAR|2521|1|2648260|2650781|#VALEUR!|0,00|
+|GEO_POI_AG_INCLINAISON|NUMBER|2650781|0|2650781|#VALEUR!|#DIV/0!|
+|GEO_POI_HA|NUMBER|2650781|0|2650781|#VALEUR!|#DIV/0!|
+|GEO_POI_AG_ORIENTATION|NUMBER|134|34636|2650647|2650781|#VALEUR!|1,31|
+|GEO_POI_LA|NUMBER|235|722|2650546|2650781|#VALEUR!|0,03|
+|GEO_POI_LN|NUMBER|232|1172|2650549|2650781|#VALEUR!|0,04|
+|GEO_TEXTE|VARCHAR2|2400525|3878|250256|2650781|#VALEUR!|1,55|
+|GEO_ON_VALIDE|NUMBER|0|2|2650781|2650781|#VALEUR!|0,00|
+|GEO_DF|DATE|0|43448|2650781|2650781|#VALEUR!|1,64|
+|GEO_DV|DATE|0|21418|2650781|2650781|#VALEUR!|0,81|
+|GEO_INSEE|CHAR|2650781|0|2650781|#VALEUR!|#DIV/0!|
+|GEO_DM|DATE|2147981|51724|502800|2650781|#VALEUR!|10,29|
+|OBJECTID|NUMBER|0|2650781|2650781|2650781|#VALEUR!|100,00|
+|GEO_REF|VARCHAR2|1872501|66632|778280|2650781|#VALEUR!|8,56|
+|CLA_INU|NUMBER|0|190|2650781|2650781|#VALEUR!|0,01|
+|GEOM|SDO_GEOMETRY||||2650781|#VALEUR!|#DIV/0!|
+
+#### Observations :
+
+## TA_POINT_TOPO_G
+### 22.1. Présentation générale
+Cette table contient les objets ponctuels du plan topographique de gestion.
+
+### 22.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023797|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023796|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_POINT_TOPO_G|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_POINT_TOPO_G|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_POINT_TOPO_G|UNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_G_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_G_SIDX|NONUNIQUE|VALID|DOMAIN| (null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TA_POINT_TOPO_G|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TRIG_TA_POINT_TOPO_G_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|ARBRES|GEO|
+
+### 22.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEOM|SDO_GEOMETRY||||59730|#VALEUR!|#DIV/0!|
+|GEO_POI_AG_INCLINAISON|NUMBER|59730|0|0|59730|#VALEUR!|#DIV/0!|
+|OBJECTID|NUMBER|0|59730|59730|59730|#VALEUR!|100,00|
+|CLA_INU|NUMBER|0|4|59730|59730|#VALEUR!|0,01|
+|GEO_REF|VARCHAR2|59730|0|0|59730|#VALEUR!|#DIV/0!|
+|GEO_INSEE|CHAR|439|76|59291|59730|#VALEUR!|0,13|
+|GEO_DV|DATE|59291|207|439|59730|#VALEUR!|47,15|
+|GEO_DF|DATE|51320|1409|8410|59730|#VALEUR!|16,75|
+|GEO_ON_VALIDE|NUMBER|0|2|59730|59730|#VALEUR!|0,00|
+|GEO_TEXTE|VARCHAR2|59729|1|1|59730|#VALEUR!|100,00|
+|GEO_POI_LN|NUMBER|332|11|59398|59730|#VALEUR!|0,02|
+|GEO_POI_LA|NUMBER|332|11|59398|59730|#VALEUR!|0,02|
+|GEO_POI_AG_ORIENTATION|NUMBER|332|589|59398|59730|#VALEUR!|0,99|
+|GEO_POI_HA|NUMBER|59730|0|0|59730|#VALEUR!|#DIV/0!|
+|GEO_TYPE|CHAR|439|1|59291|59730|#VALEUR!|0,00|
+|GEO_NMN|VARCHAR2|49978|11|9752|59730|#VALEUR!|0,11|
+|GEO_DS|DATE|59291|207|439|59730|#VALEUR!|47,15|
+|GEO_NMS|VARCHAR2|59291|5|439|59730|#VALEUR!|1,14|
+|GEO_DM|DATE|49978|1557|9752|59730|#VALEUR!|15,97|
+
+#### Observations :
+
+## TA_POINT_TOPO_GPS
+### 23.1. Présentation générale
+Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+
+### 23.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023896|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023895|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_POINT_TOPO_GPS|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_POINT_TOPO_GPS|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023897|FOREIGN KEY|GEOM IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_POINT_TOPO_GPS|UNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_GPS_NUK1|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_GPS_SIDX|NONUNIQUE|VALID|DOMAIN|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|TA_POINT_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|(null)|(null)|
+
+### 23.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|CLA_INU|NUMBER|0|190|663881|663881||0,00|100,00|
+|GEOM|SDO_GEOMETRY||||663881||0,00|0,00|
+|GEO_INSEE|CHAR|663881|0|0|663881||100,00|0,00|
+|GEO_DV|DATE|0|8722|663881|663881||0,00|100,00|
+|GEO_DF|DATE|0|15626|663881|663881||0,00|100,00|
+|GEO_ON_VALIDE|NUMBER|0|2|663881|663881||0,00|100,00|
+|GEO_TEXTE|VARCHAR2|616063|1880|47818|663881||92,80|7,20|
+|GEO_POI_LN|NUMBER|380|964|663501|663881||0,06|99,94|
+|GEO_POI_LA|NUMBER|384|552|663497|663881||0,06|99,94|
+|GEO_POI_AG_ORIENTATION|NUMBER|313|34768|663568|663881||0,05|99,95|
+|GEO_POI_HA|NUMBER|663881|0|0|663881||100,00|0,00|
+|GEO_POI_AG_INCLINAISON|NUMBER|663881|0|0|663881||100,00|0,00|
+|OBJECTID|NUMBER|0|663881|663881|663881||0,00|100,00|
+|GEO_TYPE|CHAR|0|2|663881|663881||0,00|100,00|
+|GEO_NMN|VARCHAR2|18223|21|645658|663881||2,74|97,26|
+|GEO_DS|DATE|0|8722|663881|663881||0,00|100,00|
+|GEO_NMS|VARCHAR2|0|21|663881|663881||0,00|100,00|
+|GEO_DM|DATE|18223|15660|645658|663881||2,74|97,26|
+|GEO_REF|VARCHAR2|201879|10196|462002|663881||30,41|69,59|
+
+#### Observations :
+
+## TA_POINT_TOPO_IC
+### 24.1. Présentation générale
+Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+
+### 24.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|TA_POINT_TOPO_IC_PK|UNIQUE|VALID|NORMAL|(null)|
+|TA_POINT_TOPO_IC_SIDX|NONUNIQUE|VALID|DOMAIN|sdo_indx_dims=2, layer_gtype=MULTIPOINT, tablespace=ISPA_GEO, work_tablespace=DATA_TEMP|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+
+### 24.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|Z_TERRAIN_NAT|NUMBER|181723|39596|186430|368153||49,36|50,64|
+|Y|NUMBER|0|361664|368153|368153||0,00|100,00|
+|X|NUMBER|0|356576|368153|368153||0,00|100,00|
+|SOURCE_FICHIER|VARCHAR2|0|730|368153|368153||0,00|100,00|
+|TYPE_RESEAU|VARCHAR2|211372|31238|156781|368153||57,41|42,59|
+|CALQUE_RESEAU|VARCHAR2|0|153|368153|368153||0,00|100,00|
+|OBJECTID|NUMBER|0|368153|368153|368153||0,00|100,00|
+|TYPE_RESEAU_CHARTE|VARCHAR2|0|11|368153|368153||0,00|100,00|
+|GEOM|SDO_GEOMETRY||||368153||0,00|0,00|
+|PROFONDEUR|VARCHAR2|10035|1889|358118|368153||2,73|97,27|
+|Z_PROF|NUMBER|12002|77168|356151|368153||3,26|96,74|
+
+#### Observations :
+
+## TA_SUR_TOPO_G
+### 25.1. Présentation générale
+Cette table contient les objets surfaciques du plan topographique de gestion.
+
+### 25.2. Les objets liés à la table
+#### Les contraintes
+|NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
+|:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
+|SYS_C006023818|CHECK|CLA_INU IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|SYS_C006023817|CHECK|OBJECTID IS NOT NULL|(null)|ENABLED|VALIDATED|(null)|(null)|
+|PK_TA_SUR_TOPO_G|PRIMARY KEY|(null)|(null)|ENABLED|VALIDATED|(null)|PK_TA_SUR_TOPO_G|
+
+#### Les indexes
+|NOM INDEX|UNICITE|STATUT|TYPE INDEX|PARAMETRES|
+|:--------|:------|:-----|:---------|:---------|
+|PK_TA_SUR_TOPO_G|UNIQUE|VALID|NORMAL|(null)|
+|INDEX1|NONUNIQUE|VALID|NORMAL|(null)|
+|INDEX2|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_SUR_TOPO_G_VALIDE_IDX|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_SUR_TOPO_G_VALIDE_IDX|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_SUR_TOPO_G_DATE_MAJ_NBR_IDX|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_SUR_TOPO_G_DATE_MAJ_NBR_IDX|NONUNIQUE|VALID|NORMAL|(null)|
+|TA_SUR_TOPO_G_SIDX|NONUNIQUE|VALID|DOMAIN|(null)|
+
+#### Les déclencheurs
+|NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
+|:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
+|LM_PB_CONNEXION_VOIE_CAS_REEL|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_SUR_1005|AFTER EACH ROW|INSERT OR UPDATE|GEO|DISABLED||
+|TA_SUR_TOPO_G|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TRIG_TA_SUR_TOPO_G_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
+
+#### Les fonctions
+Aucune
+
+#### Les vues dépendantes de la table
+|NOM VUE|PROPRIETAIRE|
+|:------|:-----------|
+|CHARGE_COURBES|GEO|
+|V_GEO_TOPO_ILOT|ELYX_DATA|
+|V_GEO_TOPO_BATI|ELYX_DATA|
+|V_GEO_TOPO_EVEBEG|ELYX_DATA|
+|V_SURFACES_LOISIRS_SPORT|GEO|
+|TEMP_TA_SUR_TOPO_G|GEO|
+|LM_BATI|GEO|
+
+### 25.3. Statistiques
+NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
+|:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
+|GEOM|SDO_GEOMETRY||||361911|#VALEUR!|#DIV/0!|
+|GEO_DM|DATE|105525|69368|256386|361911|#VALEUR!|27,06|
+|GEO_NMS|VARCHAR2|0|19|361911|361911|#VALEUR!|0,01|
+|GEO_DS|DATE|0|53460|361911|361911|#VALEUR!|14,77|
+|GEO_NMN|VARCHAR2|105525|23|256386|361911|#VALEUR!|0,01|
+|GEO_TYPE|CHAR|79652|1|282259|361911|#VALEUR!|0,00|
+|OBJECTID|NUMBER|0|361911|361911|361911|#VALEUR!|100,00|
+|GEO_ON_VALIDE|NUMBER|0|2|361911|361911|#VALEUR!|0,00|
+|GEO_DF|DATE|0|22364|361911|361911|#VALEUR!|6,18|
+|GEO_DV|DATE|2|53468|361909|361911|#VALEUR!|14,77|
+|GEO_INSEE|CHAR|58306|92|303605|361911|#VALEUR!|0,03|
+|GEO_REF|VARCHAR2|79567|281216|282344|361911|#VALEUR!|99,60|
+|CLA_INU|NUMBER|0|24|361911|361911|#VALEUR!|0,01|
+|GEO_TEXTE|VARCHAR2|361911|0|0|361911|#VALEUR!|#DIV/0!|
 
 #### Observations :
