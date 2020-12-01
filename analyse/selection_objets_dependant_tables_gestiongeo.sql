@@ -65,6 +65,46 @@ WHERE
 ORDER BY
     a.TABLE_NAME;
 
+-- Sélection des index des tables de gestiongeo    
+SELECT
+    b.TABLE_NAME,
+    b.INDEX_NAME,
+    a.UNIQUENESS,
+    a.STATUS,
+    a.INDEX_TYPE,
+    a.PARAMETERS
+FROM
+    USER_INDEXES a
+    INNER JOIN USER_IND_COLUMNS b ON b.INDEX_NAME = a.INDEX_NAME
+WHERE
+    b.TABLE_NAME IN(
+        'TA_SUR_TOPO_G',
+        'TA_POINT_TOPO_G',
+        'TA_LIG_TOPO_G',
+        'TA_GG_APP_ADM_RIGHTS',
+        'TA_GG_DOC',
+        'TA_GG_DOSSIER',
+        'TA_DOSSIER_GPS',
+        'TA_GG_ETAT',
+        'TA_GG_EXTERIEUR',
+        'TA_GG_FAMILLE',
+        'TA_GG_FILES',
+        'TA_GG_FORMAT',
+        'TA_GG_GEO',
+        'TA_GG_MEDIA',
+        'TA_GG_POINT',
+        'TA_GG_SOURCE',
+        'TA_LIG_TOPO_GPS',
+        'TA_POINT_TOPO_GPS',
+        'TA_LIG_TOPO_F',
+        'TA_POINT_TOPO_F',
+        'TA_LIG_TOPO_IC',
+        'TA_POINT_TOPO_IC',
+        'TA_LIG_TOPO_IC_2D',
+        'TA_PIQUAGE_GPS',
+        'PTTOPO'
+    );
+
 -- Sélection de tous les triggers portant sur les tables GestionGeo
 SELECT
     a.TABLE_NAME,
@@ -105,16 +145,17 @@ WHERE
         'PTTOPO'
     );
 
--- Sélection des vues dépendantes des tables Gestiongeo 
+-- Sélection de toutes les fonctions des tables de gestiongeo    
 SELECT
-    REFERENCED_NAME,
+    OWNER,
     NAME,
-    OWNER
-FROM
+    REFERENCED_NAME,
+    REFERENCED_OWNER
+FROM 
     ALL_DEPENDENCIES
 WHERE
-    TYPE = 'VIEW'
-    AND REFERENCED_OWNER = 'GEO'
+    TYPE = 'FUNCTION'
+    AND REFERENCED_OWNER= 'GEO'
     AND REFERENCED_TYPE = 'TABLE'
     AND REFERENCED_NAME IN(
         'TA_SUR_TOPO_G',
@@ -144,17 +185,16 @@ WHERE
         'PTTOPO'
     );
 
--- Sélection de toutes les fonctions des tables de gestiongeo    
+-- Sélection des vues dépendantes des tables Gestiongeo 
 SELECT
-    OWNER,
-    NAME,
     REFERENCED_NAME,
-    REFERENCED_OWNER
-FROM 
+    NAME,
+    OWNER
+FROM
     ALL_DEPENDENCIES
 WHERE
-    TYPE = 'FUNCTION'
-    AND REFERENCED_OWNER= 'GEO'
+    TYPE = 'VIEW'
+    AND REFERENCED_OWNER = 'GEO'
     AND REFERENCED_TYPE = 'TABLE'
     AND REFERENCED_NAME IN(
         'TA_SUR_TOPO_G',
