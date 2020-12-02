@@ -114,7 +114,7 @@ Le tableau ci-dessus montre la répartition par mois des priorités affectées a
 * Priorité 1 (447 dossiers en deux ans)
 	* En 2019 il n'y a qu'un pic à 58 en janvier 2019 ;
 	* En 2020 il n'y a également qu'un seul pic à 79 en juin 2020 ;
-* Priorité 3 (8 dossiers en deux ans)
+* Priorité 2 (8 dossiers en deux ans)
 	* Il n'y a aucun pic ;
 	* En 2019 seuls 3 dossiers sont concernés ;
 	* En 2020 seuls 5 dossiers sont concernés ;
@@ -127,11 +127,9 @@ Le tableau ci-dessus montre la répartition par mois des priorités affectées a
 * Priorité 0
 	* En 2019 on observe deux pics en mars et en août (comme en création) avec un palier au milieu à environ 18 dossiers. Ce palier correspond au premier confinement dû au COVID durant lequel l'activité était fortement réduite. De plus on observe une diminution générale du nombre de dossiers après août tout en restant entre 61 et 33 dossiers ;
 	* En 2020 l'année commence avec un pic de dossiers en février pour ensuite suivre une évolution similaire à l'affectation des priorités lors de leur création avec en plus un second pic en octobre 2020 ;
-
 * Priorité 1
 	* En 2019 on observe une diminution de janvier (64 dossiers et mois correspondant à un pic dans de la création) à août (20) pour reprendre une certaine augmentation jusqu'en décembre ;
 	* En 2020 l'évolution est très différente que pour la création puisque nous avons un pic en février, une stagnation de mars à août pour ensuite reprendre par une augmentation nette du nombre de dossiers jusqu'à novembre ;
-
 * Priorité 2
 	* En 2019 11 dossiers sont concernés ;
 	* En 2020 27 dossiers sont concernés ;
