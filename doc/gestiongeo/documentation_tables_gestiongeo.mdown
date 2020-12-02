@@ -99,6 +99,47 @@ DOS_OLD_ID|VARCHAR2|3416|2353|2353|5769|59,21|40,79|
 - Il existe 97 "DOS_INSEE" différents ce qui signifie (et après vérification en base dans la tables des communes) que ces dossiers portent sur la MEL95 et les anciennes communes de Lomme et de Hellemmes ;
 - Si le champ "DOS_DC" contient bien la date de création de chaque dossier, alors le dossier le plus ancien date du 17/05/2016 (sans doute la date de mise en place de la plateforme GestionGeo) et le plus récent date du 23/11/2020, signe que cette table est tjrs utilisée en ce moment. Par ailleurs, ce champs dispose d'une contrainte de non-nullité, mais pas de trigger donc soit la date est entrée manuellement (peu probable), soit elle est insérée automatiquement via le workbench acad_recV13_20161026 ;
 
+### 1.4. Analyses
+
+* **DOS_PRIORITE**  
+##### Répartition des priorités de 2019 à 2020 :
+**Création**
+![Repartition des priorités de 2019 à 2020 pour de la création](images_analyse_tables/1_4_repartition_priorite_creation_2019_2020.png)
+
+Le tableau ci-dessus montre la répartition par mois des priorités affectées aux dossiers lors de leur création de 2019 à 2020. Plutôt qu'une évolution linéaire on observe des pics qui devraient correspondre soit à des livraisons (par les UT), soit à des modifications sur un périmètre donné (par les géomètres) ou encore à des vérifications demandées par les photo-interprètes sur des zones données :
+
+* Priorité 0 (c'est la majorité des dossiers puisqu'elle est catégorise 801 sur deux ans)
+	* En 2019 elle enregistre trois pics nets. Le premier à 223 en mars 2019, le deuxième à 68 en août 2019 et le troisième à 115 en novembre 2019 ;
+	* En 2020 le seul pic est à 69 en février 2020 ;
+* Priorité 1 (447 dossiers en deux ans)
+	* En 2019 il n'y a qu'un pic à 58 en janvier 2019 ;
+	* En 2020 il n'y a également qu'un seul pic à 79 en juin 2020 ;
+* Priorité 3 (8 dossiers en deux ans)
+	* Il n'y a aucun pic ;
+	* En 2019 seuls 3 dossiers sont concernés ;
+	* En 2020 seuls 5 dossiers sont concernés ;
+
+**Modification**
+![Repartition des priorités de 2019 à 2020 pour de la modification](images_analyse_tables/1_4_repartition_priorite_modification_2019_2020.png)
+
+Le tableau ci-dessus montre la répartition par mois des priorités affectées aux dossiers lors de leur modification de 2019 à 2020. Si on retrouve presque les mêmes pics que pour la création (sauf celui du 0/06/2020 pour la priorité 1), on en observe d'autres et on peut surtout distinguer des tendances :
+
+* Priorité 0
+	* En 2019 on observe deux pics en mars et en août (comme en création) avec un palier au milieu à environ 18 dossiers. Ce palier correspond au premier confinement dû au COVID durant lequel l'activité était fortement réduite. De plus on observe une diminution générale du nombre de dossiers après août tout en restant entre 61 et 33 dossiers ;
+	* En 2020 l'année commence avec un pic de dossiers en février pour ensuite suivre une évolution similaire à l'affectation des priorités lors de leur création avec en plus un second pic en octobre 2020 ;
+
+* Priorité 1
+	* En 2019 on observe une diminution de janvier (64 dossiers et mois correspondant à un pic dans de la création) à août (20) pour reprendre une certaine augmentation jusqu'en décembre ;
+	* En 2020 l'évolution est très différente que pour la création puisque nous avons un pic en février, une stagnation de mars à août pour ensuite reprendre par une augmentation nette du nombre de dossiers jusqu'à novembre ;
+
+* Priorité 2
+	* En 2019 11 dossiers sont concernés ;
+	* En 2020 27 dossiers sont concernés ;
+
+On peut voir dans ces évolutions du nombre de dossiers par priorité et par création/modification l'impact du COVID sur le traitement des dossiers. En effet de mars à août 2020 la diminution significative du nombre de dossiers correspond au premier confinement durant lequel l'activité avait été grandement diminuée.
+Je pense que nous pourrons faire une analyse beaucoup plus fine quand nous saurons à quoi correspond ces priorités. Il est tout de même net que les priorité 0 et 1 sont les plus utilisées notamment la 0 en 2019 pour de la création, en comparaison elle disparaît presque en 2020. Cette disparaison principalement due au COVID. De plus comme indiqué plus haut la variabilité du nombre de dossiers par priorité et par mois est beaucoup plus faible pour de la création que pour de la modification, signe que beaucoup de travail est dévolu à la qualité de la donnée.
+Il serait pertinent de comparer ces données avec le nombre de dossiers créés par les photo-interprètes afin de savoir si ces modifications sont dues à des comparaisons entre les relevés des géomètres et les observations des photo-interprètes.
+
 ## 2. TA_GG_GEO
 ### 2.1. Présentation générale
 La table TA_GG_GEO contient la géométrie de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie automatiquement par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Cependant, l'absence de contrainte d'unicité sur ce champ laisse supposer que des doublons existent (alors que la règle est : un dossier = une géométrie).
