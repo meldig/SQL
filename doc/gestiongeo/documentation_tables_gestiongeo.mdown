@@ -108,7 +108,7 @@ DOS_OLD_ID|VARCHAR2|3416|2353|2353|5769|59,21|40,79|
 
 Le tableau ci-dessus montre la répartition par mois des priorités affectées aux dossiers lors de leur création de 2019 à 2020. Plutôt qu'une évolution linéaire on observe des pics qui devraient correspondre soit à des livraisons (par les UT), soit à des modifications sur un périmètre donné (par les géomètres) ou encore à des vérifications demandées par les photo-interprètes sur des zones données :
 
-* Priorité 0 (c'est la majorité des dossiers puisqu'elle est catégorise 801 sur deux ans)
+* Priorité 0 (c'est la majorité des dossiers puisqu'elle en catégorise 801 sur deux ans)
 	* En 2019 elle enregistre trois pics nets. Le premier à 223 en mars 2019, le deuxième à 68 en août 2019 et le troisième à 115 en novembre 2019 ;
 	* En 2020 le seul pic est à 69 en février 2020 ;
 * Priorité 1 (447 dossiers en deux ans)
@@ -122,10 +122,10 @@ Le tableau ci-dessus montre la répartition par mois des priorités affectées a
 **Modification**
 ![Repartition des priorités de 2019 à 2020 pour de la modification](images_analyse_tables/1_4_repartition_priorite_modification_2019_2020.png)
 
-Le tableau ci-dessus montre la répartition par mois des priorités affectées aux dossiers lors de leur modification de 2019 à 2020. Si on retrouve presque les mêmes pics que pour la création (sauf celui du 0/06/2020 pour la priorité 1), on en observe d'autres et on peut surtout distinguer des tendances :
+Le tableau ci-dessus montre la répartition par mois des priorités affectées aux dossiers lors de leur modification de 2019 à 2020. Si on retrouve presque les mêmes pics que pour la création (sauf celui de mai 2020 pour la priorité 1), on en observe d'autres et on peut surtout distinguer des tendances :
 
 * Priorité 0
-	* En 2019 on observe deux pics en mars et en août (comme en création) avec un palier au milieu à environ 18 dossiers. Ce palier correspond au premier confinement dû au COVID durant lequel l'activité était fortement réduite. De plus on observe une diminution générale du nombre de dossiers après août tout en restant entre 61 et 33 dossiers ;
+	* En 2019 on observe deux pics en mars et en août (comme en création) avec un palier au milieu à environ 18 dossiers. Puis on observe une diminution générale du nombre de dossiers après août, tout en restant entre 61 et 33 dossiers (cette priorité continue donc d'être utilisée);
 	* En 2020 l'année commence avec un pic de dossiers en février pour ensuite suivre une évolution similaire à l'affectation des priorités lors de leur création avec en plus un second pic en octobre 2020 ;
 * Priorité 1
 	* En 2019 on observe une diminution de janvier (64 dossiers et mois correspondant à un pic dans de la création) à août (20) pour reprendre une certaine augmentation jusqu'en décembre ;
@@ -135,12 +135,15 @@ Le tableau ci-dessus montre la répartition par mois des priorités affectées a
 	* En 2020 27 dossiers sont concernés ;
 
 On peut voir dans ces évolutions du nombre de dossiers par priorité et par création/modification l'impact du COVID sur le traitement des dossiers. En effet de mars à août 2020 la diminution significative du nombre de dossiers correspond au premier confinement durant lequel l'activité avait été grandement diminuée.
-Je pense que nous pourrons faire une analyse beaucoup plus fine quand nous saurons à quoi correspond ces priorités. Il est tout de même net que les priorité 0 et 1 sont les plus utilisées notamment la 0 en 2019 pour de la création, en comparaison elle disparaît presque en 2020. Cette disparaison principalement due au COVID. De plus comme indiqué plus haut la variabilité du nombre de dossiers par priorité et par mois est beaucoup plus faible pour de la création que pour de la modification, signe que beaucoup de travail est dévolu à la qualité de la donnée.
+Je pense que nous pourrons faire une analyse beaucoup plus fine quand nous saurons à quoi correspond ces priorités. Il est tout de même net que les priorité 0 et 1 sont les plus utilisées notamment la 0 en 2019 pour de la création, en comparaison elle disparaît presque en 2020 (ce qui est principalement dû au COVID). De plus comme indiqué plus haut la variabilité du nombre de dossiers par priorité et par mois est beaucoup plus faible pour de la création que pour de la modification, signe que beaucoup de travail est dévolu à la qualité de la donnée.
 Il serait pertinent de comparer ces données avec le nombre de dossiers créés par les photo-interprètes afin de savoir si ces modifications sont dues à des comparaisons entre les relevés des géomètres et les observations des photo-interprètes.
 
 ## 2. TA_GG_GEO
 ### 2.1. Présentation générale
-La table TA_GG_GEO contient la géométrie de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie automatiquement par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Cependant, l'absence de contrainte d'unicité sur ce champ laisse supposer que des doublons existent (alors que la règle est : un dossier = une géométrie).
+La table TA_GG_GEO contient le périmètre de chaque dossier:
+Le périmètre est dessiné manuellement lors de la création d'un dossier à partir de l'application gestiongeo, qui l'enregistre directement en base.
+En cas d'ajout de fichiers dxf/dwg, le workbench "acad_recV13_20161026.fmw" écrase le périmètre pour le redessiner à partir des éléments contenus dans les fichiers autocad (cf. partie de la chaine FME *Calcul emprise par rapport aux objets linéaires*).
+Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Cependant, l'absence de contrainte d'unicité sur ce champ laisse supposer que des doublons existent (alors que la règle est : un dossier = une géométrie).
 
 ### 2.2. Les objets liés à la table
 #### Les contraintes
@@ -396,7 +399,8 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 
 ## TA_GG_EXTERIEUR
 ### 7.1. Présentation générale
-Table vide, mais d'après les noms de champs elle devait ou aurait dû servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) se connectant au schéma GEO.
+Table vide qui aurait due servir à stocker les informations des utilisateurs externes (dont les identifiants de connexion) à la MEL utilisant gestiongeo. 
+**Exemple :** GRDF (avec qui la MEL a signé une convention pour participer au financement de l'orthophoto) devait utiliser l'application pour se renseigner sur la présence d'IC sur certaines zones.
 
 ### 7.2. Les objets liés à la table
 #### Les contraintes
@@ -1221,7 +1225,7 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 
 ## TA_POINT_TOPO_IC
 ### 24.1. Présentation générale
-Table regroupant les infos nécessaires pour faire les investigations complémentaires à partir (j'imagine) des fichiers dwg
+Table contenant les éléments ponctuels des investigations complémentaires (trappe à vantaux par exemple)
 
 ### 24.2. Les objets liés à la table
 #### Les contraintes
