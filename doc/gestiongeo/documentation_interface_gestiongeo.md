@@ -34,7 +34,10 @@ GestionGeo est utilisé par plusieurs agents de la MEL :
 
 Il avait été prévu de former les agents des UT à l'utilisation de gestiongeo pour leur permettre de créer des dossiers prévisionnels mais cela ne s'est pas concrétisé.
 
-> Note : il manque les profils utilisateurs externes à la MEL
+- structures extérieures:
+
+  - EDF, GRDF par exemple, afin de vérifier la présence d'investigations complémentaires sur les zones couvertes par le territoire métropolitain.
+
 
 ## Application Dynmap
 
