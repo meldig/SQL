@@ -1,0 +1,48 @@
+-- Requête permettant de sélectionner les tables, champs, type de données et leurs commentaires utilisés dans Gestiongeo.
+
+SELECT DISTINCT
+    a.TABLE_NAME AS NOM_TABLE,
+    b.COLUMN_NAME AS NOM_CHAMP,
+    CASE
+        WHEN b.COLUMN_NAME = 'GEOM'
+            THEN 'SDO_GEOMETRY'
+        ELSE c.DATA_TYPE 
+    END AS TYPE_DE_DONNEES,
+    b.COMMENTS AS COMMENTAIRES_DE_CHAMP,
+    a.COMMENTS AS COMMENTAIRE_DE_TABLE
+FROM
+    USER_TAB_COMMENTS a
+    INNER JOIN USER_COL_COMMENTS b ON b.TABLE_NAME = a.TABLE_NAME
+    INNER JOIN USER_TAB_COLS c ON c.COLUMN_NAME = b.COLUMN_NAME
+WHERE
+    a.TABLE_NAME IN(
+    'TA_SUR_TOPO_G',
+    'TA_SUR_TOPO_G_LOG',
+    'TA_POINT_TOPO_G',
+    'TA_POINT_TOPO_G_LOG',
+    'TA_LIG_TOPO_G',
+    'TA_LIG_TOPO_G_LOG',
+    'TA_GG_APP_ADM_RIGHTS',
+    'TA_GG_DOC',
+    'TA_GG_DOSSIER',
+    'TA_GG_ETAT',
+    'TA_GG_EXTERIEUR',
+    'TA_GG_FAMILLE',
+    'TA_GG_FILES',
+    'TA_GG_FORMAT',
+    'TA_GG_GEO',
+    'TA_GG_MEDIA',
+    'TA_GG_POINT',
+    'TA_GG_SOURCE',
+    'TA_LIG_TOPO_GPS',
+    'TA_POINT_TOPO_GPS',
+    'TA_LIG_TOPO_F',
+    'TA_POINT_TOPO_F',
+    'TA_LIG_TOPO_IC',
+    'TA_POINT_TOPO_IC',
+    'TA_LIG_TOPO_IC_2D',
+    'TA_PIQUAGE_GPS'   
+    )
+ORDER BY
+    a.TABLE_NAME,
+    b.COLUMN_NAME;
