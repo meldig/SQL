@@ -1259,7 +1259,7 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 
 ## TA_POINT_TOPO_GPS
 ### 22.1. Présentation générale
-Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via le workbench *acad_recV13_20161026*.
 
 ### 22.2. Les objets liés à la table
 #### Les contraintes
@@ -1287,7 +1287,7 @@ Table servant à enregistrer les données (avec une géométrie ponctuelle) des 
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_POINT_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_POINT_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|MAJ des champs geo_nms, geo_ds, geo_nmn, geo_dm et insertion dans les champs geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide|
 
 #### Les fonctions
 Aucune
@@ -1321,6 +1321,9 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_REF|VARCHAR2|201879|10196|462002|663881||30,41|69,59|
 
 #### Observations :
+* Les données :
+	* Pour chaque insertion le trigger *TA_POINT_TOPO_GPS* met le champ GEO_ON_VALIDE en 0. Si, lors d'une mise à jour, ce champ passe à 1, alors l'entité serait copiée dans la table *TA_POINT_TOPO_F*. A confirmer puisqu'aucun trigger n'effectue cette manipe en base ;
+	* Le champ geo_ref permet de faire le lien entre la géométrie et son dossier. Le champ geo_ref est égal à la concaténation de "IC_" ou de "REC_" et de son ID_DOS, inséré en base via le workbench ;
 * Types de géométries :
 	* Toutes les géométries sont de type point (3D) ;
 * La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
