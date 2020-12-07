@@ -205,9 +205,9 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 
 #### Observations :
 * Les contraintes :
-	* La clé étrangère FK_TA_GG_GEO_TA_GG_DOS, appliquée sur le champ ID_DOS, n'a pas de contrainte d'unicité ce qui signifie que des doublons sont potentiellement présents dans ce champ et que donc un dossier peut disposer de plusieurs géométries (ce qui est contraire à la règle : 1 dossier = 1 géométrie) ;
+	* La clé étrangère *FK_TA_GG_GEO_TA_GG_DOS*, appliquée sur le champ *ID_DOS*, n'a pas de contrainte d'unicité ce qui signifie que des doublons sont potentiellement présents dans ce champ et que donc un dossier peut disposer de plusieurs géométries (ce qui est contraire à la règle : 1 dossier = 1 géométrie) ;
 * Les données :
- 	* Il existe 5380 valeurs distinctes dans le champ ID_DOS (FK vers TA_GG_DOSSIER) pour 8122 valeurs, ce qui signifie que plusieurs géométries appartiennent à un dossier. Un travail d'identification de ces doublons a été fait et une action de fusion va être déclenchée afin de créer des polygones multiparties, ce qui permettrait de supprimer ces doublons ;
+ 	* Il existe 5380 valeurs distinctes dans le champ ID_DOS (FK vers *TA_GG_DOSSIER*) pour 8122 valeurs, ce qui signifie que plusieurs géométries appartiennent à un dossier. Un travail d'identification de ces doublons a été fait et une action de fusion va être déclenchée afin de créer des polygones multiparties, ce qui permettrait de supprimer ces doublons ;
  	* On trouve également 3 valeurs distinctes dans le champ *CLASSE_DICT* qui représente les classes des réseaux contenues dans la **charte topographique et réseaux de la DSIG** ; 
  	* Les géométries de dossier sont réparties dans 5 état d'avancement : 
 		* "Actif en base topo ; attente de validation gestion";
@@ -215,11 +215,41 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 		* "Actif en base (dossier clôturé et donc visible en carto)";
 		* "Fiche prévisionnelle (travaux non terminé)";
 		* "En attente de levé géomètre (dossier actif / fin de travaux)";
-	* Il existe aussi 8093 géométries pour 8122 valeurs et après vérification il apparaît que cet écart est dû à 29 doublons géométriques ;
+	* Il existe aussi 8093 géométries pour 8122 valeurs et après vérification il apparaît que cet écart est dû à 29 doublons géométriques (qui seront supprimés lors de la fusion mentionnée plus haut);
 * Types de géométries :
 	* 8120 polygones simples (2D) ;
 	* 2 multipolygones (2D) ;
 * 450 géométries sont invalides ;
+
+## 2.4. Différences avec TA_GG_DOSSIER (aucune normalement)
+
+### Ecart d'ETAT_ID
+8 couples ID_DOS et ETAT_ID ne sont pas identiques entres les tables TA_GG_GEO et TA_GG_DOSSIER.
+
+|ID_DOS_TA_GG_DOSSIER           | ETAT_ID_TA_GG_DOSSIER   |DOS_NUM_TA_GG_DOSSIER    |ID_DOS_TA_GG_GEO  |ETAT_ID_TA_GG_GEO   |:DOS_NUM_TA_GG_GEO
+|:------------------------------|:------------------------|:------------------------|:-----------------|:-------------------|:-------------------
+|4631                           |9                        |145600042                |4631              |5                   |163201034
+|36437                          |2                        |192790310                |36437             |5                   |192790310
+|27853                          |5                        |170900231                |27853             |NULL                |170900231
+|36441                          |2                        |192790314                |36441             |5                   |192790314
+|36398                          |2                        |195080297                |36398             |5                   |195080297
+|36401                          |2                        |195080300                |36401             |5                   |195080300
+|36395                          |5                        |190980294                |36395             |2                   |190980294
+|36736                          |9                        |196110439                |36736             |0                   |196110439
+|39922                          |2                        |190510679                |39922             |5                   |190510679
+
+### Ecart de DOS_NUM
+5 couples DOS_NUM et ID_DOS ne sont pas identiques entre TA_GG_GEO et TA_GG_DOSSIER
+
+|ID_DOS_TA_GG_DOSSIER           | ETAT_ID_TA_GG_DOSSIER   |DOS_NUM_TA_GG_DOSSIER    |ID_DOS_TA_GG_GEO  |ETAT_ID_TA_GG_GEO   |:DOS_NUM_TA_GG_GEO
+|:------------------------------|:------------------------|:------------------------|:-----------------|:-------------------|:-------------------
+|4548                           |9                        |133200181                |4548              |9                   |162200383
+|4631                           |9                        |145600042                |4631              |5                   |163201034
+|5332                           |9                        |163500137                |5332              |9                   |163500169
+|5332                           |9                        |163500137                |5332              |9                   |163500142
+|5961                           |9                        |162520643                |5961              |9                   |153600258
+
+On remarque que seul l'*ID_DOS* 4631 dispose à la fois d'une différence d'*ETAT_ID* et de *DOS_NUM*.
 
 ## 3. TA_DOSSIER_GPS
 ### 3.1. Présentation générale
@@ -779,7 +809,7 @@ Cette table contient les objets linéaires du plan topographique fin.
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_LIG_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion dans les champs geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide et MAJ des champs geo_nms, geo_ds, geo_nmn, geo_dm + Correction de la géométrie via sdo_tools.get_ordinate (fonction inconnue d'oracle) que je ne comrends pas|
 |TA_LIG_TOPO_F_2D|AFTER EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
 |TRIG_TA_LIG_TOPO_F_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
 
