@@ -253,7 +253,7 @@ On remarque que seul l'*ID_DOS* 4631 dispose à la fois d'une différence d'*ETA
 
 ## 3. TA_DOSSIER_GPS
 ### 3.1. Présentation générale
-La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie automatiquement par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). 
+La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). Son champ DOS_ID est auto-incrémenté en base. Dans le wokbench *acad_recV13_20161026* le writter de cette table a été désactivé, signe d'un changement de stratégie quant à son remplissage/utilité.
 
 ### 3.2. Les objets liés à la table
 #### Les contraintes
@@ -1127,10 +1127,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 #### Observations :
 
 ## TA_POINT_TOPO_F
-### 21.1. Présentation générale
+### 20.1. Présentation générale
 Cette table contient les objets ponctuels du plan topographique fin.
 
-### 21.2. Les objets liés à la table
+### 20.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1168,7 +1168,7 @@ Cette table contient les objets ponctuels du plan topographique fin.
 |BAC_ENTERRES_ADR|GEO|
 |LM_OBJ|GEO|
 
-### 21.3. Statistiques
+### 20.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEO_NMS|VARCHAR2|0|25|2650781|2650781|#VALEUR!|0,00|
@@ -1197,10 +1197,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 * La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
 
 ## TA_POINT_TOPO_G
-### 22.1. Présentation générale
+### 21.1. Présentation générale
 Cette table contient les objets ponctuels du plan topographique de gestion.
 
-### 22.2. Les objets liés à la table
+### 21.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1229,7 +1229,7 @@ Aucune
 |:------|:-----------|
 |ARBRES|GEO|
 
-### 22.3. Statistiques
+### 21.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEOM|SDO_GEOMETRY||||59730|#VALEUR!|#DIV/0!|
@@ -1258,10 +1258,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 * Toutes les géométries sont valides ;
 
 ## TA_POINT_TOPO_GPS
-### 23.1. Présentation générale
+### 22.1. Présentation générale
 Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
 
-### 23.2. Les objets liés à la table
+### 22.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1297,7 +1297,7 @@ Aucune
 |:------|:-----------|
 |(null)|(null)|
 
-### 23.3. Statistiques
+### 22.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |CLA_INU|NUMBER|0|190|663881|663881||0,00|100,00|
@@ -1326,10 +1326,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 * La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
 
 ## TA_POINT_TOPO_IC
-### 24.1. Présentation générale
+### 23.1. Présentation générale
 Table contenant les éléments ponctuels des investigations complémentaires (trappe à vantaux par exemple)
 
-### 24.2. Les objets liés à la table
+### 23.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1351,7 +1351,7 @@ Aucune
 |NOM VUE|PROPRIETAIRE|
 |:------|:-----------|
 
-### 24.3. Statistiques
+### 23.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |Z_TERRAIN_NAT|NUMBER|181723|39596|186430|368153||49,36|50,64|
@@ -1372,10 +1372,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 * Toutes les géométries sont valides ;
 
 ## TA_SUR_TOPO_G
-### 25.1. Présentation générale
+### 24.1. Présentation générale
 Cette table contient les objets surfaciques du plan topographique de gestion.
 
-### 25.2. Les objets liés à la table
+### 24.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1417,7 +1417,7 @@ Aucune
 |TEMP_TA_SUR_TOPO_G|GEO|
 |LM_BATI|GEO|
 
-### 25.3. Statistiques
+### 24.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEOM|SDO_GEOMETRY||||361911|#VALEUR!|#DIV/0!|
