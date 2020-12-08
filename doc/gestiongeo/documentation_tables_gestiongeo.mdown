@@ -973,6 +973,20 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 	* 565318 lignes simples (3D) ;
 * 38822 géométries sont invalides ;
 
+### 16.4. Analyses
+
+#### Répartition du nombre de lignes créées/modifiées par mois de 2014 à 2020 :
+**Création**
+![Répartition du nombre de lignes créées entre 2014 et 2020](images_analyse_tables/16_4_creation_lignes_TA_LIG_TOPO_GPS.png)
+On observe une augmentation générale du nombre de lignes créées par mois entre 2014 et 2020, correspondant sans doute à une montée en puissance des utilisateurs de gestiongeo qui, en s'aguerrissant dans son utilisation, sont devenus de plus en plus efficaces. Cette montée en puissance peut aussi correspondre à une augmentation du nombre d'utilisateurs (qu'une comparaison avec les dates et les auteurs de création des objets nous permettrait de connaître) et à une augmentation du nombre de missions (à voir avec Jean_Marc). Cela peut aussi correspondre à une période d'insertion de données en base par les géomètres qui suit une période de relevés sur le terrain.
+On peut faire une analyse plus fine du graphique, mais je n'en vois, pour l'instant, pas l'utilité par rapport au projet.
+
+**Modification**
+![Répartition du nombre de lignes modifiées entre 2014 et 2020](images_analyse_tables/16_4_modification_lignes_TA_LIG_TOPO_GPS.png)
+Le nombre de modifications des lignes par mois suit globalement la même évolution que celle des créations, c'est-à-dire une augmentation générale. Il n'y a donc pas eu d'accident qui aurait entraîné d'importantes modifications, en tous cas pas sur une période de 6 ans (à voire sur une période plus courte). Les commentaires du graphique de création s'appliquent aussi à celui-ci.
+
+On peut cependant noter (et ce n'est pas sur les graphiques) que 138 lignes ont été modifiées sans qu'on en connaisse la date de modification. Concernant la création, toutes les lignes sont datées. Il faut donc noter que la modification tant dans TA_POINT_TOPO_GPS que dans TA_LIG_TOPO_GPS n'est pas toujours datée, ce qui n'est pas le cas de la création. C'est d'autant plus étrange que des triggers s'ocuppent de renseigner ces champs en base.
+
 ## TA_LIG_TOPO_IC
 ### 17.1. Présentation générale
 Table contenant les objets linéaires des investigations complémentaires.
@@ -1327,6 +1341,20 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 * Types de géométries :
 	* Toutes les géométries sont de type point (3D) ;
 * La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
+
+### 22.4. Analyses
+
+#### Répartition du nombre de points créées/modifiées par mois de 2014 à 2020 :
+**Création**
+![Répartition du nombre de points créées entre 2014 et 2020](images_analyse_tables/22_4_creation_points_TA_POINT_TOPO_GPS.png)
+On observe une augmentation générale du nombre de points créés par mois entre 2014 et 2020, correspondant sans doute à une montée en puissance des utilisateurs de gestiongeo qui, en s'aguerrissant dans son utilisation, sont devenus de plus en plus efficaces. Cette montée en puissance peut aussi correspondre à une augmentation du nombre d'utilisateurs (qu'une comparaison avec les dates et les auteurs de création des objets nous permettrait de connaître) et à une augmentation du nombre de missions (à voir avec Jean_Marc). On note aussi des pics de création, correspondant sans doute à des réceptions de données d'autres services. Cela peut aussi correspondre à une période d'insertion de données en base par les géomètres qui suit une période de relevés sur le terrain.
+On peut faire une analyse plus fine du graphique, mais je n'en vois, pour l'instant, pas l'utilité par rapport au projet.
+
+**Modification**
+![Répartition du nombre de points modifiées entre 2014 et 2020](images_analyse_tables/22_4_modification_points_TA_POINT_TOPO_GPS.png)
+Le nombre de modifications des points par mois suit globalement la même évolution que celle des créations, c'est-à-dire une augmentation générale. Il n'y a donc pas eu d'accident qui aurait entraîné d'importantes modifications, en tous cas pas sur une période de 6 ans (à voire sur une période plus courte). Les commentaires du graphique de création s'appliquent aussi à celui-ci.
+
+On peut cependant noter (et ce n'est pas sur les graphiques) que 18223 points ont été modifiés sans qu'on en connaisse la date de modification. Concernant la création, toutes les points sont datés. Il faut donc noter que la modification tant dans TA_POINT_TOPO_GPS que dans TA_LIG_TOPO_GPS n'est pas toujours datée, ce qui n'est pas le cas de la création. C'est d'autant plus étrange que des triggers s'ocuppent de renseigner ces champs en base.
 
 ## TA_POINT_TOPO_IC
 ### 23.1. Présentation générale
