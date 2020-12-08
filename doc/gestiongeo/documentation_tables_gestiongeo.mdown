@@ -174,7 +174,7 @@ Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Ce
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
 |TA_GG_GEO|BEFORE EACH ROW|INSERT|GEO|ENABLED|Incrémentation de la PK (ID_GEOM)|
 |TA_GG_GEO_GEOM|BEFORE EACH ROW|INSERT|GEO|ENABLED|Correction de l'erreur 13028 (le trigger ne corrige rien)|
-|TA_GG_POINT|AFTER EACH ROW|INSERT OR DELETE|GEO|ENABLED|Création/suppression du centroïde de chaque goémétrie dans TA_GG_POINT|
+|TA_GG_POINT|AFTER EACH ROW|INSERT OR DELETE|GEO|ENABLED|Création/suppression du centroïde de chaque goémétrie dans TA_GG_POINT ainsi que id_geom, id_dos, classe_dict.|
 
 #### Les fonctions
 - GET_ID_DOS : Sélection de ID_DOS depuis TA_GG_GEO quand ID_GEOM = INU (valeur entrante).
@@ -937,7 +937,7 @@ Table de traitement recevant les données issues du workbench déclenché par Ge
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_LIG_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion : remplissage de geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide ; Edition : mise à jour de geo_nms, geo_ds, geo_nmn, geo_dm.|
 
 #### Les fonctions
 Aucune
@@ -1007,9 +1007,9 @@ Table contenant les objets linéaires des investigations complémentaires.
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|DEL_LIG_TOPO_IC_2D|BEFORE EACH ROW|DELETE|GEO|ENABLED||
-|TA_LIG_TOPO_IC|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
-|TA_LIG_TOPO_IC_2D|AFTER EACH ROW|INSERT OR UPDATE OR DELETE|GEO|ENABLED||
+|DEL_LIG_TOPO_IC_2D|BEFORE EACH ROW|DELETE|GEO|ENABLED|En cas de suppression dans TA_LIG_TOPO_IC, l'objet est aussi supprimé dans TA_LIG_TOPO_IC_2D.|
+|TA_LIG_TOPO_IC|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion : remplissage de geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide ; Edition : mise à jour de geo_nms, geo_ds, geo_nmn, geo_dm|
+|TA_LIG_TOPO_IC_2D|AFTER EACH ROW|INSERT OR UPDATE OR DELETE|GEO|ENABLED|Mise à jour (insertion/édition) de la table TA_LIG_TOPO_IC_2D en cas de changement dans la table TA_LIG_TOPO_IC|
 
 #### Les fonctions
 Aucune
