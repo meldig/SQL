@@ -1,7 +1,8 @@
+@echo off
 :: utilisation de ogr2ogr pour exporter des tables de CUDL vers MULTIT
 :: 1. gestion des identifiants Oracle
-SET /p USER_D="Veuillez saisir l'utisateur Oracle de destination: "
-SET /p USER_P="Veuillez saisir l'utisateur Oracle de provenance: "
+SET /p USER_D="Veuillez saisir l'utilisateur Oracle de destination: "
+SET /p USER_P="Veuillez saisir l'utilisateur Oracle de provenance: "
 SET /p MDP_D="Veuillez saisir le mot de passe de l'utilisateur Oracle de destination: "
 SET /p MDP_P="Veuillez saisir le mot de passe de l'utilisateur Oracle de provenance: "
 SET /p INSTANCE_D="Veuillez saisir l'instance Oracle de destination: "
