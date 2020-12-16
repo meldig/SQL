@@ -42,31 +42,49 @@ WHERE
         28776
     );
 
+-- Suppression des polygones à supprimer de TEMP_GEO_CORRECTION
+DELETE
+FROM 
+    GEO.TEMP_GEO_CORRECTION a
+WHERE
+    a.ID_GEOM IN(4547, 83, 85, 2496, 652, 12648);
+
 /* Correction des erreurs de géométrie dans TEMP_GEO_CORRECTION via SDO_UTIL.RECTIFY_GEOMETRY
 Rappel - les erreurs que cette fonction corrige sont :
 - 13349 : le polygone l'intersecte lui-même ;
 - 13356 : le polygone a des sommets redondants ;
 - 13367 : les anneaux intérieurs et/ou extérieurs ont une mauvaise orientation ;
-
-UPDATE GEO.TEMP_GEO_CORRECTION a
-SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
-WHERE
-    SUBSTR(
-        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 
-        0, 
-        5
-    ) IN ('13349', '13356', '13367')
-    AND SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005).SDO_GTYPE IN(2003, 2007)
-    AND SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(
-            SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005),
-            0.005
-        ) = 'TRUE';
+- Attention : un polygone peut être concerné par plusieurs erreurs et dans ce cas la correction d'une erreur peut aussi résoudre une ou plusieurs autres erreurs sur ce même polygone.
 */
--- Correction d'une partie des goémétries posant problème pour la fusion du dossier 186500311   
-UPDATE GEO.TEMP_GEO_CORRECTION a
-SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
+
+-- Erreur 13343 : suppression des polygones qui sont manifestement des erreurs : 1. ce sont des lignes de type 2003 ; 2.leur suppression n'impacte pas les périmètres des dossiers 
+DELETE FROM GEO.TEMP_GEO_CORRECTION a
 WHERE
-    a.ID_GEOM IN(12575, 12645, 12689, 12585);
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13343';
+    
+-- Erreur 13028 : correction du SDO_ELEM_INFO_ARRAY de chaque entité
+UPDATE GEO.TEMP_GEO_CORRECTION a
+SET a.geom.SDO_ELEM_INFO = MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,1)
+WHERE
+ SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.GEOM, 0.005) = '13028';
+
+-- Erreur 13349
+UPDATE GEO.TEMP_GEO_CORRECTION a
+    SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
+WHERE
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13349';
+    
+-- Erreur 13356
+UPDATE GEO.TEMP_GEO_CORRECTION a
+    SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
+WHERE
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13356';
+    
+-- Erreur 13367
+UPDATE GEO.TEMP_GEO_CORRECTION a
+    SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
+WHERE
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13367';
 
 -- Fusion des polygones d'un même dossier
 MERGE INTO GEO.TEMP_GEO_CORRECTION a
@@ -114,10 +132,11 @@ MERGE INTO GEO.TEMP_GEO_CORRECTION a
                                         183670438,
                                         184100135,
                                         184870312,
-                                        --186500311,
+                                        186500311,
                                         153780097,
                                         163780407,
-                                        161630711
+                                        161630711,
+                                        105530454
                                     )
             ),
             C_2 AS (
@@ -196,10 +215,11 @@ WHERE
                                         183670438,
                                         184100135,
                                         184870312,
-                                        --186500311,
+                                        186500311,
                                         153780097,
                                         163780407,
-                                        161630711
+                                        161630711,
+                                        105530454
                                     )
                         
                 )
@@ -242,10 +262,11 @@ WHERE
                                         183670438,
                                         184100135,
                                         184870312,
-                                        --186500311,
+                                        186500311,
                                         153780097,
                                         163780407,
-                                        161630711
+                                        161630711,
+                                        105530454
                                     )
                                 
                         )
@@ -290,22 +311,14 @@ WHERE
                 )
 ;
 
--- Suppression des polygones à supprimer de TEMP_GEO_CORRECTION
-DELETE
-FROM 
-    GEO.TEMP_GEO_CORRECTION a
-WHERE
-    a.ID_GEOM IN(4547, 83, 85, 2496, 652);
-
 
 -- Vérification des doublons
 SELECT
     a.dos_num
 FROM
     TEMP_GEO_CORRECTION a
-WHERE
-    a.DOS_NUM <> 186500311
 GROUP BY a.dos_num
 HAVING
     COUNT(a.dos_num) > 1; 
+    
     
