@@ -1,8 +1,11 @@
+SET SERVEROUTPUT ON
+BEGIN
+SAVEPOINT POINT_SAUVEGARDE_CORRECTION_TA_GG_GEO;
+
 -- Modification dans TA_GEO_CORRECT_DOUBLONS d'un ID_GEOM qui n'est plus dans TA_GG_GEO   
 UPDATE GEO.TA_GEO_CORRECT_DOUBLONS a
 SET a.ID_GEOM = 9426
 WHERE a.objectid = 44;
-COMMIT;
 
 -- Suppression d'un doublon de DOS_NUM (130090239) dans TA_GEO_CORRECT_DOUBLONS
 DELETE 
@@ -310,15 +313,12 @@ WHERE
                                     )
                 )
 ;
-
-
--- Vérification des doublons
-SELECT
-    a.dos_num
-FROM
-    TEMP_GEO_CORRECTION a
-GROUP BY a.dos_num
-HAVING
-    COUNT(a.dos_num) > 1; 
-    
-    
+  
+COMMIT;
+-- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
+        ROLLBACK TO POINT_SAUVEGARDE_CORRECTION_TA_GG_GEO;
+END;
+/
