@@ -31,12 +31,11 @@ ADD CONSTRAINT TA_GG_SOURCE_SRC_LIBEL_UN
 UNIQUE("SRC_LIBEL")
 USING INDEX TABLESPACE G_ADT_INDX;
 
-ALTER TABLE G_GESTIONGEO.TA_GG_SOURCE
-ADD CONSTRAINT TA_GG_SOURCE_SRC_VAL_UN
-UNIQUE("SRC_VAL")
-USING INDEX TABLESPACE G_ADT_INDX;
+-- 1.4. Les indexes
+CREATE INDEX G_GESTIONGEO."TA_GG_SOURCE_SRC_VAL_IDX" ON G_GESTIONGEO.TA_GG_SOURCE ("SRC_VAL") 
+	TABLESPACE G_ADT_INDX;
 
--- 1.4. Affectation des droits
+-- 1.5. Affectation des droits
 GRANT SELECT ON G_GESTIONGEO.TA_GG_SOURCE TO G_ADMIN_SIG;
 
 -- 2. TA_GG_ETAT
@@ -142,11 +141,11 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO (
 
 -- 4.2. Les commentaires
 COMMENT ON TABLE G_GESTIONGEO.TA_GG_GEO IS 'Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ ID_DOS.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GESTIONGEO.ID_GEOM IS 'Clé primaire (identifiant unique) de la table auto-incrémentée par un trigger.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GESTIONGEO.ID_DOS IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un dossier à une géométrie.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GESTIONGEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GESTIONGEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GESTIONGEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_GEOM IS 'Clé primaire (identifiant unique) de la table auto-incrémentée par un trigger.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_DOS IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un dossier à une géométrie.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
 
 -- 4.3. Les métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -259,12 +258,6 @@ ADD CONSTRAINT TA_GG_DOSSIER_PK
 PRIMARY KEY("ID_DOS")
 USING INDEX TABLESPACE G_ADT_INDX;
 
--- Contrainte d'unicité
-ALTER TABLE G_GESTIONGEO.TA_GG_DOSSIER
-ADD CONSTRAINT TA_GG_DOSSIER_DOS_NUM_UN
-UNIQUE("DOS_NUM")
-USING INDEX TABLESPACE G_ADT_INDX;
-
 -- Contraintes de clé étrangère
 ALTER TABLE G_GESTIONGEO.TA_GG_DOSSIER
 ADD CONSTRAINT TA_GG_DOSSIER_ETAT_ID_FK
@@ -275,11 +268,6 @@ ALTER TABLE G_GESTIONGEO.TA_GG_DOSSIER
 ADD CONSTRAINT TA_GG_DOSSIER_FAM_ID_FK
 FOREIGN KEY("FAM_ID")
 REFERENCES G_GESTIONGEO.TA_GG_FAMILLE ("FAM_ID");
-
-ALTER TABLE G_GESTIONGEO.TA_GG_DOSSIER
-ADD CONSTRAINT TA_GG_DOSSIER_USER_ID_FK
-FOREIGN KEY("USER_ID")
-REFERENCES G_GESTIONGEO.TA_GG_SOURCE ("SRC_ID");
 
 ALTER TABLE G_GESTIONGEO.TA_GG_DOSSIER
 ADD CONSTRAINT TA_GG_DOSSIER_SRC_ID_FK
