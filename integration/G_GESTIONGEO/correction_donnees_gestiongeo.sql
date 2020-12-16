@@ -9,6 +9,39 @@ DELETE
 FROM GEO.TA_GEO_CORRECT_DOUBLONS a
 WHERE a.OBJECTID = 91;
 
+-- Insertion de dossiers manquants dans TA_GEO_CORRECT_DOUBLONS
+INSERT INTO GEO.TA_GEO_CORRECT_DOUBLONS(ID_GEOM, DOS_NUM, GEOM, ACTION, CLASSE_DICT)
+SELECT
+    a.ID_GEOM,
+    a.DOS_NUM,
+    a.GEOM,
+    'fusionner',
+    CLASSE_DICT
+FROM
+    GEO.TEMP_GEO_CORRECTION a
+WHERE
+    a.ID_GEOM IN(
+        2855,
+        3800,
+        3877,
+        5091,
+        5119,
+        5165,
+        5171,
+        5470,
+        5503,
+        5519,
+        5533,
+        5736,
+        5760,
+        5846,
+        6013,
+        8539,
+        8576,
+        28658,
+        28776
+    );
+
 /* Correction des erreurs de géométrie dans TEMP_GEO_CORRECTION via SDO_UTIL.RECTIFY_GEOMETRY
 Rappel - les erreurs que cette fonction corrige sont :
 - 13349 : le polygone l'intersecte lui-même ;
@@ -262,10 +295,10 @@ DELETE
 FROM 
     GEO.TEMP_GEO_CORRECTION a
 WHERE
-    a.ID_GEOM IN(4547, 85);
+    a.ID_GEOM IN(4547, 83, 85, 2496, 652);
 
 
--- Vérification ds doublons
+-- Vérification des doublons
 SELECT
     a.dos_num
 FROM
@@ -274,36 +307,5 @@ WHERE
     a.DOS_NUM <> 186500311
 GROUP BY a.dos_num
 HAVING
-    COUNT(a.dos_num) > 1;
-    
-SELECT *
-FROM
-    TA_GEO_CORRECT_DOUBLONS
-WHERE
-    DOS_NUM IN(
-        161430214,
-101960145,
-102860526,
-103280549,
-103030163,
-203600428,
-170090076,
-163280679,
-163281074,
-103160408,
-102020497,
-102860525,
-105530454,
-103500394,
-103280411,
-153600258,
-161961077,
-103430570,
-102860124,
-102860531,
-102560032,
-206480421,
-162200383,
-130090239
-    );
+    COUNT(a.dos_num) > 1; 
     
