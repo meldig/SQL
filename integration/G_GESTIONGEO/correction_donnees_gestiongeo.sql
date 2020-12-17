@@ -1,27 +1,30 @@
 SET SERVEROUTPUT ON
 BEGIN
-SAVEPOINT POINT_SAUVEGARDE_CORRECTION_TA_GG_GEO;
+SAVEPOINT POINT_SAUVEGARDE_TA_GG_GEO;
 
--- Modification dans TA_GEO_CORRECT_DOUBLONS d'un ID_GEOM qui n'est plus dans TA_GG_GEO   
-UPDATE GEO.TA_GEO_CORRECT_DOUBLONS a
+-- Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TEMP_DOSSIER_CORRECTION
+EXECUTE IMMEDIATE 'ALTER TABLE GEO.TEMP_GEO_CORRECTION DISABLE CONSTRAINT TMP_GEO_CORRECT_ID_DOS_FK';
+
+-- Modification dans TEMP_GEO_CORRECT_DOUBLONS d'un ID_GEOM qui n'est plus dans TA_GG_GEO   
+UPDATE GEO.TEMP_GEO_CORRECT_DOUBLONS a
 SET a.ID_GEOM = 9426
 WHERE a.objectid = 44;
 
--- Suppression d'un doublon de DOS_NUM (130090239) dans TA_GEO_CORRECT_DOUBLONS
+-- Suppression d'un doublon de DOS_NUM (130090239) dans TEMP_GEO_CORRECT_DOUBLONS
 DELETE 
-FROM GEO.TA_GEO_CORRECT_DOUBLONS a
+FROM GEO.TEMP_GEO_CORRECT_DOUBLONS a
 WHERE a.OBJECTID = 91;
 
--- Insertion de dossiers manquants dans TA_GEO_CORRECT_DOUBLONS
-INSERT INTO GEO.TA_GEO_CORRECT_DOUBLONS(ID_GEOM, DOS_NUM, GEOM, ACTION, CLASSE_DICT)
+-- Insertion de dossiers manquants dans TEMP_GEO_CORRECT_DOUBLONS
+/*INSERT INTO GEO.TEMP_GEO_CORRECT_DOUBLONS(ID_GEOM, DOS_NUM, GEOM, ACTION, CLASSE_DICT)
 SELECT
     a.ID_GEOM,
     a.DOS_NUM,
     a.GEOM,
-    'fusionner',
+    a.ACTION,
     CLASSE_DICT
 FROM
-    GEO.TEMP_GEO_CORRECTION a
+    GEO.TEMP_GEO_CORRECT_DOUBLONS a
 WHERE
     a.ID_GEOM IN(
         2855,
@@ -43,7 +46,7 @@ WHERE
         8576,
         28658,
         28776
-    );
+    );*/
 
 -- Suppression des polygones à supprimer de TEMP_GEO_CORRECTION
 DELETE
@@ -100,7 +103,7 @@ MERGE INTO GEO.TEMP_GEO_CORRECTION a
                     b.CLASSE_DICT,
                     a.DOS_NUM
                 FROM
-                    GEO.TA_GEO_CORRECT_DOUBLONS a
+                    GEO.TEMP_GEO_CORRECT_DOUBLONS a
                     INNER JOIN GEO.TEMP_GEO_CORRECTION b ON b.ID_GEOM = a.ID_GEOM
                 WHERE
                     a.ACTION IN('fusionnner',
@@ -183,7 +186,7 @@ WHERE
                     SELECT 
                         DOS_NUM
                     FROM
-                        GEO.TA_GEO_CORRECT_DOUBLONS a
+                        GEO.TEMP_GEO_CORRECT_DOUBLONS a
                     WHERE
                         a.ACTION IN(
                             'fusionnner',
@@ -230,7 +233,7 @@ WHERE
                             SELECT 
                                 ID_GEOM
                             FROM
-                                GEO.TA_GEO_CORRECT_DOUBLONS a
+                                GEO.TEMP_GEO_CORRECT_DOUBLONS a
                             WHERE
                                 a.ACTION IN(
                                     'fusionnner',
@@ -296,13 +299,13 @@ WHERE
                 )
 ;
 -- Résultats attendus : 4 lignes éditées
-UPDATE GEO.TA_GG_DOSSIER a
+UPDATE GEO.TEMP_DOSSIER_CORRECTION a
     SET a.ETAT_ID = 9
 WHERE
     a.DOS_NUM IN(
                     SELECT b.DOS_NUM
                     FROM
-                        GEO.TA_GG_DOSSIER b
+                        GEO.TEMP_DOSSIER_CORRECTION b
                     WHERE
                         b.DOS_NUM IN(
                                         202860388,
@@ -313,9 +316,9 @@ WHERE
                                     )
                 )
 ;
-/*
--- Création de deux nouveaux dossiers dans TA_GG_DOSSIER. Ces dossiers correspondront aux périmètres présents dans TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TA_GG_DOSSIER pour le moment.
-INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+
+-- Création de deux nouveaux dossiers dans TEMP_DOSSIER_CORRECTION. Ces dossiers correspondront aux périmètres présents dans TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TEMP_DOSSIER_CORRECTION pour le moment.
+INSERT INTO GEO.TEMP_DOSSIER_CORRECTION(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
     a.SRC_ID,
     a.ETAT_ID,
@@ -343,11 +346,11 @@ SELECT
     a.DOS_DT_PREV,
     'RECOL/163500142_59350_rue_du_ballon/'
 FROM
-    G_GESTIONGEO.TA_GG_DOSSIER a
+    GEO.TEMP_DOSSIER_CORRECTION a
 WHERE
     a.DOS_NUM = 163500137;
 
-INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+INSERT INTO GEO.TEMP_DOSSIER_CORRECTION(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
     a.SRC_ID,
     a.ETAT_ID,
@@ -375,15 +378,33 @@ SELECT
     a.DOS_DT_PREV,
     'RECOL/163500169_59350_rue_de_la_communaute/'
 FROM
-    G_GESTIONGEO.TA_GG_DOSSIER a
+    GEO.TEMP_DOSSIER_CORRECTION a
 WHERE
-    a.DOS_NUM = 163500137;
-*/    
+    a.DOS_NUM = 136500169;
+
+MERGE INTO GEO.TEMP_GEO_CORRECTION a
+	USING(
+			SELECT
+				b.ID_DOS,
+				b.DOS_NUM
+			FROM
+				GEO.TEMP_DOSSIER_CORRECTION b
+			WHERE
+				b.DOS_NUM IN(163500137, 136500169)
+		)t
+ON (a.DOS_NUM = t.DOS_NUM)
+WHEN MATCHED THEN
+	UPDATE 
+		SET a.ID_DOS = t.ID_DOS;    
 COMMIT;
+
+-- Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TEMP_DOSSIER_CORRECTION
+EXECUTE IMMEDIATE 'ALTER TABLE GEO.TEMP_GEO_CORRECTION ENABLE CONSTRAINT TMP_GEO_CORRECT_ID_DOS_FK';
+
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
-        ROLLBACK TO POINT_SAUVEGARDE_CORRECTION_TA_GG_GEO;
+        ROLLBACK TO POINT_SAUVEGARDE_TA_GG_GEO;
 END;
 /
