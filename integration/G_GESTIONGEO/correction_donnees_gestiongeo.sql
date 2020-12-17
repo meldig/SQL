@@ -313,7 +313,72 @@ WHERE
                                     )
                 )
 ;
-  
+/*
+-- Création de deux nouveaux dossiers dans TA_GG_DOSSIER. Ces dossiers correspondront aux périmètres présents dans TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TA_GG_DOSSIER pour le moment.
+INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+SELECT
+    a.SRC_ID,
+    a.ETAT_ID,
+    a.USER_ID,
+    a.FAM_ID,
+    a.DOS_DC,
+    a.DOS_PRECISION,
+    a.DOS_DMAJ,
+    a.DOS_RQ,
+    a.DOS_DT_FIN,
+    a.DOS_PRIORITE,
+    a.DOS_IDPERE,
+    a.DOS_DT_DEB_TR,
+    a.DOS_DT_FIN_TR,
+    a.DOS_DT_CMD_SAI,
+    a.DOS_INSEE,
+    3501303,
+    a.DOS_MAO,
+    a.DOS_ENTR,
+    a.ORDER_ID,
+    136500142,
+    a.DOS_OLD_ID,
+    a.DOS_DT_DEB_LEVE,
+    a.DOS_DT_FIN_LEVE,
+    a.DOS_DT_PREV,
+    'RECOL/163500142_59350_rue_du_ballon/'
+FROM
+    G_GESTIONGEO.TA_GG_DOSSIER a
+WHERE
+    a.DOS_NUM = 163500137;
+
+INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+SELECT
+    a.SRC_ID,
+    a.ETAT_ID,
+    a.USER_ID,
+    a.FAM_ID,
+    a.DOS_DC,
+    a.DOS_PRECISION,
+    a.DOS_DMAJ,
+    a.DOS_RQ,
+    a.DOS_DT_FIN,
+    a.DOS_PRIORITE,
+    a.DOS_IDPERE,
+    a.DOS_DT_DEB_TR,
+    a.DOS_DT_FIN_TR,
+    a.DOS_DT_CMD_SAI,
+    a.DOS_INSEE,
+    a.DOS_VOIE,
+    a.DOS_MAO,
+    a.DOS_ENTR,
+    a.ORDER_ID,
+    136500169,  
+    a.DOS_OLD_ID,
+    a.DOS_DT_DEB_LEVE,
+    a.DOS_DT_FIN_LEVE,
+    a.DOS_DT_PREV,
+    'RECOL/163500169_59350_rue_de_la_communaute/'
+FROM
+    G_GESTIONGEO.TA_GG_DOSSIER a
+WHERE
+    a.DOS_NUM = 163500137;
+*/    
 COMMIT;
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
 EXCEPTION
