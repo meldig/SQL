@@ -209,7 +209,7 @@ COMMENT ON TABLE "GEO"."TEMP_GG_FILES_LIST"  IS 'Table de test regroupant les fi
 
 -- 15. CORECTION DES URLs VIDES POUR LESQUELLES UN CHEMIN ET UN DOSSIER EXISTE DANS LE DOSSIER APPLI_GG..
 
-MERGE INTO GEO.TEST_GG_DOSSIER a
+MERGE INTO GEO.TA_GG_DOSSIER a
 USING (
         SELECT
             a.DOS_NUM,
@@ -217,7 +217,7 @@ USING (
             a.dos_num as NUMERO_DU_DOSSIER,
             b.chemin as CHEMIN_SUR_APPLIGG
         FROM 
-            GEO.TEST_GG_DOSSIER a
+            GEO.TA_GG_DOSSIER a
         INNER JOIN
             (SELECT
                 DISTINCT DOS_NUM, CHEMIN
@@ -235,7 +235,7 @@ UPDATE SET a.DOS_URL_FILE = b.CHEMIN_SUR_APPLIGG
 
 -- 16. CORRECTION DE LA COLONNE USER_ID: MISE A JOUR DE LA COLONNE USER_ID PAR LES VALEURS CONTENUES DANS LA COLONNE SRC_ID POUR LES USER_ID NON PRESENTS DANS LA COLONNE SRC_ID DE LA TABLE TA_GG_SOURCE.
 
-UPDATE GEO.TEST_GG_DOSSIER
+UPDATE GEO.TA_GG_DOSSIER
 SET USER_ID = SRC_ID
 WHERE USER_ID NOT IN (
                     SELECT
@@ -250,7 +250,7 @@ WHERE USER_ID NOT IN (
 
 -- 17. Correction des URLs des dossiers qui existe dans la table TA_GG_DOSSIER et dans le repertoire AppliGG mais qui ont des URL differents.
 
-MERGE INTO TEST_GG_DOSSIER a
+MERGE INTO GEO.TA_GG_DOSSIER a
 USING
     (
     SELECT DISTINCT
@@ -259,7 +259,7 @@ USING
         a.dos_url_file as CHEMIN_DOS_URL_FIL,
         b.chemin as CHEMIN_SUR_APPLIGG
     FROM 
-        TEST_GG_DOSSIER a
+        GEO.TA_GG_DOSSIER a
     INNER JOIN
         TEMP_GG_FILES_LIST b on a.dos_num = b.dos_num
     WHERE a.dos_url_file <> b.chemin
