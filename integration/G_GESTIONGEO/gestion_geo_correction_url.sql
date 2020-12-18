@@ -1,8 +1,4 @@
 -- Fichier SQL contenant les requetes necessaires pour corriger les chemins des dossiers IC et RECOL
---POINT DE SAUVEGARDE
-SET SERVEROUTPUT ON
-BEGIN
-SAVEPOINT POINT_SAUVEGARDE_CORRECTION_TA_GG_DOSSIER;
 
 -- 1. SUPPRESSION DE LA COLONNE OBJECTID.
 
@@ -217,19 +213,25 @@ UPDATE SET a.DOS_NUM = b.DOS_NUM_CORRIGE
 
 
 -- 12. COMMENTAIRE DE LA TABLE
+
 COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."LIEN" IS 'Lien original vers les fichiers exporte depuis INFOGEO.';
 COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."OBJECTID" IS 'Clé primaire de la table TEST_GG_FILES_LIST.';
-COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."URL" IS 'Lien d''acces vers le fichier au format DOS_URL_FILE de la table TA_GG_DOSSIER et le fichier du dossier';
+COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."URL" IS 'Lien d''acces vers le fichier au format DOS_URL_FILE de la table TEST_GG_DOSSIER et le fichier du dossier';
 COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."FICHIER" IS 'Nom du fichier du dossier.';
-COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."CHEMIN" IS 'Lien d''acces vers le fichier au format DOS_URL_FILE de la table TA_GG_DOSSIER';
+COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."CHEMIN" IS 'Lien d''acces vers le fichier au format DOS_URL_FILE de la table TEST_GG_DOSSIER';
 COMMENT ON COLUMN "GEO"."TEMP_GG_FILES_LIST"."DOS_NUM" IS 'Numéro DOS_NUM de dossier de l''application GESTIONGEO auxquel se rattache le fichier';
 COMMENT ON TABLE "GEO"."TEMP_GG_FILES_LIST"  IS 'Table de test regroupant les fichiers et leurs liens d''acces  pour chaque dossier de l''application GESTIONGEO.';
 
 
+-- 13. POINT DE SAUVEGARDE
 
--- 13. CORECTION DES URLs VIDES POUR LESQUELLES UN CHEMIN ET UN DOSSIER EXISTE DANS LE DOSSIER APPLI_GG.
+SET SERVEROUTPUT ON
+BEGIN
+SAVEPOINT PT_SVG_CORR_TA_DOSSIER;
 
-MERGE INTO GEO.TA_GG_DOSSIER a
+-- 14. CORECTION DES URLs VIDES POUR LESQUELLES UN CHEMIN ET UN DOSSIER EXISTE DANS LE DOSSIER APPLI_GG.
+
+MERGE INTO GEO.TEST_GG_DOSSIER a
 USING (
         SELECT
             a.DOS_NUM,
@@ -237,7 +239,7 @@ USING (
             a.dos_num as NUMERO_DU_DOSSIER,
             b.chemin as CHEMIN_SUR_APPLIGG
         FROM 
-            GEO.TA_GG_DOSSIER a
+            GEO.TEST_GG_DOSSIER a
         INNER JOIN
             (SELECT
                 DISTINCT DOS_NUM, CHEMIN
@@ -250,12 +252,12 @@ WHEN MATCHED THEN
 UPDATE SET a.DOS_URL_FILE = b.CHEMIN_SUR_APPLIGG
 ;
 
---RESULTAT ATTENDU: 21 LIGNES MISES A JOUR
+--RESULTAT ATTENDU: 24 LIGNES MISES A JOUR
 
 
--- 14. Correction des URLs des dossiers qui existe dans la table TA_GG_DOSSIER et dans le repertoire AppliGG mais qui ont des URL differents.
+-- 15. Correction des URLs des dossiers qui existe dans la table TEST_GG_DOSSIER et dans le repertoire AppliGG mais qui ont des URL differents.
 
-MERGE INTO GEO.TA_GG_DOSSIER a
+MERGE INTO GEO.TEST_GG_DOSSIER a
 USING
     (
     SELECT DISTINCT
@@ -264,7 +266,7 @@ USING
         a.dos_url_file as CHEMIN_DOS_URL_FIL,
         b.chemin as CHEMIN_SUR_APPLIGG
     FROM 
-        GEO.TA_GG_DOSSIER a
+        GEO.TEST_GG_DOSSIER a
     INNER JOIN
         TEMP_GG_FILES_LIST b on a.dos_num = b.dos_num
     WHERE a.dos_url_file <> b.chemin
@@ -277,9 +279,9 @@ UPDATE SET a.DOS_URL_FILE = b.CHEMIN_SUR_APPLIGG
 -- RESULTAT ATTENDU: 10 LIGNES MISES A JOUR
 
 
--- 15. CORRECTION DE LA COLONNE USER_ID: MISE A JOUR DE LA COLONNE USER_ID PAR LES VALEURS CONTENUES DANS LA COLONNE SRC_ID POUR LES USER_ID NON PRESENTS DANS LA COLONNE SRC_ID DE LA TABLE TA_GG_SOURCE.
+-- 16. CORRECTION DE LA COLONNE USER_ID: MISE A JOUR DE LA COLONNE USER_ID PAR LES VALEURS CONTENUES DANS LA COLONNE SRC_ID POUR LES USER_ID NON PRESENTS DANS LA COLONNE SRC_ID DE LA TABLE TA_GG_SOURCE.
 
-UPDATE GEO.TA_GG_DOSSIER
+UPDATE GEO.TEST_GG_DOSSIER
 SET USER_ID = SRC_ID
 WHERE USER_ID NOT IN (
                     SELECT
@@ -292,7 +294,7 @@ WHERE USER_ID NOT IN (
 --RESULTAT ATTENDU: 446 LIGNES MISES A JOUR
 
 
--- 16. SUPPRESSION DES DOSSIERS QUI N''ONT PAS DE DOS_NUM ET DONT L''ID DOS N''EST PAS PRESENT DANS LA TABLE TA_GG_GEO.
+-- 17. SUPPRESSION DES DOSSIERS QUI N''ONT PAS DE DOS_NUM ET DONT L''ID DOS N''EST PAS PRESENT DANS LA TABLE TA_GG_GEO.
 
 DELETE FROM GEO.TEST_GG_DOSSIER
 WHERE
@@ -300,14 +302,15 @@ WHERE
     AND ID_DOS NOT IN (SELECT ID_DOS FROM GEO.TA_GG_GEO)
 ;
 
+COMMIT;
 
--- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
+-- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion (VOIR POINT 13).
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
-        ROLLBACK TO POINT_SAUVEGARDE_CORRECTION_TA_GG_DOSSIER;
+        ROLLBACK TO PT_SVG_CORR_TA_DOSSIER;
 END;
-
--- 17. SUPPRESSION DES ELEMENTS TEMPORAIRE LIEE AUX URL
+/
+-- 17. SUPPRESSION DES ELEMENTS TEMPORAIRES LIEE AUX URL
 -- DROP TABLE TEMP_GG_FILES_LIST cascade constraints;
 -- DROP SEQUENCE SEQ_TEMP_GG_FILES_LIST;
