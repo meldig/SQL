@@ -16,15 +16,14 @@ FROM GEO.TEMP_GEO_CORRECT_DOUBLONS a
 WHERE a.OBJECTID = 91;
 
 -- Insertion de dossiers manquants dans TEMP_GEO_CORRECT_DOUBLONS
-/*INSERT INTO GEO.TEMP_GEO_CORRECT_DOUBLONS(ID_GEOM, DOS_NUM, GEOM, ACTION, CLASSE_DICT)
+INSERT INTO GEO.TEMP_GEO_CORRECT_DOUBLONS(ID_GEOM, DOS_NUM, GEOM, ACTION)
 SELECT
     a.ID_GEOM,
     a.DOS_NUM,
     a.GEOM,
-    a.ACTION,
-    CLASSE_DICT
+    'fusionner'
 FROM
-    GEO.TEMP_GEO_CORRECT_DOUBLONS a
+    GEO.TA_GG_GEO a
 WHERE
     a.ID_GEOM IN(
         2855,
@@ -46,7 +45,53 @@ WHERE
         8576,
         28658,
         28776
-    );*/
+    );
+-- Insertion dans TA_GEO_CORRECT_DOUBLONS des DOS_NUM présents en doublons dans TA_GG_GEO
+MERGE INTO GEO.TEMP_GEO_CORRECT_DOUBLONS a
+    USING(
+        WITH 
+            C_1 AS(
+                SELECT
+                    MIN(a.ID_GEOM) AS ID_GEOM,
+                    a.DOS_NUM
+                FROM
+                    GEO.TA_GG_GEO a
+                WHERE
+                    a.DOS_NUM IN(
+                    101960145,102860526,
+                    103280549,103030163,
+                    203860513,203600428,
+                    163281074,202990438,
+                    103160408,102860525,
+                    202790509,205990488,
+                    103500394,103280411,
+                    161961077,103430570,
+                    205990489,102860124,
+                    102860531,205990493,
+                    203780518,163280679,
+                    205990498,205990487,
+                    205270519, 200900515
+                    )
+                GROUP BY
+                    a.DOS_NUM
+                HAVING
+                    COUNT(a.DOS_NUM) > 1
+            )
+            SELECT
+                a.ID_GEOM,
+                a.DOS_NUM,
+                a.GEOM,
+                'fusionner' AS ACTION
+            FROM
+                GEO.TA_GG_GEO a,
+                C_1 b
+            WHERE
+                a.ID_GEOM = b.ID_GEOM
+        )t
+    ON (a.ID_GEOM = t.ID_GEOM)
+WHEN NOT MATCHED THEN
+    INSERT(a.ID_GEOM, a.DOS_NUM, a.GEOM, a.ACTION)
+    VALUES(t.ID_GEOM, t.DOS_NUM, t.GEOM, t.ACTION);
 
 -- Suppression des polygones à supprimer de TEMP_GEO_CORRECTION
 DELETE
