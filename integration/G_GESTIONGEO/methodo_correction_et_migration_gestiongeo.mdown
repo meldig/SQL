@@ -1,0 +1,255 @@
+# Correction et Migration des données GestionGeo de Oracle 11g vers Oracle 12c
+
+## Sommaire :
+1. Vérifier la présence de doublons de DOS_NUM dans TA_GG_GEO ;
+2. Informer la personne référente (Gaëlle) de ces doublons ;
+3. Mise à jour de la table de comparaison par rapport au retour de la personne référente ;
+4. Correction des données dans oracle 11g ;
+	4.1. Avant-propos ;
+	4.2. Explication de la correction du 18/12/2020 ;
+		4.2.1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER ;
+		4.2.2. Suppression des polygones à supprimer de TA_GG_GEO ;
+		4.2.3. Correction des erreurs de géométrie ;
+		4.2.4. Fusion des polygones de TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier) ;
+		4.2.5.  Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4) ;
+		4.2.6. Passage de certains dossiers/périmètres en clôturés ;
+		4.2.7. Création de deux nouveaux dossiers dans TA_GG_DOSSIER ;
+		4.2.8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7 ;
+		4.2.9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER ;
+	4.3. Correction des géométries ;
+5. Création de la structure des tables dans oracle 12c ;
+6. Import des données d'Oracle 11g vers Oracle 12c ;
+7. Remplissage des tables finales dans Oracle 12c ;
+8. Création d'un ensemble de table test
+
+## Objectifs :
+1. Corriger les doublons de DOS_NUM et les erreurs de géométrie dans TA_GG_GEO ;
+2. Migrer les données d'Oracle 11g PROD vers Oracle 12c DEV ;
+
+## Outils :
+### Les codes sql :
+* ![maj_ta_geo_correct_doublons.sql](/maj_ta_geo_correct_doublons.sql) ;
+* ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) ;
+* ![code_ddl_g_gestiongeo.sql](/code_ddl_g_gestiongeo.sql) ;
+* ![remplissage_tables_finales_gestiongeo.sql](/remplissage_tables_finales_gestiongeo.sql) ;
+
+### Les .bat :
+* ![lanceur_maj_ta_geo_correct_doublons.bat](/lanceur_maj_ta_geo_correct_doublons.bat) ;
+* ![lanceur_du_code_de_correction_des_donnees_gestiongeo.bat](/lanceur_du_code_de_correction_des_donnees_gestiongeo.bat) ;
+* ![lanceur_du_code_ddl_gestiongeo.bat](/lanceur_du_code_ddl_gestiongeo.bat) ;
+* ![import_des_tables_gestiongeo.bat](/import_des_tables_gestiongeo.bat) ;
+
+## Etapes :
+1. Vérifier la présence de doublons de DOS_NUM dans TA_GG_GEO ;
+2. Informer la personne référente (Gaëlle) de ces doublons ;
+3. Mise à jour de la table de comparaison par rapport au retour de la personne référente ;
+4. Correction des données dans oracle 11g ;
+5. Création de la structure des tables dans oracle 12c ;
+6. Import des données d'Oracle 11g vers Oracle 12c ;
+7. Remplissage des tables finales dans Oracle 12c ;
+
+## 1. Vérifier la présence de doublons de DOS_NUM dans TA_GG_GEO ;
+
+Pour faire cette vérification, veuillez utiliser la requête ci-dessous :
+``` SQL
+-- Vérification des doublons DOS_NUM dans TA_GG_GEO
+SELECT
+    a.DOS_NUM,
+    COUNT(a.DOS_NUM) AS Nbr_Doublons
+FROM
+    GEO.TA_GG_GEO a
+GROUP BY a.DOS_NUM
+HAVING
+    COUNT(a.DOS_NUM) > 1; 
+```
+
+## 2. Si la requête renvoie des DOS_NUM, alors copiez les résultats de la requête 1.1. et envoyez les à la personne référente (Gaëlle) pour lui demander quel dossier fusionner ou quel polygone supprimer (extrêmement rare).
+
+###Exemple :
+```tsv
+Bonjour Gaëlle,
+
+J’ai de nouveaux doublons dans TA_GG_GEO que voici, peux-tu me dire s’il faut les fusionner ou non (ils sont absents de TA_GEO_CORRECT_DOUBLONS), stp ?
+
+DOS_NUM	Nbr_Doublons
+101960145	4
+102860526	2
+103280549	3
+103030163	2
+203860513	8
+203600428	2
+170090076	9
+163280679	8
+163281074	2
+202990438	2
+103160408	2
+102020497	4
+102860525	7
+202790509	2
+200900515	2
+205990488	2
+103500394	2
+103280411	2
+161961077	3
+103430570	2
+205990489	2
+102860124	3
+102860531	2
+102560032	3
+206480421	2
+205990493	3
+203780518	3
+205990498	2
+205990487	4
+205270519	3
+```
+
+## 3. Mise à jour de la table de comparaison par rapport au retour de la personne référente ;
+
+Pour faire cette mise à jour, veuillez utiliser ce fichier ![maj_ta_geo_correct_doublons.sql](/maj_ta_geo_correct_doublons.sql).
+Avant de le lancer, veuillez remplacer les valeurs de la condition *a.DOS_DOSNUM IN ()* par celles renvoyées par la personne référente (cf. étape 2), dont l'action est taguée en *fusion*. 
+
+### Exemple :
+``` tsv
+DOS_NUM	Nbr_Doublons	
+101960145	4	fusion
+102860526	2	fusion
+103280549	3	fusion
+103030163	2	fusion
+203860513	8	fusion
+203600428	2	fusion
+170090076	9	Fusion
+163280679	8	fusion
+163281074	2	fusion
+202990438	2	fusion
+103160408	2	fusion
+102020497	4	2 communes différentes
+102860525	7	fusion
+202790509	2	fusion
+200900515	2	2 communes différentes
+205990488	2	fusion
+103500394	2	fusion
+103280411	2	fusion
+161961077	3	fusion
+103430570	2	fusion
+205990489	2	fusion
+102860124	3	fusion
+102860531	2	fusion
+102560032	3	2 COMMUNES DIFFERENTES
+```
+
+Comme vous pouvez le voir dans l'exemple ci-dessus, certains dossiers ne sont pas tagués en "fusion", dans ce cas vous pouvez soit vérifier sur QGIS qu'une fusion poserait un réel problème, soit demander à Jean-Marc. Gardez à l'esprit qu'il s'agit de périmètre de dossier, donc si deux polygones jointifs disposant du même DOS_NUM se situe à cheval sur deux communes, vous pouvez fusionner (c'est en tous cas la méthode que j'ai appliquée pour la correction du 18/12/2020).  
+
+Pour lancer ce code vous pouvez utiliser le .bat suivant : ![lanceur_maj_ta_geo_correct_doublons.bat](/lanceur_maj_ta_geo_correct_doublons.bat)
+
+## 4. Correction des données dans oracle 11g ;
+
+#### 4.1. Avant-propos
+Avant d'effectuer la correction du 18/12/2020, toutes les données des tables TA_GG_DOSSIER et TA_GG_GEO ont été sauvegardées respectivement dans les tables TA_GG_DOSSIER_SAVE et TA_GG_GEO_SAVE. **Il existe donc une sauvegarde de l'état de ces tables avant leur correction.**
+
+Pour savoir précisément quel code a été lancé pour faire la correction du 18/12/2020, veuillez modifier le fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) comme suit :
+1.Supprimez la ligne  *a.ACTION = 'fusion'* via le rechercher/remplacer (ctrl+f/ctrl+h) car elle présente plusieurs fois ;
+2. Décommentez tous les codes qui sont actuellement dans des commentaires ;
+
+#### 4.2. Explication de la correction du 18/12/2020
+Les explications qui suivent utilisent les parties du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) pour se repérer.
+
+##### 4.2.1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER.
+Cette étape est nécessaire afin d'éviter les suppressions dans TA_GG_DOSSIER suite au suppressions que nous feront dans TA_GG_GEO. Le risque est de supprimer tous les dossiers de TA_GG_DOSSIER dont nous avons fusionné les géométries dans TA_GG_GEO.
+
+##### 4.2.2. Suppression des polygones à supprimer de TA_GG_GEO
+Suppression des polygones de TA_GG_GEO. Cette suppression a été vue avec Gaëlle (cf. Dossier_doublons.xlsx).
+
+##### 4.2.3. Correction des erreurs de géométrie
+Cette correction se fait dans un ordre bien particulier puisque certains polygones sont concernés par plusieurs erreurs et que la rectification d'une erreur peut en résoudre une autre. Ces corrections organisées de cette manière ont permis de corriger toutes les erreurs de géométrie de TA_GG_GEO. Ainsi les fusions qui suivront se feront sur des géométries correctes/valides.
+
+##### 4.2.4. Fusion des polygones de TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier)
+C'est la partie qu fusionne toutes les géométries d'un même dossier.  
+
+* le Using : le *SELECT* se fait via une *CTE* qui, dans un premier temps (cf. *C_1*), sélectionne toutes les données de TA_GG_GEO (sauf leur géométrie) dont les ID_GEOM sont dans TA_GEO_CORRECTE_DOUBLONS. Ce sont ces entités dont nous allons éditer la géométrie. Cela nous permet d'éviter d'avoir à créer de nouveaux dossiers. Ensuite, dans la partie *C_2* je fais la fusion de toutes les géométries par dossier dont le DOS_NUM se situe dans la sélection du *C_1*. Enfin la requête principale permet de rassembler les données renvoyées par *C_1* et *C_2* en faisant une condition sur le DOS_NUM (numéro de dossier).
+* La condition du *merge* se fait sur l'ID_GEOM et nous permet de modifier la géométrie de toutes les entités de TA_GG_GEO taguées en *fusionner* dans TA_GEO_CORRECT_DOUBLONS.
+
+##### Conclusion :
+- Nous avons désormais, et pour chaque dossier tagué "fusionner" dans TA_GEO_CORRECT_DOUBLONS, une entité présente dans TA_GG_GEO qui contient la fusion de toutes les géométries du dossier. Il faut maitenant supprimer les doublons qui ont servi à cette fusion.
+
+##### 4.2.5.  Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4).
+Pour faire cette suppression je fais deux conditions dans le *WHERE* :
+* Je sélectionne toutes les entités de TA_GG_GEO dont le DOS_NUM se situe dans TA_GEO_CORRECT_DOUBLONS, ainsi j'ai tous les objets concernés par la fusion ;
+* Ensuite pour tous les objets remplissant la première condition, je sélectionne tous les ID_GEOM (identifiant) absents de TA_GEO_CORRECT_DOUBLONS. La sélection se fait bien entendu sur les objets remplissant ces deux conditions. Ainsi j'obtiens tous les objets ayant servis à la fusion de chaque dossier, sauf celui dont la géométrie contient cette fusion.
+
+##### 4.2.6. Passage de certains dossiers/périmètres en clôturés
+Le changement d'état de ces objets a été vu avec Gaëlle (cf. Dossier_doublons.xlsx).
+Je change l'état des objets à la fois dans TA_GG_DOSSIER et dans TA_GG_GEO.
+
+##### 4.2.7. Création de deux nouveaux dossiers dans TA_GG_DOSSIER
+Dans TA_GG_GEO se trouve trois périmètres qu'il faut garder (vu avec gaëlle), mais dont l'ID_DOS est le même. C'est donc l'équivalent d'un doublon de dossier (en l'occurrence un triplon). J'ai donc décidé de créer deux nouveaux dossier via les deux inserts tout en mettant à jour leur DOS_URL_FILE.
+Pour créer l'ID_DOS, comme il n'y a pas de trigger d'incrémentation fonctionnel sur ce champ, je me suis contenté de sélectionner l'ID_DOS maximum plus un de TA_GG_DOSSIER et de le leu attribuer (donc MAX(ID_DOS)+1 pour le premier et MAX(ID_DOS)+2 pour le second).
+
+##### 4.2.8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7.
+ Dans cette requête j'attribue les deux nouveaux ID_DOS aux deux périmètres de TA_GG_GEO correspondant.
+
+##### 4.2.9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER
+Réactivation de la contrainte après les corrections.
+
+Etant donné que j'ai dû sélectionner les *MAX(ID_DOS)+1* et *MAX(ID_DOS)+2* à l'étape 7 (ce que j'avais oublié pendant mes tests...), je n'ai pas lancé la procédure du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql), mais j'ai lancé les requêtes une par une. La syntaxe est cependant fonctionnelle et ce code a été testé plusieurs fois avec succès sur des tables test (TEMP_DOSSIER_CORRECTION disposait d'un trigger d'incrémentation de l'ID_DOS...).
+
+### 4.3. Correction des géométries
+Pour fusionner les doublons de dossier dans TA_GG_GEO, il vous suffit d'exécuter la procédure du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) telle quelle après avoir effectué les point précédents (abstraction faite du point 4.1. Avant-propos).
+
+Pour vérifier que les corrections se sont bien passées veuillez lancer les codes ci-dessous. S'il s ne renvoient aucun résultat, c'est que les corrections se sont bien passées.
+``` SQL
+-- Vérification des doublons DOS_NUM dans TA_GG_GEO
+SELECT
+    a.DOS_NUM,
+    COUNT(a.DOS_NUM) AS Nbr_Doublons
+FROM
+    GEO.TA_GG_GEO a
+GROUP BY a.DOS_NUM
+HAVING
+    COUNT(a.DOS_NUM) > 1; 
+
+-- Vérification des doublons ID_DOS dans TA_GG_GEO
+SELECT
+    a.ID_DOS,
+    COUNT(a.ID_DOS) AS Nbr_Doublons
+FROM
+    GEO.TA_GG_GEO a
+GROUP BY a.ID_DOS
+HAVING
+    COUNT(a.ID_DOS) > 1;
+
+-- Sélection du nombre de polygones par type d'erreur
+SELECT
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) AS ERREUR,
+    COUNT(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005)) AS Nombre
+FROM
+    GEO.TA_GG_GEO a
+WHERE
+    SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005)<>'TRUE'
+GROUP BY
+    SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5);
+
+-- Vérification des doublons ID_DOS dans TA_GG_DOSSIER
+SELECT
+    a.ID_DOS,
+    COUNT(a.ID_DOS) AS Nbr_Doublons
+FROM
+    GEO.TA_GG_DOSSIER a
+GROUP BY a.ID_DOS
+HAVING
+    COUNT(a.ID_DOS) > 1;
+```
+
+## 5. Création de la structure des tables dans oracle 12c ;
+Le code du fichier ![code_ddl_g_gestiongeo.sql](/code_ddl_g_gestiongeo.sql) qui créé les tables finales dans Oracle 12c peut être lancé directement depuis le .bat ![lanceur_du_code_ddl_gestiongeo.bat](/lanceur_du_code_ddl_gestiongeo.bat).
+Ce code doit être exécuté avant l'import des données d'Oracle 11g vers Oracle 12c puisque j'y créé les métadonnées spatiales de la table TEMP_TA_GG_GEO. Cette création évite des erreurs lors de l'import.
+
+## 6. Import des données d'Oracle 11g vers Oracle 12c ;
+L'import se fait grâce au .bat ![import_des_tables_gestiongeo.bat](/import_des_tables_gestiongeo.bat). Il n'y a aucune modification à faire.
+
+## 7. Remplissage des tables finales dans Oracle 12c ;
+Le remplissage se fait via le code ![remplissage_tables_finales_gestiongeo.sql](/remplissage_tables_finales_gestiongeo.sql) qui peut être lancé via le .bat ![![remplissage_tables_finales_gestiongeo.sql](/](/lanceur_du_remplissage_des_tables_finales.bat) (le .bat n'a pas été testé).
+
+## 8. Création d'un ensemble de table test
+Si vous avez besoin de créer des tables test afin de tester le code des corrections, vous pouver utiliser le code du fichier ![creation_tables_test_avant_correction.sql](/creation_tables_test_avant_correction.sql) qui vous créera ces tables test (copie des tables originales TA_GG_GEO, TA_GG_DOSSIER et TA_GEO_CORRECT_DOUBLONS).
+Toutefois si la table TA_GEO_CORRET_DOUBLONS est modifiée, veuillez modifier le *START WITH* de la séquence *SEQ_TEMP_GEO_CORRECT_DOUBLONS* avec le résultat de la requête (entre commentaires) située ligne 153 à 155, avant de lancer le code de création de TEMP_GEO_CORRECT_DOUBLONS.

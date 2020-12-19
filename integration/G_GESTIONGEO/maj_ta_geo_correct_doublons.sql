@@ -1,3 +1,4 @@
+/*
 -- Modification dans TA_GEO_CORRECT_DOUBLONS d'un ID_GEOM qui n'est plus dans TA_GG_GEO   
 UPDATE GEO.TA_GEO_CORRECT_DOUBLONS a
 SET a.ID_GEOM = 9426
@@ -39,8 +40,9 @@ WHERE
         28658,
         28776
     );
+*/
 /* En cas de nouveaux doublons présents dans TA_GG_GEO proccédez comme suit :
-1. Envoyer la liste des DOS_NUM posant problème à Gaëlle en lui demandant ce qu'il faut fusionner ;
+1. Envoyer la liste des DOS_NUM posant problème à Gaëlle en lui demandant ce qu'il faut fusionner (cf. methodo_correction_et_migration_gestiongeo.mdown);
 2. Une fois que vous avez reçu la lsite des DOS_NUM dont il faut fusionner les géométries, coller ces DOS_NUM dans le WHERE du MERGE ci-dessous en supprimant les valeurs déjà présentes dans le code ci-dessous.
 3. Relancer les codes de correction des géométries, l'import en base et le remplissage des tables dans oracle 12c ;
 */
@@ -78,7 +80,7 @@ MERGE INTO GEO.TA_GEO_CORRECT_DOUBLONS a
                 a.ID_GEOM,
                 a.DOS_NUM,
                 a.GEOM,
-                'fusionner' AS ACTION
+                'fusion' AS ACTION
             FROM
                 GEO.TA_GG_GEO a,
                 C_1 b
