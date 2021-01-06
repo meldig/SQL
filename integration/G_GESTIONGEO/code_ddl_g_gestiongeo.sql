@@ -136,7 +136,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO (
 	"ID_DOS" NUMBER(38,0),
 	"GEOM" MDSYS.SDO_GEOMETRY NOT NULL,
 	"ETAT_ID" NUMBER(1,0) NULL,
-	"DOS_NUM" NUMBER(10,0)
+	"DOS_NUM" NUMBER(10,0) NULL
 );
 
 -- 4.2. Les commentaires
@@ -145,7 +145,7 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_GEOM IS 'Clé primaire (identifiant 
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_DOS IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un dossier à une géométrie.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro n''est plus renseigné car il faisait doublon avec ID_DOS.';
 
 -- 4.3. Les métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -173,11 +173,6 @@ USING INDEX TABLESPACE G_ADT_INDX;
 ALTER TABLE G_GESTIONGEO.TA_GG_GEO
 ADD CONSTRAINT TA_GG_GEO_ID_DOS_UN
 UNIQUE("ID_DOS")
-USING INDEX TABLESPACE G_ADT_INDX;
-
-ALTER TABLE G_GESTIONGEO.TA_GG_GEO
-ADD CONSTRAINT TA_GG_GEO_DOS_NUM_UN
-UNIQUE("DOS_NUM")
 USING INDEX TABLESPACE G_ADT_INDX;
 
 -- 4.5. Les indexes
@@ -217,7 +212,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"DOS_ENTR" VARCHAR2(200 BYTE),
 	"DOS_URL_FILE" VARCHAR2(200 BYTE),
 	"ORDER_ID" NUMBER(10,0),
-	"DOS_NUM" NUMBER(38,0),
+	"DOS_NUM" NUMBER(38,0) NULL,
 	"DOS_OLD_ID" VARCHAR2(8 BYTE),
 	"DOS_DT_DEB_LEVE" DATE,
 	"DOS_DT_FIN_LEVE" DATE,
