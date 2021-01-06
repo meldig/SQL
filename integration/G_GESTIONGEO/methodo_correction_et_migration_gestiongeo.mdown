@@ -7,15 +7,15 @@
 4. Correction des données dans oracle 11g ;
 	4.1. Avant-propos ;
 	4.2. Explication de la correction du 18/12/2020 ;
-		4.2.1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER ;
-		4.2.2. Suppression des polygones à supprimer de TA_GG_GEO ;
-		4.2.3. Correction des erreurs de géométrie ;
-		4.2.4. Fusion des polygones de TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier) ;
-		4.2.5.  Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4) ;
-		4.2.6. Passage de certains dossiers/périmètres en clôturés ;
-		4.2.7. Création de deux nouveaux dossiers dans TA_GG_DOSSIER ;
-		4.2.8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7 ;
-		4.2.9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER ;
+		4.2.1.Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE ;
+		4.2.2.Suppression des polygones à supprimer de TA_GG_GEO ;
+		4.2.3.Correction des erreurs de géométrie ;
+		4.2.4.Fusion des polygones de TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier) ;
+		4.2.5. Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4) ;
+		4.2.6.Passage de certains dossiers/périmètres en clôturés ;
+		4.2.7.Création de deux nouveaux dossiers dans TA_GG_DOSSIER ;
+		4.2.8.Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7 ;
+		4.2.9.Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE ;
 	4.3. Correction des géométries ;
 5. Création de la structure des tables dans oracle 12c ;
 6. Import des données d'Oracle 11g vers Oracle 12c ;
@@ -154,8 +154,9 @@ Pour savoir précisément quel code a été lancé pour faire la correction du 1
 #### 4.2. Explication de la correction du 18/12/2020
 Les explications qui suivent utilisent les parties du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) pour se repérer.
 
-##### 4.2.1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER.
-Cette étape est nécessaire afin d'éviter les suppressions dans TA_GG_DOSSIER suite au suppressions que nous feront dans TA_GG_GEO. Le risque est de supprimer tous les dossiers de TA_GG_DOSSIER dont nous avons fusionné les géométries dans TA_GG_GEO.
+##### 4.2.1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE
+L'option *CASCADE ON DELETE* se fait de la table TA_GG_DOSSIER vers TA_GG_GEO (autrement dit la suppression d'un dossier dans TA_GG_DOSSIER supprime aussi son périmètre dans TA_GG_GEO, et non l'inverse).
+La désactivation de cette contrainte nous permet d'effectuer nos modifications en toute sérénité, même si elle n'est absolument nécessaire que si nous nous supprmons des entités dans TA_GG_DOSSIER.
 
 ##### 4.2.2. Suppression des polygones à supprimer de TA_GG_GEO
 Suppression des polygones de TA_GG_GEO. Cette suppression a été vue avec Gaëlle (cf. Dossier_doublons.xlsx).
@@ -188,7 +189,7 @@ Pour créer l'ID_DOS, comme il n'y a pas de trigger d'incrémentation fonctionne
 ##### 4.2.8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7.
  Dans cette requête j'attribue les deux nouveaux ID_DOS aux deux périmètres de TA_GG_GEO correspondant.
 
-##### 4.2.9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER
+##### 4.2.9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE
 Réactivation de la contrainte après les corrections.
 
 Etant donné que j'ai dû sélectionner les *MAX(ID_DOS)+1* et *MAX(ID_DOS)+2* à l'étape 7 (ce que j'avais oublié pendant mes tests...), je n'ai pas lancé la procédure du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql), mais j'ai lancé les requêtes une par une. La syntaxe est cependant fonctionnelle et ce code a été testé plusieurs fois avec succès sur des tables test (TEMP_DOSSIER_CORRECTION disposait d'un trigger d'incrémentation de l'ID_DOS...).
@@ -196,7 +197,7 @@ Etant donné que j'ai dû sélectionner les *MAX(ID_DOS)+1* et *MAX(ID_DOS)+2* �
 ### 4.3. Correction des géométries
 Pour fusionner les doublons de dossier dans TA_GG_GEO, il vous suffit d'exécuter la procédure du fichier ![correction_donnees_gestiongeo.sql](/correction_donnees_gestiongeo.sql) telle quelle après avoir effectué les point précédents (abstraction faite du point 4.1. Avant-propos).
 
-Pour vérifier que les corrections se sont bien passées veuillez lancer les codes ci-dessous. S'il s ne renvoient aucun résultat, c'est que les corrections se sont bien passées.
+Pour vérifier que les corrections se sont bien passées veuillez lancer les codes ci-dessous. S'ils ne renvoient aucun résultat, c'est que les corrections se sont bien passées.
 ``` SQL
 -- Vérification des doublons DOS_NUM dans TA_GG_GEO
 SELECT
