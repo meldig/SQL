@@ -136,7 +136,8 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO (
 	"ID_DOS" NUMBER(38,0),
 	"GEOM" MDSYS.SDO_GEOMETRY NOT NULL,
 	"ETAT_ID" NUMBER(1,0) NULL,
-	"DOS_NUM" NUMBER(10,0) NULL
+	"DOS_NUM" NUMBER(10,0) NULL,
+	"SURFACE" NUMBER(38,2)
 );
 
 -- 4.2. Les commentaires
@@ -146,6 +147,7 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_DOS IS 'Clé étrangère vers la tab
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro n''est plus renseigné car il faisait doublon avec ID_DOS.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.SURFACE IS 'Champ rempli via un déclencheur permettant de calculer la surface de chaque objet de la table en m².';
 
 -- 4.3. Les métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -196,12 +198,12 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"ETAT_ID" NUMBER(38,0),
 	"USER_ID" NUMBER(38,0),
 	"FAM_ID" NUMBER DEFAULT 1,
-	"DOS_DC" DATE DEFAULT TO_DATE(sysdate, 'dd/mm/yy') NOT NULL,
+	"DOS_DC" DATE,
 	"DOS_PRECISION" VARCHAR2(100 BYTE),
-	"DOS_DMAJ" DATE DEFAULT TO_DATE(sysdate, 'dd/mm/yy'),
+	"DOS_DMAJ" DATE,
 	"DOS_RQ" VARCHAR2(2048 BYTE),
 	"DOS_DT_FIN" DATE,
-	"DOS_PRIORITE" NUMBER(1,0) NOT NULL,
+	"DOS_PRIORITE" NUMBER(1,0) NULL,
 	"DOS_IDPERE" NUMBER(38,0),
 	"DOS_DT_DEB_TR" DATE,
 	"DOS_DT_FIN_TR" DATE,
@@ -275,7 +277,7 @@ ADD	CONSTRAINT TA_GG_GEO_ID_DOS_FK
 FOREIGN KEY ("ID_DOS") REFERENCES G_GESTIONGEO.TA_GG_DOSSIER ("ID_DOS") ON DELETE CASCADE;
 
 -- 5.5. Affectation des droits
-GRANT SELECT ON G_GESTIONGEO.TA_GG_SOURCE TO G_ADMIN_SIG;
+GRANT SELECT ON G_GESTIONGEO.TA_GG_DOSSIER TO G_ADMIN_SIG;
 
 -- 6. VM_GG_POINT
 -- 6.1. La vue matérialisée
@@ -346,3 +348,50 @@ VALUES(
     2154
 );
 COMMIT;
+
+-- 8. Trigger de calcul des surface en m² des objets de la table TA_GG_GEO
+create or replace TRIGGER B_IUX_TA_GG_GEO
+BEFORE INSERT OR UPDATE ON G_GESTIONGEO.TA_GG_GEO
+FOR EACH ROW
+DECLARE 
+BEGIN
+    IF INSERTING THEN -- En cas d'insertion on insère la surface du polygone dans le champ surface(m2)       
+        :new.SURFACE := ROUND(SDO_GEOM.SDO_AREA(:new.geom, 0.005, 'UNIT=SQ_METER'), 2);
+    END IF;
+
+    IF UPDATING THEN -- En cas d'édition on édite la surface du polygone dans le champ surface(m2)
+        :new.SURFACE := ROUND(SDO_GEOM.SDO_AREA(:new.geom, 0.005, 'UNIT=SQ_METER'), 2);
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER B_IUX_TA_GG_GEO','trigger@lillemetropole.fr');
+END;
+
+-- 9. Trigger permettant l'insertion des SRC_ID, USER_ID et DOS_DMAJ
+create or replace TRIGGER B_IUX_TA_GG_DOSSIER
+BEFORE INSERT OR UPDATE ON G_GESTIONGEO.TA_GG_DOSSIER
+FOR EACH ROW
+DECLARE
+    username VARCHAR2(100);
+    v_src_id NUMBER(38,0);
+BEGIN
+    -- Sélection du pnom
+    SELECT sys_context('USERENV','OS_USER') into username from dual;
+    -- Sélection de l'id du pnom correspondant dans la table TA_GG_SOURCE
+    SELECT src_id INTO v_src_id FROM G_GESTIONGEO.TA_GG_SOURCE WHERE src_libel = username;
+
+    IF INSERTING THEN -- En cas d'insertion on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_DOSSIER.SRC_ID        
+        :new.SRC_ID := v_src_id;
+        :new.DOS_DC := TO_DATE(sysdate, 'dd/mm/yy');
+    END IF;
+
+    IF UPDATING THEN -- En cas d'édition on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_DOSSIER.USER_ID et on édite le champ DOS_DMAJ
+        :new.USER_ID := v_src_id;
+        :new.DOS_DMAJ := sysdate;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER B_IUX_TA_GG_DOSSIER','trigger@lillemetropole.fr');
+END;

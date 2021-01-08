@@ -2,6 +2,15 @@
 Code permettant d'insérer les données gestiongeo des tables temporaires dans les tables finales suite aux corrections des données.
 */
 
+/* Prérequis :
+- Désactivation du trigger B_IUX_TA_GG_DOSSIER ;
+- Désactivation de la clé étrangère TA_GG_GEO_ID_DOS_FK
+*/
+ALTER TABLE G_GESTIONGEO.TA_GG_GEO
+DISABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK;
+
+ALTER TRIGGER B_IUX_TA_GG_DOSSIER DISABLE;
+
 -- 1. TA_GG_SOURCE
 INSERT INTO G_GESTIONGEO.TA_GG_SOURCE(SRC_ID, SRC_LIBEL, SRC_VAL)
 SELECT
@@ -33,11 +42,6 @@ FROM
 	G_GESTIONGEO.TEMP_TA_GG_ETAT;
 
 -- 4. TA_GG_GEO
--- 4.1. Désactivation de la clé étrangère TA_GG_GEO_ID_DOS_FK
-ALTER TABLE G_GESTIONGEO.TA_GG_GEO
-DISABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK ;
-
--- 4.2. Insertion des données
 INSERT INTO G_GESTIONGEO.TA_GG_GEO(ID_GEOM, ID_DOS, ETAT_ID, GEOM, DOS_NUM)
 SELECT
 	ID_GEOM, 
@@ -81,6 +85,9 @@ SELECT
 FROM
 	G_GESTIONGEO.TEMP_TA_GG_DOSSIER;
 
--- 5.2. Réactivation de la contrainte de clé étrangère de TA_GG_GEO
+-- 6. Réactivation de la contrainte de clé étrangère de TA_GG_GEO
 ALTER TABLE G_GESTIONGEO.TA_GG_GEO
-ENABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK ;
+ENABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK;
+
+-- 7. Résactivation du trigger B_IUX_TA_GG_DOSSIER
+ALTER TRIGGER B_IUX_TA_GG_DOSSIER ENABLE;

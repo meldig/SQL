@@ -1,20 +1,17 @@
 SET SERVEROUTPUT ON
 BEGIN
-SAVEPOINT POINT_SAUVEGARDE_TA_GG_GEO;
+SAVEPOINT POINT_SAUVEGARDE_TEMP_TA_GG_GEO;
 
--- 1. Désactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER
-EXECUTE IMMEDIATE 'ALTER TABLE GEO.TA_GG_GEO DISABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK';
-
--- 2. Suppression des polygones à supprimer de TA_GG_GEO
-/*DELETE
+-- 2. Suppression des polygones à supprimer de TEMP_TA_GG_GEO
+DELETE
 FROM 
-    GEO.TA_GG_GEO a
+    G_GESTIONGEO.TEMP_TA_GG_GEO a
 WHERE
     a.ID_GEOM IN(4547, 83, 85, 2496, 652, 12648);
-*/
+
 /* 
 -- 3. Correction des erreurs de géométries
-Correction des erreurs de géométrie dans TA_GG_GEO via SDO_UTIL.RECTIFY_GEOMETRY
+Correction des erreurs de géométrie dans TEMP_TA_GG_GEO via SDO_UTIL.RECTIFY_GEOMETRY
 Rappel - les erreurs que cette fonction corrige sont :
 - 13349 : le polygone l'intersecte lui-même ;
 - 13356 : le polygone a des sommets redondants ;
@@ -22,36 +19,36 @@ Rappel - les erreurs que cette fonction corrige sont :
 - Attention : un polygone peut être concerné par plusieurs erreurs et dans ce cas la correction d'une erreur peut aussi résoudre une ou plusieurs autres erreurs sur ce même polygone.
 */
 -- Erreur 13343 : suppression des polygones qui sont manifestement des erreurs : 1. ce sont des lignes de type 2003 ; 2.leur suppression n'impacte pas les périmètres des dossiers 
-DELETE FROM GEO.TA_GG_GEO a
+DELETE FROM G_GESTIONGEO.TEMP_TA_GG_GEO a
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13343';
     
 -- Erreur 13028 : correction du SDO_ELEM_INFO_ARRAY de chaque entité
-UPDATE GEO.TA_GG_GEO a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_GEO a
 SET a.geom.SDO_ELEM_INFO = MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,1)
 WHERE
  SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.GEOM, 0.005) = '13028';
 
 -- Erreur 13349
-UPDATE GEO.TA_GG_GEO a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_GEO a
     SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13349';
     
 -- Erreur 13356
-UPDATE GEO.TA_GG_GEO a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_GEO a
     SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13356';
     
 -- Erreur 13367
-UPDATE GEO.TA_GG_GEO a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_GEO a
     SET a.GEOM = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13367';
 
--- 4. Fusion des polygones de TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier)
-MERGE INTO GEO.TA_GG_GEO a
+-- 4. Fusion des polygones de TEMP_TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier)
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_GEO a
     USING(
         WITH
             C_1 AS(
@@ -61,19 +58,10 @@ MERGE INTO GEO.TA_GG_GEO a
                     b.CLASSE_DICT,
                     a.DOS_NUM
                 FROM
-                    GEO.TA_GEO_CORRECT_DOUBLONS a
-                    INNER JOIN GEO.TA_GG_GEO b ON b.ID_GEOM = a.ID_GEOM
+                    G_GESTIONGEO.TEMP_TA_GEO_CORRECT_DOUBLONS a
+                    INNER JOIN G_GESTIONGEO.TEMP_TA_GG_GEO b ON b.ID_GEOM = a.ID_GEOM
                 WHERE
                 	a.ACTION = 'fusion'
-                    /*a.ACTION IN('fusionnner',
-                                'fusionnjer',
-                                'fusionner',
-                                'Fusionner',
-                                'fusionneer',
-                                'fusiojnner',
-                                ' fusionner',
-                                'fusioonner'
-                                )
                     OR a.DOS_NUM IN(
 							133500235,85120572,
 							103600230,112790021,
@@ -88,7 +76,7 @@ MERGE INTO GEO.TA_GG_GEO a
 							184100135,184870312,
 							186500311,153780097,
 							163780407,161630711,105530454
-                        )*/
+                        )
             ),
             C_2 AS (
                 SELECT
@@ -98,7 +86,7 @@ MERGE INTO GEO.TA_GG_GEO a
                 ) AS GEOM
             FROM
                 C_1 a,
-                GEO.TA_GG_GEO b
+                G_GESTIONGEO.TEMP_TA_GG_GEO b
             WHERE
                 b.DOS_NUM = a.DOS_NUM
             GROUP BY
@@ -125,25 +113,15 @@ WHEN MATCHED THEN
 -- 5. Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4).
 DELETE
 FROM 
-    GEO.TA_GG_GEO a
+    G_GESTIONGEO.TEMP_TA_GG_GEO a
 WHERE
     a.DOS_NUM IN (
                     SELECT 
                         DOS_NUM
                     FROM
-                        GEO.TA_GEO_CORRECT_DOUBLONS a
+                        G_GESTIONGEO.TEMP_TA_GEO_CORRECT_DOUBLONS a
                     WHERE
                     	a.ACTION = 'fusion'
-                        /*a.ACTION IN(
-                            'fusionnner',
-                            'fusionnjer',
-                            'fusionner',
-                            'Fusionner',
-                            'fusionneer',
-                            'fusiojnner',
-                            ' fusionner',
-                            'fusioonner'
-                                )
                     OR a.DOS_NUM IN(
 							133500235,85120572,
 							103600230,112790021,
@@ -158,26 +136,16 @@ WHERE
 							184100135,184870312,
 							186500311,153780097,
 							163780407,161630711,105530454
-                        )*/
+                        )
                         
                 )
     AND a.ID_GEOM NOT IN (
                             SELECT 
                                 ID_GEOM
                             FROM
-                                GEO.TA_GEO_CORRECT_DOUBLONS a
+                                G_GESTIONGEO.TEMP_TA_GEO_CORRECT_DOUBLONS a
                             WHERE
                             	a.ACTION = 'fusion'
-                                /*a.ACTION IN(
-                                    'fusionnner',
-	                                'fusionnjer',
-	                                'fusionner',
-	                                'Fusionner',
-	                                'fusionneer',
-	                                'fusiojnner',
-	                                ' fusionner',
-                                    'fusioonner'
-                                )
                     			OR a.DOS_NUM IN(
 									133500235,85120572,
 									103600230,112790021,
@@ -192,7 +160,7 @@ WHERE
 									184100135,184870312,
 									186500311,153780097,
 									163780407,161630711,105530454
-                                )*/
+                                )
                                 
                         )
 ;
@@ -200,13 +168,13 @@ WHERE
 
 -- 6. Passage de certains dossiers/périmètres en clôturés
 -- Résultats attendus : 4 lignes éditées
-/*UPDATE GEO.TA_GG_GEO a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_GEO a
     SET a.ETAT_ID = 9
 WHERE
     a.DOS_NUM IN(
                     SELECT b.DOS_NUM
                     FROM
-                        GEO.TA_GG_GEO b
+                        G_GESTIONGEO.TEMP_TA_GG_GEO b
                     WHERE
                         b.DOS_NUM IN(
                                         202860388,
@@ -218,13 +186,13 @@ WHERE
                 )
 ;
 -- Résultats attendus : 4 lignes éditées
-UPDATE GEO.TA_GG_DOSSIER a
+UPDATE G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
     SET a.ETAT_ID = 9
 WHERE
     a.DOS_NUM IN(
                     SELECT b.DOS_NUM
                     FROM
-                        GEO.TA_GG_DOSSIER b
+                        G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
                     WHERE
                         b.DOS_NUM IN(
                                         202860388,
@@ -235,9 +203,9 @@ WHERE
                                     )
                 )
 ;
-
--- 7. Création de deux nouveaux dossiers dans TA_GG_DOSSIER. Ces dossiers correspondront aux périmètres présents dans TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TA_GG_DOSSIER pour le moment.
-INSERT INTO GEO.TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+/*
+-- 7. Création de deux nouveaux dossiers dans TEMP_TA_GG_DOSSIER. Ces dossiers correspondront aux périmètres présents dans TEMP_TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TEMP_TA_GG_DOSSIER pour le moment.
+INSERT INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
     45829,
     a.SRC_ID,
@@ -266,11 +234,11 @@ SELECT
     a.DOS_DT_PREV,
     'RECOL/163500142_59350_rue_du_ballon/'
 FROM
-    GEO.TA_GG_DOSSIER a
+    G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
 WHERE
     a.DOS_NUM = 163500137;
 
-INSERT INTO GEO.TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+INSERT INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
     45830,
     a.SRC_ID,
@@ -299,34 +267,163 @@ SELECT
     a.DOS_DT_PREV,
     'RECOL/163500169_59350_rue_de_la_communaute/'
 FROM
-    GEO.TA_GG_DOSSIER a
+    G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
 WHERE
     a.DOS_NUM = 163500137;
-
+*/
 -- 8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7.
-MERGE INTO GEO.TA_GG_GEO a
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_GEO a
 	USING(
 			SELECT
 				b.ID_DOS,
 				b.DOS_NUM
 			FROM
-				GEO.TA_GG_DOSSIER b
+				G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
 			WHERE
 				b.DOS_NUM IN(163500142, 163500169)
 		)t
 ON (a.DOS_NUM = t.DOS_NUM)
 WHEN MATCHED THEN
 	UPDATE 
-		SET a.ID_DOS = t.ID_DOS;    
-*/
+		SET a.ID_DOS = t.ID_DOS;
+
+-- 9. Correction des faux doublons du champ DOS_ENTR de la table TEMP_TA_GG_DOSSIER
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN(' .ETUDIS', ' ETUDIS','ETUDIS')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'ETUDIS';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('COLAS','COLAS NORD PICARDIE')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'COLAS NORD PICARDIE';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('E.J.M (Lille)','EJM')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'EJM';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('GECITEC','GESITEC','GACITEC')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'GECITEC';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('IDTP', 'ID TP')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'IDTP';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('NORD DT','NORD-DT')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'NORD DT';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('RAMERI','RAMERY','RAMERY SA')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'RAMERY';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('S.A.V.N.', 'SAVN')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'SAVN';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('UF Cartographie des territoires','UF Cartographie des territoires ')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'UF Cartographie des territoires';
+
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+    USING(
+        SELECT
+            b.ID_DOS
+        FROM
+            G_GESTIONGEO.TEMP_TA_GG_DOSSIER b
+        WHERE
+            b.DOS_ENTR IN('T.P.R.N.', 'TPRN')
+    )t
+ON (a.ID_DOS = t.ID_DOS)
+WHEN MATCHED THEN
+UPDATE SET a.DOS_ENTR = 'TPRN';
+
 COMMIT;
--- 9. Réactivation de la clé étrangère de TA_GG_GEO qui dispose de l'option ON DELETE CASCADE vers TA_GG_DOSSIER
-EXECUTE IMMEDIATE 'ALTER TABLE GEO.TA_GG_GEO ENABLE CONSTRAINT TA_GG_GEO_ID_DOS_FK';
 
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
-        ROLLBACK TO POINT_SAUVEGARDE_TA_GG_GEO;
+        ROLLBACK TO POINT_SAUVEGARDE_TEMP_TA_GG_GEO;
 END;
 /

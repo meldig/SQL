@@ -14,5 +14,5 @@ SET /p INSTANCE="Veuillez saisir l'instance Oracle :"
 CD C:/ora12c/R1/BIN
 
 :: 4. Execution de sqlplus. pour lancer la requete SQL.
-sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_code_ddl%\correction_donnees_gestiongeo.sql.sql
+sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_code_ddl%\correction_donnees_gestiongeo.sql
 pause
