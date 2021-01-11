@@ -367,7 +367,8 @@ CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_DOSSIER_GESTIONGEO (
 	"DATE_FIN_TRAVAUX",
 	"DATE_DEBUT_LEVE",
 	"DATE_FIN_LEVE",
-	"SURFACE(M2)",  
+	"SURFACE(M2)",
+	"GEOM",
     CONSTRAINT "V_DOSSIER_GESTIONGEO_PK" PRIMARY KEY (numero_dossier) DISABLE
 )
 AS
@@ -387,7 +388,8 @@ SELECT
     a.dos_dt_fin_tr AS date_fin_travaux,
     a.dos_dt_deb_leve AS date_debut_leve,
     a.dos_dt_fin_leve AS date_fin_leve,
-    f.surface AS "SURFACE(M2)"
+    f.surface AS "SURFACE(M2)",
+    f.geom
 FROM
     G_GESTIONGEO.TA_GG_DOSSIER a
     INNER JOIN G_GESTIONGEO.TA_GG_GEO f ON f.ID_DOS = a.ID_DOS
@@ -415,6 +417,12 @@ COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_FIN_TRAVAUX IS 'Date de
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_DEBUT_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_FIN_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO."SURFACE(M2)" IS 'Surface de chaque périmètre de dossier issue de TA_GG_GEO.';
+COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.GEOM IS 'Géométrie des périmètres de chaque dossier (type polygone ou multi-polygone), issu de TA_GG_GEO.';
+
+-- 8.3. Création des métadonnées spatiales de la vue
+INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
+VALUES ('V_DOSSIER_GESTIONGEO', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
+COMMIT;
 
 -- 9. Trigger de calcul des surface en m² des objets de la table TA_GG_GEO
 create or replace TRIGGER B_IUX_TA_GG_GEO
