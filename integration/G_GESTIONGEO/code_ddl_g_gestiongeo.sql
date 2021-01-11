@@ -343,7 +343,7 @@ INSERT INTO USER_SDO_GEOM_METADATA(
 )
 VALUES(
     'TEMP_TA_GG_GEO',
-    'geom',
+    'ora_geometry',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
@@ -368,6 +368,8 @@ CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_DOSSIER_GESTIONGEO (
 	"DATE_DEBUT_LEVE",
 	"DATE_FIN_LEVE",
 	"SURFACE(M2)",
+	"PRECISION",
+	"REMARQUES",
 	"GEOM",
     CONSTRAINT "V_DOSSIER_GESTIONGEO_PK" PRIMARY KEY (numero_dossier) DISABLE
 )
@@ -389,6 +391,8 @@ SELECT
     a.dos_dt_deb_leve AS date_debut_leve,
     a.dos_dt_fin_leve AS date_fin_leve,
     f.surface AS "SURFACE(M2)",
+    a.dos_precision AS precision,
+    a.dos_rq AS remarques
     f.geom
 FROM
     G_GESTIONGEO.TA_GG_DOSSIER a
@@ -417,6 +421,8 @@ COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_FIN_TRAVAUX IS 'Date de
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_DEBUT_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.DATE_FIN_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO."SURFACE(M2)" IS 'Surface de chaque périmètre de dossier issue de TA_GG_GEO.';
+COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.REMARQUES IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit (issu de TA_GG_DOSSIER).';
 COMMENT ON COLUMN G_GESTIONGEO.V_DOSSIER_GESTIONGEO.GEOM IS 'Géométrie des périmètres de chaque dossier (type polygone ou multi-polygone), issu de TA_GG_GEO.';
 
 -- 8.3. Création des métadonnées spatiales de la vue
