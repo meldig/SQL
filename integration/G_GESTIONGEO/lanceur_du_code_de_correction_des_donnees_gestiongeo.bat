@@ -5,7 +5,7 @@ echo Bienvenu dans la correction des donnees de gestiongeo !
 SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 :: 2. Déclaration et valorisation des variables
-SET /p chemin_code_ddl="Veuillez saisir le chemin d'accès du dossier contenant le code DDL du schéma : "  
+SET /p chemin_code_ddl="Veuillez saisir le chemin d'accès du dossier contenant le code de correction des données : "  
 SET /p USER="Veuillez saisir l'utilisateur Oracle : "    
 SET /p MDP="Veuillez saisir le MDP : "    
 SET /p INSTANCE="Veuillez saisir l'instance Oracle :" 
