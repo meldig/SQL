@@ -352,47 +352,47 @@ COMMIT;
 -- 8. Création de la vue V_GG_DOSSIER_GEO rassemblant toutes les données des dossiers de GestionGeo à des fins de consultation.
 -- 8.1. Création de la vue
 CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
-	"NUMERO_DOSSIER",
-	"FAMILLE",
-	"ETAT",
-	"CODE_INSEE",
-	"CREATEUR",
-	"DATE_CREATION",
-	"DERNIER_EDITEUR",
-	"DATE_EDITION",
-	"MAITRE_D_OUVRAGE",
-	"ENTREPRISE_RESPONSABLE_DU_LEVE",
-	"CHEMIN_FICHIERS_AUTOCAD",
-	"DATE_DEBUT_TRAVAUX",
-	"DATE_FIN_TRAVAUX",
-	"DATE_DEBUT_LEVE",
-	"DATE_FIN_LEVE",
-	"SURFACE(M2)",
-	"PRECISION",
-	"REMARQUE",
-	"GEOM",
-    CONSTRAINT "V_GG_DOSSIER_GEO_PK" PRIMARY KEY (numero_dossier) DISABLE
+	id_dos,
+    fam_id,
+    etat_id,
+    dos_insee,
+    src_id,
+    dos_dc,
+    user_id,
+    dos_dmaj,
+    dos_mao,
+    dos_entr,
+    dos_url_file,
+    dos_dt_deb_tr,
+    dos_dt_fin_tr,
+    dos_dt_deb_leve,
+    dos_dt_fin_leve,
+    surface,
+    dos_precision,
+    dos_rq,
+    geom,
+    CONSTRAINT "V_GG_DOSSIER_GEO_PK" PRIMARY KEY (id_dos) DISABLE
 )
 AS
 SELECT
-    a.id_dos AS numero_dossier,
-    e.fam_lib AS famille,
-    c.etat_lib AS etat,
-    a.dos_insee AS code_insee,
-    b.src_libel AS createur,
-    a.dos_dc AS date_creation,
-    d.src_libel AS dernier_editeur,
-    a.dos_dmaj AS date_edition,
-    a.dos_mao AS maitre_d_ouvrage,
-    a.dos_entr AS entreprise_responsable_du_leve,
-    a.dos_url_file AS chemin_fichiers_autocad,
-    a.dos_dt_deb_tr AS date_debut_travaux,
-    a.dos_dt_fin_tr AS date_fin_travaux,
-    a.dos_dt_deb_leve AS date_debut_leve,
-    a.dos_dt_fin_leve AS date_fin_leve,
-    f.surface AS "SURFACE(M2)",
-    a.dos_precision AS precision,
-    a.dos_rq AS remarque,
+    a.id_dos,
+    e.fam_lib AS FAM_ID,
+    c.etat_lib AS ETAT_ID,
+    a.dos_insee,
+    b.src_libel AS SRC_ID,
+    a.dos_dc,
+    d.src_libel AS user_ID,
+    a.dos_dmaj,
+    a.dos_mao,
+    a.dos_entr,
+    a.dos_url_file,
+    a.dos_dt_deb_tr,
+    a.dos_dt_fin_tr,
+    a.dos_dt_deb_leve,
+    a.dos_dt_fin_leve,
+    f.surface,
+    a.dos_precision,
+    a.dos_rq,
     f.geom
 FROM
     G_GESTIONGEO.TA_GG_DOSSIER a
@@ -405,24 +405,24 @@ FROM
 
 -- 8.2. Création des commentaires de la vue et des colonnes
 COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_GEO IS 'Vue proposant toutes les informations des dossiers (périmètre inclu) créé via GestionGeo.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.NUMERO_DOSSIER IS 'Numéro du dossier issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.FAMILLE IS 'Familles des données issues de TA_GG_FAMILLE.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ETAT IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.CODE_INSEE IS 'Code INSEE issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.CREATEUR IS 'Pnom de l''agent créateur du dossier issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_CREATION IS 'Date de création du dossier issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DERNIER_EDITEUR IS 'Pnom de l''agent ayant fait la dernière modification sur le dossier (issu de TA_GG_DOSSIER).';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_EDITION IS 'Date de la dernière édition du dossier, issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.MAITRE_D_OUVRAGE IS 'Maître d''ouvrage (commanditaire) du dossie (issu de TA_GG_DOSSIER).';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ENTREPRISE_RESPONSABLE_DU_LEVE IS 'Entrprise responsable du levé, issue de TA_GG_DOSSIER';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.CHEMIN_FICHIERS_AUTOCAD IS 'Chemin d''accès des fichiers dwg à partir desquels le périmètre du dossier à été créé/modifié en base (fichiers importé par fme), issu de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_DEBUT_TRAVAUX IS 'Date de début des travaux issue de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_FIN_TRAVAUX IS 'Date de fin des travaux issue de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_DEBUT_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DATE_FIN_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO."SURFACE(M2)" IS 'Surface de chaque périmètre de dossier issue de TA_GG_GEO.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée (issu de TA_GG_DOSSIER).';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.REMARQUE IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_DOS IS 'Numéro du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.FAM_ID IS 'Familles des données issues de TA_GG_FAMILLE.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ETAT_ID IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_INSEE IS 'Code INSEE issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.SRC_ID IS 'Pnom de l''agent créateur du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DC IS 'Date de création du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.USER_ID IS 'Pnom de l''agent ayant fait la dernière modification sur le dossier (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DMAJ IS 'Date de la dernière édition du dossier, issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_MAO IS 'Maître d''ouvrage (commanditaire) du dossie (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_ENTR IS 'Entrprise responsable du levé, issue de TA_GG_DOSSIER';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_URL_FILE IS 'Chemin d''accès des fichiers dwg à partir desquels le périmètre du dossier à été créé/modifié en base (fichiers importé par fme), issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_DEB_TR IS 'Date de début des travaux issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_FIN_TR IS 'Date de fin des travaux issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_DEB_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_FIN_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.SURFACE IS 'Surface de chaque périmètre de dossier issue de TA_GG_GEO.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_RQ IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit (issu de TA_GG_DOSSIER).';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.GEOM IS 'Géométrie des périmètres de chaque dossier (type polygone ou multi-polygone), issu de TA_GG_GEO.';
 
 -- 8.3. Création des métadonnées spatiales de la vue
