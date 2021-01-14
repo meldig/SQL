@@ -1,4 +1,6 @@
 SET SERVEROUTPUT ON
+DECLARE
+    v_dos_num NUMBER(38,0);
 BEGIN
 SAVEPOINT POINT_SAVE_TEMP_TA_GG_GEO;
 
@@ -232,6 +234,42 @@ WHERE
     MAX(ID_DOS) + 1
 FROM
     GEO.TEMP_TA_GG_DOSSIER;*/
+-- 7.1. Création du DOS_NUM pour l'insertion d'un nouveau dossier (cf point 7.2)
+WITH
+    C_1 AS(
+        SELECT
+            COUNT(a.ID_DOS) AS decompte
+        FROM
+            G_GESTIONGEO.TA_GG_DOSSIER a
+        WHERE
+            SUBSTR(TRUNC(a.DOS_DC, 'YEAR'), 7, 2) = SUBSTR(TRUNC(sysdate, 'YEAR'), 7, 2)
+    ),
+
+    C_2 AS(
+        SELECT DISTINCT
+            SUBSTR(TRUNC(sysdate, 'YEAR'), 7, 2) AS annee,
+            SUBSTR(a.DOS_INSEE, 3,3) AS insee,
+            CASE
+                WHEN b.decompte >= 1000
+                    THEN TO_CHAR(b.decompte)
+                WHEN b.decompte >= 100
+                    THEN '0'||TO_CHAR(b.decompte)
+                WHEN b.decompte < 100
+                    THEN '00'||TO_CHAR(b.decompte)
+            END AS nbr_dossiers
+        FROM
+            G_GESTIONGEO.TA_GG_DOSSIER a,
+            C_1 b
+        WHERE
+            a.DOS_NUM = 213500004
+    )
+    
+    SELECT
+        TO_NUMBER(annee||insee||nbr_dossiers, 999999999) AS DOS_NUM
+        INTO v_dos_num
+    FROM
+        C_2;
+
 -- 7.2. Création d'un nouveau dossier pour un périmètre en doublon
 INSERT INTO GEO.TEMP_TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
@@ -254,7 +292,7 @@ SELECT
     a.DOS_MAO,
     a.DOS_ENTR,
     a.ORDER_ID,
-    213500049,  
+    v_dos_num, --213500049  
     a.DOS_OLD_ID,
     a.DOS_DT_DEB_LEVE,
     a.DOS_DT_FIN_LEVE,
