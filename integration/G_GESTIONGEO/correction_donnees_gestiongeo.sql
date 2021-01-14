@@ -428,6 +428,52 @@ ON (a.ID_DOS = t.ID_DOS)
 WHEN MATCHED THEN
 UPDATE SET a.DOS_ENTR = 'TPRN';
 
+-- 10. Harmonisation des pnoms de la table TA_GG_SOURCE
+MERGE INTO GEO.TA_GG_SOURCE a
+    USING(
+            SELECT
+                b.SRC_ID,
+                CASE
+                    WHEN b.SRC_ID = 34755
+                        THEN 'acoupez'
+                    WHEN b.SRC_ID = 38332
+                        THEN 'chleclercq'
+                    WHEN b.SRC_ID = 22917
+                        THEN 'fnaerhuysen'
+                    WHEN b.SRC_ID = 47280
+                        THEN 'obecquaert'
+                    WHEN b.SRC_ID = 34774
+                        THEN 'pmartin'
+                    WHEN b.SRC_ID = 28129
+                        THEN 'pvanberselaert'
+                    WHEN b.SRC_ID = 29916
+                        THEN 'yaube'
+                    WHEN b.SRC_ID = 196860
+                        THEN 'fmorelle'
+                END AS SRC_LIBEL
+            FROM
+                GEO.TA_GG_SOURCE b
+            WHERE
+                b.SRC_ID IN(34755, 38332, 22917, 47280, 34774, 28129, 29916, 196860)
+            UNION ALL
+            SELECT
+                a.SRC_ID,
+                LOWER(a.SRC_LIBEL) AS SRC_LIBEL
+            FROM
+                GEO.TA_GG_SOURCE a
+            WHERE
+                a.SRC_ID NOT IN(34755, 38332, 22917, 47280, 34774, 28129, 29916, 196860)
+            )t
+    ON (a.SRC_ID = t.SRC_ID)
+WHEN MATCHED THEN
+    UPDATE SET a.SRC_LIBEL = t.SRC_LIBEL;
+
+-- 11. Ajout d'agents dans la table TA_GG_SOURCE
+INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
+VALUES(6068, 'rjault', 1);
+INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
+VALUES(5741, 'bjacq', 1);
+
 COMMIT;
 
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
