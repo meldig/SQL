@@ -46,7 +46,7 @@ BEGIN
                             b.valeur AS famille,
                             CASE
                                 WHEN UPPER(b.valeur) = UPPER('type de signalement des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('Création dossier'), UPPER('Modification manuelle par les topos'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'))
+                                        AND UPPER(c.valeur) IN (UPPER('Modification manuelle par les topos'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('type de vérification des points de vigilance') 
                                         AND UPPER(c.valeur) IN (UPPER('chantier potentiel'), UPPER('chantier en cours'), UPPER('chantier terminé'))
@@ -94,8 +94,7 @@ BEGIN
             WHERE
                 UPPER(b.valeur) IN(
                     UPPER('bâti'),
-                    UPPER('voirie (clôture, fossé et bordure)'), 
-                    UPPER('Création dossier'), 
+                    UPPER('voirie (clôture,fossé et bordure)'),  
                     UPPER('Modification manuelle par les topos'),
                     UPPER('Vérification terrain'), 
                     UPPER('Vérification orthophoto'),
