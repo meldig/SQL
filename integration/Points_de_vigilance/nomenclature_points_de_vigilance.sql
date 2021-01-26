@@ -1,16 +1,16 @@
 /*
-1. Insertion des familles liées aux points de vigilance dans G_GEO.TA_FAMILLE ;
-2. Insertion des libellés longs dans G_GEO.TA_LIBELLE_LONG ;
-3. Insertion dans la table pivot G_GEO.TA_FAMILLE_LIBELLE ;
-4. Insertion dans la table G_GEO.TA_LIBELLE ;
+1. Insertion des familles liées aux points de vigilance dans G_GEO.TEMP_FAMILLE ;
+2. Insertion des libellés longs dans G_GEO.TEMP_LIBELLE_LONG ;
+3. Insertion dans la table pivot G_GEO.TEMP_FAMILLE_LIBELLE ;
+4. Insertion dans la table G_GEO.TEMP_LIBELLE ;
 5. En cas d'exeption levée, faire un ROLLBACK ;
 */
 
 SET SERVEROUTPUT ON
 BEGIN
     SAVEPOINT POINT_SAUVERGARDE_NOMENCLATURE_PTS_VIGILANCE;
--- 1. Insertion des familles liées aux points de vigilance dans G_GEO.TA_FAMILLE ;
-    MERGE INTO G_GEO.TA_FAMILLE a
+-- 1. Insertion des familles liées aux points de vigilance dans G_GEO.TEMP_FAMILLE ;
+    MERGE INTO G_GEO.TEMP_FAMILLE a
         USING(
             SELECT
                 "valeur"
@@ -22,8 +22,8 @@ BEGIN
         INSERT(a.valeur)
         VALUES(t.valeur);
 
-    -- 2. Insertion des libellés longs dans G_GEO.TA_LIBELLE_LONG  
-    MERGE INTO G_GEO.TA_LIBELLE_LONG a
+    -- 2. Insertion des libellés longs dans G_GEO.TEMP_LIBELLE_LONG  
+    MERGE INTO G_GEO.TEMP_LIBELLE_LONG a
         USING(
             SELECT
                 "valeur"
@@ -35,8 +35,8 @@ BEGIN
         INSERT(a.valeur)
         VALUES(t.valeur);
         
-    -- 3. Insertion dans la table pivot G_GEO.TA_FAMILLE_LIBELLE
-    MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
+    -- 3. Insertion dans la table pivot G_GEO.TEMP_FAMILLE_LIBELLE
+    MERGE INTO G_GEO.TEMP_FAMILLE_LIBELLE a
         USING(
             SELECT *
                 FROM
@@ -69,8 +69,8 @@ BEGIN
                             END AS fid_libelle_long,
                             c.valeur AS libelle_long
                         FROM
-                            G_GEO.TA_FAMILLE b,
-                            G_GEO.TA_LIBELLE_LONG c
+                            G_GEO.TEMP_FAMILLE b,
+                            G_GEO.TEMP_LIBELLE_LONG c
                     )e
                 WHERE
                     e.fid_libelle_long IS NOT NULL
@@ -84,13 +84,13 @@ BEGIN
         INSERT(a.fid_famille, a.fid_libelle_long)
         VALUES(t.fid_famille, t.fid_libelle_long);
 
-    -- 4. Insertion dans la table G_GEO.TA_LIBELLE
-    MERGE INTO G_GEO.TA_LIBELLE a
+    -- 4. Insertion dans la table G_GEO.TEMP_LIBELLE
+    MERGE INTO G_GEO.TEMP_LIBELLE a
         USING(
             SELECT
                 b.objectid AS fid_libelle_long
             FROM
-                G_GEO.TA_LIBELLE_LONG b
+                G_GEO.TEMP_LIBELLE_LONG b
             WHERE
                 UPPER(b.valeur) IN(
                     UPPER('bâti'),

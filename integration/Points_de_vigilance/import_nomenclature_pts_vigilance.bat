@@ -18,7 +18,7 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 
 :: 5. Import de la nomenclature
-ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\nomenclature_famille.csv -nln TEMP_FAMILLE_POINT_VIGILANCE
-ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\nomenclature_libelle_long.csv -nln TEMP_LIBELLE_POINT_VIGILANCE
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\TEMP_FAMILLE.csv -nln TEMP_FAMILLE_POINT_VIGILANCE
+ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\TEMP_LIBELLE.csv -nln TEMP_LIBELLE_POINT_VIGILANCE
 
 pause
