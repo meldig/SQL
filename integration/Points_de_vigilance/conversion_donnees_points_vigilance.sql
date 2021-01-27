@@ -6,7 +6,7 @@ Le champ priorite correspond à plusieurs informations différentes qui sont div
 1. Suppression des doublons géométriques ;
 2. Ajout des champs permettant de catégoriser les points de vigilance ;
 3. Mise à jour des nouveaux champs en fonction de la valeur du champ priorite ;
-4. Insertion des données dans la table G_GEO.TA_GG_POINT_VIGILANCE ;
+4. Insertion des données dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
 5. En cas d'exeption levée, faire un ROLLBACK ;
 */
 
@@ -16,14 +16,14 @@ SAVEPOINT POINT_SAUVERGARDE_CONVERSION_PTS_VIGILANCE;
 -- 1. Suppression des doublons géométriques ;
 DELETE 
 FROM
-    G_GEO.TEMP_POINT_VIGILANCE t
+    G_GESTIONGEO.TEMP_POINT_VIGILANCE t
 WHERE 
     t.ogr_fid IN(
         SELECT
             a.ogr_fid
         FROM
-            G_GEO.TEMP_POINT_VIGILANCE a,
-            G_GEO.TEMP_POINT_VIGILANCE b
+            G_GESTIONGEO.TEMP_POINT_VIGILANCE a,
+            G_GESTIONGEO.TEMP_POINT_VIGILANCE b
         WHERE
             a.ora_geometry.SDO_POINT.X = b.ora_geometry.SDO_POINT.X
             AND a.ora_geometry.SDO_POINT.Y = b.ora_geometry.SDO_POINT.Y
@@ -35,7 +35,7 @@ WHERE
 Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
 \\volt\infogeo\UF_Acquisition\test_point_vigilance\règles_transposition_donnes_shape_en_base.xlsx
 */
-    UPDATE G_GEO.TEMP_POINT_VIGILANCE
+    UPDATE G_GESTIONGEO.TEMP_POINT_VIGILANCE
     SET
         fid_type_signalement =(
             CASE
@@ -89,13 +89,13 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
                                 a.objectid 
                             FROM
                                 G_GEO.TA_LIBELLE a
-                                INNER JOIN TA_LIBELLE_LONG b ON a.fid_libelle_long = b.objectid
+                                INNER JOIN G_GEO.TA_LIBELLE_LONG b ON a.fid_libelle_long = b.objectid
                             WHERE
                                 UPPER(b.valeur) = UPPER('point de vigilance'))
     ;
 
--- 4. Insertion des données dans la table G_GEO.TA_GG_POINT_VIGILANCE ;
-    MERGE INTO G_GEO.TA_GG_POINT_VIGILANCE a
+-- 4. Insertion des données dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
+    MERGE INTO G_GESTIONGEO.TA_GG_POINT_VIGILANCE a
         USING(
             SELECT
                 b.FID_LIB_CATEGORIE,
@@ -107,7 +107,7 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
                 b.COMMENTAIRE,
                 b.FID_TYPE_POINT
             FROM
-                G_GEO.TEMP_POINT_VIGILANCE b
+                G_GESTIONGEO.TEMP_POINT_VIGILANCE b
             WHERE
                 b."priorite" IN(1, 2, 3, 5, 9, 11, 12)
                 AND b.ORA_GEOMETRY IS NOT NULL
