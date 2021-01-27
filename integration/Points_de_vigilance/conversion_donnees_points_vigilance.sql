@@ -98,7 +98,6 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
     MERGE INTO G_GESTIONGEO.TA_GG_POINT_VIGILANCE a
         USING(
             SELECT
-                b.FID_LIB_CATEGORIE,
                 b.FID_TYPE_SIGNALEMENT,
                 b.FID_VERIFICATION,
                 b.ORA_GEOMETRY,
@@ -113,8 +112,7 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
                 AND b.ORA_GEOMETRY IS NOT NULL
         )t
         ON(
-            a.FID_LIB_CATEGORIE = t.FID_LIB_CATEGORIE
-            AND a.FID_TYPE_SIGNALEMENT = t.FID_TYPE_SIGNALEMENT
+            a.FID_TYPE_SIGNALEMENT = t.FID_TYPE_SIGNALEMENT
             AND a.FID_VERIFICATION = t.FID_VERIFICATION
             AND a.FID_LIB_STATUT = t.FID_LIB_STATUT
             AND a.FID_LIBELLE = t.FID_LIBELLE
@@ -122,7 +120,6 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
         )
     WHEN NOT MATCHED THEN
         INSERT(
-            a.FID_LIB_CATEGORIE,
             a.FID_TYPE_SIGNALEMENT,
             a.FID_VERIFICATION,
             a.GEOM,
@@ -132,7 +129,6 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
             a.FID_TYPE_POINT
         )
         VALUES(
-            t.FID_LIB_CATEGORIE,
             t.FID_TYPE_SIGNALEMENT,
             t.FID_VERIFICATION,
             t.ORA_GEOMETRY,
@@ -140,7 +136,7 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
             t.FID_LIBELLE,
             t.COMMENTAIRE,
             t.FID_TYPE_POINT
-	);
+    );
 
 	COMMIT;
 
