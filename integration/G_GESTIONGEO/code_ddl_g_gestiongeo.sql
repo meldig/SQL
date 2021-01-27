@@ -279,80 +279,12 @@ FOREIGN KEY ("ID_DOS") REFERENCES G_GESTIONGEO.TA_GG_DOSSIER ("ID_DOS") ON DELET
 -- 5.5. Affectation des droits
 GRANT SELECT ON G_GESTIONGEO.TA_GG_DOSSIER TO G_ADMIN_SIG;
 
--- 6. VM_GG_POINT
--- 6.1. La vue matérialisée
-CREATE MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT(
-    ID_GEOM,
-    ID_DOS,
-    GEOM
-)
-REFRESH ON DEMAND
-FORCE
-DISABLE QUERY REWRITE AS
-SELECT
-	a.ID_GEOM,
-	b.ID_DOS,
-	SDO_GEOM.SDO_CENTROID(a.geom, 0.005) AS GEOM
-FROM
-	G_GESTIONGEO.TA_GG_GEO a
-	INNER JOIN G_GESTIONGEO.TA_GG_DOSSIER b ON b.ID_DOS = a.ID_DOS;
-
--- 6.2. Les commentaires
-COMMENT ON MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT IS 'Vue matérialisée rassemblant les centroïdes de chaque périmètre de dossier de GestionGeo. Les sélections se font sur les tables TA_GG_GEO et TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.ID_DOS IS 'Clé primaire de la VM avec le champ ID_GEOM';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.ID_GEOM IS 'Clé primaire de la VM avec le champ ID_DOS';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.GEOM IS 'Champ géométrique de type point représentant le centroïde du périmètre de chaque dossier de GestionGeo.';
-
--- 6.3. Création des métadonnées spatiales
-INSERT INTO USER_SDO_GEOM_METADATA(
-    TABLE_NAME, 
-    COLUMN_NAME, 
-    DIMINFO, 
-    SRID
-)
-VALUES(
-    'VM_GG_POINT',
-    'geom',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
-    2154
-);
-COMMIT;
-
--- 6.4. Ccontrainte de clé primaire
-ALTER MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT
-ADD CONSTRAINT VM_GG_POINT_PK 
-PRIMARY KEY (ID_DOS, ID_GEOM);
-
--- 6.5. Création de l'index spatial
-CREATE INDEX VM_GG_POINT_SIDX
-ON G_GESTIONGEO.VM_GG_POINT(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS(
-  'sdo_indx_dims=2, 
-  layer_gtype=POINT, 
-  tablespace=G_ADT_INDX, 
-  work_tablespace=DATA_TEMP'
-);
-
--- 7. Insertion des métadonnées spatiales de TEMP_TA_GG_GEO afin d'avoir un SRID pour les données de cette table après leur import
-INSERT INTO USER_SDO_GEOM_METADATA(
-    TABLE_NAME, 
-    COLUMN_NAME, 
-    DIMINFO, 
-    SRID
-)
-VALUES(
-    'TEMP_TA_GG_GEO',
-    'ora_geometry',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
-    2154
-);
-COMMIT;
-
--- 8. Création de la vue V_GG_DOSSIER_GEO rassemblant toutes les données des dossiers de GestionGeo à des fins de consultation.
--- 8.1. Création de la vue
+-- 6. Création de la vue V_GG_DOSSIER_GEO rassemblant toutes les données des dossiers de GestionGeo à des fins de consultation.
+-- 6.1. Création de la vue
 CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
-	id_dos,
+    id_dos,
+    id_geom,
+    dos_num,
     fam_id,
     etat_id,
     dos_insee,
@@ -376,6 +308,8 @@ CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
 AS
 SELECT
     a.id_dos,
+    f.id_geom,
+    f.dos_num,
     e.fam_lib AS FAM_ID,
     c.etat_lib AS ETAT_ID,
     a.dos_insee,
@@ -403,9 +337,11 @@ FROM
     LEFT JOIN G_GESTIONGEO.TA_GG_SOURCE d ON d.SRC_ID = a.USER_ID
  ;
 
--- 8.2. Création des commentaires de la vue et des colonnes
+-- 6.2. Création des commentaires de la vue et des colonnes
 COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_GEO IS 'Vue proposant toutes les informations des dossiers (périmètre inclu) créé via GestionGeo.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_DOS IS 'Numéro du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_DOS IS 'Clé primaire du dossier issu de TA_GG_DOSSIER (il s''agit donc du numéo valide de chaque dossier).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_GEOM IS 'Clé primaire du périmètre issu de TA_GG_GEO et associé au dossier.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_NUM IS 'Numéro du dossier obsolète issu de TA_GG_DOSSIER (ce numéro n''est plus mis à jour et est abandonné).';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.FAM_ID IS 'Familles des données issues de TA_GG_FAMILLE.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ETAT_ID IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_INSEE IS 'Code INSEE issu de TA_GG_DOSSIER.';
@@ -425,9 +361,77 @@ COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_PRECISION IS 'Précision app
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_RQ IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit (issu de TA_GG_DOSSIER).';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.GEOM IS 'Géométrie des périmètres de chaque dossier (type polygone ou multi-polygone), issu de TA_GG_GEO.';
 
--- 8.3. Création des métadonnées spatiales de la vue
-INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID)
-VALUES ('V_GG_DOSSIER_GEO', 'GEOM', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 2154);
+-- 6.3. Création des métadonnées spatiales de la vue
+INSERT INTO USER_SDO_GEOM_METADATA (
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES (
+    'V_GG_DOSSIER_GEO', 
+    'GEOM', 
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+COMMIT;
+
+-- 6.4. Affectation des droits
+GRANT SELECT ON G_GESTIONGEO.V_GG_DOSSIER_GEO TO G_ADMIN_SIG;
+
+-- 7. V_GG_POINT
+-- 7.1. La vue
+CREATE OR REPLACE FORCE VIEW V_GG_POINT(
+    ID_GEOM,
+    ID_DOS,
+    GEOM,
+    CONSTRAINT "V_GG_POINT_PK" PRIMARY KEY (ID_GEOM, ID_DOS) DISABLE
+)
+AS
+SELECT
+    a.ID_GEOM,
+    a.ID_DOS,
+    SDO_GEOM.SDO_CENTROID(a.geom, 0.005) AS GEOM
+FROM
+    G_GESTIONGEO.V_GG_DOSSIER_GEO a;
+    
+-- 7.2. Les commentaires
+COMMENT ON TABLE G_GESTIONGEO.V_GG_POINT IS 'Vue rassemblant les centroïdes de chaque périmètre de dossier de GestionGeo. Les sélections se font sur la vue V_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.ID_DOS IS 'Clé primaire de la VM avec le champ ID_GEOM';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.ID_GEOM IS 'Clé primaire de la VM avec le champ ID_DOS';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.GEOM IS 'Champ géométrique de type point représentant le centroïde du périmètre de chaque dossier de GestionGeo.';
+
+-- 7.3. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'V_GG_POINT',
+    'geom',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+COMMIT;
+
+-- 7.4. Affectation des droits
+GRANT SELECT ON G_GESTIONGEO.V_GG_POINT TO G_ADMIN_SIG;
+
+-- 8. Insertion des métadonnées spatiales de TEMP_TA_GG_GEO afin d'avoir un SRID pour les données de cette table après leur import
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'TEMP_TA_GG_GEO',
+    'ora_geometry',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
 COMMIT;
 
 -- 9. Trigger de calcul des surface en m² des objets de la table TA_GG_GEO
