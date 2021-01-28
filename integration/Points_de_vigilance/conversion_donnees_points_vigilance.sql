@@ -67,15 +67,7 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
                     THEN 368
             END
         ),
-        fid_lib_categorie =(
-            CASE
-                WHEN "priorite" IN(1, 5)
-                    THEN 360
-                WHEN "priorite" IN(2, 3, 9, 11, 12)
-                    THEN 361
-            END
-        ),
-            fid_lib_statut =(
+        fid_lib_statut =(
             CASE
                 WHEN "priorite" = 1
                     THEN 358

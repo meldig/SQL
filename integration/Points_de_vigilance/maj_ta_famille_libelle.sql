@@ -8,34 +8,7 @@
 
 SET SERVEROUTPUT ON
 BEGIN
-    SAVEPOINT POINT_SAUVERGARDE_NOMENCLATURE_PTS_VIGILANCE;
--- 1. Insertion des familles liées aux points de vigilance dans G_GEO.TEMP_FAMILLE ;
-    MERGE INTO G_GEO.TEMP_FAMILLE a
-        USING(
-            SELECT
-                "valeur"
-            FROM
-                G_GEO.TEMP_FAMILLE_POINT_VIGILANCE
-        )t
-        ON (UPPER(a.valeur) = UPPER(t.valeur))
-    WHEN NOT MATCHED THEN
-        INSERT(a.valeur)
-        VALUES(t.valeur);
-
-    -- 2. Insertion des libellés longs dans G_GEO.TEMP_LIBELLE_LONG  
-    MERGE INTO G_GEO.TEMP_LIBELLE_LONG a
-        USING(
-            SELECT
-                "valeur"
-            FROM
-                G_GEO.TEMP_LIBELLE_POINT_VIGILANCE
-        )t
-        ON (UPPER(a.valeur) = UPPER(t.valeur))
-    WHEN NOT MATCHED THEN
-        INSERT(a.valeur)
-        VALUES(t.valeur);
-        
-    -- 3. Insertion dans la table pivot G_GEO.TEMP_FAMILLE_LIBELLE
+    SAVEPOINT POINT_SAUVERGARDE_NOMENCLATURE_PTS_VIGILANCE;      
     MERGE INTO G_GEO.TEMP_FAMILLE_LIBELLE a
         USING(
             SELECT *
@@ -77,40 +50,6 @@ BEGIN
     WHEN NOT MATCHED THEN
         INSERT(a.fid_famille, a.fid_libelle_long)
         VALUES(t.fid_famille, t.fid_libelle_long);
-
-    -- 4. Insertion dans la table G_GEO.TEMP_LIBELLE
-    MERGE INTO G_GEO.TEMP_LIBELLE a
-        USING(
-            SELECT
-                b.objectid AS fid_libelle_long
-            FROM
-                G_GEO.TEMP_LIBELLE_LONG b
-            WHERE
-                UPPER(b.valeur) IN(
-                    UPPER('bâti'),
-                    UPPER('voirie (clôture,fossé et bordure)'),  
-                    UPPER('Modification manuelle par les topos'),
-                    UPPER('Vérification terrain'), 
-                    UPPER('Vérification orthophoto'),
-                    UPPER('chantier potentiel'),
-                    UPPER('chantier en cours'),
-                    UPPER('chantier terminé'),
-                    UPPER('erreur carto'),
-                    UPPER('erreur topo'),
-                    UPPER('point de vigilance'),
-                    UPPER('insertion'),
-                    UPPER('édition'),
-                    UPPER('clôture'),
-                    UPPER('traité'), 
-                    UPPER('non-traité'),
-                    UPPER('prioritaire'), 
-                    UPPER('non-prioritaire')
-                )
-        )t
-        ON (a.fid_libelle_long = t.fid_libelle_long)
-    WHEN NOT MATCHED THEN
-        INSERT(a.fid_libelle_long)
-        VALUES(t.fid_libelle_long);
 COMMIT;
 -- 5. En cas d'exeption levée, faire un ROLLBACK
 EXCEPTION
