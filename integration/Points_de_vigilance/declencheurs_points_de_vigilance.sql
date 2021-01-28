@@ -1,11 +1,11 @@
 /*
-1. Déclencheur permettant de faire l'audit de la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
-2. Déclencheur empêchant les associations improbables dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
+1. Déclencheur permettant de faire l'audit de la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE ;
+2. Déclencheur empêchant les associations improbables dans la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE ;
 3. En cas d'exeption levée, faire un ROLLBACK ;
 */
--- 1. Déclencheur permettant de faire l'audit de la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE
-create or replace TRIGGER G_GESTIONGEO.A_IUX_TA_GG_POINT_VIGILANCE_ACTION
-AFTER INSERT OR UPDATE ON G_GESTIONGEO.TA_GG_POINT_VIGILANCE
+-- 1. Déclencheur permettant de faire l'audit de la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE
+create or replace TRIGGER G_GESTIONGEO.A_IUX_TEMP_GG_POINT_VIGILANCE_ACTION
+AFTER INSERT OR UPDATE ON G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE
 FOR EACH ROW
     DECLARE
         username VARCHAR2(100);
@@ -16,13 +16,13 @@ BEGIN
     -- Sélection de l'id du pnom correspondant dans la table TA_GG_SOURCE
     SELECT src_id INTO v_src_id FROM G_GESTIONGEO.TA_GG_SOURCE WHERE src_libel = username;
 
-    IF INSERTING THEN -- En cas d'insertion on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation et la date de création dans TA_GG_POINT_VIGILANCE_AUDIT.date_creation
-        INSERT INTO G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, fid_pnom_creation, date_creation)
+    IF INSERTING THEN -- En cas d'insertion on insère le SRC_ID correspondant à l'utilisateur dans TEMP_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation et la date de création dans TEMP_GG_POINT_VIGILANCE_AUDIT.date_creation
+        INSERT INTO G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, fid_pnom_creation, date_creation)
             VALUES(:new.objectid, v_src_id, sysdate);
     END IF;
 
-    IF UPDATING THEN -- En cas d'édition on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification et la date de modification dans TA_GG_POINT_VIGILANCE_AUDIT.date_modification
-        UPDATE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT
+    IF UPDATING THEN -- En cas d'édition on insère le SRC_ID correspondant à l'utilisateur dans TEMP_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification et la date de modification dans TEMP_GG_POINT_VIGILANCE_AUDIT.date_modification
+        UPDATE G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE_AUDIT
         SET 
             fid_pnom_modification = v_src_id,
             date_modification = sysdate
@@ -32,12 +32,12 @@ BEGIN
         
     EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUX_TA_GG_POINT_VIGILANCE_ACTION','trigger@lillemetropole.fr');
+            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUX_TEMP_GG_POINT_VIGILANCE_ACTION','trigger@lillemetropole.fr');
 END;
 /
--- 2. Déclencheur empêchant les associations improbables dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE
-create or replace TRIGGER G_GESTIONGEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE
-BEFORE INSERT OR UPDATE ON TA_GG_POINT_VIGILANCE
+-- 2. Déclencheur empêchant les associations improbables dans la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE
+create or replace TRIGGER G_GESTIONGEO.B_IUX_TEMP_GG_POINT_VIGILANCE_CONTROLE
+BEFORE INSERT OR UPDATE ON TEMP_GG_POINT_VIGILANCE
 FOR EACH ROW
 DECLARE
     correction_topo NUMBER(38,0);
@@ -93,7 +93,6 @@ BEGIN
 /*
     EXCEPTION
             WHEN OTHERS THEN
-                mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');*/
+                mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.B_IUX_TEMP_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');*/
 END;
-
 /
