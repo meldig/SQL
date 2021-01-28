@@ -46,25 +46,19 @@ BEGIN
                             b.valeur AS famille,
                             CASE
                                 WHEN UPPER(b.valeur) = UPPER('type de signalement des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('Modification manuelle par les topos'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'))
+                                        AND UPPER(c.valeur) IN (UPPER('correction, modification topo'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'), UPPER('levé topo souhaité'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('type de vérification des points de vigilance') 
                                         AND UPPER(c.valeur) IN (UPPER('chantier potentiel'), UPPER('chantier en cours'), UPPER('chantier terminé'))
                                     THEN c.objectid
-                                WHEN UPPER(b.valeur) = UPPER('catégories des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('prioritaire'), UPPER('non-prioritaire'))
-                                    THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('éléments de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('bâti'), UPPER('voirie (clôture, fossé et bordure)'))
+                                        AND UPPER(c.valeur) IN (UPPER('bâti'), UPPER('voirie (clôture, fossé et bordure)'), UPPER('bâti et voirie'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('statut du dossier') 
                                         AND UPPER(c.valeur) IN (UPPER('traité'), UPPER('non-traité'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('type de points de vigilance') 
                                         AND UPPER(c.valeur) IN (UPPER('erreur carto'), UPPER('erreur topo'), UPPER('point de vigilance'))
-                                    THEN c.objectid
-                                WHEN UPPER(b.valeur) = UPPER('type des actions des pnoms') 
-                                        AND UPPER(c.valeur) IN (UPPER('insertion'), UPPER('édition'), UPPER('clôture'))
                                     THEN c.objectid
                             END AS fid_libelle_long,
                             c.valeur AS libelle_long
