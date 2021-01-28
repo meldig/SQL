@@ -1,5 +1,5 @@
 @echo off
-echo Bienvenu dans la creation en base des objets necessaires aux points de vigilance et à l import des donnees !
+echo Bienvenu dans la creation en base des tables des points de vigilance !
 
 :: 1. Déclaration et valorisation des variables
 SET /p chemin_traitement="Veuillez saisir le chemin d'accès du dossier contenant les codes à exécuter :"
