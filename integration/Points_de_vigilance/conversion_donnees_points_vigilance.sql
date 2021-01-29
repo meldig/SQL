@@ -6,7 +6,7 @@ Le champ priorite correspond à plusieurs informations différentes qui sont div
 1. Suppression des doublons géométriques ;
 2. Ajout des champs permettant de catégoriser les points de vigilance ;
 3. Mise à jour des nouveaux champs en fonction de la valeur du champ priorite ;
-4. Insertion des données dans la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE ;
+4. Insertion des données dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
 5. En cas d'exeption levée, faire un ROLLBACK ;
 */
 
@@ -86,8 +86,8 @@ Le tableau de correspondance ayant permis de créer ces règles se trouve ici :
                                 UPPER(b.valeur) = UPPER('point de vigilance'))
     ;
 
--- 4. Insertion des données dans la table G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE ;
-    MERGE INTO G_GESTIONGEO.TEMP_GG_POINT_VIGILANCE a
+-- 4. Insertion des données dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE ;
+    MERGE INTO G_GESTIONGEO.TA_GG_POINT_VIGILANCE a
         USING(
             SELECT
                 b.FID_TYPE_SIGNALEMENT,

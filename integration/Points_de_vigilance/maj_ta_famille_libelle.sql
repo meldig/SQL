@@ -1,7 +1,7 @@
 /*
 1. Insertion des familles liées aux points de vigilance dans G_GEO.TEMP_FAMILLE ;
 2. Insertion des libellés longs dans G_GEO.TEMP_LIBELLE_LONG ;
-3. Insertion dans la table pivot G_GEO.TEMP_FAMILLE_LIBELLE ;
+3. Insertion dans la table pivot G_GEO.TA_FAMILLE_LIBELLE ;
 4. Insertion dans la table G_GEO.TEMP_LIBELLE ;
 5. En cas d'exeption levée, faire un ROLLBACK ;
 */
@@ -9,7 +9,7 @@
 SET SERVEROUTPUT ON
 BEGIN
     SAVEPOINT POINT_SAUVERGARDE_NOMENCLATURE_PTS_VIGILANCE;      
-    MERGE INTO G_GEO.TEMP_FAMILLE_LIBELLE a
+    MERGE INTO G_GEO.TA_FAMILLE_LIBELLE a
         USING(
             SELECT *
                 FROM
@@ -19,7 +19,7 @@ BEGIN
                             b.valeur AS famille,
                             CASE
                                 WHEN UPPER(b.valeur) = UPPER('type de signalement des points de vigilance') 
-                                        AND UPPER(c.valeur) IN (UPPER('correction, modification topo'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'), UPPER('levé topo souhaité'))
+                                        AND UPPER(c.valeur) IN (UPPER('topo : modification manuelle souhaitée'), UPPER('Vérification terrain'), UPPER('Vérification orthophoto'), UPPER('topo : levé souhaité'))
                                     THEN c.objectid
                                 WHEN UPPER(b.valeur) = UPPER('type de vérification des points de vigilance') 
                                         AND UPPER(c.valeur) IN (UPPER('chantier potentiel'), UPPER('chantier en cours'), UPPER('chantier terminé'))
