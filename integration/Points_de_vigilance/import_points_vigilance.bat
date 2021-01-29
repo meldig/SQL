@@ -20,6 +20,7 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.10\share\proj"
 :: 5. Importer les données brutes en base
 :: 5.1. Import des points de vigilance
 ogr2ogr -f OCI OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet_yann.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
-ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
+ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet_gaelle.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
+ogr2ogr -f OCI -append OCI:%USER%/%MDP%@%INSTANCE% %chemin_import%\Point_interet_olivier.shp -nln TEMP_POINT_VIGILANCE -nlt point -lco SRID=2154 -dim 2
 
 pause
