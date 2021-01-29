@@ -212,6 +212,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"DOS_VOIE" NUMBER(8,0),
 	"DOS_MAO" VARCHAR2(200 BYTE),
 	"DOS_ENTR" VARCHAR2(200 BYTE),
+    "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
 	"DOS_URL_FILE" VARCHAR2(200 BYTE),
 	"ORDER_ID" NUMBER(10,0),
 	"DOS_NUM" NUMBER(38,0) NULL,
@@ -242,6 +243,7 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_INSEE IS 'Code INSEE de la comm
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_VOIE IS 'Clé étrangère (sans contrainte de FK)';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_MAO IS 'Nom du maître d''ouvrage';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_ENTR IS 'Nom de l''entreprise responsable du levé';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_URL_FILE IS 'Lien vers le fichier dwg intégré dans infogeo par DynMap';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_NUM IS 'Numéro de chaque dossier - différent de son identifiant ID_DOS (PK). Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_OLD_ID IS 'Ancien identifiant du dossier';
@@ -294,6 +296,7 @@ CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
     dos_dmaj,
     dos_mao,
     dos_entr,
+    entreprise_travaux,
     dos_url_file,
     dos_dt_deb_tr,
     dos_dt_fin_tr,
@@ -319,6 +322,7 @@ SELECT
     a.dos_dmaj,
     a.dos_mao,
     a.dos_entr,
+    a.entreprise_travaux,
     a.dos_url_file,
     a.dos_dt_deb_tr,
     a.dos_dt_fin_tr,
@@ -351,6 +355,7 @@ COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.USER_ID IS 'Pnom de l''agent aya
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DMAJ IS 'Date de la dernière édition du dossier, issu de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_MAO IS 'Maître d''ouvrage (commanditaire) du dossie (issu de TA_GG_DOSSIER).';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_ENTR IS 'Entrprise responsable du levé, issue de TA_GG_DOSSIER';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ENTREPRISE_TRAVAUX IS 'entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_URL_FILE IS 'Chemin d''accès des fichiers dwg à partir desquels le périmètre du dossier à été créé/modifié en base (fichiers importé par fme), issu de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_DEB_TR IS 'Date de début des travaux issue de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_FIN_TR IS 'Date de fin des travaux issue de TA_GG_DOSSIER.';
