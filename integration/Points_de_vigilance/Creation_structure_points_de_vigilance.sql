@@ -217,7 +217,7 @@ BEGIN
         
     EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUX_TA_GG_POINT_VIGILANCE_ACTION','trigger@lillemetropole.fr');
+            mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUX_TA_GG_POINT_VIGILANCE_ACTION','bjacq@lillemetropole.fr', 'sysdig@lillemetropole.fr');
 END;
 /
 -- 2. Déclencheur empêchant les associations improbables dans la table G_GESTIONGEO.TA_GG_POINT_VIGILANCE
@@ -238,7 +238,7 @@ BEGIN
         G_GEO.TA_LIBELLE a
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
     WHERE
-        UPPER(b.valeur) = UPPER('correction, modification topo');
+        UPPER(b.valeur) = UPPER('topo : modification manuelle souhaitée');
 
     SELECT
         a.objectid
@@ -261,23 +261,23 @@ BEGIN
  -- Contrôle des associations improbables
     IF INSERTING THEN
         IF (:new.FID_TYPE_SIGNALEMENT = correction_topo AND :new.FID_VERIFICATION = chantier_en_cours) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier en cours');
+            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "topo : modification manuelle souhaitée" ne peut pas aller avec une vérification de type chantier en cours');
         END IF;
         IF (:new.FID_TYPE_SIGNALEMENT = correction_topo AND :new.FID_VERIFICATION = chantier_potentiel) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier potentiel');
+            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "topo : modification manuelle souhaitée" ne peut pas aller avec une vérification de type chantier potentiel');
         END IF;
     END IF;
     IF UPDATING THEN
         IF (:new.FID_TYPE_SIGNALEMENT = correction_topo AND :new.FID_VERIFICATION = chantier_en_cours) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier en cours');
+            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "topo : modification manuelle souhaitée" ne peut pas aller avec une vérification de type chantier en cours');
         END IF;
         IF (:new.FID_TYPE_SIGNALEMENT = correction_topo AND :new.FID_VERIFICATION = chantier_potentiel) THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "modification manuelle par les topos" ne peut pas aller avec une vérification de type chantier potentiel');
+            RAISE_APPLICATION_ERROR(-20001, 'Un signalement de type "topo : modification manuelle souhaitée" ne peut pas aller avec une vérification de type chantier potentiel');
         END IF;
     END IF;
-/*
+
     EXCEPTION
             WHEN OTHERS THEN
-                mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','trigger@lillemetropole.fr');*/
+                mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.B_IUX_TA_GG_POINT_VIGILANCE_CONTROLE','bjacq@lillemetropole.fr', 'sysdig@lillemetropole.fr');
 END;
 /
