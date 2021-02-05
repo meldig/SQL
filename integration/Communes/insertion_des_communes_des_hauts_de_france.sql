@@ -83,7 +83,7 @@ MERGE INTO G_GEO.TA_DATE_ACQUISITION a
     USING(
         SELECT 
             TO_DATE(sysdate, 'dd/mm/yy') AS date_insertion, 
-            '01/01/2019' AS date_millesime,
+            '01/01/2020' AS date_millesime,
             sys_context('USERENV','OS_USER') AS nom_obtenteur 
         FROM DUAL
     )t
@@ -128,7 +128,7 @@ MERGE INTO G_GEO.TA_METADONNEE a
         WHERE
             UPPER(b.nom_source) = UPPER('BDTOPO')
             AND c.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND c.millesime = '01/01/2019'
+            AND c.millesime = '01/01/2020'
             AND c.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND d.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
             AND d.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
@@ -158,7 +158,7 @@ MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
         WHERE
             UPPER(c.nom_source) = UPPER('BDTOPO')
             AND d.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND d.millesime = '01/01/2019'
+            AND d.millesime = '01/01/2020'
             AND d.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND e.url = 'https://geoservices.ign.fr/documentation/diffusion/index.html'
             AND e.methode_acquisition = 'Envoi d''une demande de telechargement de la bdtopo via un compte IGN de la DIG. Un mail nous est renvoye avec un lien de telechargement.'
@@ -556,7 +556,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
         WHERE 
             INSEE_DEP IN('02', '59', '60', '62', '80')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
             AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
             AND UPPER(c.valeur) = UPPER('commune simple')
             AND UPPER(h.nom_source) = UPPER('BdTopo')
@@ -595,7 +595,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
         WHERE 
             INSEE_DEP IN('02', '59', '60', '62', '80')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
             AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
             AND UPPER(h.nom_source) = UPPER('BdTopo')
     )t
@@ -639,7 +639,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             -- Condition d'égalité de géométrie entre la table d'import et TA_COMMUNE
             SDO_EQUAL(a.ORA_GEOMETRY, b.GEOM) = 'TRUE'
             AND UPPER(f.nom_source) = UPPER('BdTopo')
-            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND UPPER(j.valeur) = UPPER('Code INSEE')
             AND h.valeur = a.INSEE_COM
@@ -673,7 +673,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             -- Condition d'égalité de géométrie entre la table d'import et TA_COMMUNE
             SDO_EQUAL(a.ORA_GEOMETRY, b.GEOM) = 'TRUE'
             AND UPPER(f.nom_source) = UPPER('BdTopo')
-            AND g.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
             AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             AND UPPER(j.valeur) = UPPER('Code INSEE')
             AND h.valeur = a.INSEE_COM
@@ -881,7 +881,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                     UPPER(i.valeur) = UPPER('code insee')
                     --AND UPPER(k.valeur) IN (UPPER('code département'), UPPER('code Territoire'), UPPER('code Unité Territoriale'), UPPER('code région'))
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+                    AND o.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
                     AND o.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             )t
         WHERE
@@ -944,7 +944,7 @@ MERGE INTO G_GEO.TEMP_ZA_COMMUNES a
                 WHERE 
                     UPPER(i.valeur) = UPPER('code insee')
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = TO_DATE('01/01/19', 'dd/mm/yy')
+                    AND o.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
                     AND o.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
             )t
         WHERE
