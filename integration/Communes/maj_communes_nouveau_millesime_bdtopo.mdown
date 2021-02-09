@@ -42,14 +42,15 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 #### 3. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
 
-**Rappel : ** Il faut **toujours** insérer les communes simples en **premier** en les communes associées/déléguées en **second**.
+**Rappel : ** Il faut **toujours** insérer les **communes simples en premier** en les **communes associées/déléguées en second**. La raison est d'une part qu'il faut de toute manière insérer les communes simples en base et d'aurte part que les métadonnées sont créées dans le code d'import des communes simples, pas dans celui des communes associées/déléguées (ces métadonnées sont valables pour les deux types de communes).
 
 * Pour insérer les communes simples dans les tables TA_COMMUNE, TA_IDENTIFIANT_COMMUNE et TA_ZA_COMMUNES, veuillez utiliser le fichier ** qui appellera le fichier ** ;  
 
 * Pour insérer les communes associées/déléguées dans les tables TA_COMMUNE et TA_IDENTIFIANT_COMMUNE, veuillez utiliser le fichier ** qui appellera le fichier ** ;  
 
+##### Explications :
 
-
+* Fichier 
 1. Insérer une nouvelle métadonnée en renseignant les tables *TA_DATE_ACQUISITION*, *TA_PROVENANCE*, TA_METADONNEE* et *TA_METADONNEE_RELATION_ORGANISME*. Aucune insertion n'est faite dans la table *TA_ORGANISME* puisque l'IGN y est déjà ;
 
 2. Insérer les nouvelles géométries dans *TA_COMMUNE*. S'il n'y a eu aucune fusion depuis le dernier millésime, alors seules les communes simples seront insérées, sinon les communes associées le seront aussi ;
