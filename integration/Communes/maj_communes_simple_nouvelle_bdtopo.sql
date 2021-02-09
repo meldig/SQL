@@ -167,6 +167,7 @@ WHEN NOT MATCHED THEN
     VALUES(t.fid_commune, t.fid_identifiant);
 
 -- Insertion dans TA_ZA_COMMUNES
+-- 1. Association de toutes les communes avec leurs zones supra_communales ayant un code
 MERGE INTO G_GEO.TA_ZA_COMMUNES a
     USING(
         SELECT *
@@ -290,6 +291,60 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
         ORDER BY
             t.type_code_zone_admin,
             t.code_zone_admin
+    )t
+ON (a.fid_commune = t.fid_commune AND a.fid_zone_administrative = t.fid_zone_administrative AND a.debut_validite = t.debut_validite AND a.fin_validite = t.fin_validite)
+WHEN NOT MATCHED THEN
+    INSERT(a.FID_COMMUNE, a.FID_ZONE_ADMINISTRATIVE, a.DEBUT_VALIDITE, a.FIN_VALIDITE)
+    VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);
+
+-- 2. Association des communes avec leur Métropole (ne disposant pas de code) 
+MERGE INTO G_GEO.TA_ZA_COMMUNES a
+    USING(
+        SELECT *
+        FROM
+            (
+                SELECT 
+                    CASE
+                         WHEN d.valeur IN('59247','59332','59650','59173','59356','59257','59566','59133','59056','59470','59550',
+                                        '59303','59196','59648','59477','59410','59585','59602','59017','59508','59009','59598',
+                                        '59106','59195','59643','59507','59088','59220','59670','59609','59317','59523','59660',
+                                        '59275','59044','59343','59350','59011','59487','59208','59346','59146','59013','59360',
+                                        '59560','59437','59286','59193','59458','59281','59025','59250','59653','59524','59388',
+                                        '59512','59005','59143','59201','59658','59052','59316','59278','59320','59553','59252',
+                                        '59457','59051','59128','59611','59163','59368','59421','59339','59599','59098','59152',
+                                        '59367','59352','59386','59328','59527','59378','59656','59522','59426','59090','59299',
+                                        '59636','59646','59482','59256','59202','59371','59279'
+                                    )
+                                AND UPPER(k.valeur) = UPPER('Métropole')
+                                AND UPPER(p.valeur) = UPPER('Métropole Européenne de Lille')
+                            THEN b.objectid
+                    END AS fid_commune, 
+                    e.objectid AS fid_zone_administrative,
+                    k.valeur AS type_zone_administrative,
+                    '01/01/2021' AS debut_validite, 
+                    '01/01/2999' AS fin_validite
+                FROM 
+                    -- Sélection des objets dans TA_COMMUNE disposant d'un code INSEE (certifiant que ce sont des communes) et provenant du millésime que l'on vient d'insérer.
+                    G_GEO.TA_COMMUNE b 
+                    INNER JOIN G_GEO.TA_IDENTIFIANT_COMMUNE c ON c.fid_commune = b.objectid
+                    INNER JOIN G_GEO.TA_CODE d ON d.objectid = c.fid_identifiant
+                    INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = d.fid_libelle
+                    INNER JOIN G_GEO.TA_LIBELLE_LONG i ON i.objectid = h.fid_libelle_long
+                    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = b.fid_metadonnee
+                    INNER JOIN G_GEO.TA_SOURCE n ON n.objectid = m.fid_source
+                    INNER JOIN G_GEO.TA_DATE_ACQUISITION o ON o.objectid = m.fid_acquisition, 
+                    -- Sélection des zones administratives que l'on veut associer aux communes
+                    G_GEO.TA_ZONE_ADMINISTRATIVE e
+                    INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = e.fid_libelle
+                    INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
+                    INNER JOIN G_GEO.TA_NOM p ON p.objectid = e.fid_nom
+                WHERE 
+                    UPPER(i.valeur) = UPPER('code insee')
+                    AND UPPER(n.nom_source) = UPPER('BdTopo')
+                    AND o.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
+            )t
+        WHERE
+            t.fid_commune IS NOT NULL
     )t
 ON (a.fid_commune = t.fid_commune AND a.fid_zone_administrative = t.fid_zone_administrative AND a.debut_validite = t.debut_validite AND a.fin_validite = t.fin_validite)
 WHEN NOT MATCHED THEN
