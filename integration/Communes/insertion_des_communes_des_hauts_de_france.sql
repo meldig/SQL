@@ -840,7 +840,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                                 AND UPPER(k.valeur) = UPPER('code Territoire')
                             THEN b.objectid
                         WHEN d.valeur IN('59193','59220','59256','59316','59343','59346','59360','59437','59507','59560','59585',
-                                        '59648','59609', '59185', '59112', '59221', '59251', '59112', '59011', '59005', '59052', '59133', '59477'
+                                        '59648','59609', '59011', '59005', '59052', '59133', '59477'
                                 )
                                 AND g.valeur = '7'
                                 AND UPPER(k.valeur) = UPPER('code Territoire')

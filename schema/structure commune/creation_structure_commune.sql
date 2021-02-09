@@ -602,7 +602,7 @@ COMMIT;
 CREATE INDEX ta_commune_SIDX
 ON ta_commune(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
+PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
 -- 6. Création des clés étrangères
 -- 6.1. Clé étrangère vers la table TA_LIBELLE
