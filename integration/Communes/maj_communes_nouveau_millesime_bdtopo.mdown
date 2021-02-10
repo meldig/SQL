@@ -3,10 +3,10 @@
 ## Objectif : insérer les communes du nouveau millésime de la BdTopo de l'IGN en base.
 
 ## Sommaire :
-I. Liste et ordre des étapes d'import des communes du nouveau millésime en base ;
-II. Présentation de l'import des données brutes en base dans une table temporaire ;
-III. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
-IV. Création de tables test afin de tester les codes mentionnés ci-dessus ;
+1. Liste et ordre des étapes d'import des communes du nouveau millésime en base ;
+2. Présentation de l'import des données brutes en base dans une table temporaire ;
+3. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
+4. Création de tables test afin de tester les codes mentionnés ci-dessus ;
 
 ## I. Liste et ordre des étapes d'import des communes du nouveau millésime en base
 
