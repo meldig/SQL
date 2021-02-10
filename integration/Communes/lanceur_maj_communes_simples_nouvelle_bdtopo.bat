@@ -16,5 +16,5 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 CD C:/ora12c/R1/BIN
 
 :: 8. Execution de sqlplus. pour lancer les requetes SQL.
-sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_normalisation%\maj_communes_a_partir_du_nouveau_millesime_bdtopo.sql.sql
+sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_normalisation%\maj_communes_simples_nouvelle_bdtopo.sql
 pause

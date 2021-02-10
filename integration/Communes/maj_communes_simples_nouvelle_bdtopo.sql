@@ -12,7 +12,7 @@ MERGE INTO G_GEO.TA_DATE_ACQUISITION a
     USING(
         SELECT 
             TO_DATE(sysdate, 'dd/mm/yy') AS date_insertion, 
-            '01/01/2020' AS date_millesime,
+            '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS date_millesime,
             sys_context('USERENV','OS_USER') AS nom_obtenteur 
         FROM DUAL
     )t
@@ -56,7 +56,7 @@ MERGE INTO G_GEO.TA_METADONNEE a
             G_GEO.TA_PROVENANCE d
         WHERE
             UPPER(b.nom_source) = UPPER('BDTOPO')
-            AND c.millesime = '01/01/2020'
+            AND c.millesime = (SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL)
             AND c.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND d.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#bd-topo'
             AND d.methode_acquisition = 'La BdTopo est diffusée librement depuis le 01/01/2021, conformément à la licence Etalab 2.0. la BdTopo a donc été téléchargée depuis le site de l''IGN, sans demande préalable.'
@@ -85,7 +85,7 @@ MERGE INTO G_GEO.TA_METADONNEE_RELATION_ORGANISME a
             G_GEO.TA_ORGANISME f
         WHERE
             UPPER(c.nom_source) = UPPER('BDTOPO')
-            AND d.millesime = '01/01/2020'
+            AND d.millesime = (SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL)
             AND d.nom_obtenteur = sys_context('USERENV','OS_USER')
             AND e.url = 'https://geoservices.ign.fr/documentation/diffusion/telechargement-donnees-libres.html#bd-topo'
             AND e.methode_acquisition = 'La BdTopo est diffusée librement depuis le 01/01/2021, conformément à la licence Etalab 2.0. la BdTopo a donc été téléchargée depuis le site de l''IGN, sans demande préalable.'
@@ -117,8 +117,7 @@ MERGE INTO G_GEO.TA_COMMUNE a
             INNER JOIN G_GEO.TA_SOURCE h ON h.objectid = f.fid_source
         WHERE 
             INSEE_DEP IN('02', '59', '60', '62', '80')
-            --AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
-            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
+            AND g.millesime = TO_DATE((SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL), 'dd/mm/yy')
             AND g.nom_obtenteur = (SELECT sys_context('USERENV','OS_USER') FROM DUAL)
             AND UPPER(c.valeur) = UPPER('commune simple')
             AND UPPER(h.nom_source) = UPPER('BdTopo')
@@ -156,8 +155,7 @@ MERGE INTO G_GEO.TA_IDENTIFIANT_COMMUNE a
             -- Condition d'égalité de géométrie entre la table d'import et TA_COMMUNE
             SDO_EQUAL(a.ORA_GEOMETRY, b.GEOM) = 'TRUE'
             AND UPPER(f.nom_source) = UPPER('BdTopo')
-            AND g.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
-            --AND g.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+            AND g.millesime = TO_DATE((SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL), 'dd/mm/yy')
             AND UPPER(j.valeur) = UPPER('Code INSEE')
             AND h.valeur = a.INSEE_COM
     ) t
@@ -260,7 +258,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                     e.objectid AS fid_zone_administrative,
                     g.valeur AS code_zone_admin,
                     k.valeur AS type_code_zone_admin,
-                    '01/01/2021' AS debut_validite, 
+                    '01/01/' || EXTRACT(YEAR FROM sysdate) AS debut_validite, 
                     '01/01/2999' AS fin_validite  
                 FROM 
                     -- Sélection des objets dans TA_COMMUNE disposant d'un code INSEE (certifiant que ce sont des communes) et provenant du millésime que l'on vient d'insérer.
@@ -281,10 +279,9 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                     INNER JOIN G_GEO.TA_NOM p ON p.objectid = e.fid_nom
                 WHERE 
                     UPPER(i.valeur) = UPPER('code insee')
-                    --AND UPPER(k.valeur) IN (UPPER('code département'), UPPER('code Territoire'), UPPER('code Unité Territoriale'), UPPER('code région'))
+                    AND UPPER(k.valeur) IN (UPPER('code département'), UPPER('code Territoire'), UPPER('code Unité Territoriale'), UPPER('code région'))
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
-                    --AND o.date_acquisition = TO_DATE(sysdate, 'dd/mm/yy')
+                    AND o.millesime = TO_DATE((SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL), 'dd/mm/yy')
             )t
         WHERE
             t.fid_commune IS NOT NULL
@@ -321,7 +318,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                     END AS fid_commune, 
                     e.objectid AS fid_zone_administrative,
                     k.valeur AS type_zone_administrative,
-                    '01/01/2021' AS debut_validite, 
+                    '01/01/' || EXTRACT(YEAR FROM sysdate) AS debut_validite, 
                     '01/01/2999' AS fin_validite
                 FROM 
                     -- Sélection des objets dans TA_COMMUNE disposant d'un code INSEE (certifiant que ce sont des communes) et provenant du millésime que l'on vient d'insérer.
@@ -341,7 +338,7 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
                 WHERE 
                     UPPER(i.valeur) = UPPER('code insee')
                     AND UPPER(n.nom_source) = UPPER('BdTopo')
-                    AND o.millesime = TO_DATE('01/01/20', 'dd/mm/yy')
+                    AND o.millesime = TO_DATE((SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL), 'dd/mm/yy')
             )t
         WHERE
             t.fid_commune IS NOT NULL
@@ -349,11 +346,11 @@ MERGE INTO G_GEO.TA_ZA_COMMUNES a
 ON (a.fid_commune = t.fid_commune AND a.fid_zone_administrative = t.fid_zone_administrative AND a.debut_validite = t.debut_validite AND a.fin_validite = t.fin_validite)
 WHEN NOT MATCHED THEN
     INSERT(a.FID_COMMUNE, a.FID_ZONE_ADMINISTRATIVE, a.DEBUT_VALIDITE, a.FIN_VALIDITE)
-    VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);
+    VALUES(t.fid_commune, t.fid_zone_administrative, t.debut_validite, t.fin_validite);  
     
 -- Clôture de la validité des données de l'ancien millésime afin que les zones supra-communales soient construites à partir de la BdTopo la plus récente
 UPDATE G_GEO.TA_ZA_COMMUNES
-SET fin_validite = '31/12/2020'
+SET fin_validite = (SELECT '31/12/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL)
 WHERE
     fid_commune IN(
 SELECT
@@ -369,7 +366,7 @@ FROM
     INNER JOIN G_GEO.TA_ZA_COMMUNES g ON g.fid_commune = c.objectid
     INNER JOIN G_GEO.TA_LIBELLE j ON j.objectid = c.fid_lib_type_commune
     INNER JOIN G_GEO.TA_LIBELLE_LONG k ON k.objectid = j.fid_libelle_long
-    -- MTD -> Les commentaires de cette partie de FROM seront enlevés une fois les correctifs appliqués en prod
+    -- Les métadonnées permettant de ne mettre à jour que les communes d'un certain millésime
     INNER JOIN G_GEO.TA_METADONNEE l ON l.objectid = c.fid_metadonnee
     INNER JOIN G_GEO.TA_SOURCE m ON m.objectid = l.fid_source
     INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME n ON n.fid_metadonnee = l.objectid
@@ -380,8 +377,8 @@ WHERE
     AND UPPER(k.valeur) = UPPER('commune simple')
     AND UPPER(m.nom_source) = UPPER('bdtopo')
     AND UPPER(o.acronyme) = UPPER('ign')
-    AND p.millesime = '01/01/2019'
-    AND g.debut_validite = '01/01/2020'
+    AND p.millesime = (SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-2) AS Annee FROM DUAL)
+    AND g.debut_validite = (SELECT '01/01/' || (EXTRACT(YEAR FROM sysdate)-1) AS Annee FROM DUAL)
 );
 COMMIT;
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.

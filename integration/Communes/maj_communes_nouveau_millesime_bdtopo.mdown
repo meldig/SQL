@@ -6,11 +6,11 @@
 1. Liste et ordre des étapes d'import des communes du nouveau millésime en base ;
 2. Présentation de l'import des données brutes en base dans une table temporaire ;
 3. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
-4. Création de tables test afin de tester les codes ci-dessus ;
+4. Création de tables test afin de tester les codes mentionnés ci-dessus ;
 
 #### 1. Liste et ordre des étapes d'import des communes du nouveau millésime en base
 
-1. Pré-requis : vérifier dans le journal des communes si des fusions de communes ont eu lieu depuis le dernier millésime ou non ;
+1. Pré-requis : vérifiez via ce lien  si des fusions de communes ont eu lieu depuis le dernier millésime ou non ;
 2. Import des données brutes en base dans une table temporaire ;
 3. Création de la nouvelle métadonnée ;
 4. Insertion des communes du nouveau millésime dans TA_COMMUNE ;
@@ -21,6 +21,9 @@
 #### 2. Présentation de l'import des données brutes en base dans une table temporaire ;
 
 Double-cliquez sur le fichier *lanceur_codes_insertion_communes.bat* et laissez-vous guider, les communes simples et communes associées seront importées.  
+**Rappel :** les fichiers shape sont situés sur le réseau de la direction dans ce dossier *Donnees\Externe\IGN\BD_TOPO*.  
+
+##### Explications du code :
 
 * **Le point 2** permet de se mettre sur le disque local de l'ordinateur à partir duquel l'import est lancé ;
 
@@ -29,345 +32,62 @@ c:
 cd C:\Program Files\QGIS 3.10\bin
 ```
 
-* **Le point 3** permet de paramétrer l'encodage des données en UTF-8, ce qui est important pour conserver les accents ou les tirets présents dans les noms ds communes.
+* **Le point 3** permet de paramétrer l'encodage des données en UTF-8, ce qui est important pour conserver les accents ou les caractères spéciaux présents dans les noms des communes.
 
 ``` sql
 SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 ```
 
-* **Le point 4** permet de s'aasurer qu'ogr2ogr trouve le fichier *proj.db* afin qu'il insère en base les données dans le bon système de projection.
+* **Le point 4** permet de s'assurer qu'ogr2ogr trouve le fichier *proj.db* afin qu'il insère en base les données dans le bon système de projection (EPSG:2154).
 
-* **Les points 5 et 6** permettent quant à eux de sélectionner les communes simples et associées/déléguées par département, et de les insérer respectivement dans les tables temporaires *TEMP_COMMUNES* et *TEMP_COMMUNE_ASSOCIEE_OU_DELEGUEE*. Précisons que les requêtes de sélection dans les fichiers shape sont nécessaires car, même si l'IGN divise ses données par département, le shape du département du Nord ne contient pas que les communes du Nord, mais aussi toutes les communes frontalières des autres départements. Ces requêtes permettent donc d'éviter les doublons dans les tables temporaires.
+* **Les points 5 et 6** permettent quant à eux de sélectionner les communes simples et associées/déléguées par département, et de les insérer respectivement dans les tables temporaires *TEMP_COMMUNES* et *TEMP_COMMUNE_ASSOCIEE_OU_DELEGUEE*. Précisons que les requêtes de sélection dans les fichiers shape sont nécessaires car, même si l'IGN divise ses données par département, le shape du département du Nord (par exemple) ne contient pas que les communes du Nord, mais aussi toutes les communes frontalières des autres départements. Ces requêtes permettent donc d'éviter les doublons dans les tables temporaires.
 
 
 #### 3. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
 
-**Rappel : ** Il faut **toujours** insérer les **communes simples en premier** en les **communes associées/déléguées en second**. La raison est d'une part qu'il faut de toute manière insérer les communes simples en base et d'aurte part que les métadonnées sont créées dans le code d'import des communes simples, pas dans celui des communes associées/déléguées (ces métadonnées sont valables pour les deux types de communes).
+**Rappel : ** Il faut **toujours** insérer les **communes simples en premier** en les **communes associées/déléguées en second**. La raison est d'une part qu'il faut de toute manière insérer les communes simples en base et d'autre part que les métadonnées sont créées dans le code d'import des communes simples, pas dans celui des communes associées/déléguées. Ces métadonnées étant les mêmes pour les deux types de communes, une seule insertion suffit. **De plus,** si l'INSEE n'a enregistrée aucune fusion de communes dans les hauts-de-france pour l'année du millésime en cours d'insertion, alors il est inutile d'insérer dans les tables les communes associées/déléguées.
 
-* Pour insérer les communes simples dans les tables TA_COMMUNE, TA_IDENTIFIANT_COMMUNE et TA_ZA_COMMUNES, veuillez utiliser le fichier ** qui appellera le fichier ** ;  
+* Pour insérer les communes simples dans les tables TA_COMMUNE, TA_IDENTIFIANT_COMMUNE et TA_ZA_COMMUNES, veuillez utiliser le fichier ** qui appellera le fichier *maj_communes_simples_nouvelle_bdtopo.sql* ;  
 
 * Pour insérer les communes associées/déléguées dans les tables TA_COMMUNE et TA_IDENTIFIANT_COMMUNE, veuillez utiliser le fichier ** qui appellera le fichier ** ;  
 
 ##### Explications :
 
-* Fichier 
+* **IMPORTANT :**
+
+Dans tous les fichiers de mise à jour, les dates sont insérées par défaut de la manière suivante :
+* Nouveau millésime : premier janvier de l'année précédent l'année de publication de la donnée (année en cours). *Exemple : pour la BdTopo2020 ce sera 01/01/2020* ;
+``` SQL
+'01/01/' || (EXTRACT(YEAR FROM sysdate)-1)
+```
+
+* Date d'acquisition (insertion en base) : date du jour de l'insertion (via *sysdate*) ;
+* Date de fin de validité de l'ancien millésime dans TA_ZA_COMMUNES : 31 décembre de l'année précédent l'année en cours ;
+``` SQL
+SELECT '31/12/' || (EXTRACT(YEAR FROM sysdate)-1
+```
+
+* Date de début de validité du nouveau millésime dans TA_ZA_COMMUNES : 01 janvier de l'année en cours ;
+``` SQL
+'01/01/' || EXTRACT(YEAR FROM sysdate)
+```
+
+L'année en cours est utilisée comme point de repère pour insérer ces dates car il s'agit de l'année de publication du nouveau millésime de la BdTopo.  
+
+Si l'année d'insertion du nouveau millésime ne correspond pas à l'année n+1 du millésime, alors veuillez **d'abord** changer les dates dans le code **avant** de l'exécuter. Pour cela, vous pouvez utiliser des rechercher (*ctrl + f*) / remplacer (*ctrl + h*) avec les codes ci-dessus pour les remplacer facilement.
+
+* **Fichier maj_communes_simples_nouvelle_bdtopo.sql :**
 1. Insérer une nouvelle métadonnée en renseignant les tables *TA_DATE_ACQUISITION*, *TA_PROVENANCE*, TA_METADONNEE* et *TA_METADONNEE_RELATION_ORGANISME*. Aucune insertion n'est faite dans la table *TA_ORGANISME* puisque l'IGN y est déjà ;
 
-2. Insérer les nouvelles géométries dans *TA_COMMUNE*. S'il n'y a eu aucune fusion depuis le dernier millésime, alors seules les communes simples seront insérées, sinon les communes associées le seront aussi ;
+2. Insérer les nouvelles géométries dans *TA_COMMUNE*. S'il n'y a eu aucune fusion depuis le dernier millésime, alors seules les communes simples seront insérées, sinon les communes associées devront l'être aussi ;
 
 3. Insérer les données dans la table pivot *TA_IDENTIFIANT_COMMUNE* afin de faire le lien entre les géométries des communes et leur code INSEE ;
 
-4. Insérer les données dans la table pivot *TA_ZA_COMMUNES* afin de répartir les communes dans leurs zones suppra-communales ;
+4. Insérer les données dans la table pivot *TA_ZA_COMMUNES* afin de répartir les communes simples dans leurs zones suppra-communales ;
 
-5. Mise à jour dans TA_ZA_COMMUNES du champ fin_validité pour les communes du dernier millésime afin que les VM puissent être recompiler à partir des données de la nouvelle BdTopo ;
+5. Mise à jour dans TA_ZA_COMMUNES du champ fin_validité pour les communes simples du dernier millésime afin que les VM puissent être recompiler à partir des données de la nouvelle BdTopo ;
 
-#### 4. Création de tables test afin de tester les codes ci-dessus ;
+#### 4. Création de tables test afin de tester les codes mentionnés ci-dessus ;
 
-Les codes ci-dessous crééeront les duplicatats des tables *TA_COMMUNE*, *TA_IDENTIFIANT_COMMUNE*, *TA_CODE*, *TA_ZA_COMMUNES* :
-
-``` SQL
--- I. Création des tables de test
-DROP TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE CASCADE CONSTRAINTS;
-DROP TABLE G_GEO.TOTO_TA_ZA_COMMUNES CASCADE CONSTRAINTS;
-DROP TABLE G_GEO.TOTO_TA_CODE CASCADE CONSTRAINTS;
-DROP TABLE G_GEO.TOTO_TA_COMMUNE CASCADE CONSTRAINTS;
-DELETE
-FROM USER_SDO_GEOM_METADATA
-WHERE
-    TABLE_NAME = 'TOTO_TA_COMMUNE';
-COMMIT;
-
--- II. Création des tables
-
-/*
-La table toto_ta_commune regroupe toutes les communes de la MEL.
-*/
-
--- 1. Création de la table toto_ta_commune
-CREATE TABLE toto_ta_commune(
-    objectid NUMBER(38,0)GENERATED BY DEFAULT AS IDENTITY,
-    geom SDO_GEOMETRY,
-    fid_lib_type_commune NUMBER(38,0),
-    fid_nom NUMBER(38,0),
-    fid_metadonnee NUMBER(38,0)    
-);
-
--- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_geo.toto_ta_commune IS 'Table testant l''insertion bdtopo 2020 rassemblant tous les contours communaux de la MEL et leur équivalent belge.';
-COMMENT ON COLUMN g_geo.toto_ta_commune.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_geo.toto_ta_commune.geom IS 'Géométrie de chaque commune ou équivalent international.';
-COMMENT ON COLUMN g_geo.toto_ta_commune.fid_lib_type_commune IS 'Clé étrangère permettant de connaître le statut de la commune ou équivalent international - ta_libelle.';
-COMMENT ON COLUMN g_geo.toto_ta_commune.fid_nom IS 'Clé étrangère de la table TA_NOM permettant de connaître le nom de chaque commune ou équivalent international.';
-COMMENT ON COLUMN g_geo.toto_ta_commune.fid_metadonnee IS 'Clé étrangère permettant de retrouver la source à partir de laquelle la donnée est issue - ta_source.';
-
-
--- 3. Création de la clé primaire
-ALTER TABLE toto_ta_commune 
-ADD CONSTRAINT toto_ta_commune_PK 
-PRIMARY KEY("OBJECTID") 
-USING INDEX TABLESPACE "G_ADT_INDX";
-
--- 4. Création des métadonnées spatiales
-INSERT INTO USER_SDO_GEOM_METADATA(
-    TABLE_NAME, 
-    COLUMN_NAME, 
-    DIMINFO, 
-    SRID
-)
-VALUES(
-    'toto_ta_commune',
-    'geom',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
-    2154
-);
-COMMIT;
-
--- 5. Création de l'index spatial sur le champ geom
-CREATE INDEX toto_ta_commune_SIDX
-ON toto_ta_commune(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
-
--- 6. Création des clés étrangères
--- 6.1. Clé étrangère vers la table TA_LIBELLE
-ALTER TABLE toto_ta_commune
-ADD CONSTRAINT toto_ta_commune_fid_lib_type_commune_FK 
-FOREIGN KEY (fid_lib_type_commune)
-REFERENCES ta_libelle(objectid);
-
--- 6.2. Clé étrangère vers la table TA_NOM
-ALTER TABLE toto_ta_commune
-ADD CONSTRAINT toto_ta_commune_fid_nom_FK 
-FOREIGN KEY (fid_nom)
-REFERENCES ta_nom(objectid);
-
--- 6.3. Clé étrangère vers la TA_METADONNEE
-ALTER TABLE toto_ta_commune
-ADD CONSTRAINT toto_ta_commune_fid_metadonnee_FK 
-FOREIGN KEY (fid_metadonnee)
-REFERENCES ta_metadonnee(objectid);
-
--- 7. Création des indexes sur les clés étrangères
-CREATE INDEX toto_ta_commune_fid_lib_type_commune_IDX ON toto_ta_commune(fid_lib_type_commune)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX toto_ta_commune_fid_nom_IDX ON toto_ta_commune(fid_nom)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX toto_ta_commune_fid_metadonnee_IDX ON toto_ta_commune(fid_metadonnee)
-    TABLESPACE G_ADT_INDX;
-
--- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.toto_ta_commune TO G_ADMIN_SIG;
-
-/*
-	La table toto_ta_code regroupe tous les codes du schéma G_GEO, dont les codes INSEE
-*/
-
--- 1. Création de la table toto_ta_code
-CREATE TABLE toto_ta_code(
-	objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY,
-	valeur VARCHAR2(50),
-	fid_libelle NUMBER(38,0)
-);
-
--- 2. Création des commentaires
-COMMENT ON TABLE g_geo.toto_ta_code IS 'La table testant l''insertion bdtopo2020 regroupant tous les codes du schéma G_GEO.';
-COMMENT ON COLUMN g_geo.toto_ta_code.objectid IS 'Clé primaire de la table.';
-COMMENT ON COLUMN g_geo.toto_ta_code.valeur IS 'Codes de chaque donnée du schéma.';
-COMMENT ON COLUMN g_geo.toto_ta_code.fid_libelle IS 'Clé étrangère de ta_libelle permettant de connaître la signification de chaque code.';
-
--- 3. Création de la clé primaire
-ALTER TABLE toto_ta_code
-ADD CONSTRAINT toto_ta_code_PK 
-PRIMARY KEY("OBJECTID")
-USING INDEX TABLESPACE "G_ADT_INDX";
-
--- 4. Création des clés étrangère
--- 4.1. Clé étrangère vers la table TA_LIBELLE
-ALTER TABLE toto_ta_code
-ADD CONSTRAINT toto_ta_code_fid_libelle_FK
-FOREIGN KEY (fid_libelle)
-REFERENCES ta_libelle(objectid);
-
--- 5. Création de l'index de la clé étrangère
-CREATE INDEX toto_ta_code_fid_libelle_IDX ON toto_ta_code(fid_libelle)
-TABLESPACE G_ADT_INDX;
-
--- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.toto_ta_code TO G_ADMIN_SIG;
-
-/*
-	La table pivot toto_ta_identifiant_commune fait le lien entre les géométries des communes et leur code INSEE
-*/
-
--- 1. Création de la table toto_ta_identifiant_commune
-CREATE TABLE toto_ta_identifiant_commune(
-	objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY,
-	fid_commune NUMBER(38,0),
-	fid_identifiant NUMBER(38,0)
-);
-
--- 2. Création des commentaires
-COMMENT ON TABLE g_geo.toto_ta_identifiant_commune IS 'La table testant l''insertion bdtopo 2020 permettant de regrouper tous les codes par commune.';
-COMMENT ON COLUMN g_geo.toto_ta_identifiant_commune.objectid IS 'Clé primaire de la table.';
-COMMENT ON COLUMN g_geo.toto_ta_identifiant_commune.fid_commune IS 'Clé étrangère de la table toto_ta_commune.';
-COMMENT ON COLUMN g_geo.toto_ta_identifiant_commune.fid_identifiant IS 'Clé étrangère de la table toto_ta_code.';
-
--- 3. Création de la clé primaire
-ALTER TABLE toto_ta_identifiant_commune
-ADD CONSTRAINT	toto_ta_identifiant_commune_PK 
-PRIMARY KEY("OBJECTID")
-USING INDEX TABLESPACE "G_ADT_INDX";
-
--- 4. Création des clés étrangères
--- 4.1. Clé étrangère vers la table toto_ta_commune
-ALTER TABLE toto_ta_identifiant_commune
-ADD CONSTRAINT toto_ta_identifiant_commune_fid_commune_FK 
-FOREIGN KEY (fid_commune)
-REFERENCES toto_ta_commune(objectid);
-
--- 4.2. Clé étrangère vers la table toto_ta_code
-ALTER TABLE toto_ta_identifiant_commune
-ADD CONSTRAINT toto_ta_identifiant_commune_fid_identifiant_FK 
-FOREIGN KEY (fid_identifiant)
-REFERENCES toto_ta_code(objectid);
-
--- 5. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.toto_ta_identifiant_commune TO G_ADMIN_SIG;
-
-/*
-	La table toto_ta_za_communes permet d'associer les communes à leur zones supra-communales et ce avec une période de validité, ce qui nous permet d'avoir l'évolution de ces zones et ce, à chaque changement ou à chaque millésime.
-*/
-
--- 1. Création de la table toto_ta_za_communes
-CREATE TABLE toto_ta_za_communes(
-    objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY,
-    fid_commune NUMBER(38,0),
-    fid_zone_administrative NUMBER(38,0),
-    debut_validite DATE,
-    fin_validite DATE
-);
-
--- 2. Création des commentaires sur la table et les champs
-COMMENT ON TABLE g_geo.toto_ta_za_communes IS 'Table de liaison testant l''insertion bdtopo 2020 entre les tables toto_ta_commune et ta_unite_territoriale';
-COMMENT ON COLUMN g_geo.toto_ta_za_communes.objectid IS 'Identifiant de chaque objet de la table.';
-COMMENT ON COLUMN g_geo.toto_ta_za_communes.fid_commune IS 'Clé étrangère de la table toto_ta_commune.';
-COMMENT ON COLUMN g_geo.toto_ta_za_communes.fid_zone_administrative IS 'Clé étrangère de la table TA_ZONE_ADMINISTRATIVE.';
-COMMENT ON COLUMN g_geo.toto_ta_za_communes.debut_validite IS 'Début de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
-COMMENT ON COLUMN g_geo.toto_ta_za_communes.fin_validite IS 'Fin de validité de la zone supra-communale. Ce champ est mis à jour dés qu''une commune change.';
-
--- 3. Création de la clé primaire
-ALTER TABLE toto_ta_za_communes 
-ADD CONSTRAINT toto_ta_za_communes_PK 
-PRIMARY KEY("OBJECTID") 
-USING INDEX TABLESPACE "G_ADT_INDX";
-
--- 4. Création des clés étrangères
--- 4.1. Clé étrangère vers la table toto_ta_commune
-ALTER TABLE toto_ta_za_communes
-ADD CONSTRAINT toto_ta_za_communes_fid_commune_FK
-FOREIGN KEY (fid_commune)
-REFERENCES toto_ta_commune(objectid);
-
--- 4.2. Clé étrangère vers la table TA_ZONE_ADMINISTRATIVE
-ALTER TABLE toto_ta_za_communes
-ADD CONSTRAINT toto_ta_za_communes_fid_zone_administrative_FK
-FOREIGN KEY (fid_zone_administrative)
-REFERENCES ta_zone_administrative(objectid);
-
--- 5. Création des indexes sur les clés étrangères
-CREATE INDEX toto_ta_za_communes_fid_commune_IDX ON toto_ta_za_communes(fid_commune)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX toto_ta_za_communes_fid_zone_administrative_IDX ON toto_ta_za_communes(fid_zone_administrative)
-    TABLESPACE G_ADT_INDX;
-
--- 6. Affectation du droit de sélection sur les objets de la table aux administrateurs
-GRANT SELECT ON g_geo.toto_ta_za_communes TO G_ADMIN_SIG;
-
-
--- II. Insertion des données dans les tables dupliquées
--- Désactivation des contraintes
-ALTER TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE DISABLE CONSTRAINT TOTO_TA_IDENTIFIANT_COMMUNE_FID_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE DISABLE CONSTRAINT TOTO_TA_IDENTIFIANT_COMMUNE_FID_IDENTIFIANT_FK;
-ALTER TABLE G_GEO.TOTO_TA_CODE DISABLE CONSTRAINT TOTO_TA_CODE_FID_LIBELLE_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE DISABLE CONSTRAINT TOTO_TA_COMMUNE_FID_LIB_TYPE_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE DISABLE CONSTRAINT TOTO_TA_COMMUNE_FID_NOM_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE DISABLE CONSTRAINT TOTO_TA_COMMUNE_FID_METADONNEE_FK;
-ALTER TABLE G_GEO.TOTO_TA_ZA_COMMUNES DISABLE CONSTRAINT TOTO_TA_ZA_COMMUNES_FID_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_ZA_COMMUNES DISABLE CONSTRAINT TOTO_TA_ZA_COMMUNES_FID_ZONE_ADMINISTRATIVE_FK;
-
--- Insertion ds valeurs dans les tables de test
-INSERT INTO G_GEO.toto_ta_code(objectid, valeur, fid_libelle)
-SELECT
-    objectid,
-    valeur,
-    fid_libelle
-FROM
-    G_GEO.TA_CODE;
-    
-INSERT INTO G_GEO.toto_ta_identifiant_commune(objectid, fid_commune, fid_identifiant)
-SELECT
-    objectid,
-    fid_commune,
-    fid_identifiant
-FROM
-    G_GEO.ta_identifiant_commune;
-    
-INSERT INTO G_GEO.toto_ta_commune(objectid, fid_lib_type_commune, fid_nom, fid_metadonnee, geom)
-SELECT
-    objectid,
-    fid_lib_type_commune,
-    fid_nom,
-    fid_metadonnee,
-    geom
-FROM
-    G_GEO.ta_commune;
-    
-INSERT INTO G_GEO.toto_ta_za_communes(objectid, fid_commune, fid_zone_administrative, debut_validite, fin_validite)
-SELECT
-    objectid,
-    fid_commune,
-    fid_zone_administrative,
-    debut_validite,
-    fin_validite
-FROM
-    G_GEO.ta_za_communes;
-    
--- Réactivation des contraintes
-ALTER TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE ENABLE CONSTRAINT TOTO_TA_IDENTIFIANT_COMMUNE_FID_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE ENABLE CONSTRAINT TOTO_TA_IDENTIFIANT_COMMUNE_FID_IDENTIFIANT_FK;
-ALTER TABLE G_GEO.TOTO_TA_CODE ENABLE CONSTRAINT TOTO_TA_CODE_FID_LIBELLE_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE ENABLE CONSTRAINT TOTO_TA_COMMUNE_FID_LIB_TYPE_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE ENABLE CONSTRAINT TOTO_TA_COMMUNE_FID_NOM_FK;
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE ENABLE CONSTRAINT TOTO_TA_COMMUNE_FID_METADONNEE_FK;
-ALTER TABLE G_GEO.TOTO_TA_ZA_COMMUNES ENABLE CONSTRAINT TOTO_TA_ZA_COMMUNES_FID_COMMUNE_FK;
-ALTER TABLE G_GEO.TOTO_TA_ZA_COMMUNES ENABLE CONSTRAINT TOTO_TA_ZA_COMMUNES_FID_ZONE_ADMINISTRATIVE_FK;
-
--- MAJ des start with
-SELECT
-    MAX(objectid)+1
-FROM
-    G_GEO.TOTO_TA_COMMUNE;
-
-SELECT
-    MAX(objectid)+1
-FROM
-    G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE;
-
-SELECT
-    MAX(objectid)+1
-FROM
-    G_GEO.TOTO_TA_ZA_COMMUNES;
-    
-SELECT
-    MAX(objectid)+1
-FROM
-    G_GEO.TOTO_TA_CODE;
-
-ALTER TABLE G_GEO.TOTO_TA_COMMUNE MODIFY objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY(START WITH 4148 INCREMENT BY 1);
-ALTER TABLE G_GEO.TOTO_TA_IDENTIFIANT_COMMUNE MODIFY objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY(START WITH 3895 INCREMENT BY 1);
-ALTER TABLE G_GEO.TOTO_TA_ZA_COMMUNES MODIFY objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY(START WITH 4990 INCREMENT BY 1);
-ALTER TABLE G_GEO.TOTO_TA_CODE MODIFY objectid NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY(START WITH 138843 INCREMENT BY 1);
-```
+* Pour créer les tables test, double-cliquez sur le fichier *lanceur_creation_tables_test_communes.bat* qui appellera le fichier *creation_tables_test_communes.sql*;
+* Pour insérer les valeurs dans les tables de test afin de simuler l'état des tables de production, double-cliquez sur le fichier *lanceur_insertion_tables_test_communes.bat* qui appellera le fichier *insertion_tables_test_communes.sql*;
