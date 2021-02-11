@@ -21,21 +21,21 @@ Obliger les géomètres à rassembler les fichiers d'un dossier dans un réperto
 
 3. **Créer le code DDL des nouvelles tables :** Mettre à jour le code du fichier *SQL\integration\G_GESTIONGEO\code_ddl_g_gestiongeo.sql* de la pull request *code_ddl_traitement_donnees_gestiongeo* avec les codes DDL des tables TA_GG_DOSSIER et TA_GG_URL_FILE ;
 
-4. **Mettre à jour le code d'insertion des données dans les tables finales :** Mettre à jour le code sql de Romain pour insérer les url de fichiers contenus dans la table TEMP_GG_FILES_LIST dans la table TA_GG_URL_FILE ;
+4. **Mettre à jour le code d'insertion des données dans les tables finales :** Mettre à jour le code sql de Romain pour insérer les url de fichiers contenus dans la table TEMP_GG_FILES_LIST dans la table TA_GG_URL_FILE (à voir si on ne peut pas ajouter cette partie dans le code *correction_donnees_gestiongeo.sql*) ;
 
 5. *Modifier la documentation :** mettre à jour la documentation *methodo_correction_et_migration_gestiongeo.mdown* avec les nouvelles tables ;
 
-6. **Modifier la chaîne de traitement FME** : Modifier le workbench Code\fme_workbench\workbench_gestiongeogestion_fme2020_integration_recol_ic.fmw présent sur le réseau afin de permettre l'enregistrement des fichiers autres que dwg dans le dossier ;
+6. **Modifier la chaîne de traitement FME** : Modifier le workbench Code\fme_workbench\workbench_gestiongeogestion_fme2020_integration_recol_ic.fmw présent sur le réseau afin de permettre l'enregistrement des fichiers autres que dwg dans le dossier (les fichiers devront donc être impérativement dans le même répertoire) ;
 
-7. **Modifier le projet qgis :** Modifier le fichier *UF_Acquisition\test_gestiongeo\projets_qgis\modele_gestiongeo_BROUILLON.qgs* présent sur le réseau pour y inclure les nouvelles tables ;
+7. **Créer une seconde chaîne FME :** Cette nouvelle chaîne aura pour objectif de mettre à jour les répertoires dans APPLI_GG avec les nouveaux fichiers (autres que dwg) ajoutés ou reçus par les géomètres et de mettre à jour la table TA_GG_URL_FILE avec les url et les ID_DOS correspondantes. Ce Workbench sera accessible via GTF. Si le nom de fichier est déjà présent dans APPLI_GG, alors un message d'erreur apparaîtra demandant de changer le nom du fichier ;
 
-	7.1. Insérer les nouvelles tables ;
+8. **Modifier le projet qgis :** Modifier le fichier *UF_Acquisition\test_gestiongeo\projets_qgis\modele_gestiongeo_BROUILLON.qgs* présent sur le réseau pour y inclure les nouvelles tables ;
+
+	7.1. Insérer la nouvelle table ;
 
 	7.2. Créer une relation entre TA_GG_DOSSIER et TA_GG_URL_FILE ;
 
 	7.3. Modifier le formulaire afin d'afficher tous les fichiers de la table TA_GG_URL_FILE par dossier ;
-
-8. **Créer un nouveau wokbench pour mettre à jour la table TA_GG_URL_FILE :** En cas d'insertion d'un nouveau fichier autre que le dwg, ce workench permettra de mettre à jour la table TA_GG_URL_FILE avec les urls des fichiers de tous les dossiers. Si l'url est déjà présente en base avec le bon ID_DOS, alors rien ne change, mais dans le cas contraire l'url est ajouté dans la table avec son ID_DOS correspondant ;
 
 9. **Tests :**
 	
@@ -43,4 +43,4 @@ Obliger les géomètres à rassembler les fichiers d'un dossier dans un réperto
 
 	9.2. Tester les chaînes FME ;
 
-10. **Validation finale :** Faire valider la chaîne FME et le projet QGIS par Jean-Roc ;
+10. **Validation finale :** Faire valider les chaînes FME et le projet QGIS par Jean-Roc ;
