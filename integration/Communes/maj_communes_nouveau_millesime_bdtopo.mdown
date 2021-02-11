@@ -49,7 +49,7 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 * Pour insérer les communes simples dans les tables TA_COMMUNE, TA_IDENTIFIANT_COMMUNE et TA_ZA_COMMUNES, veuillez utiliser le fichier *lanceur_maj_communes_simples_nouvelle_bdtopo.bat* qui appellera le fichier *maj_communes_simples_nouvelle_bdtopo.sql* ;  
 
-* Pour insérer les communes associées/déléguées dans les tables TA_COMMUNE et TA_IDENTIFIANT_COMMUNE, veuillez utiliser le fichier ** qui appellera le fichier ** ;  
+* Pour insérer les communes associées/déléguées dans les tables TA_COMMUNE et TA_IDENTIFIANT_COMMUNE, veuillez utiliser le fichier *lanceur_maj_communes_associees_nouvelle_bdtopo.bat* qui appellera le fichier *maj_communes_associees_nouvelle_bdtopo.sql* ;  
 
 #### Explications :
 
