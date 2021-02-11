@@ -4,7 +4,7 @@
 
 ### Prérequis : 
 
-Obliger les géomètres à rassembler les fichiers d'un dossier dans un répertoire avant de faire fonctionner les worbench. Donc, en local ils devront avoir un répertoire par dossier. Cette condition est doit être nécessairement remplie pour permettre la suite de la méthode.
+Imposer aux géomètres à rassembler les fichiers d'un dossier dans un répertoire avant de faire fonctionner les worbench. Donc, en local ils devront avoir un répertoire par dossier. Cette condition doit être nécessairement remplie pour permettre la suite de la méthode.
 
 1. **Modifier le MRD :** Modifier le MRD *MRD_GESTIONGEO.dmd* et son pdf *MRD_GESTIONGEO.pdf* dans la pull request *gestion_geo* avec les actions suivantes :
 	1.1. Extraire le champ DOS_URL_FILE de la table TA_GG_DOSSIER et le mettre dans une nouvelle table appelée TA_GG_URL_FILE ;
