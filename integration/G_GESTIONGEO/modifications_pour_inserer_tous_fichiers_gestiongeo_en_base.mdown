@@ -44,3 +44,5 @@ Imposer aux géomètres à rassembler les fichiers d'un dossier dans un réperto
 	9.2. Tester les chaînes FME ;
 
 10. **Validation finale :** Faire valider les chaînes FME et le projet QGIS par Jean-Roc ;
+
+11. **Renommage des répertoires des dossiers existants dans APPLI_GG :** objectif : remplacer les noms des répertoires par leur ID_DOS. Romain dispose d'un code opérationnel qu'il faut optimiser ;
