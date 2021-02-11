@@ -2,41 +2,45 @@
 
 ## Objectif : faire le bilan des actions nécessaires pour permettre d'enregistrer tous les fichiers des dossiers des géomètres en base
 
+### Prérequis : 
+
+Obliger les géomètres à rassembler les fichiers d'un dossier dans un répertoire avant de faire fonctionner les worbench. Donc, en local ils devront avoir un répertoire par dossier. Cette condition est doit être nécessairement remplie pour permettre la suite de la méthode.
+
 1. **Modifier le MRD :** Modifier le MRD *MRD_GESTIONGEO.dmd* et son pdf *MRD_GESTIONGEO.pdf* dans la pull request *gestion_geo* avec les actions suivantes :
 	1.1. Extraire le champ DOS_URL_FILE de la table TA_GG_DOSSIER et le mettre dans une nouvelle table appelée TA_GG_URL_FILE ;
-	
-	1.2. Créer une table pivot (relation 1:n), nommée TA_GG_DOSSIER_URL_FILE, entre les tables TA_GG_DOSSIER et TA_GG_URL_FILE afin de permettre la relation entre un dossier et plusieurs fichiers ;
 
-		1.2.1. la table se composera des champs *objectid*, *fid_dossier* et *fid_url_file* ;
+		1.2.1. la table se composera des champs *objectid*, *fid_dossier* et *dos_url_file* ;
 		
 		1.2.2. La clé primaire sera portera sur le champ *objectid* ;
 		
-		1.2.3 Des contraintes de clés étrangères porteront sur les champs *fid_dossier* et *fid_url_file* qui feront respectivement référence aux tables TA_GG_DOSSIER et TA_GG_URL_FILE;
+		1.2.3 Une contrainte de clé étrangère portera sur le champ *fid_dossier* et qui fera référence à la table TA_GG_DOSSIER ;
 
 	1.3. Imprimer le MRD en pdf ;
 
 2. **Validation du MRD :** Soumettre le nouveau MRD à Jean-Roc pour qu'il le valide ;
 
-3. **Créer le code DDL des nouvelles tables :** Mettre à jour le code du fichier *SQL\integration\G_GESTIONGEO\code_ddl_g_gestiongeo.sql* de la pull request *code_ddl_traitement_donnees_gestiongeo* avec les codes DDL des tables TA_GG_DOSSIER, TA_GG_DOSSIER_URL_FILE et TA_GG_URL_FILE ;
+3. **Créer le code DDL des nouvelles tables :** Mettre à jour le code du fichier *SQL\integration\G_GESTIONGEO\code_ddl_g_gestiongeo.sql* de la pull request *code_ddl_traitement_donnees_gestiongeo* avec les codes DDL des tables TA_GG_DOSSIER et TA_GG_URL_FILE ;
 
-4. **Mettre à jour le code d'insertion des données dans les tables finales :** Mettre à jour le code du fichier *remplissage_tables_finales_gestiongeo.sql* afin d'y inclure les insertions dans les tables TA_GG_DOSSIER, TA_GG_DOSSIER_URL_FILE et TA_GG_URL_FILE ;
+4. **Mettre à jour le code d'insertion des données dans les tables finales :** Mettre à jour le code sql de Romain pour insérer les url de fichiers contenus dans la table TEMP_GG_FILES_LIST dans la table TA_GG_URL_FILE ;
 
 5. *Modifier la documentation :** mettre à jour la documentation *methodo_correction_et_migration_gestiongeo.mdown* avec les nouvelles tables ;
 
-6. **Modifier la chaîne de traitement FME** : Modifier le workbench Code\fme_workbench\workbench_gestiongeogestion_fme2020_integration_recol_ic.fmw présent sur le réseau ;
+6. **Modifier la chaîne de traitement FME** : Modifier le workbench Code\fme_workbench\workbench_gestiongeogestion_fme2020_integration_recol_ic.fmw présent sur le réseau afin de permettre l'enregistrement des fichiers autres que dwg dans le dossier ;
 
 7. **Modifier le projet qgis :** Modifier le fichier *UF_Acquisition\test_gestiongeo\projets_qgis\modele_gestiongeo_BROUILLON.qgs* présent sur le réseau pour y inclure les nouvelles tables ;
 
 	7.1. Insérer les nouvelles tables ;
 
-	7.2. Créer deux relations entre d'une part TA_GG_DOSSIER et TA_GG_DOSSIER_URL_FILE et d'autre part entre TA_GG_URL_FILE et TA_GG_DOSSIER_URL_FILE ;
+	7.2. Créer une relation entre TA_GG_DOSSIER et TA_GG_URL_FILE ;
 
 	7.3. Modifier le formulaire afin d'afficher tous les fichiers de la table TA_GG_URL_FILE par dossier ;
 
-8. **Tests :**
-	
-	8.1. Tester les codes en base ;
+8. **Créer un nouveau wokbench pour mettre à jour la table TA_GG_URL_FILE :** En cas d'insertion d'un nouveau fichier autre que le dwg, ce workench permettra de mettre à jour la table TA_GG_URL_FILE avec les urls des fichiers de tous les dossiers. Si l'url est déjà présente en base avec le bon ID_DOS, alors rien ne change, mais dans le cas contraire l'url est ajouté dans la table avec son ID_DOS correspondant ;
 
-	8.2. Tester la chaîne FME ;
+9. **Tests :**
+	
+	9.1. Tester les codes en base ;
+
+	9.2. Tester les chaînes FME ;
 
 10. **Validation finale :** Faire valider la chaîne FME et le projet QGIS par Jean-Roc ;
