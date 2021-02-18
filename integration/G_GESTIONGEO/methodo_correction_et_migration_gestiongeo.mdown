@@ -52,15 +52,25 @@
 
 Pour faire cette vérification, veuillez utiliser la requête ci-dessous :
 ``` SQL
--- Vérification des doublons DOS_NUM dans TA_GG_GEO
-SELECT
-    a.DOS_NUM,
-    COUNT(a.DOS_NUM) AS Nbr_Doublons
-FROM
-    GEO.TA_GG_GEO a
-GROUP BY a.DOS_NUM
-HAVING
-    COUNT(a.DOS_NUM) > 1; 
+-- Vérification des doublons DOS_NUM dans TA_GG_GEO et de l'absence de ces DOS_NUM dans TA_GEO_CORRECT_DOUBLONS
+WITH 
+    C1 AS(
+    SELECT
+        a.DOS_NUM,
+        COUNT(a.DOS_NUM) AS Nbr_Doublons
+    FROM
+        GEO.TA_GG_GEO a
+    GROUP BY a.DOS_NUM
+    HAVING
+        COUNT(a.DOS_NUM) > 1
+    )
+    SELECT DISTINCT
+        a.DOS_NUM,
+        a.Nbr_Doublons
+    FROM
+        C1 a
+    WHERE
+        a.DOS_NUM NOT IN (SELECT b.DOS_NUM FROM TA_GEO_CORRECT_DOUBLONS b);
 ```
 
 ## 2. Si la requête renvoie des DOS_NUM, alors copiez les résultats de la requête 1.1. et envoyez les à la personne référente (Gaëlle) pour lui demander quel dossier fusionner ou quel polygone supprimer (extrêmement rare).
