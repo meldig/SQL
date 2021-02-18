@@ -17,7 +17,7 @@ Pour faire fonctionner la requête ci-dessous, veuillez remplacer #NOM_SCHEMA# e
 */
 SELECT
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) AS ERREUR,
-    COUNT(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005)) AS Nombre
+    COUNT(a.objectid) AS Nombre
 FROM
     #NOM_SCHEMA#.#NOM_TABLE# a
 WHERE
