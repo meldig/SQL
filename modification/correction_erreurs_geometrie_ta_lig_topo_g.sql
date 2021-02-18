@@ -9,13 +9,13 @@ Les erreurs corrigées ci-dessous sont celles identifiées dans la table, ça ne
 */
 
 -- Correction de l'erreur 13342 -> une géométrie de type arc doit obligatoirement disposer d'au moins 3 sommets.
-UPDATE GEO.TEST_GG_LIG_TOPO_G t
+UPDATE GEO.TA_LIG_TOPO_G t
     SET t.geom = SDO_UTIL.SIMPLIFY(t.geom, 0.005, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(t.geom, 0.005), 0, 5) = '13342';
     
 -- Correction de l'erreur 13356 -> Une géométrie dispose de sommets en doublons
-UPDATE GEO.TEST_GG_LIG_TOPO_G a
+UPDATE GEO.TA_LIG_TOPO_G a
     SET a.geom = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13356';
@@ -23,14 +23,14 @@ WHERE
 -- Suppression des géométries NULL
 DELETE 
 FROM 
-	GEO.TEST_GG_LIG_TOPO_G a 
+	GEO.TA_LIG_TOPO_G a 
 WHERE 
 	a.geom IS NULL;
 
 -- Suppression des géométries d'un type autre que ligne ou multiligne
 DELETE
 FROM
-    GEO.TEST_GG_LIG_TOPO_G a
+    GEO.TA_LIG_TOPO_G a
 WHERE
     a.geom.sdo_gtype NOT IN(2002, 2006);
     
