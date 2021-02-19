@@ -42,9 +42,10 @@ WHERE
     );
 */
 /* En cas de nouveaux doublons présents dans TA_GG_GEO proccédez comme suit :
-1. Envoyer la liste des DOS_NUM posant problème à Gaëlle en lui demandant ce qu'il faut fusionner (cf. methodo_correction_et_migration_gestiongeo.mdown);
-2. Une fois que vous avez reçu la lsite des DOS_NUM dont il faut fusionner les géométries, coller ces DOS_NUM dans le WHERE du MERGE ci-dessous en supprimant les valeurs déjà présentes dans le code ci-dessous.
-3. Relancer les codes de correction des géométries, l'import en base et le remplissage des tables dans oracle 12c ;
+1. Tous les doublons présents dans la même commune sont fusionnés ;
+2. Les doublons présents sur des communes différentes doivent avoir leur propre dossier (il faut donc en créer) ;
+3. En cas de doute, envoyez la liste des DOS_NUM posant problème à Gaëlle en lui demandant ce qu'il faut fusionner (cf. methodo_correction_et_migration_gestiongeo.mdown);
+4. Une fois que vous avez reçu la lsite des DOS_NUM dont il faut fusionner les géométries, coller ces DOS_NUM dans le WHERE du MERGE ci-dessous en supprimant les valeurs déjà présentes dans le code ci-dessous.
 */
 MERGE INTO GEO.TA_GEO_CORRECT_DOUBLONS a
     USING(
