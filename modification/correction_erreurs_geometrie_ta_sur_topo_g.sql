@@ -25,6 +25,19 @@ UPDATE GEO.TA_SUR_TOPO_G a
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13367';
 
+-- Erreur 13366 et 13350
+UPDATE GEO.TEST_SUR_TOPO_G a
+    SET a.geom = (
+                    SELECT
+                        SDO_AGGR_UNION(SDOAGGRTYPE(b.geom, 0.005))
+                    FROM
+                        GEO.TEST_SUR_TOPO_G b
+                    WHERE
+                        a.objectid = b.objectid
+                )
+    WHERE
+        SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) IN ('13366', '13350');
+
 -- Suppression des entités ne disposant pas de géométrie
 DELETE FROM GEO.TA_SUR_TOPO_G a
 WHERE SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = 'NULL';
