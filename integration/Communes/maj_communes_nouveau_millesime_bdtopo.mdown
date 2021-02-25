@@ -20,7 +20,7 @@
 
 ## II. Présentation de l'import des données brutes en base dans une table temporaire ;
 
-Double-cliquez sur le fichier *lanceur_codes_insertion_communes.bat* et laissez-vous guider, les communes simples et communes associées seront importées.  
+Double-cliquez sur le fichier *import_communes_en_base.bat* et laissez-vous guider, les communes simples et communes associées seront importées.  
 **Rappel :** les fichiers shape sont situés sur le réseau de la direction dans ce dossier *Donnees\Externe\IGN\BD_TOPO*.  
 
 ### Explications du code :
@@ -45,7 +45,7 @@ SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 ## III. Explications du transfert des communes et de leur métadonnée de leur table temporaire vers les tables correspondantes en base ;
 
-**Rappel :** Il faut **toujours** insérer les **communes simples en premier** en les **communes associées/déléguées en second**. La raison est d'une part qu'il faut de toute manière insérer les communes simples en base et d'autre part que les métadonnées sont créées dans le code d'import des communes simples, pas dans celui des communes associées/déléguées. Ces métadonnées étant les mêmes pour les deux types de communes, une seule insertion suffit. **De plus,** si l'INSEE n'a enregistrée aucune fusion de communes dans les hauts-de-france pour l'année du millésime en cours d'insertion, alors il est inutile d'insérer dans les tables les communes associées/déléguées.
+**Rappel :** Il faut **toujours** insérer les **communes simples en premier** et les **communes associées/déléguées en second**. La raison est d'une part qu'il faut de toute manière insérer les communes simples en base et d'autre part que les métadonnées sont créées dans le code d'import des communes simples, pas dans celui des communes associées/déléguées. Ces métadonnées étant les mêmes pour les deux types de communes, une seule insertion suffit. **De plus,** si l'INSEE n'a enregistrée aucune fusion de communes dans les hauts-de-france pour l'année du millésime en cours d'insertion, alors il est inutile d'insérer dans les tables les communes associées/déléguées.
 
 * Pour insérer les communes simples dans les tables TA_COMMUNE, TA_IDENTIFIANT_COMMUNE et TA_ZA_COMMUNES, veuillez utiliser le fichier *lanceur_maj_communes_simples_nouvelle_bdtopo.bat* qui appellera le fichier *maj_communes_simples_nouvelle_bdtopo.sql* ;  
 
