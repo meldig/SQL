@@ -26,7 +26,7 @@ FROM
     INNER JOIN G_GEO.TA_ZA_COMMUNES b ON a.objectid = b.fid_commune
     INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE c ON b.fid_zone_administrative = c.objectid
     INNER JOIN G_GEO.TA_LIBELLE d ON c.fid_libelle = d.objectid
-    INNER JOIN G_GEO.TA_LIBELLE_long e ON e.objectid = d.fid_libelle_long
+    INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long
     INNER JOIN G_GEO.TA_NOM f ON f.objectid = c.fid_nom
     INNER JOIN G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE g ON g.fid_zone_administrative = c.objectid
     INNER JOIN G_GEO.TA_CODE h ON h.objectid = g.fid_identifiant
@@ -36,7 +36,8 @@ WHERE
 GROUP BY 
     f.valeur, 
     c.objectid, 
-    h.valeur;
+    h.valeur
+;
 
 -- 2. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -51,6 +52,7 @@ VALUES(
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
+COMMIT;
 
 -- 3. Création de la clé primaire
 ALTER MATERIALIZED VIEW ADMIN_TERRITOIRE_MEL 
