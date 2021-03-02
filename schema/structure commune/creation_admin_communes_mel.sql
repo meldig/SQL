@@ -39,7 +39,7 @@ WHERE
 
 -- 2. Création des commentaires de VM et des colonnes
 COMMENT ON TABLE G_REFERENTIEL.ADMIN_COMMUNES_MEL IS 'Table proposant les communes actuelles de la MEL extraites de la BdTopo la plus récente de l''IGN.';
-COMMENT ON COLUMN G_REFERENTIEL.ADMIN_COMMUNES_MEL.IDENTIFIANT IS 'Clé primaire de la vue.';
+COMMENT ON COLUMN G_REFERENTIEL.ADMIN_COMMUNES_MEL.IDENTIFIANT IS 'Clé primaire de la table.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_COMMUNES_MEL.CODE_INSEE IS 'Code INSEE de chaque commune.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_COMMUNES_MEL.NOM IS 'Nom de chaque commune de la MEL.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_COMMUNES_MEL.GEOM IS 'Géométrie de chaque commune.';

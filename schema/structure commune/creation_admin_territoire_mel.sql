@@ -34,7 +34,7 @@ GROUP BY
 ;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE G_REFERENTIEL.ADMIN_TERRITOIRE_MEL IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON TABLE G_REFERENTIEL.ADMIN_TERRITOIRE_MEL IS 'Table proposant les Unités Territoriales de la MEL.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.identifiant IS 'Clé primaire de chaque enregistrement.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_TERRITOIRE_MEL.nom IS 'Nom des Unités Territoriales.';

@@ -17,15 +17,15 @@ SELECT
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
     FROM
         G_GEO.ta_commune a
-        INNER JOIN G_GEO.TA_ZA_COMMUNES b ON a.objectid = b.fid_commune
-        INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE c ON b.fid_zone_administrative = c.objectid
-        INNER JOIN G_GEO.TA_LIBELLE d ON c.fid_libelle = d.objectid
-        INNER JOIN G_GEO.TA_LIBELLE_LONG e ON d.fid_libelle_long = e.objectid
-        INNER JOIN G_GEO.TA_NOM f ON c.fid_nom = f.objectid
-        INNER JOIN G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE g ON c.objectid = g.fid_zone_administrative
-        INNER JOIN G_GEO.TA_CODE h ON g.fid_identifiant = h.objectid
+        INNER JOIN G_GEO.TA_ZA_COMMUNES b ON b.fid_commune = a.objectid
+        INNER JOIN G_GEO.TA_ZONE_ADMINISTRATIVE c ON c.objectid = b.fid_zone_administrative
+        INNER JOIN G_GEO.TA_LIBELLE d ON d.objectid = c.fid_libelle
+        INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long
+        INNER JOIN G_GEO.TA_NOM f ON f.objectid = c.fid_nom
+        INNER JOIN G_GEO.TA_IDENTIFIANT_ZONE_ADMINISTRATIVE g ON g.fid_zone_administrative = c.objectid
+        INNER JOIN G_GEO.TA_CODE h ON h.objectid = g.fid_identifiant
     WHERE
-        e.valeur = 'Unité Territoriale'
+        UPPER(e.valeur) = UPPER('Unité Territoriale')
         AND sysdate BETWEEN b.debut_validite AND b.fin_validite
 GROUP BY 
     f.valeur, 
@@ -34,7 +34,7 @@ GROUP BY
 ;
 
 -- 2. Création des commentaires de table et de colonnes
-COMMENT ON TABLE G_REFERENTIEL.ADMIN_UNITE_TERRITORIALE_MEL IS 'Vue matérialisée proposant les Unités Territoriales de la MEL.';
+COMMENT ON TABLE G_REFERENTIEL.ADMIN_UNITE_TERRITORIALE_MEL IS 'Table proposant les Unités Territoriales de la MEL.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_UNITE_TERRITORIALE_MEL.identifiant IS 'Clé primaire de chaque enregistrement.';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_UNITE_TERRITORIALE_MEL.code_adm IS 'Code unique de chaque unité territoriale (CODTER).';
 COMMENT ON COLUMN G_REFERENTIEL.ADMIN_UNITE_TERRITORIALE_MEL.nom IS 'Nom des Unités Territoriales.';

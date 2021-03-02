@@ -9,15 +9,15 @@ SELECT
         SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.005)) AS geom
     FROM
         g_geo.TA_COMMUNE a
-        INNER JOIN g_geo.TA_ZA_COMMUNES b ON a.objectid = b.fid_commune
-        INNER JOIN g_geo.TA_ZONE_ADMINISTRATIVE c ON b.fid_zone_administrative = c.objectid
-        INNER JOIN g_geo.TA_LIBELLE d ON c.fid_libelle = d.objectid
+        INNER JOIN g_geo.TA_ZA_COMMUNES b ON b.fid_commune = a.objectid
+        INNER JOIN g_geo.TA_ZONE_ADMINISTRATIVE c ON c.objectid = b.fid_zone_administrative
+        INNER JOIN g_geo.TA_LIBELLE d ON d.objectid = c.fid_libelle
         INNER JOIN g_geo.TA_LIBELLE_long e ON e.objectid = d.fid_libelle_long
         INNER JOIN g_geo.TA_NOM f ON f.objectid = c.fid_nom
     
     WHERE
-        e.valeur = 'Métropole'
-        AND f.acronyme = 'MEL'
+        UPPER(e.valeur) = UPPER('Métropole')
+        AND UPPER(f.acronyme) = UPPER('MEL')
         AND sysdate BETWEEN b.debut_validite AND b.fin_validite
 GROUP BY f.valeur, c.objectid;
 
