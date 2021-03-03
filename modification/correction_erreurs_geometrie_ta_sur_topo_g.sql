@@ -57,8 +57,6 @@ WHERE a.geom.sdo_gtype = 2001;
 DELETE FROM GEO.TEST_SUR_TOPO_G a
 WHERE a.geom.sdo_gtype = 2002;
 
-test
-
 COMMIT;
 
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute modification de se faire et de retourner à l'état de la table précédent.
