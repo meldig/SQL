@@ -108,7 +108,7 @@ L'application **gestiongeo** copie les fichiers à intégrer dans le dossier **\
 
 ### Insertion des éléménents géométriques dans les tables TA_POINT_TOPO_GPS et TA_LIG_TOPO_GPS.
 
-Les données issues des fichiers *dwg* sont insérées dans les tables suivantes grâce à la chaine FME:
+Les données issues des fichiers *dwg* sont insérées dans les tables suivantes grâce à la chaine FME *acad_recV13_20161026.fmw*  :
 * TA_POINT_TOPO_GPS
 * TA_LIG_TOPO_GPS
 * PTTOPO
@@ -140,3 +140,4 @@ Les attribut modifiables sont:
 
 ## Mise à jour d'un dossier lié à une Investigation Complémentaire.
 
+La mise à jour dossier IC se fait de la meme manière que pour un dossier RECOLEMENT. La seule différence va être le FAM_ID. 1 signifie RECOLEMENT et 2 INVESTIGATION COMPL2MENTAIRE. A noter que les données issus du fichier dwg de l'investigation complémentaire ne seront insérées que dans la table TA_POINT_TOPO_GPS suite à l'activation du traitement FME *acad_recV13_20161026.fmw*  
