@@ -2,8 +2,11 @@
 
 ## 1. TA_GG_DOSSIER
 ### 1.1. Présentation générale
-La table TA_GG_DOSSIER est la table principale utilisée dans Gestiongeo pour le plan topographique de gestion et les investigations complémentaires (IC). Elle est remplie automatiquement par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). C'est dans cette table qu'est attribué un numéro à chaque dossier (DOS_NUM) lors de leur création et que l'on peut voir l'avancement de son traitement, la personne qui l'a créée, le code INSEE de la commune dans laquelle il se trouve, le numéro de voie, etc.
-La table TA_GG_DOSSIER rassemble 29 champs dont seulement 6 sont non-nulls.
+* La table TA_GG_DOSSIER liste des dossiers en base et leurs attributs (auteur, code INSEE, numéro de voirie, etc). C'est donc la table principale utilisée dans Gestiongeo pour le plan topographique de gestion et les investigations complémentaires (IC) ;
+
+* La table est remplie directement par DynMap (GestionGeo) et par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de l'utilisation des onglets  *création* et *modification* dans GestionGeo ;
+
+* Chaque dossier est créé via l'onglet *création* de GestionGeo qui entraîne la création d'un identifiant de dossier (ID_DOS) par le trigger *TA_GG_DOSSIER* qui est actuellement désactivé) dans la table. Le DOS_NUM, quant à lui, est le numéro du dossier (à compléter avec le processus de création du numéro) ;
 
 ### 1.2. Les objets liés à la table
 #### Les contraintes
@@ -91,13 +94,17 @@ DOS_DT_DEB_LEVE|DATE|4990|333|779|5769|86,50|13,50|
 DOS_OLD_ID|VARCHAR2|3416|2353|2353|5769|59,21|40,79|
 
 #### Observations :
-- Toutes les données des clés étrangères et la clé primaire sont non-nulles ;
-- Les contraintes de clé primaire (ID_DOS) et clés étrangères (au nombre de 3) sont complétées par une contrainte de non-nullité sauf pour la FK "FK_TA_GG_DO_FAMILLE_TA_GG_FA" ;
-- Les données sont réparties dans 3 familles (Plan de récolement / Investigation complémentaire / Maj carto) ;
-- 24 utilisateurs différents ont créé de la donnée dans cette table dont 13 le font encore actuellement ;
-- Le champ "DOS_PRIORITE" permettant aux utilisateurs de prioriser la gestion des dossiers est non-null et toutes les données se répartissent dans trois priorités : 0, 1, 2 (pas d'explications supplémentaires) ;
-- Il existe 97 "DOS_INSEE" différents ce qui signifie (et après vérification en base dans la tables des communes) que ces dossiers portent sur la MEL95 et les anciennes communes de Lomme et de Hellemmes ;
-- Si le champ "DOS_DC" contient bien la date de création de chaque dossier, alors le dossier le plus ancien date du 17/05/2016 (sans doute la date de mise en place de la plateforme GestionGeo) et le plus récent date du 23/11/2020, signe que cette table est tjrs utilisée en ce moment. Par ailleurs, ce champs dispose d'une contrainte de non-nullité, mais pas de trigger donc soit la date est entrée manuellement (peu probable), soit elle est insérée automatiquement via le workbench acad_recV13_20161026 ;
+* Les contraintes :
+	* Toutes les données des clés étrangères et la clé primaire sont non-nulles ;
+	* Les contraintes de clé primaire (ID_DOS) et clés étrangères (au nombre de 3) sont complétées par une contrainte de non-nullité sauf pour la FK "FK_TA_GG_DO_FAMILLE_TA_GG_FA" ;
+	* La table TA_GG_DOSSIER rassemble 29 champs dont seulement 6 sont non-nulls ;
+
+* Les données :
+	* Les données sont réparties dans 3 familles (Plan de récolement / Investigation complémentaire / Maj carto) ;
+	* 24 utilisateurs différents ont créé de la donnée dans cette table dont 13 le font encore actuellement ;
+	* Le champ "DOS_PRIORITE" permettant aux utilisateurs de prioriser la gestion des dossiers est non-null et toutes les données se répartissent dans trois priorités : 0, 1, 2 (correspondant aux priorités basses, moyennes et hautes dans GestionGeo) ;
+	* Il existe 97 "DOS_INSEE" différents ce qui signifie (et après vérification en base dans la tables des communes) que ces dossiers portent sur la MEL95 et les anciennes communes de Lomme et de Hellemmes ;
+	* Si le champ "DOS_DC" contient bien la date de création de chaque dossier, alors le dossier le plus ancien date du 17/05/2016 (date probable du lancement de la plateforme GestionGeo) et le plus récent date du 23/11/2020, signe que cette table est tjrs utilisée en ce moment. Par ailleurs, ce champs dispose d'une contrainte de non-nullité mais pas de trigger, donc la date est calculée et renseignée directement par DynMap ;
 
 ### 1.4. Analyses
 
@@ -167,7 +174,7 @@ Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Ce
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
 |TA_GG_GEO|BEFORE EACH ROW|INSERT|GEO|ENABLED|Incrémentation de la PK (ID_GEOM)|
 |TA_GG_GEO_GEOM|BEFORE EACH ROW|INSERT|GEO|ENABLED|Correction de l'erreur 13028 (le trigger ne corrige rien)|
-|TA_GG_POINT|AFTER EACH ROW|INSERT OR DELETE|GEO|ENABLED|Création/suppression du centroïde de chaque goémétrie dans TA_GG_POINT|
+|TA_GG_POINT|AFTER EACH ROW|INSERT OR DELETE|GEO|ENABLED|Création/suppression du centroïde de chaque goémétrie dans TA_GG_POINT ainsi que id_geom, id_dos, classe_dict.|
 
 #### Les fonctions
 - GET_ID_DOS : Sélection de ID_DOS depuis TA_GG_GEO quand ID_GEOM = INU (valeur entrante).
@@ -189,26 +196,64 @@ Le lien avec la table TA_GG_DOSSIER se fait via la clé étrangère "ID_DOS". Ce
 ### 2.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
-|MINIATURE|BLOB|4|0|0|4|100,00|0,00|
-|MEDIA|VARCHAR2|0|4|4|4|0,00|100,00|
-|ID_OBJET|NUMBER|0|2|4|4|0,00|100,00|
-|ID|NUMBER|0|4|4|4|0,00|100,00|
-|TYPE|VARCHAR2|0|1|4|4|0,00|100,00|
+|DOS_NUM|NUMBER|0|5379|8122|8122||0,00|100,00|
+|CLASSE_DICT|VARCHAR2|2844|3|5278|8122||35,02|64,98|
+|ID_GEOM|NUMBER|0|8122|8122|8122||0,00|100,00|
+|ID_DOS|NUMBER|0|5380|8122|8122||0,00|100,00|
+|GEOM|SDO_GEOMETRY|0|8093|8122|8122||0,00|100,00|
+|ETAT_ID|NUMBER|1|5|8121|8122||0,01|99,99|
 
 #### Observations :
-- La clé étrangère FK_TA_GG_GEO_TA_GG_DOS, appliquée sur le champ ID_DOS, n'a pas de contrainte d'unicité ce qui signifie que des doublons sont potentiellement présents dans ce champ et que donc un dossier peut disposer de plusieurs géométries (ce qui est contraire à la règle : 1 dossier = 1 géométrie) ;
-- Il existe 5380 valeurs distinctes dans le champ ID_DOS (FK vers TA_GG_DOSSIER) pour 8122 valeurs, ce qui signifie que plusieurs géométries appartiennent à un dossier ;
-- Il existe aussi 8093 géométries pour 8122 valeurs et après vérification il apparaît que cet écart est dû à 29 doublons géométriques ;
-- Les géométries de dossier sont réparties dans 5 état d'avancement : 
-|- "Actif en base topo ; attente de validation gestion";
-|- "En attente de validation (mode topo)";
-|- "Actif en base (dossier clôturé et donc visible en carto)";
-|- "Fiche prévisionnelle (travaux non terminé)";
-|- "En attente de levé géomètre (dossier actif / fin de travaux)";
+* Les contraintes :
+	* La clé étrangère *FK_TA_GG_GEO_TA_GG_DOS*, appliquée sur le champ *ID_DOS*, n'a pas de contrainte d'unicité ce qui signifie que des doublons sont potentiellement présents dans ce champ et que donc un dossier peut disposer de plusieurs géométries (ce qui est contraire à la règle : 1 dossier = 1 géométrie) ;
+* Les données :
+ 	* Il existe 5380 valeurs distinctes dans le champ ID_DOS (FK vers *TA_GG_DOSSIER*) pour 8122 valeurs, ce qui signifie que plusieurs géométries appartiennent à un dossier. Un travail d'identification de ces doublons a été fait et une action de fusion va être déclenchée afin de créer des polygones multiparties, ce qui permettrait de supprimer ces doublons ;
+ 	* On trouve également 3 valeurs distinctes dans le champ *CLASSE_DICT* qui représente les classes des réseaux contenues dans la **charte topographique et réseaux de la DSIG** ; 
+ 	* Les géométries de dossier sont réparties dans 5 état d'avancement : 
+		* "Actif en base topo ; attente de validation gestion";
+		* "En attente de validation (mode topo)";
+		* "Actif en base (dossier clôturé et donc visible en carto)";
+		* "Fiche prévisionnelle (travaux non terminé)";
+		* "En attente de levé géomètre (dossier actif / fin de travaux)";
+	* Il existe aussi 8093 géométries pour 8122 valeurs et après vérification il apparaît que cet écart est dû à 29 doublons géométriques (qui seront supprimés lors de la fusion mentionnée plus haut);
+* Types de géométries :
+	* 8120 polygones simples (2D) ;
+	* 2 multipolygones (2D) ;
+* 450 géométries sont invalides ;
+
+## 2.4. Différences avec TA_GG_DOSSIER (aucune normalement)
+
+### Ecart d'ETAT_ID
+8 couples ID_DOS et ETAT_ID ne sont pas identiques entres les tables TA_GG_GEO et TA_GG_DOSSIER.
+
+|ID_DOS_TA_GG_DOSSIER           | ETAT_ID_TA_GG_DOSSIER   |DOS_NUM_TA_GG_DOSSIER    |ID_DOS_TA_GG_GEO  |ETAT_ID_TA_GG_GEO   |:DOS_NUM_TA_GG_GEO
+|:------------------------------|:------------------------|:------------------------|:-----------------|:-------------------|:-------------------
+|4631                           |9                        |145600042                |4631              |5                   |163201034
+|36437                          |2                        |192790310                |36437             |5                   |192790310
+|27853                          |5                        |170900231                |27853             |NULL                |170900231
+|36441                          |2                        |192790314                |36441             |5                   |192790314
+|36398                          |2                        |195080297                |36398             |5                   |195080297
+|36401                          |2                        |195080300                |36401             |5                   |195080300
+|36395                          |5                        |190980294                |36395             |2                   |190980294
+|36736                          |9                        |196110439                |36736             |0                   |196110439
+|39922                          |2                        |190510679                |39922             |5                   |190510679
+
+### Ecart de DOS_NUM
+5 couples DOS_NUM et ID_DOS ne sont pas identiques entre TA_GG_GEO et TA_GG_DOSSIER
+
+|ID_DOS_TA_GG_DOSSIER           | ETAT_ID_TA_GG_DOSSIER   |DOS_NUM_TA_GG_DOSSIER    |ID_DOS_TA_GG_GEO  |ETAT_ID_TA_GG_GEO   |:DOS_NUM_TA_GG_GEO
+|:------------------------------|:------------------------|:------------------------|:-----------------|:-------------------|:-------------------
+|4548                           |9                        |133200181                |4548              |9                   |162200383
+|4631                           |9                        |145600042                |4631              |5                   |163201034
+|5332                           |9                        |163500137                |5332              |9                   |163500169
+|5332                           |9                        |163500137                |5332              |9                   |163500142
+|5961                           |9                        |162520643                |5961              |9                   |153600258
+
+On remarque que seul l'*ID_DOS* 4631 dispose à la fois d'une différence d'*ETAT_ID* et de *DOS_NUM*.
 
 ## 3. TA_DOSSIER_GPS
 ### 3.1. Présentation générale
-La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie automatiquement par le workbench "acad_recV13_20161026" dont l'action est délenchée lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). 
+La table TA_DOSSIER_GPS contient la géométrie et le numéro de chaque dossier créé dans l'application GestionGeo (DynMap). Elle est remplie lors de la création/modification d'un dossier depuis l'application GestionGeo (Dynmap). Son champ DOS_ID est auto-incrémenté en base. Dans le wokbench *acad_recV13_20161026* le writter de cette table a été désactivé, signe d'un changement de stratégie quant à son remplissage/utilité.
 
 ### 3.2. Les objets liés à la table
 #### Les contraintes
@@ -260,6 +305,8 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |DOSSIER|VARCHAR2|0|790|790|790|0,00|100,00|
 
 #### Observations :
+* 787 géométries sont de type polygone simple (2D) ;
+* 3 géométries sont invalides ;
 
 ## TA_GG_APP_ADM_RIGHTS
 ### 4.1. Présentation générale
@@ -383,7 +430,6 @@ Aucune
 |V_ACQ_GG_DOSSIER_CLOTURE|GEO|
 |V_ACQ_GG_STAT_DOSSIERS|GEO|
 
-
 ### 6.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
@@ -396,6 +442,7 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |ETAT_STYLE|CHAR|0|9|9|9|0,00|100,00|
 
 #### Observations :
+Aucune remarque particulière à faire : cette table est correcte dans sa structure et correctement renseignée (aucune valeur nulle et que des valeurs distinctes).
 
 ## TA_GG_EXTERIEUR
 ### 7.1. Présentation générale
@@ -497,10 +544,13 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |FAM_LIB|VARCHAR2|0|3|3|3|0,00|100,00|
 
 #### Observations :
+Cette table est correcte structurellement et ses données sont remplies correctement sauf pour le champ FAM_VAL dont je ne comprends toujours pas l'utilité et qui n'a qu'une seule valeur (1). 
 
 ## TA_GG_FILES
 ### 9.1. Présentation générale
-Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC. Le lien renvoie, pour chaque entité, vers une image stockée sur le serveur de la direction.
+* Table servant à associer un dossier GestionGeo à son image (via un lien hypertexte) pour les récollements et les IC. Le lien renvoie, pour chaque entité, vers une image stockée sur infogeo ;
+* Cette table est remplie par DynMap soit lors de la création d'un dossier (onglet création de GestionGeo), soit lors de la récupération d'un dossier existant ;
+* Les fichiers vers lesquels pointent les valeurs du champ *LIEN* de la table sont quant à eux enregistrés sur infogeo via le workbench "acad_recV13_20161026" (cf.[documentation_interface_gestiongeo.md](documentation_interface_gestiongeo.md));
 
 ### 9.2. Les objets liés à la table
 #### Les contraintes
@@ -535,6 +585,17 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |OBJECTID|NUMBER|0|3647|3647|3647|0,00|100,00|
 
 #### Observations :
+* Les contraintes :
+	* Il n'y a aucune contrainte sur le champ DOS_NUM alors qu'il s'agit d'un champ très utilisé. Il peut donc y avoir des doublons dans ce champ (théoriquement) ;
+* Les données :
+	* Chaque lien est distinct (unique) ;
+	* Il existe 2219 DOS_NUM distincts pour 3647 valeurs totales, ce qui signifie qu'un dossier dispose de plusieurs images (ce qui est possible) :
+		* 536 dossiers disposent de 2 images ;
+		* 431 dossiers disposent de 3 images ;
+		* 7 dossiers disposent de 4 images ;
+		* 1 dossier dispose de 5 images ;
+		* 1 dossier dispose de 6 images ;
+	* Il existe 1428 doublons dans le champ DOS_NUM ;
 
 ## TA_GG_FORMAT
 ### 10.1. Présentation générale
@@ -588,6 +649,8 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |FOR_ID|NUMBER|0|1|1|1|0,00|100,00|
 
 #### Observations :
+* Etant donné qu'il n'y a qu'une seule entité et qu'aucun utilisateur externe à la MEL n'a pu se connecter à GestionGeo, je suppose que cette table n'est pas utilisée (à confirmer) ;
+* Cette table est correcte structurellement, ainsi qu'au niveau des données ;
 
 ## TA_GG_MEDIA
 ### 11.1. Présentation générale
@@ -627,10 +690,13 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |TYPE|VARCHAR2|0|1|4|4|0,00|100,00|
 
 #### Observations :
+* Je pense que cette table devait stocker en base les images utilisées dans les vignettes de GestionGeo (via le champ *MINIATURE* de type blob), mais que cela ne s'est pas fait et qu'à la place on a stocké le chemin d'accès du fichier dans le champ *MEDIA* (à confirmer).
+* Je suppose que le champ *ID_OBJET* fait référence aux objets de GestionGeo représentés par une vignette ;
+* Cette table pourrait aussi contenir des liens vers des symboles utilisés pour cartographier des éléments, mais le fait que les fichiers se situent dans un dossier *TEST* m'interroge quant à l'utilisation réelle de cette table...
 
 ## TA_GG_POINT
 ### 12.1. Présentation générale
-Table des centroïdes des objets présents dans TA_GG_GEO. Elle est remplie/vidée automatiquement par le trigger "" lors de l'ajout ou de suppression de donnée dans TA_GG_GEO.
+Table des centroïdes des objets présents dans TA_GG_GEO. Elle est remplie/vidée automatiquement par le trigger "TA_GG_POINT" lors de l'ajout ou de la suppression de donnée dans TA_GG_GEO.
 
 ### 12.2. Les objets liés à la table
 #### Les contraintes
@@ -672,6 +738,14 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEOM|SDO_GEOMETRY|0|8085|8117|8117|0,00|100,00|
 
 #### Observations :
+* L'absence de contrainte d'unicité et de clé étrangère indique que des doublons sont présents ;
+* Les données :
+	* Aucune modification n'est censée se faire à la main ou par requête dans cette table puisqu'elle est remplie et vidée par le trigger *TA_GG_POINT* lors de l'ajout et de la suppression de donnée dans TA_GG_GEO (le fait que cette table stocke les centroïdes des géométries de TA_GG_GEO contribue à cette conclusion) ;
+	* le champ ID_DOS contient 2737 doublons ;
+* Types de géométries :
+	* Toutes les géométries sont des points (2D) ; 
+	* Toutes les géométries sont valides ;
+	
 
 ## TA_GG_SOURCE
 ### 13.1. Présentation générale
@@ -735,7 +809,7 @@ Cette table contient les objets linéaires du plan topographique fin.
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_LIG_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_F|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion dans les champs geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide et MAJ des champs geo_nms, geo_ds, geo_nmn, geo_dm + Correction de la géométrie via sdo_tools.get_ordinate (fonction inconnue d'oracle) que je ne comrends pas|
 |TA_LIG_TOPO_F_2D|AFTER EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
 |TRIG_TA_LIG_TOPO_F_LOG|BEFORE EACH ROW|UPDATE OR DELETE|GEO|ENABLED||
 
@@ -773,6 +847,9 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 ||GEO_DM|DATE|1769806|66008|451495|2221301|#VALEUR!|14,62||
 
 #### Observations :
+* Types de géométries :
+	* 2221221 polygones simples (3D);
+	* 79 multi-polygones (3D);
 
 ## TA_LIG_TOPO_G
 ### 15.1. Présentation générale
@@ -830,6 +907,12 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |OBJECTID|NUMBER|0|384779|384779|384779|#VALEUR!|100,00|
 
 #### Observations :
+* Types de géométries :
+	* 149 multilignes (2D) ;
+	* 2 géométries non-reconnues (2D) ;
+	* 1 polygone simple (2D) ;
+	* 384568 lignes simples (2D) ;
+* 122 géométries sont invalides ;
 
 ## TA_LIG_TOPO_GPS
 ### 16.1. Présentation générale
@@ -854,7 +937,7 @@ Table de traitement recevant les données issues du workbench déclenché par Ge
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_LIG_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_LIG_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion : remplissage de geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide ; Edition : mise à jour de geo_nms, geo_ds, geo_nmn, geo_dm.|
 
 #### Les fonctions
 Aucune
@@ -885,6 +968,24 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |OBJECTID|NUMBER|0|565336|565336|565336|#VALEUR!|100,00|
 
 #### Observations :
+* Types de géométries :
+	* 18 multilignes (3D) ;
+	* 565318 lignes simples (3D) ;
+* 38822 géométries sont invalides ;
+
+### 16.4. Analyses
+
+#### Répartition du nombre de lignes créées/modifiées par mois de 2014 à 2020 :
+**Création**
+![Répartition du nombre de lignes créées entre 2014 et 2020](images_analyse_tables/16_4_creation_lignes_TA_LIG_TOPO_GPS.png)
+On observe une augmentation générale du nombre de lignes créées par mois entre 2014 et 2020, correspondant sans doute à une montée en puissance des utilisateurs de gestiongeo qui, en s'aguerrissant dans son utilisation, sont devenus de plus en plus efficaces. Cette montée en puissance peut aussi correspondre à une augmentation du nombre d'utilisateurs (qu'une comparaison avec les dates et les auteurs de création des objets nous permettrait de connaître) et à une augmentation du nombre de missions (à voir avec Jean_Marc). Cela peut aussi correspondre à une période d'insertion de données en base par les géomètres qui suit une période de relevés sur le terrain.
+On peut faire une analyse plus fine du graphique, mais je n'en vois, pour l'instant, pas l'utilité par rapport au projet.
+
+**Modification**
+![Répartition du nombre de lignes modifiées entre 2014 et 2020](images_analyse_tables/16_4_modification_lignes_TA_LIG_TOPO_GPS.png)
+Le nombre de modifications des lignes par mois suit globalement la même évolution que celle des créations, c'est-à-dire une augmentation générale. Il n'y a donc pas eu d'accident qui aurait entraîné d'importantes modifications, en tous cas pas sur une période de 6 ans (à voire sur une période plus courte). Les commentaires du graphique de création s'appliquent aussi à celui-ci.
+
+On peut cependant noter (et ce n'est pas sur les graphiques) que 138 lignes ont été modifiées sans qu'on en connaisse la date de modification. Concernant la création, toutes les lignes sont datées. Il faut donc noter que la modification tant dans TA_POINT_TOPO_GPS que dans TA_LIG_TOPO_GPS n'est pas toujours datée, ce qui n'est pas le cas de la création. C'est d'autant plus étrange que des triggers s'ocuppent de renseigner ces champs en base.
 
 ## TA_LIG_TOPO_IC
 ### 17.1. Présentation générale
@@ -906,9 +1007,9 @@ Table contenant les objets linéaires des investigations complémentaires.
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|DEL_LIG_TOPO_IC_2D|BEFORE EACH ROW|DELETE|GEO|ENABLED||
-|TA_LIG_TOPO_IC|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
-|TA_LIG_TOPO_IC_2D|AFTER EACH ROW|INSERT OR UPDATE OR DELETE|GEO|ENABLED||
+|DEL_LIG_TOPO_IC_2D|BEFORE EACH ROW|DELETE|GEO|ENABLED|En cas de suppression dans TA_LIG_TOPO_IC, l'objet est aussi supprimé dans TA_LIG_TOPO_IC_2D.|
+|TA_LIG_TOPO_IC|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|Insertion : remplissage de geo_nmn, geo_dm, geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide ; Edition : mise à jour de geo_nms, geo_ds, geo_nmn, geo_dm|
+|TA_LIG_TOPO_IC_2D|AFTER EACH ROW|INSERT OR UPDATE OR DELETE|GEO|ENABLED|Mise à jour (insertion/édition) de la table TA_LIG_TOPO_IC_2D en cas de changement dans la table TA_LIG_TOPO_IC|
 
 #### Les fonctions
 Aucune
@@ -940,6 +1041,9 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_DM|DATE|162892|5|35|162927|#VALEUR!|14,29|
 
 #### Observations :
+* Types de géométries :
+	* Toutes les géométries sont de type polygone simple (3D);
+* 561 géométries sont invalides ;
 
 ## TA_LIG_TOPO_IC_2D
 ### 18.1. Présentation générale
@@ -991,6 +1095,9 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_INSEE|CHAR|160769|0|0|160769|#VALEUR!|#DIV/0!|
 
 #### Observations :
+* Types de géométries :
+	* Toutes les géométries sont de type polygone simple (2D) ;
+* Toutes les géométries sont valides ;
 
 ## TA_PIQUAGE_GPS
 ### 19.1. Présentation générale
@@ -1034,10 +1141,10 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 #### Observations :
 
 ## TA_POINT_TOPO_F
-### 21.1. Présentation générale
+### 20.1. Présentation générale
 Cette table contient les objets ponctuels du plan topographique fin.
 
-### 21.2. Les objets liés à la table
+### 20.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1075,7 +1182,7 @@ Cette table contient les objets ponctuels du plan topographique fin.
 |BAC_ENTERRES_ADR|GEO|
 |LM_OBJ|GEO|
 
-### 21.3. Statistiques
+### 20.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEO_NMS|VARCHAR2|0|25|2650781|2650781|#VALEUR!|0,00|
@@ -1099,12 +1206,15 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEOM|SDO_GEOMETRY||||2650781|#VALEUR!|#DIV/0!|
 
 #### Observations :
+* Types de géométries :
+	* Toutes les géométries sont de type point (3D) ;
+* La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
 
 ## TA_POINT_TOPO_G
-### 22.1. Présentation générale
+### 21.1. Présentation générale
 Cette table contient les objets ponctuels du plan topographique de gestion.
 
-### 22.2. Les objets liés à la table
+### 21.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1133,7 +1243,7 @@ Aucune
 |:------|:-----------|
 |ARBRES|GEO|
 
-### 22.3. Statistiques
+### 21.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEOM|SDO_GEOMETRY||||59730|#VALEUR!|#DIV/0!|
@@ -1157,12 +1267,15 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_DM|DATE|49978|1557|9752|59730|#VALEUR!|15,97|
 
 #### Observations :
+* Types de géométries :
+	* Toutes les géométries sont de type point (2D) ;
+* Toutes les géométries sont valides ;
 
 ## TA_POINT_TOPO_GPS
-### 23.1. Présentation générale
-Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via FME (workbench).
+### 22.1. Présentation générale
+Table servant à enregistrer les données (avec une géométrie ponctuelle) des relevées faits par les géomètres dans des fichiers dwg. L'intégration est déclenchée dans GestionGeo (DynMap) et se fait via le workbench *acad_recV13_20161026*.
 
-### 23.2. Les objets liés à la table
+### 22.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1188,7 +1301,7 @@ Table servant à enregistrer les données (avec une géométrie ponctuelle) des 
 #### Les déclencheurs
 |NOM TRIGGER|TYPE TRIGGER|DECLENCHEMENT TRIGGER|PROPRIETAIRE|STATUT|Explications|
 |:----------|:-----------|:--------------------|:-----------|:-----|:-----------|
-|TA_POINT_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED||
+|TA_POINT_TOPO_GPS|BEFORE EACH ROW|INSERT OR UPDATE|GEO|ENABLED|MAJ des champs geo_nms, geo_ds, geo_nmn, geo_dm et insertion dans les champs geo_nms, geo_ds, geo_dv, geo_df, geo_on_valide|
 
 #### Les fonctions
 Aucune
@@ -1198,7 +1311,7 @@ Aucune
 |:------|:-----------|
 |(null)|(null)|
 
-### 23.3. Statistiques
+### 22.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |CLA_INU|NUMBER|0|190|663881|663881||0,00|100,00|
@@ -1222,12 +1335,32 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_REF|VARCHAR2|201879|10196|462002|663881||30,41|69,59|
 
 #### Observations :
+* Les données :
+	* Pour chaque insertion le trigger *TA_POINT_TOPO_GPS* met le champ GEO_ON_VALIDE en 0. Si, lors d'une mise à jour, ce champ passe à 1, alors l'entité serait copiée dans la table *TA_POINT_TOPO_F*. A confirmer puisqu'aucun trigger n'effectue cette manipe en base ;
+	* Le champ geo_ref permet de faire le lien entre la géométrie et son dossier. Le champ geo_ref est égal à la concaténation de "IC_" ou de "REC_" et de son ID_DOS, inséré en base via le workbench ;
+* Types de géométries :
+	* Toutes les géométries sont de type point (3D) ;
+* La vérification de la validité des géométries a échouée due à l'erreur java "ORA-29532" ;
+
+### 22.4. Analyses
+
+#### Répartition du nombre de points créées/modifiées par mois de 2014 à 2020 :
+**Création**
+![Répartition du nombre de points créées entre 2014 et 2020](images_analyse_tables/22_4_creation_points_TA_POINT_TOPO_GPS.png)
+On observe une augmentation générale du nombre de points créés par mois entre 2014 et 2020, correspondant sans doute à une montée en puissance des utilisateurs de gestiongeo qui, en s'aguerrissant dans son utilisation, sont devenus de plus en plus efficaces. Cette montée en puissance peut aussi correspondre à une augmentation du nombre d'utilisateurs (qu'une comparaison avec les dates et les auteurs de création des objets nous permettrait de connaître) et à une augmentation du nombre de missions (à voir avec Jean_Marc). On note aussi des pics de création, correspondant sans doute à des réceptions de données d'autres services. Cela peut aussi correspondre à une période d'insertion de données en base par les géomètres qui suit une période de relevés sur le terrain.
+On peut faire une analyse plus fine du graphique, mais je n'en vois, pour l'instant, pas l'utilité par rapport au projet.
+
+**Modification**
+![Répartition du nombre de points modifiées entre 2014 et 2020](images_analyse_tables/22_4_modification_points_TA_POINT_TOPO_GPS.png)
+Le nombre de modifications des points par mois suit globalement la même évolution que celle des créations, c'est-à-dire une augmentation générale. Il n'y a donc pas eu d'accident qui aurait entraîné d'importantes modifications, en tous cas pas sur une période de 6 ans (à voire sur une période plus courte). Les commentaires du graphique de création s'appliquent aussi à celui-ci.
+
+On peut cependant noter (et ce n'est pas sur les graphiques) que 18223 points ont été modifiés sans qu'on en connaisse la date de modification. Concernant la création, toutes les points sont datés. Il faut donc noter que la modification tant dans TA_POINT_TOPO_GPS que dans TA_LIG_TOPO_GPS n'est pas toujours datée, ce qui n'est pas le cas de la création. C'est d'autant plus étrange que des triggers s'ocuppent de renseigner ces champs en base.
 
 ## TA_POINT_TOPO_IC
-### 24.1. Présentation générale
+### 23.1. Présentation générale
 Table contenant les éléments ponctuels des investigations complémentaires (trappe à vantaux par exemple)
 
-### 24.2. Les objets liés à la table
+### 23.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1249,7 +1382,7 @@ Aucune
 |NOM VUE|PROPRIETAIRE|
 |:------|:-----------|
 
-### 24.3. Statistiques
+### 23.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |Z_TERRAIN_NAT|NUMBER|181723|39596|186430|368153||49,36|50,64|
@@ -1265,12 +1398,15 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |Z_PROF|NUMBER|12002|77168|356151|368153||3,26|96,74|
 
 #### Observations :
+* Types de géométries :
+	* Toutes les géométries sont de type point (2D) ;
+* Toutes les géométries sont valides ;
 
 ## TA_SUR_TOPO_G
-### 25.1. Présentation générale
+### 24.1. Présentation générale
 Cette table contient les objets surfaciques du plan topographique de gestion.
 
-### 25.2. Les objets liés à la table
+### 24.2. Les objets liés à la table
 #### Les contraintes
 |NOM CONTRAINTE|TYPE CONTRAINTE|CONDITION DE RECHERCHE|TABLE DE REFERENCE|STATUT|VALIDE|SCHEMA INDEX|NOM INDEX|
 |:-------------|:--------------|:---------------------|:-----------------|:-----|:-----|:-----------|:--------|
@@ -1312,7 +1448,7 @@ Aucune
 |TEMP_TA_SUR_TOPO_G|GEO|
 |LM_BATI|GEO|
 
-### 25.3. Statistiques
+### 24.3. Statistiques
 NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nbr_lignes|Taux_de_valeurs_nulles|Taux_de_valeurs_non_nulles|
 |:-------|:----------|:-------|:---------------------|:----------------------|:---------|:---------------------|:-------------------------|
 |GEOM|SDO_GEOMETRY||||361911|#VALEUR!|#DIV/0!|
@@ -1331,3 +1467,11 @@ NOM_CHAMP|TYPE_DONNEE|NBR_NULL|NBR_VALEURS_DISTINCTES|NBR_VALEURS_TOTAL/CHAMP|Nb
 |GEO_TEXTE|VARCHAR2|361911|0|0|361911|#VALEUR!|#DIV/0!|
 
 #### Observations :
+* Types de géométries :
+	* 9 points (2D) ;
+	* 2868 multipolygones (2D) ;
+	* 8 géométries inconnues ;
+	* 358630 polygones simples (2D) ;
+	* 12 collections (2D) ;
+	* 28 lignes simples (2D) ;
+* 371 géométries invalides ;
