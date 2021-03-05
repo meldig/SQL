@@ -54,7 +54,33 @@ Durant cette étape nous allons lister l'ensemble des fichiers contenus dans les
 
 Ce script fait egalement appelle à un fichier shell (liste_fichier.sh) afin de mettre en forme le fichier csv. Ce fichier shell va notamment ajouter une colonne OBJECTID et rajouter des en-tête à celles-ci.
 
-
 #### 2.1. Import de la liste dans G_DALC afin de pouvoir mettre à jour la Liste des fichiers contenu dans le repertoire APPLI_GG.
 
-La liste des fichiers précédemment crée va être importer en base et ensuite être traiter pour mettre à jour la table G_GESTION.TA_GG_URL_FILE.
+La liste des fichiers précédemment crée va être importer en base et ensuite être traiter pour mettre à jour la table G_GESTION.TA_GG_URL_FILE. Pour cela un ensemble de requête a été créé:
+GESTIONGEO_CORRECTION_URL.sql
+
+``
+ogr2ogr.exe -f OCI OCI:#UTILISATEUR#/#MDP#@#INSTANCE# V:/PROJET/14_GESTION_GEO/CORRECTION_DOSSIER_APPLI_GG/test_3/fichier/liste_fichier_gestiongeo_test_incremente_colonne.csv -nln TEMP_GG_FILES_LIST
+``
+
+ogr2ogr.exe -f OCI OCI:GEO/imptadmd@G_DALC V:\PROJET\14_GESTION_GEO\CORRECTION_DOSSIER_APPLI_GG\test_4\test_applii_gg/liste_fichier_gestiongeo_test_incremente_colonne.csv -nln TEMP_GG_FILES_LIST
+
+Phasage des opérations réalisées pour mettre à jour la table G_GESTIONGEO.TA_GG_URL_FILE:
+1. SUPPRESSION DE LA COLONNE OBJECTID CREER DANS LE FICHIER EXCEL.
+2. SUPPRESSION DES LIGNES CONTENANT DES FICHIERS Thumbs.db.
+3. AJOUT DE LA CLE PRIMAIRE.
+3.1. SUPPRESSION DE LA CONTRAINTE DE CLE PRIMAIRE
+3.2. SUPPRESSION DE LA COLONNE OGR_FID
+3.3. AJOUT D'UNE COLONNE CLE PRIMAIRE
+4. MISE EN FORME DE LA COLONNE LIEN
+4.1. Remplacer les '/' par '\'
+4.2. Mise à jour du lien avec \\volt\INFOGEO
+5. CREATION DE LA COLONNE ID_DOS POUR LA JOINTURE
+5.1. Ajout de la colonne ID_DOS
+5.2. Mise à jour de la colonne ID_DOS.
+6. CREATION DE LA COLONNE INTEGRATION
+6.1. AJOUT DE LA COLONNE INTEGRATION
+6.2. Mise à jour de la colonne INTEGRATION, mise à 1 de la colonne pour les dossiers ou un seul un fichier dwg est présent.
+6.3. Mise à jour de la colonne INTEGRATION, mise à 0 de la colonne pour les dossiers ou les autres fichiers d'un dossier ou un fichier est déjà à 1.
+7. COMMENTAIRE DE LA TABLE
+8. MERGE AVEC LA TABLE G_GESTIONGEO.TA_GG_URL_FILE
