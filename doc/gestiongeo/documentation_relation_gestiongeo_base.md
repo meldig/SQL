@@ -27,13 +27,13 @@
 
 |TABLE_RENSEIGNEE |CHAMP 							|Remarque 																										|
 |:----------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------|
-|GEO.TA_GG_DOSSIER|DOS_NUM							|Identifiant du dossier. Champ de jointure entre le dossier et sa géométrie contenue dans la table TA_GG_GEO.	|
-|GEO.TA_GG_DOSSIER|DOS_NUM_SHORT					|Il s'agit des trois derniers digits du DOS_NUM. Nombre de dossier créer depuis le début de l'année en cours.	|
+|GEO.TA_GG_DOSSIER|DOS_NUM							|Numéro du dossier. Concatenation ANNEE + code INSEE + incrémentation du nombre de dossier créer depuis le début de l'année.|
+|GEO.TA_GG_DOSSIER|DOS_NUM_SHORT					|Nombre de dossiers créés.	|
 |GEO.TA_GG_GEO 	  |ID_GEOM							|Identifiant d'une géométrie dans la table TA_GG_GEO.															|
-|GEO.TA_GG_GEO 	  |ID_DOS							|Identifiant du dossier
-|GEO.TA_GG_GEO 	  |GEOM 							|Périmètre du dossier
+|GEO.TA_GG_GEO 	  |ID_DOS							|Clé étrangère vers la table parent TA_GG_DOSSIER, avec une option ON DELETE CASCADE permettant de supprimer le périmètre de TA_GG_GEO en cas de suppression de du dossier correspondant dans TA_GG_DOSSIER.|
+|GEO.TA_GG_GEO 	  |GEOM 							|champ géométrique de la table contenant les périmètres des dossiers
 |GEO.TA_GG_GEO 	  |ETAT_ID 							|Etat du dossier. Clé étrangère vers la table TA_GG_ETAT. 														|
-|GEO.TA_GG_GEO 	  |DOS_NUM							|Identifiant du dossier. Champ de jointure entre une géométrie et son dossier contenu dans la table TA_GG_DOSSIER|
+|GEO.TA_GG_GEO 	  |DOS_NUM							|Numéro du dossier. Concatenation ANNEE + code INSEE + incrémentation du nombre de dossier créer depuis le début de l'année.|
 
 ### Observation
 
@@ -46,7 +46,7 @@ La délimitation d'un périmètre n'est pas obligatoire pour créer un dossier.
 |:-----------------------------|:----------------|:-----------------------------|:--------------------------------------------------------------------------------------------------------------|
 |Auteur 					   |GEO.TA_GG_DOSSIER|SRC_ID 						|Clé étrangère vers la table TA_GG_SOURCE, indique le créateur du dossier.									    |
 |Famille 					   |GEO.TA_GG_DOSSIER|FAM_ID 						|Clé étrangère vers la table TA_GG_FAMILLE, indique la famille du dossier.										|
-|Dossier associé			   |GEO.TA_GG_DOSSIER|DOS_RQ 						|Remaque générale sur le dossier.																				|
+|Dossier associé			   |GEO.TA_GG_DOSSIER|ID_PERE 						|Numéro de dossier associé au dossier. N'est plus utilisé														|
 |Remarque 					   |GEO.TA_GG_DOSSIER|DOS_RQ 						|Remaque générale sur le dossier.																				|
 |Date travaux				   |GEO.TA_GG_DOSSIER|DOS_DT_DEB_TR et DOS_DT_FIN_TR|Indique le debut et la fin des travaux. Apparait sous la forme d'une phrase dans la fiche du dossier.			|
 |Voie						   |GEO.TA_GG_DOSSIER|DOS_VOIE						|Clé étrangère.																									|
@@ -68,8 +68,10 @@ Le périmètre est automatiquement dessiné par la chaine de traitement FME à p
 
 |TABLE_RENSEIGNEE |CHAMP 							|Remarque 																										|
 |:----------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------|
-|GEO.TA_GG_DOSSIER|DOS_NUM							|Identifiant du dossier. Champ de jointure entre le dossier et sa géométrie contenue dans la table TA_GG_GEO.	|
+|GEO.TA_GG_DOSSIER|ID_DOS							|Identifiant unique du dossier.																					|
+|GEO.TA_GG_DOSSIER|DOS_NUM							|Numéro du dossier. Concatenation ANNEE + code INSEE + incrémentation du nombre de dossier créer depuis le début de l'année.|
 |GEO.TA_GG_DOSSIER|DOS_NUM_SHORT					|Il s'agit des trois derniers digits du DOS_NUM. Nombre de dossier créer depuis le début de l'année en cours.	|
+|GEO.TA_GG_GEO 	  |ID_DOS							|Clé étrangère vers la table parent TA_GG_DOSSIER, avec une option ON DELETE CASCADE permettant de supprimer le périmètre de TA_GG_GEO en cas de suppression de du dossier correspondant dans TA_GG_DOSSIER.|
 |GEO.TA_GG_GEO 	  |ID_GEOM							|Identifiant d'une géométrie dans la table TA_GG_GEO.															|
 |GEO.TA_GG_GEO 	  |ID_DOS							|Identifiant du dossier
 |GEO.TA_GG_GEO 	  |GEOM 							|Périmètre du dossier
@@ -84,7 +86,7 @@ Dans le cas d'une intégration à partir d'un dossier existant, les informations
 |:-----------------------------|:----------------|:-----------------------------|:--------------------------------------------------------------------------------------------------------------|
 |Auteur 					   |GEO.TA_GG_DOSSIER|SRC_ID 						|Clé étrangère vers la table TA_GG_SOURCE, indique le créateur du dossier.									    |
 |Famille 					   |GEO.TA_GG_DOSSIER|FAM_ID 						|Clé étrangère vers la table TA_GG_FAMILLE, indique la famille du dossier.										|
-|Dossier associé			   |GEO.TA_GG_DOSSIER|DOS_RQ 						|Remaque générale sur le dossier.																				|
+|Dossier associé			   |GEO.TA_GG_DOSSIER|ID_PERE 						|Numéro de dossier associé au dossier. N'est plus utilisé																|
 |Remarque 					   |GEO.TA_GG_DOSSIER|DOS_RQ 						|Remaque générale sur le dossier.																				|
 |Date travaux				   |GEO.TA_GG_DOSSIER|DOS_DT_DEB_TR et DOS_DT_FIN_TR|Indique le debut et la fin des travaux. Apparait sous la forme d'une phrase dans la fiche du dossier.			|
 |Voie						   |GEO.TA_GG_DOSSIER|DOS_VOIE						|Clé étrangère.																									|
@@ -94,7 +96,7 @@ Dans le cas d'une intégration à partir d'un dossier existant, les informations
 
 ### Calcul du périmètre dans le cadre d'une opération d'intégration avec récupération d'un dossier existant.
 
-Le périmètre est automatiquement redéssiné par la chaine de traitement FME à partir des éléments contenus dans les fichiers *dwg* renseigné dans l'onglet **Fichier DWG**. Si un périmètre existait déjà, celui ci est écrasé dans la table **TA_GG_GEO**.
+Le périmètre est automatiquement redéssiné par la chaine de traitement FME à partir des éléments contenus dans les fichiers *dwg* renseigné dans l'onglet **Fichier DWG**. Si un périmètre existait déjà, celui-ci est redessiné dans la table **TA_GG_GEO**.
 
 |TABLE_RENSEIGNEE |CHAMP 							|Remarque 																										|
 |:----------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------|
@@ -102,17 +104,18 @@ Le périmètre est automatiquement redéssiné par la chaine de traitement FME �
 
 ### Copie du fichier *dwg* 
 
-L'application **gestiongeo** copie les fichiers a intégrer dans le dossier **\\volt\infogeo\appli_gg\recol\DOS_NUM_CODE_INSEE_NOM_DE_LA_VOE\DOS_NUM.dwg**.
+L'application **gestiongeo** copie les fichiers à intégrer dans le dossier **\\volt\infogeo\appli_gg\recol\DOS_NUM_CODE_INSEE_NOM_DE_LA_VOE\DOS_NUM.dwg**.
 
 ### Insertion des éléménents géométriques dans les tables TA_POINT_TOPO_GPS et TA_LIG_TOPO_GPS.
 
-Les données issues des fichiers *dwg* sont insérées dans les tables:
+Les données issues des fichiers *dwg* sont insérées dans les tables suivantes grâce à la chaine FME:
 * TA_POINT_TOPO_GPS
 * TA_LIG_TOPO_GPS
+* PTTOPO
 
 ## Mise à jour d'un dossier à partir de la fiche d'un dossier.
 
-La fiche d'un dossier est accessible par l'interface de **gestiongeo** en sélectionnant un dossier sur la carte de l'application. Les attributs d'un dossier sont modifiables par l'intermédiaire de l'icône de mise à jour(Voir *documentation_interface_gestiongeo.md*).
+La fiche d'un dossier est accessible par l'interface de **gestiongeo** en sélectionnant un dossier sur la carte de l'application. Les attributs d'un dossier sont modifiables par l'intermédiaire de l'icône de mise à jour(Voir ![documentation_interface_gestiongeo.md](/documentation_interface_gestiongeo.md))
 
 Les attribut modifiables sont:
 |CHAMP onglet DOSSIER		   |TABLE_RENSEIGNEE |CHAMP 						|Remarque 																										|
