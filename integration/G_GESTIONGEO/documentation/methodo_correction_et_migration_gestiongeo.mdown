@@ -16,7 +16,7 @@ Les étapes listées ci-dessous sont celles qu'il faut suivre (dans l'ordre) pou
 1. Vérifier la présence de doublons de DOS_NUM dans *TA_GG_GEO* ;
 2. Corriger les doublons ;
 3. Mise à jour de la table de comparaison ;
-4. Duplicatat des tables *TA_GG_DOSIER* et *TA_GG_GEO* afin d'y corriger les données ; 
+4. Duplicatat des tables *TA_GG_DOSSIER* et *TA_GG_GEO* afin d'y corriger les données ; 
 5. Correction des données dans les tables temporaires d'oracle 11g ;
 6. Récupération des URLS dans APPLI_GG par Romain et export de la table dans Oracle 12c ;
 7. Création de la structure des tables dans oracle 12c ;
