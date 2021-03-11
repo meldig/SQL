@@ -4,7 +4,7 @@ Objectif : versionner toutes les modifications/suppressions de TA_LIG_TOPO_F_REC
 */
 
 create or replace TRIGGER B_UDX_TA_LIG_TOPO_F_RECAL
-    BEFORE UPDATE OR DELETE ON TA_LIG_TOPO_F_RECAL
+    BEFORE UPDATE OR DELETE ON GEO.TA_LIG_TOPO_F_RECAL
     FOR EACH ROW
 DECLARE
     username varchar(30);
@@ -49,5 +49,5 @@ DECLARE
 
         EXCEPTION
             WHEN OTHERS THEN
-                mail.sendmail('geotrigger@lillemetropole.fr',username || ' a provoque l''erreur : ' || SQLERRM,'ERREUR TRIGGER - geo/dev.TA_LIG_TOPO_F_RECAL_LOG','bjacq@lillemetropole.fr');
+                mail.sendmail('geotrigger@lillemetropole.fr',username || ' a provoque l''erreur : ' || SQLERRM,'ERREUR TRIGGER - geo/prod.B_UDX_TA_LIG_TOPO_F_RECAL','bjacq@lillemetropole.fr');
     END;

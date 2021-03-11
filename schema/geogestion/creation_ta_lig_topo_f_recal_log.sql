@@ -4,8 +4,8 @@ Création de la table TA_LIG_TOPO_F_RECAL_LOG permettant de sauvegarder toutes l
 -- 1. Création de la table TA_LIG_TOPO_F_RECAL_LOG
 CREATE TABLE GEO.TA_LIG_TOPO_F_RECAL_LOG(
     OBJECTID NUMBER(38,0),
-    FID_IDENTIFIANT	NUMBER(38,0) NOT NULL,
-    CLA_INU NUMBER(38,0) NOT NULL,
+    CLA_INU NUMBER(38,0),
+    FID_IDENTIFIANT NUMBER(38,0) NOT NULL,
     GEO_REF VARCHAR2(13 BYTE),
     GEO_INSEE CHAR(3 BYTE),
     GEOM SDO_GEOMETRY,
@@ -27,8 +27,8 @@ CREATE TABLE GEO.TA_LIG_TOPO_F_RECAL_LOG(
 -- 2. Création des commentaires de table
 COMMENT ON TABLE GEO.TA_LIG_TOPO_F_RECAL_LOG IS 'Table de versionnement de la table TA_LIG_TOPO_F_RECAL. Elle contient toutes les mises à jour (à partir du 08.03.2021) et les suppressions de la table de recalage.';
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.OBJECTID IS 'Identifiant interne de l''objet geographique ';
-COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.FID_IDENTIFIANT IS 'Identifiant de l''objet qui est/était présent dans la table de recalage.';
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.CLA_INU IS 'Reference a la classe a laquelle appartient l''objet ';
+COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.FID_IDENTIFIANT IS 'Identifiant de l''objet qui est/était présent dans la table de recalage.';
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.GEO_REF IS 'Identifiant metier. Non obligatoire car certain objet geographique n''ont pas d''objet metier associe. Dans certains cas il peut contenir le numéro de dossier ta_gg_dossier d''origine du levé ';
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.GEO_INSEE IS 'Code insee de la commune sur laquelle se situe l''objet ';
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.GEOM IS 'Geometrie ORACLE de l''objet ';
@@ -62,7 +62,7 @@ COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.MODIFICATION IS 'Type de modificat
     VALUES(
         'TA_LIG_TOPO_F_RECAL_LOG',
         'geom',
-        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+        SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005),SDO_DIM_ELEMENT('Z', -1000, 10000, 0.005)), 
         2154
     );
     COMMIT;
@@ -71,4 +71,4 @@ COMMENT ON COLUMN GEO.TA_LIG_TOPO_F_RECAL_LOG.MODIFICATION IS 'Type de modificat
     CREATE INDEX TA_LIG_TOPO_F_RECAL_LOG_SIDX
     ON GEO.TA_LIG_TOPO_F_RECAL_LOG(GEOM)
     INDEXTYPE IS MDSYS.SPATIAL_INDEX
-    PARAMETERS('layer_gtype=COLLECTION, tablespace=INDX_GEO, work_tablespace=DATA_TEMP');
+    PARAMETERS('layer_gtype=MULTILINE, tablespace=INDX_GEO, work_tablespace=DATA_TEMP');
