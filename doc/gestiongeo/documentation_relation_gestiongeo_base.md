@@ -140,4 +140,10 @@ Les attribut modifiables sont:
 
 ## Mise à jour d'un dossier lié à une Investigation Complémentaire.
 
-La mise à jour dossier IC se fait de la meme manière que pour un dossier RECOLEMENT. La seule différence va être le FAM_ID. 1 signifie RECOLEMENT et 2 INVESTIGATION COMPL2MENTAIRE. A noter que les données issus du fichier dwg de l'investigation complémentaire ne seront insérées que dans la table TA_POINT_TOPO_GPS suite à l'activation du traitement FME *acad_recV13_20161026.fmw*  
+La mise à jour d'un dossier IC se fait de la meme manière que pour un dossier RECOLEMENT. La seule différence va être la valeur prises par l'attribut __FAM_ID__. 1 signifie RECOLEMENT et 2 INVESTIGATION COMPLEMENTAIRE. A noter que jusqu'à maintenant les données issues des fichiers *dwg* des investigations complémentaires ne sont insérées que dans la table TA_POINT_TOPO_GPS suite à l'activation du traitement FME *acad_recV13_20161026.fmw* . Suite à la refonte de l'application GESTIONGEO, cela n'est plus le cas. Les données des investigations complémentaires ne seront plus insérées dans les tables:
+
+* TA_POINT_TOPO_GPS
+* TA_LIG_TOPO_GPS
+* PTTOPO
+
+Cependant l'enveloppe de ces éléments sera toujours calculée pour determiner l'emprise du dossier.
