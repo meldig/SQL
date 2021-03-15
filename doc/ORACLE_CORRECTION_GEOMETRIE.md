@@ -11,6 +11,21 @@ FROM
 GROUP BY t.#COLONNE_GEOMETRIQUE#.sdo_gtype
 ```
 
+le type de géométrie d'un objet dans Oracle se définit avec un code en 4 chiffres sous le format: DLXX ou:
+
+* D: Identifie le nombre de dimensions: 2, 3, 4
+* L: identifie la dimension de mesure de référencement linéaire pour une géométrie de système de référencement linéaire (LRS) en trois dimensions.
+* XX: Identifie le type de géométrie:
+    * 01: Point
+    * 02: Ligne ou courbe
+    * 03: Polygone ou surface
+    * 04: Collection
+    * 05: Multipoint
+    * 06: Polyligne ou polycourbe
+    * 07: Multi-polygones ou multi-surfaces
+    * 08: Solide
+    * 09: Multi-solides
+
 Requete pour afficher le code des erreurs:
 
 ```SQL
