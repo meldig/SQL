@@ -25,18 +25,19 @@ UPDATE GEO.TEST_SUR_TOPO_G a
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13367';
 
--- Erreur 13366 et 13350
+-- Erreur 13366 et 13350 ainsi que les géométries de type 2004
 UPDATE GEO.TEST_SUR_TOPO_G a
     SET a.geom = (
                     SELECT
-                        SDO_AGGR_UNION(SDOAGGRTYPE(b.geom, 0.005))
+                        SDO_AGGR_UNION(SDOAGGRTYPE(b.geom, 0.001))
                     FROM
                         GEO.TEST_SUR_TOPO_G b
                     WHERE
                         a.objectid = b.objectid
                 )
     WHERE
-        SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) IN ('13366', '13350');
+        SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) IN ('13366', '13350')
+        OR a.geom.sdo_gtype = 2004;
 
 -- Suppression des entités ne disposant pas de géométrie
 DELETE FROM GEO.TEST_SUR_TOPO_G a
@@ -57,6 +58,9 @@ WHERE a.geom.sdo_gtype = 2001;
 DELETE FROM GEO.TEST_SUR_TOPO_G a
 WHERE a.geom.sdo_gtype = 2002;
 
+-------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------
+
 -- Seconde partie des corrections
 -- Erreur 13349 -> auto intersection - Correction des objets dont les corrections précédentes auraient pu provoquer cette erreur
 UPDATE GEO.TEST_SUR_TOPO_G a
@@ -64,12 +68,24 @@ UPDATE GEO.TEST_SUR_TOPO_G a
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13349';
     
--- Erreur 13356 -> géométries disposant de sommets en doublons - correction de cette que les corrections ci-dessus n'ont pu corriger
+-- Erreur 13356 -> géométries disposant de sommets en doublons - correction de cette erreur que les corrections ci-dessus n'ont pu corriger
 UPDATE GEO.TEST_SUR_TOPO_G a
     SET a.geom = SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005)
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13356';
 
+-- Transformation du type collection en type polygone. Cette requête résulte des transformations dues aux requêtes précédentes
+UPDATE GEO.TEST_SUR_TOPO_G a
+    SET a.geom = (
+                    SELECT
+                        SDO_AGGR_UNION(SDOAGGRTYPE(b.geom, 0.001))
+                    FROM
+                        GEO.TEST_SUR_TOPO_G b
+                    WHERE
+                        a.objectid = b.objectid
+                )
+    WHERE
+        a.geom.sdo_gtype = 2004;
 COMMIT;
 
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute modification de se faire et de retourner à l'état de la table précédent.
