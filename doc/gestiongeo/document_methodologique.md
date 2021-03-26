@@ -18,7 +18,7 @@ Ce fichier va pouvoir être utilisé pour pouvoir associer à chaque dossier con
 
 Durant cette étape nous allons lister l'ensemble des répertoires contenus dans les répertoires APPLI_GG\IC et APPLIGG\RECOL. Pour cela nous allons utiliser le script liste_repertoire.bat. Ce fichier va lister l'ensemble des répertoires contenus dans APPLI_GG.
 
-Ce script fait également appelle à un fichier shell (liste_repertoire.sh) afin de mettre en forme le fichier csv. Ce fichier shell va notamment ajouter une colonne OBJECTID dans le fichier et rajouter des noms de colonnes à celles-ci. Cette mise en forme est nécessaire afin de pouvoir importer ce fichier dans notre base Oracle.
+Ce script fait également appel à un fichier shell (liste_repertoire.sh) afin de mettre en forme le fichier csv. Ce fichier shell va notamment ajouter une colonne OBJECTID dans le fichier et rajouter des noms de colonnes à celles-ci. Cette mise en forme est nécessaire afin de pouvoir importer ce fichier dans notre base Oracle.
 
 #### 1.3. Utilisation des fonctions excels afin de mettre à jour le nom du repertoire.
 
