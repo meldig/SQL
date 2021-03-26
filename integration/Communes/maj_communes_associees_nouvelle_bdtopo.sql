@@ -6,7 +6,7 @@ SET SERVEROUTPUT ON
 BEGIN
 SAVEPOINT POINT_SAVE_MAJ_COMMUNES_ASSOCIEES;
 
--- 1. Insertion des code INSEE des communes associées ou déléguées dans la table TA_CODE ;
+-- 1. Insertion des codes INSEE des communes associées ou déléguées dans la table TA_CODE ;
 MERGE INTO G_GEO.TA_CODE a
     USING (
         SELECT
@@ -24,7 +24,7 @@ WHEN NOT MATCHED THEN
     INSERT(a.valeur, a.fid_libelle)
     VALUES(t.INSEE_COM, t.fid_libelle);
 
--- 2. Insertion des éométries des communes associées ou déléguées dans la table TA_COMMUNE ;
+-- 2. Insertion des géométries des communes associées ou déléguées dans la table TA_COMMUNE ;
 MERGE INTO G_GEO.TA_COMMUNE a
     USING(
         SELECT 
