@@ -53,7 +53,7 @@ Avec cette commande, les répertoires contenus dans la colonne 1 du fichier csv 
 
 Durant cette étape nous allons lister l'ensemble des fichiers contenus dans les dossiers de chaque répertoire APPLI_GG\IC et APPLI_GG\RECOL". Pour cela nous allons utiliser le script liste_fichier.bat. Ce script va lister l'ensemble des fichiers contenus dans APPLI_GG. Il s'agit des mêmes commandes que celles contenues dans le fichier liste_repertoire.bat. Seules les options des commandes diffèrent.
 
-Ce script fait également appelle à un fichier shell (liste_fichier.sh) afin de mettre en forme le fichier csv. Ce fichier shell va notamment ajouter une colonne OBJECTID et rajouter des en-têtes à celles-ci.
+Ce script fait également appel à un fichier shell (liste_fichier.sh) afin de mettre en forme le fichier csv. Ce fichier shell va notamment ajouter une colonne OBJECTID et rajouter des en-têtes à celles-ci.
 
 #### 2.1. Import de la liste dans G_DALC afin de pouvoir mettre à jour la Liste des fichiers contenu dans le repertoire APPLI_GG.
 
