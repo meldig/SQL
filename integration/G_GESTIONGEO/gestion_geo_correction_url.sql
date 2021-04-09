@@ -90,7 +90,7 @@ SET LIEN = REPLACE(LIEN,'/','\');
 
 UPDATE G_DALC.TEMP_GG_FILES_LIST
 SET LIEN = CONCAT('\\volt\infogeo',
-                    SUBSTR(LIEN,INSTR(LIEN,'\Appli_GG'),LENGTH(LIEN))
+                    SUBSTR(LIEN,INSTR(LIEN,'\Donnees'),LENGTH(LIEN))
                     );
 
 
