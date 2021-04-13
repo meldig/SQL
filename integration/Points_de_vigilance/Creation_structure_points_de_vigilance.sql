@@ -24,11 +24,11 @@ Création des tables nécessaires aux points de vigilance.
 -- 1.1. Création de la table TA_GG_POINT_VIGILANCE ;
 CREATE TABLE G_GESTIONGEO.TA_GG_POINT_VIGILANCE(
     objectid NUMBER(38,0) GENERATED ALWAYS AS IDENTITY,
-    fid_type_signalement NUMBER(38,0),
-    fid_verification NUMBER(38,0),
-    fid_lib_statut NUMBER(38,0),
-    fid_libelle NUMBER(38,0),
-    fid_type_point NUMBER(38,0),
+    fid_type_signalement NUMBER(38,0) NOT NULL,
+    fid_verification NUMBER(38,0) NOT NULL,
+    fid_lib_statut NUMBER(38,0) NOT NULL,
+    fid_libelle NUMBER(38,0) NOT NULL,
+    fid_type_point NUMBER(38,0) NOT NULL,
     date_previsionnelle DATE,
     commentaire VARCHAR2(4000 BYTE),
     geom SDO_GEOMETRY  
