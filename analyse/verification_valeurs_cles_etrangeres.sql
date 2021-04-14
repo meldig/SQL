@@ -14,10 +14,12 @@ DECLARE
     v_table_parent VARCHAR2(400 byte);
     v_champ_parent VARCHAR2(400 byte);
     v_contrainte VARCHAR2(400 byte);
-    v_decompte NUMBER(38,0);
+    v_decompte1 NUMBER(38,0);
+    v_decompte2 NUMBER(38,0);
     v_requete VARCHAR2(1000 byte);
     
 BEGIN
+    DBMS_OUTPUT.PUT_LINE('SCHEMA ENFANT ; TABLE ENFANT ; CHAMP ENFANT ; NBR FK ORPHELINE ; NBR VALEUR NULL FK ; NOM CONTRAINTE ; SCHEMA PARENT ; TABLE PARENT ; CHAMP PARENT');
     FOR i IN(
         SELECT
            a.owner AS schema_enfant,
@@ -46,24 +48,15 @@ BEGIN
         
         -- Décompte des valeurs NULL pour chaque clé étrangère
         v_requete := 'SELECT COUNT(*) FROM ' || v_schema_enfant || '.' || v_table_enfant || ' WHERE ' || v_champ_enfant || ' IS NULL';
-        -- Stockage du nombre de valeurs null par clé étrangère dans v_decompte
-        EXECUTE IMMEDIATE v_requete INTO v_decompte;
-        
-        IF v_decompte <> 0 THEN
-            DBMS_OUTPUT.PUT_LINE('Nbr clés étrangères nulle : ' || v_decompte || ' dans la table enfant : ' || v_table_enfant || ' ; champ enfant : ' || v_champ_enfant || ' ; contrainte : ' || v_contrainte || ' ; schéma parent : ' || v_schema_parent || ' ; table parente : ' || v_table_parent || ' ; champ parent : ' || v_champ_parent);
-        ELSE
-            DBMS_OUTPUT.PUT_LINE('Aucune clé étrangère nulle dans la table enfant : ' || v_table_enfant || ' ; champ enfant : ' || v_champ_enfant || ' ; contrainte : ' || v_contrainte || ' ; schéma parent : ' || v_schema_parent || ' ; table parente : ' || v_table_parent || ' ; champ parent : ' || v_champ_parent);
-        END IF;
-        
+        -- Stockage du nombre de valeurs null par clé étrangère dans v_decompte1
+        EXECUTE IMMEDIATE v_requete INTO v_decompte1;
+
         -- Sélection du nombre de clés étrangères orphelines de clés parentes
-        v_requete := 'SELECT COUNT(a.' || v_champ_enfant || ') FROM ' || v_schema_parent || '.' || v_table_enfant || ' a WHERE a.' || v_champ_enfant || ' NOT IN (SELECT ' || v_champ_parent || ' FROM ' || v_schema_parent || '.' || v_table_parent || ')';
-        -- Stockage du nombre de clés orphelines dans v_decompte
-        EXECUTE IMMEDIATE v_requete INTO v_decompte;
-        
-        IF v_decompte = 0 THEN
-            DBMS_OUTPUT.PUT_LINE('Les valeurs de la clé étrangère ' || v_contrainte || ' ; table enfant : ' || v_table_enfant || ' Champ enfant : ' || v_champ_enfant || ' disposent toutes d''une clé parente ; table parente : ' || v_table_parent || ' ; champ parent : ' || v_champ_parent);
-        ELSE
-            DBMS_OUTPUT.PUT_LINE('La clé étrangère ' || v_contrainte || ' ; table enfant : ' || v_table_enfant || ' Champ enfant : ' || v_champ_enfant || ' dispose de ' || v_decompte || ' clés orphelines pas rapport à ; table parente : ' || v_table_parent || ' ; champ parent : ' || v_champ_parent);
-        END IF;
+        v_requete := 'SELECT COUNT(a.' || v_champ_enfant || ') FROM ' || v_schema_enfant || '.' || v_table_enfant || ' a WHERE a.' || v_champ_enfant || ' NOT IN (SELECT ' || v_champ_parent || ' FROM ' || v_schema_parent || '.' || v_table_parent || ')';
+        -- Stockage du nombre de clés orphelines dans v_decompte2
+        EXECUTE IMMEDIATE v_requete INTO v_decompte2;
+
+        DBMS_OUTPUT.PUT_LINE(v_schema_enfant || ' ; ' || v_table_enfant || ' ; ' || v_champ_enfant || ' ; ' || v_decompte2 || ' ; ' || v_decompte1 || ' ; ' || v_contrainte || ' ; ' || v_schema_parent || ' ; ' || v_table_parent || ' ; ' || v_champ_parent);
+
     END LOOP;
 END;
