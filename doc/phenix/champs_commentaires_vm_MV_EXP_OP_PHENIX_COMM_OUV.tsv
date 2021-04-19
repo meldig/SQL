@@ -1,0 +1,57 @@
+Nom_champ	Type_donnees	Commentaire
+OBJECTID	NUMBER(38,0)	identifiant de chaque objet (PK de la VM)
+ID_OPE	NUMBER(8,0)	identifiant de l'opération
+CODE_INSEE	VARCHAR2(5 BYTE)	code insee
+RUE	VARCHAR2(256 BYTE)	rue / localisation du chantier
+QUARTIER	VARCHAR2(4000 BYTE)	nom commune
+GEO_FID_1	CHAR(1 BYTE)	champ vide
+GEO_FID	CHAR(1 BYTE)	champ vide
+GEO_CREATIONDATE	CHAR(1 BYTE)	champ vide
+GEO_MODIFICATIONDATE	CHAR(1 BYTE)	champ vide
+SAISI	VARCHAR2(256 BYTE)	Créateur de l'entité
+DATE_CREATION	DATE	date de création de l'entité
+DATE_CREATION_TXT	VARCHAR2(10 BYTE)	date de création de l'entité au format texte
+INTERV	CHAR(10 BYTE)	intervenant (l'entreprise qui effectue les travaux j'imagine)
+STATUT	VARCHAR2(19 BYTE)	Statut des travaux
+RAISON	CHAR(29 BYTE)	cause des travaux j'imagine (à préciser)
+TYPOLO	CHAR(1 BYTE)	code de typologie peut-être (à préciser)
+EMPRISE	VARCHAR2(13 BYTE)	emprise des travaux
+DEBUT	DATE	je ne sais pas à quel début cette date correspond
+DEBUT_TXT	VARCHAR2(10 BYTE)	je ne sais pas à quel début cette date correspond
+FIN	DATE	je ne sais pas à quelle fin cette date correspond
+FIN_TXT	VARCHAR2(10 BYTE)	je ne sais pas à quelle fin cette date correspond
+REF_MEL	VARCHAR2(15 BYTE)	identifiant MEL du chantier
+DET	VARCHAR2(1024 BYTE)	Détail des travaux
+COMMENTAIRE	CHAR(1 BYTE)	commentaires (vide actuellement)
+ENTREPRISE	VARCHAR2(4000 BYTE)	entreprise effectuant les travaux
+INTERV_COM	CHAR(1 BYTE)	champ vide
+STATUT_COM	CHAR(1 BYTE)	champ vide
+RAISON_COM	VARCHAR2(80 BYTE)	raison des travaux
+TYPOLO_COM	CHAR(1 BYTE)	champ vide
+EMPRIS_COM	CHAR(1 BYTE)	champ vide
+DEBUT_VDL	CHAR(1 BYTE)	champ vide
+FIN_VDL	CHAR(1 BYTE)	champ vide
+MOTIF_VDL	CHAR(1 BYTE)	champ vide
+DATE_DEMARRAGE_TRA	DATE	date de début des travaux
+DATE_DEMARRAGE_TRA_TXT	VARCHAR2(10 BYTE)	date de début des travaux au format texte
+DATE_FIN_TRA	DATE	date de fin des travaux
+DATE_FIN_TRA_TXT	VARCHAR2(10 BYTE)	date de fin des travaux au format texte
+ID_ETAPE_OPE	NUMBER	identifiant de l'étape actuelle de l'opération
+LIBELLE_ETAPE_OPE	VARCHAR2(50 BYTE)	libellé de l'étape actuelle de l'opération
+TYPE_OP_COURT	VARCHAR2(40 BYTE)	Type d'opération (libellé court)
+TYPE_OPERATION	VARCHAR2(40 BYTE)	Type d'opération (libellé long)
+CATEGORIE_BIS	VARCHAR2(33 BYTE)	catégorie de l'opération ? (à vérifier)
+EPCM_NATURE	VARCHAR2(80 BYTE)	je ne sais pas ce que signifie EPCM
+EPCM_NATURE_ETU_TRA	CHAR(3 BYTE)	je ne sais pas ce que signifie EPCM
+DATE_ENVOI_DT_TRA	DATE	champ vide
+DATE_ENVOI_DT_TRA_TXT	VARCHAR2(10 BYTE)	champ vide
+DATE_REALISATION_IC_TRA	DATE	champ vide
+DATE_REALISATION_IC_TRA_TXT	VARCHAR2(10 BYTE)	champ vide
+IMPACT_COMMERCE_TRA	NUMBER(1,0)	impact des travaux sur les commerces adjacents
+IMPACT_PIETON_TRA	NUMBER(1,0)	impact des travaux sur les piétons
+EPCM_DATE_DEB	DATE	je ne sais pas ce que signifie EPCM
+EPCM_DATE_DEB_TXT	VARCHAR2(10 BYTE)	je ne sais pas ce que signifie EPCM
+EPCM_DATE_FIN	DATE	je ne sais pas ce que signifie EPCM
+EPCM_DATE_FIN_TXT	VARCHAR2(10 BYTE)	je ne sais pas ce que signifie EPCM
+TYPE_OPE	CHAR(7 BYTE)	Type d'infrastructure sur laquelle est effectué l'opération
+GEOM	SDO_GEOMETRY	géométries des objets de la VM (type point)
