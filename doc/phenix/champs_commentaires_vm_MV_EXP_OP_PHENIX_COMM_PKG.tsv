@@ -11,7 +11,7 @@ GEO_MODIFICATIONDATE	CHAR(1 BYTE)		champ vide
 SAISI	VARCHAR2(256 BYTE)		Créateur de l'entité
 DATE_CREATION	DATE		date de création de l'entité
 DATE_CREATION_TXT	VARCHAR2(10 BYTE)		date de création de l'entité au format texte
-INTERV	CHAR(10 BYTE)		intervenant (l'entreprise qui effectue les travaux j'imagine)
+INTERV	CHAR(10 BYTE)	intervenant (mais je ne sais pas en quoi il se différencie du champ entreprise)
 STATUT	VARCHAR2(19 BYTE)		Statut des travaux
 RAISON	CHAR(29 BYTE)		cause des travaux j'imagine (à préciser)
 TYPOLO	CHAR(1 BYTE)		code de typologie peut-être (à préciser)
