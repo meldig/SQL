@@ -136,7 +136,8 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO (
 	"ID_DOS" NUMBER(38,0),
 	"GEOM" MDSYS.SDO_GEOMETRY NOT NULL,
 	"ETAT_ID" NUMBER(1,0) NULL,
-	"DOS_NUM" NUMBER(10,0)
+	"DOS_NUM" NUMBER(10,0) NULL,
+	"SURFACE" NUMBER(38,2)
 );
 
 -- 4.2. Les commentaires
@@ -145,7 +146,8 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_GEOM IS 'Clé primaire (identifiant 
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ID_DOS IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un dossier à une géométrie.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.ETAT_ID IS 'Identifiant de l''état d''avancement du dossier. Attention même si ce champ reprend les identifiants de la table TA_GG_ETAT, il n''y a pas de contrainte de clé étrangère dessus pour autant.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.DOS_NUM IS 'Numéro de dossier associé à la géométrie de la table. Ce numéro n''est plus renseigné car il faisait doublon avec ID_DOS.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.SURFACE IS 'Champ rempli via un déclencheur permettant de calculer la surface de chaque objet de la table en m².';
 
 -- 4.3. Les métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
@@ -175,11 +177,6 @@ ADD CONSTRAINT TA_GG_GEO_ID_DOS_UN
 UNIQUE("ID_DOS")
 USING INDEX TABLESPACE G_ADT_INDX;
 
-ALTER TABLE G_GESTIONGEO.TA_GG_GEO
-ADD CONSTRAINT TA_GG_GEO_DOS_NUM_UN
-UNIQUE("DOS_NUM")
-USING INDEX TABLESPACE G_ADT_INDX;
-
 -- 4.5. Les indexes
 -- Index spatial
 CREATE INDEX TA_GG_GEO_SIDX
@@ -201,12 +198,12 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"ETAT_ID" NUMBER(38,0),
 	"USER_ID" NUMBER(38,0),
 	"FAM_ID" NUMBER DEFAULT 1,
-	"DOS_DC" DATE DEFAULT TO_DATE(sysdate, 'dd/mm/yy') NOT NULL,
+	"DOS_DC" DATE,
 	"DOS_PRECISION" VARCHAR2(100 BYTE),
-	"DOS_DMAJ" DATE DEFAULT TO_DATE(sysdate, 'dd/mm/yy'),
+	"DOS_DMAJ" DATE,
 	"DOS_RQ" VARCHAR2(2048 BYTE),
 	"DOS_DT_FIN" DATE,
-	"DOS_PRIORITE" NUMBER(1,0) NOT NULL,
+	"DOS_PRIORITE" NUMBER(1,0) NULL,
 	"DOS_IDPERE" NUMBER(38,0),
 	"DOS_DT_DEB_TR" DATE,
 	"DOS_DT_FIN_TR" DATE,
@@ -215,9 +212,9 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"DOS_VOIE" NUMBER(8,0),
 	"DOS_MAO" VARCHAR2(200 BYTE),
 	"DOS_ENTR" VARCHAR2(200 BYTE),
-	"DOS_URL_FILE" VARCHAR2(200 BYTE),
+    "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
 	"ORDER_ID" NUMBER(10,0),
-	"DOS_NUM" NUMBER(38,0),
+	"DOS_NUM" NUMBER(38,0) NULL,
 	"DOS_OLD_ID" VARCHAR2(8 BYTE),
 	"DOS_DT_DEB_LEVE" DATE,
 	"DOS_DT_FIN_LEVE" DATE,
@@ -225,7 +222,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
  );
 
 -- 5.2. Les commentaires
-COMMENT ON TABLE G_GESTIONGEO.TA_GG_DOSSIER IS 'Table principale. Chaque dossier correspond à un numéro de chantier pour le plan topo et IC';
+COMMENT ON TABLE G_GESTIONGEO.TA_GG_DOSSIER IS 'Table principale. Chaque dossier correspond à un numéro de chantier pour le plan topo et IC.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ID_DOS IS 'Clé primaire de la table correspondant à l''identifiant unique de chaque dossier';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.SRC_ID IS 'Clé étrangère vers la table TA_GG_SOURCE permettant de savoir quel utilisateur a créé quel dossier - champ utilisé uniquement pour de la création';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ETAT_ID IS 'Clé étrangère vers la table TA_GG_ETAT indiquant l''état d''avancement du dossier - avec contrainte';
@@ -245,7 +242,7 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_INSEE IS 'Code INSEE de la comm
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_VOIE IS 'Clé étrangère (sans contrainte de FK)';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_MAO IS 'Nom du maître d''ouvrage';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_ENTR IS 'Nom de l''entreprise responsable du levé';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_URL_FILE IS 'Lien vers le fichier dwg intégré dans infogeo par DynMap';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_NUM IS 'Numéro de chaque dossier - différent de son identifiant ID_DOS (PK). Ce numéro est obtenu par la concaténation des deux derniers chiffres de l''année (sauf pour les années antérieures à 2010), du code commune (3 chiffres) et d''une incrémentation sur quatre chiffres du nombre de dossier créé depuis le début de l''année.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_OLD_ID IS 'Ancien identifiant du dossier';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_DT_DEB_LEVE IS 'Date de début des levés de l''objet (du dossier) par les géomètres.';
@@ -280,33 +277,170 @@ ADD	CONSTRAINT TA_GG_GEO_ID_DOS_FK
 FOREIGN KEY ("ID_DOS") REFERENCES G_GESTIONGEO.TA_GG_DOSSIER ("ID_DOS") ON DELETE CASCADE;
 
 -- 5.5. Affectation des droits
-GRANT SELECT ON G_GESTIONGEO.TA_GG_SOURCE TO G_ADMIN_SIG;
+GRANT SELECT ON G_GESTIONGEO.TA_GG_DOSSIER TO G_ADMIN_SIG;
 
--- 6. VM_GG_POINT
--- 6.1. La vue matérialisée
-CREATE MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT(
-    ID_GEOM,
-    ID_DOS,
-    GEOM
-)
-REFRESH ON DEMAND
-FORCE
-DISABLE QUERY REWRITE AS
-SELECT
-	a.ID_GEOM,
-	b.ID_DOS,
-	SDO_GEOM.SDO_CENTROID(a.geom, 0.005) AS GEOM
-FROM
-	G_GESTIONGEO.TA_GG_GEO a
-	INNER JOIN G_GESTIONGEO.TA_GG_DOSSIER b ON b.ID_DOS = a.ID_DOS;
+-- 6. Création de la table TA_GG_URL_FILE
+-- 6.1. La table
+CREATE TABLE G_GESTIONGEO.TA_GG_URL_FILE (
+    "OBJECTID" NUMBER(38,0) GENERATED BY DEFAULT AS IDENTITY,
+    "DOS_URL_FILE" VARCHAR2(250) NOT NULL,
+    "FID_DOSSIER" NUMBER(38,0),
+    "INTEGRATION" NUMBER(1,0) NOT NULL
+);
 
 -- 6.2. Les commentaires
-COMMENT ON MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT IS 'Vue matérialisée rassemblant les centroïdes de chaque périmètre de dossier de GestionGeo. Les sélections se font sur les tables TA_GG_GEO et TA_GG_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.ID_DOS IS 'Clé primaire de la VM avec le champ ID_GEOM';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.ID_GEOM IS 'Clé primaire de la VM avec le champ ID_DOS';
-COMMENT ON COLUMN G_GESTIONGEO.VM_GG_POINT.GEOM IS 'Champ géométrique de type point représentant le centroïde du périmètre de chaque dossier de GestionGeo.';
+COMMENT ON TABLE G_GESTIONGEO.TA_GG_URL_FILE IS 'Table GestionGEO permettant de lister tous les fichiers correspondants à un dossier (dwg, pdf, etc).';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_URL_FILE.OBJECTID IS 'Clé primaire de la table correspondant à l''identifiant unique de chaque URL.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_URL_FILE.DOS_URL_FILE IS 'URL de chaque fichier correspondant à un dossier.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_URL_FILE.FID_DOSSIER IS 'Clé étrangère vers la table TA_GG_DOSSIER permettant d''associer un URL à un dossier.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_URL_FILE.INTEGRATION IS 'Champ permettant de savoir si le fichier a été utilisé lors de l''intégration du fichier dwg par FME pour déterminer le périmètre du dossier. : 1 = oui ; 0 = non.';
 
--- 6.3. Création des métadonnées spatiales
+-- 6.3. Les contraintes
+-- Contrainte de clé primaire
+ALTER TABLE G_GESTIONGEO.TA_GG_URL_FILE
+ADD CONSTRAINT TA_GG_URL_FILE_PK
+PRIMARY KEY("OBJECTID")
+USING INDEX TABLESPACE G_ADT_INDX;
+
+-- Contraintes de clé étrangère
+ALTER TABLE G_GESTIONGEO.TA_GG_URL_FILE
+ADD CONSTRAINT TA_GG_URL_FILE_FID_DOSSIER_FK
+FOREIGN KEY("FID_DOSSIER")
+REFERENCES G_GESTIONGEO.TA_GG_DOSSIER ("ID_DOS") ON DELETE CASCADE ;
+
+-- 6.4. Les indexes
+CREATE INDEX G_GESTIONGEO."TA_GG_URL_FILE_FID_DOSSIER_IDX" ON G_GESTIONGEO.TA_GG_URL_FILE ("FID_DOSSIER") 
+    TABLESPACE G_ADT_INDX;
+
+-- 6.4. Affectation des droits
+GRANT SELECT ON G_GESTIONGEO.TA_GG_URL_FILE TO G_ADMIN_SIG;
+
+-- 6. Création de la vue V_GG_DOSSIER_GEO rassemblant toutes les données des dossiers de GestionGeo à des fins de consultation.
+-- 6.1. Création de la vue
+CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
+    id_dos,
+    id_geom,
+    dos_num,
+    fam_id,
+    etat_id,
+    dos_insee,
+    src_id,
+    dos_dc,
+    user_id,
+    dos_dmaj,
+    dos_mao,
+    dos_entr,
+    entreprise_travaux,
+    dos_url_file,
+    dos_dt_deb_tr,
+    dos_dt_fin_tr,
+    dos_dt_deb_leve,
+    dos_dt_fin_leve,
+    surface,
+    dos_precision,
+    dos_rq,
+    geom,
+    CONSTRAINT "V_GG_DOSSIER_GEO_PK" PRIMARY KEY (id_dos) DISABLE
+)
+AS
+SELECT
+    a.id_dos,
+    f.id_geom,
+    f.dos_num,
+    e.fam_lib AS FAM_ID,
+    c.etat_lib AS ETAT_ID,
+    a.dos_insee,
+    b.src_libel AS SRC_ID,
+    a.dos_dc,
+    d.src_libel AS user_ID,
+    a.dos_dmaj,
+    a.dos_mao,
+    a.dos_entr,
+    a.entreprise_travaux,
+    a.dos_url_file,
+    a.dos_dt_deb_tr,
+    a.dos_dt_fin_tr,
+    a.dos_dt_deb_leve,
+    a.dos_dt_fin_leve,
+    f.surface,
+    a.dos_precision,
+    a.dos_rq,
+    f.geom
+FROM
+    G_GESTIONGEO.TA_GG_DOSSIER a
+    INNER JOIN G_GESTIONGEO.TA_GG_GEO f ON f.ID_DOS = a.ID_DOS
+    INNER JOIN G_GESTIONGEO.TA_GG_SOURCE b ON b.SRC_ID = a.SRC_ID
+    INNER JOIN G_GESTIONGEO.TA_GG_ETAT c ON c.ETAT_ID = a.ETAT_ID
+    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.FAM_ID = a.FAM_ID
+    LEFT JOIN G_GESTIONGEO.TA_GG_SOURCE d ON d.SRC_ID = a.USER_ID
+ ;
+
+-- 6.2. Création des commentaires de la vue et des colonnes
+COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_GEO IS 'Vue proposant toutes les informations des dossiers (périmètre inclu) créé via GestionGeo.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_DOS IS 'Clé primaire du dossier issu de TA_GG_DOSSIER (il s''agit donc du numéo valide de chaque dossier).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_GEOM IS 'Clé primaire du périmètre issu de TA_GG_GEO et associé au dossier.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_NUM IS 'Numéro du dossier obsolète issu de TA_GG_DOSSIER (ce numéro n''est plus mis à jour et est abandonné).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.FAM_ID IS 'Familles des données issues de TA_GG_FAMILLE.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ETAT_ID IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_INSEE IS 'Code INSEE issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.SRC_ID IS 'Pnom de l''agent créateur du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DC IS 'Date de création du dossier issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.USER_ID IS 'Pnom de l''agent ayant fait la dernière modification sur le dossier (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DMAJ IS 'Date de la dernière édition du dossier, issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_MAO IS 'Maître d''ouvrage (commanditaire) du dossie (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_ENTR IS 'Entrprise responsable du levé, issue de TA_GG_DOSSIER';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ENTREPRISE_TRAVAUX IS 'entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_URL_FILE IS 'Chemin d''accès des fichiers dwg à partir desquels le périmètre du dossier à été créé/modifié en base (fichiers importé par fme), issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_DEB_TR IS 'Date de début des travaux issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_FIN_TR IS 'Date de fin des travaux issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_DEB_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DT_FIN_LEVE IS 'Date de début des levés issue de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.SURFACE IS 'Surface de chaque périmètre de dossier issue de TA_GG_GEO.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_RQ IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit (issu de TA_GG_DOSSIER).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.GEOM IS 'Géométrie des périmètres de chaque dossier (type polygone ou multi-polygone), issu de TA_GG_GEO.';
+
+-- 6.3. Création des métadonnées spatiales de la vue
+INSERT INTO USER_SDO_GEOM_METADATA (
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES (
+    'V_GG_DOSSIER_GEO', 
+    'GEOM', 
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+COMMIT;
+
+-- 6.4. Affectation des droits
+GRANT SELECT ON G_GESTIONGEO.V_GG_DOSSIER_GEO TO G_ADMIN_SIG;
+
+-- 7. V_GG_POINT
+-- 7.1. La vue
+CREATE OR REPLACE FORCE VIEW V_GG_POINT(
+    ID_GEOM,
+    ID_DOS,
+    GEOM,
+    CONSTRAINT "V_GG_POINT_PK" PRIMARY KEY (ID_GEOM, ID_DOS) DISABLE
+)
+AS
+SELECT
+    a.ID_GEOM,
+    a.ID_DOS,
+    SDO_GEOM.SDO_CENTROID(a.geom, 0.005) AS GEOM
+FROM
+    G_GESTIONGEO.V_GG_DOSSIER_GEO a;
+    
+-- 7.2. Les commentaires
+COMMENT ON TABLE G_GESTIONGEO.V_GG_POINT IS 'Vue rassemblant les centroïdes de chaque périmètre de dossier de GestionGeo. Les sélections se font sur la vue V_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.ID_DOS IS 'Clé primaire de la VM avec le champ ID_GEOM';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.ID_GEOM IS 'Clé primaire de la VM avec le champ ID_DOS';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT.GEOM IS 'Champ géométrique de type point représentant le centroïde du périmètre de chaque dossier de GestionGeo.';
+
+-- 7.3. Création des métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
     TABLE_NAME, 
     COLUMN_NAME, 
@@ -314,25 +448,76 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'VM_GG_POINT',
+    'V_GG_POINT',
     'geom',
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
     2154
 );
 COMMIT;
 
--- 6.4. Ccontrainte de clé primaire
-ALTER MATERIALIZED VIEW G_GESTIONGEO.VM_GG_POINT
-ADD CONSTRAINT VM_GG_POINT_PK 
-PRIMARY KEY (ID_DOS, ID_GEOM);
+-- 7.4. Affectation des droits
+GRANT SELECT ON G_GESTIONGEO.V_GG_POINT TO G_ADMIN_SIG;
 
--- 6.5. Création de l'index spatial
-CREATE INDEX VM_GG_POINT_SIDX
-ON G_GESTIONGEO.VM_GG_POINT(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX
-PARAMETERS(
-  'sdo_indx_dims=2, 
-  layer_gtype=POINT, 
-  tablespace=G_ADT_INDX, 
-  work_tablespace=DATA_TEMP'
+-- 8. Insertion des métadonnées spatiales de TEMP_TA_GG_GEO afin d'avoir un SRID pour les données de cette table après leur import
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'TEMP_TA_GG_GEO',
+    'ora_geometry',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
 );
+COMMIT;
+
+-- 9. Trigger de calcul des surface en m² des objets de la table TA_GG_GEO
+create or replace TRIGGER B_IUX_TA_GG_GEO
+BEFORE INSERT OR UPDATE ON G_GESTIONGEO.TA_GG_GEO
+FOR EACH ROW
+DECLARE 
+BEGIN
+    IF INSERTING THEN -- En cas d'insertion on insère la surface du polygone dans le champ surface(m2)       
+        :new.SURFACE := ROUND(SDO_GEOM.SDO_AREA(:new.geom, 0.005, 'UNIT=SQ_METER'), 2);
+    END IF;
+
+    IF UPDATING THEN -- En cas d'édition on édite la surface du polygone dans le champ surface(m2)
+        :new.SURFACE := ROUND(SDO_GEOM.SDO_AREA(:new.geom, 0.005, 'UNIT=SQ_METER'), 2);
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER B_IUX_TA_GG_GEO','trigger@lillemetropole.fr');
+END;
+/
+
+-- 10. Trigger permettant l'insertion des SRC_ID, USER_ID et DOS_DMAJ
+create or replace TRIGGER B_IUX_TA_GG_DOSSIER
+BEFORE INSERT OR UPDATE ON G_GESTIONGEO.TA_GG_DOSSIER
+FOR EACH ROW
+DECLARE
+    username VARCHAR2(100);
+    v_src_id NUMBER(38,0);
+BEGIN
+    -- Sélection du pnom
+    SELECT sys_context('USERENV','OS_USER') into username from dual;
+    -- Sélection de l'id du pnom correspondant dans la table TA_GG_SOURCE
+    SELECT src_id INTO v_src_id FROM G_GESTIONGEO.TA_GG_SOURCE WHERE src_libel = username;
+
+    IF INSERTING THEN -- En cas d'insertion on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_DOSSIER.SRC_ID        
+        :new.SRC_ID := v_src_id;
+        :new.DOS_DC := TO_DATE(sysdate, 'dd/mm/yy');
+    END IF;
+
+    IF UPDATING THEN -- En cas d'édition on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_DOSSIER.USER_ID et on édite le champ DOS_DMAJ
+        :new.USER_ID := v_src_id;
+        :new.DOS_DMAJ := sysdate;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        mail.sendmail('geotrigger@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER B_IUX_TA_GG_DOSSIER','trigger@lillemetropole.fr');
+END;
+/
