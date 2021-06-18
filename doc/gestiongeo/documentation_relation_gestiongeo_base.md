@@ -30,7 +30,7 @@
 |GEO.TA_GG_DOSSIER|DOS_NUM							|Numéro du dossier. Concatenation ANNEE + code INSEE + incrémentation du nombre de dossier créer depuis le début de l'année.|
 |GEO.TA_GG_DOSSIER|DOS_NUM_SHORT					|Nombre de dossiers créés.	|
 |GEO.TA_GG_GEO 	  |ID_GEOM							|Identifiant d'une géométrie dans la table TA_GG_GEO.															|
-|GEO.TA_GG_GEO 	  |ID_DOS							|Clé étrangère vers la table parent TA_GG_DOSSIER, avec une option ON DELETE CASCADE permettant de supprimer le périmètre de TA_GG_GEO en cas de suppression de du dossier correspondant dans TA_GG_DOSSIER.|
+|GEO.TA_GG_GEO 	  |ID_DOS							|Clé étrangère vers la table parent TA_GG_DOSSIER, avec une option ON DELETE CASCADE permettant de supprimer le périmètre de TA_GG_GEO en cas de suppression du dossier correspondant dans TA_GG_DOSSIER.|
 |GEO.TA_GG_GEO 	  |GEOM 							|champ géométrique de la table contenant les périmètres des dossiers
 |GEO.TA_GG_GEO 	  |ETAT_ID 							|Etat du dossier. Clé étrangère vers la table TA_GG_ETAT. 														|
 |GEO.TA_GG_GEO 	  |DOS_NUM							|Numéro du dossier. Concatenation ANNEE + code INSEE + incrémentation du nombre de dossier créer depuis le début de l'année.|
