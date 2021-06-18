@@ -96,7 +96,7 @@ Dans le cas d'une intégration à partir d'un dossier existant, les informations
 
 ### Calcul du périmètre dans le cadre d'une opération d'intégration avec récupération d'un dossier existant.
 
-Le périmètre est automatiquement redéssiné par la chaine de traitement FME à partir des éléments contenus dans les fichiers *dwg* renseigné dans l'onglet **Fichier DWG**. Si un périmètre existait déjà, celui-ci est redessiné dans la table **TA_GG_GEO**.
+Le périmètre est automatiquement redéssiné par la chaine de traitement FME à partir des éléments contenus dans les fichiers *dwg* renseignés dans l'onglet **Fichier DWG**. Si un périmètre existait déjà, celui-ci est redessiné dans la table **TA_GG_GEO**.
 
 |TABLE_RENSEIGNEE |CHAMP 							|Remarque 																										|
 |:----------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------|
