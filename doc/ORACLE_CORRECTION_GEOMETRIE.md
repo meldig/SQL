@@ -11,6 +11,17 @@ FROM
 GROUP BY t.#COLONNE_GEOMETRIQUE#.sdo_gtype
 ```
 
+Reque pour afficher le SRID des éléments contenus dans la table
+
+```SQL
+SELECT 
+	t.#COLONNE_GEOMETRIQUE#.sdo_srid,
+	count(*)
+FROM
+	#TABLE# t
+GROUP BY t.#COLONNE_GEOMETRIQUE#.sdo_srid;
+```
+
 le type de géométrie d'un objet dans Oracle se définit avec un code en 4 chiffres sous le format: DLXX ou:
 
 * D: Identifie le nombre de dimensions: 2, 3, 4
