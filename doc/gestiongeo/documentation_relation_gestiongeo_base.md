@@ -115,7 +115,7 @@ Les données issues des fichiers *dwg* sont insérées dans les tables suivantes
 
 ## Mise à jour d'un dossier à partir de la fiche d'un dossier.
 
-La fiche d'un dossier est accessible par l'interface de **gestiongeo** en sélectionnant un dossier sur la carte de l'application. Les attributs d'un dossier sont modifiables par l'intermédiaire de l'icône de mise à jour(Voir ![documentation_interface_gestiongeo.md](/documentation_interface_gestiongeo.md))
+La fiche d'un dossier est accessible par l'interface de **gestiongeo** en sélectionnant un dossier sur la carte de l'application. Les attributs d'un dossier sont modifiables par l'intermédiaire de l'icône de mise à jour(Voir ![documentation_interface_gestiongeo.md](https://github.com/meldig/SQL/blob/gestiongeo/doc/gestiongeo/documentation_interface_gestiongeo.md))
 
 Les attribut modifiables sont:
 |CHAMP onglet DOSSIER		   |TABLE_RENSEIGNEE |CHAMP 						|Remarque 																										|
