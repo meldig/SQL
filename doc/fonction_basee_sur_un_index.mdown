@@ -8,7 +8,7 @@ Cet objet permet, nous l'avons vu, de calculer des valeurs dans le champ d'une t
 La différence est surtout visible lors de la création de vues sur une table disposant d'une fonction basée sur un index : son temps d'affichage est considérablement réduit, permettant d'afficher dans qgis une vue qui n'aurait pas été affichable si elle avait porté sur un simple champ virtuel.
 
 ## Inconvénient :
-Le champ créé par la fonction basée sur un index est caché. Pour le repérer il faut utiliser la requête suivante :
+1. La colonne virtuelle créée par la fonction basée sur un index est cachée. Pour la repérer il faut utiliser la requête suivante :
 ```SQL
 SELECT 
     column_name, 
@@ -21,6 +21,10 @@ WHERE
     AND hidden_column = 'YES'
     AND virtual_column = 'YES';
 ```
+
+2. Une colonne virtuelle générée par le système ne peut pas être rendue visible. Elle restera toujours invisible.
+
+3. Une colonne virtuelle d'index fonctionnel générée par le système ne peut pas être renommée.
 
 ## Méthode de création d'une fonction basée sur un index :
 1. Créer une table
