@@ -309,7 +309,7 @@ SELECT
 		a.SEATS,
 		a.HEIGHT,
 		so.nom_source || ' - ' || no.nom_organisme || ' - ' || aq.MILLESIME || ' ' || 'CENTROID MULTIPOLYGONES OSM' AS SOURCE,
-    	SDO_GEOM.SDO_POINTONSURFACE(d.GEOM) AS GEOM
+    	SDO_GEOM.SDO_CENTROID(d.GEOM) AS GEOM
 FROM
 	ATTRIBUT a
 	INNER JOIN G_OSM.TA_OSM b ON b.OBJECTID = a.OBJECTID
@@ -322,7 +322,7 @@ FROM
     INNER JOIN G_GEO.TA_DATE_ACQUISITION aq ON aq.objectid = me.fid_acquisition;
 
 -- 2. CREATION DES COMMENTAIRES DE LA VUE ET DES COLONNES.
-COMMENT ON MATERIALIZED VIEW G_OSM.VM_OSM_PIVOT_POINT IS 'Vue proposant les équipements OSM points et les centroids(point on surface) des polygones OSM actuellement disponible sur le territoire de la MEL avec les principaux mots clé pivotés en colonne';
+COMMENT ON MATERIALIZED VIEW G_OSM.VM_OSM_PIVOT_POINT IS 'Vue proposant les équipements OSM points et les centroids des polygones OSM actuellement disponibles sur le territoire de la MEL avec les principaux mots clé pivotés en colonne';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.OBJECTID IS 'Clé primaire de la table';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.OSM_ID IS 'Identifiant OSM de l''élement OSM';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.OSM_WAY_ID IS 'Identifiant OSM de l''élement WAY OSM';
