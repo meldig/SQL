@@ -72,7 +72,7 @@ SELECT
 	NULL AS CATEGORIE_QUANTITATIVE,
 	NULL AS VALEUR_QUANTITATIVE,
 	m.nom_source || ' - ' || o.nom_organisme || ' - ' || p.MILLESIME || ' ' || 'CENTROID MULTIPOLYGONES OSM' AS source,
-    SDO_GEOM.SDO_POINTONSURFACE(d.GEOM, mtdt.diminfo) AS GEOM
+    SDO_GEOM.SDO_CENTROID(d.GEOM, mtdt.diminfo) AS GEOM
 FROM
 	G_OSM.TA_OSM a
 	INNER JOIN G_OSM.TA_OSM_CARACTERISTIQUE b ON b.fid_osm = a.objectid
@@ -99,7 +99,7 @@ SELECT
 	b.key AS CATEGORIE_QUANTITATIVE,
 	b.valeur AS VALEUR_QUANTITATIVE,
 	m.nom_source || ' - ' || o.nom_organisme || ' - ' || p.MILLESIME || ' ' || 'CENTROID MULTIPOLYGONES OSM' AS source,
-    SDO_GEOM.SDO_POINTONSURFACE(d.GEOM, mtdt.diminfo) AS GEOM
+    SDO_GEOM.SDO_CENTROID(d.GEOM, mtdt.diminfo) AS GEOM
 FROM
 	G_OSM.TA_OSM a
 	INNER JOIN G_OSM.TA_OSM_CARACTERISTIQUE_QUANTITATIVE b ON b.fid_osm = a.objectid
@@ -120,7 +120,7 @@ AND
 	;
 
 -- 2. CREATION DES COMMENTAIRES DE LA VUE ET DES COLONNES.
-COMMENT ON MATERIALIZED VIEW G_OSM.VM_OSM_POINT IS 'Vue proposant les elements OSM points et centroids(point on surface) des polygones actuellement disponible sur le territoire de la MEL';
+COMMENT ON MATERIALIZED VIEW G_OSM.VM_OSM_POINT IS 'Vue proposant les elements OSM points et centroids des polygones actuellement disponibles sur le territoire de la MEL';
 COMMENT ON COLUMN G_OSM.VM_OSM_POINT.OBJECTID IS 'Identifiant de l''element OSM dans la base';
 COMMENT ON COLUMN G_OSM.VM_OSM_POINT.CATEGORIE IS 'KEY OSM. Mot clé dans la terminologie OSM. EXEMPLE: AMENITY';
 COMMENT ON COLUMN G_OSM.VM_OSM_POINT.VALEUR IS 'Valeur que peut prendre une clé OSM. EXEMPLE: PARKING';
