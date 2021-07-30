@@ -1,0 +1,101 @@
+-- CREATION DE LA VUE VM_OSM_MULTIPOLYGONE.
+-- Vue proposant les éléments OSM actuellement disponible sur le territoire de la MEL
+
+--1. CREATION DE LA VUE MATERIALISEE.
+CREATE MATERIALIZED VIEW G_OSM.VM_OSM_MULTIPOLYGONE
+										(
+											OBJECTID,
+											CATEGORIE,
+											VALEUR,
+											CATEGORIE_QUANTITATIVE,
+											VALEUR_QUANTITATIVE,
+											NOM_SOURCE,
+											GEOM
+										)
+
+USING INDEX
+TABLESPACE G_AST_INDEX
+REFRESH ON DEMAND
+DISABLE QUERY REWRITE AS
+
+-- SELECTION DES ELEMENTS OSM ET DES ATTRIBUTS DE LA TABLE TA_OSM_CARACTERISTIQUE.
+SELECT
+	a.objectid AS OBJECTID,
+	b.key AS CATEGORIE,
+	b.valeur AS VALEUR,
+	NULL AS CATEGORIE_QUANTITATIVE,
+	NULL AS VALEUR_QUANTITATIVE,
+	m.nom_source || ' - ' || o.nom_organisme || ' - ' || p.MILLESIME AS source,
+    d.GEOM AS GEOM
+FROM
+	G_OSM.TA_OSM a
+	INNER JOIN G_OSM.TA_OSM_CARACTERISTIQUE b ON b.fid_osm = a.objectid
+    INNER JOIN G_OSM.TA_OSM_RELATION_GEOM c ON c.fid_osm = a.objectid
+    INNER JOIN G_OSM.TA_OSM_GEOM d ON d.objectid = c.fid_osm_geom
+	INNER JOIN G_GEO.TA_METADONNEE l ON l.objectid = a.fid_metadonnee
+    INNER JOIN G_GEO.TA_SOURCE m ON m.objectid = l.fid_source
+    INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME n ON n.fid_metadonnee = l.objectid
+    INNER JOIN G_GEO.TA_ORGANISME o ON o.objectid = n.fid_organisme
+    INNER JOIN G_GEO.TA_DATE_ACQUISITION p ON p.objectid = l.fid_acquisition
+WHERE
+	extract(year from p.date_acquisition)=TO_CHAR(sysdate, 'yyyy')
+-- SELECTION DES ELEMENTS OSM ET DES ATTRIBUTS NUMERIQUES DE LA TABLE TA_OSM_CARACTERISTIQUE_QUANTITATIVE.
+UNION ALL
+SELECT
+	a.objectid AS OBJECTID,
+	NULL AS CATEGORIE,
+	NULL AS VALEUR,
+	b.key AS CATEGORIE_QUANTITATIVE,
+	b.valeur AS VALEUR_QUANTITATIVE,
+	m.nom_source || ' - ' || o.nom_organisme || ' - ' || p.MILLESIME AS source,
+    d.GEOM AS GEOM
+FROM
+	G_OSM.TA_OSM a
+	INNER JOIN G_OSM.TA_OSM_CARACTERISTIQUE_QUANTITATIVE b ON b.fid_osm = a.objectid
+    INNER JOIN G_OSM.TA_OSM_RELATION_GEOM c ON c.fid_osm = a.objectid
+    INNER JOIN G_OSM.TA_OSM_GEOM d ON d.objectid = c.fid_osm_geom
+	INNER JOIN G_GEO.TA_METADONNEE l ON l.objectid = a.fid_metadonnee
+    INNER JOIN G_GEO.TA_SOURCE m ON m.objectid = l.fid_source
+    INNER JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME n ON n.fid_metadonnee = l.objectid
+    INNER JOIN G_GEO.TA_ORGANISME o ON o.objectid = n.fid_organisme
+    INNER JOIN G_GEO.TA_DATE_ACQUISITION p ON p.objectid = l.fid_acquisition
+WHERE
+	EXTRACT(YEAR from p.date_acquisition)=TO_CHAR(sysdate, 'yyyy')
+	;
+
+
+-- 2. CREATION DES COMMENTAIRES DE LA VUE ET DES COLONNES.
+COMMENT ON MATERIALIZED VIEW G_OSM.VM_OSM_MULTIPOLYGONE IS 'Vue proposant les équipements actuellement disponible sur le territoire de la MEL';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.OBJECTID IS 'Identifiant de l''element OSM';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.CATEGORIE IS 'KEY OSM. Mot clé dans la terminologie OSM. EXEMPLE: AMENITY';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.VALEUR IS 'Valeur que peut prendre une clé OSM. EXEMPLE: PARKING';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.CATEGORIE_QUANTITATIVE IS 'KEY OSM. Mot clé dans la terminologie OSM. EXEMPLE: CAPACITY';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.VALEUR_QUANTITATIVE IS 'Valeur que peut prendre une catégorie quantitative OSM.  EXEMPLE: 32';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.NOM_SOURCE IS 'Source de la donnée avec l''organisme créateur de la source.';
+COMMENT ON COLUMN G_OSM.VM_OSM_MULTIPOLYGONE.GEOM IS 'Geometrie de l''element OSM';
+
+-- 3. CREATION DES METADONNEES SPATIALES.
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'VM_OSM_MULTIPOLYGONE',
+    'GEOM',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    2154
+);
+COMMIT;
+
+-- 4. CREATION DE L'INDEX SPATIAL.
+CREATE INDEX VM_OSM_MULTIPOLYGONE_SIDX
+ON G_OSM.VM_OSM_MULTIPOLYGONE(GEOM)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX
+PARAMETERS(
+  'sdo_indx_dims=2, 
+  layer_gtype=MULTIPOLYGON, 
+  tablespace=G_ADT_INDX, 
+  work_tablespace=DATA_TEMP'
+);
