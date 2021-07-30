@@ -329,7 +329,7 @@ COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.OSM_WAY_ID IS 'Identifiant OSM de l''
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.AMENITY IS 'Type de l''équipent utile et important cartographié: école, crêche, bureau de poste';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.NAME IS 'Nom de l''équipement';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT."NATURAL" IS 'Type de l''équipement OSM naturel: arbre';
-COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.BICYCLE_PARKING IS 'Type de parking pour vélos: stand, bollard'
+COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.BICYCLE_PARKING IS 'Type de parking pour vélos: stand, bollard';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT."ACCESS" IS 'Accessibilité de l''équipement: public, privé, client';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.LEISURE IS 'Type d''équipement de loisir cartographié: parc, terrain de jeu';
 COMMENT ON COLUMN G_OSM.VM_OSM_PIVOT_POINT.SCHOOL_FR IS 'Niveau de l''école française: maternelle, primaire, college';
