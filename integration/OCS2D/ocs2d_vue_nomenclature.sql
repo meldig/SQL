@@ -59,13 +59,13 @@ WITH cte1 AS
 WHERE
 	tlc_niv_0.valeur = 'US'
 	AND
-    tf_niv_0.valeur = 'OCS2D: usage du sol'
+    tf_niv_0.valeur = UPPER('OCS2D: usage du sol')
     AND
-    tf_niv_1.valeur = 'OCS2D: usage du sol'
+    tf_niv_1.valeur = UPPER('OCS2D: usage du sol')
     AND
-    tf_niv_2.valeur = 'OCS2D: usage du sol'
+    tf_niv_2.valeur = UPPER('OCS2D: usage du sol')
     AND
-    tf_niv_3.valeur = 'OCS2D: usage du sol'
+    tf_niv_3.valeur = UPPER('OCS2D: usage du sol')
 ORDER BY
 	libelle_court_niv_0,
 	libelle_court_niv_1,
@@ -132,13 +132,13 @@ WITH cte1 AS
 WHERE
     tlc_niv_0.valeur = 'CS'
     AND
-    tf_niv_0.valeur = 'OCS2D: couvert du sol'
+    tf_niv_0.valeur = UPPER('OCS2D: couvert du sol')
     AND
-    tf_niv_1.valeur = 'OCS2D: couvert du sol'
+    tf_niv_1.valeur = UPPER('OCS2D: couvert du sol')
     AND
-    tf_niv_2.valeur = 'OCS2D: couvert du sol'
+    tf_niv_2.valeur = UPPER('OCS2D: couvert du sol')
     AND
-    tf_niv_3.valeur = 'OCS2D: couvert du sol'
+    tf_niv_3.valeur = UPPER('OCS2D: couvert du sol')
 ORDER BY
 	libelle_court_niv_0,
 	libelle_court_niv_1,
