@@ -19,7 +19,9 @@ VALUES (temp.nom,temp.description)
 MERGE INTO ta_provenance p
 USING
     (
-    	SELECT 'https://www.geo2france.fr' AS url,'Données en téléchargement libre' AS methode_acquisition FROM DUAL
+    	SELECT 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2015' AS url,'Données en téléchargement libre' AS methode_acquisition FROM DUAL
+    	UNION
+    	SELECT 'https://www.geo2france.fr/ckan/dataset/occupation-du-sol-en-deux-dimensions-ocs2d-nord-pas-de-calais-2005' AS url,'Données en téléchargement libre' AS methode_acquisition FROM DUAL
    	) temp
 ON (p.url = temp.url
 AND p.methode_acquisition = temp.methode_acquisition)
@@ -266,7 +268,9 @@ VALUES (temp.valeur)
 MERGE INTO TA_FAMILLE tf
 USING
 	(
-		SELECT 'OCS2D' AS valeur FROM DUAL
+		SELECT 'OCS2D: USAGE DU SOL' AS valeur FROM DUAL
+		UNION
+		SELECT 'OCS2D: COUVERT DU SOL' AS valeur FROM DUAL
 	)temp
 ON (temp.valeur = tf.valeur)
 WHEN NOT MATCHED THEN
@@ -275,7 +279,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 13. Insertion des relations dans TA_FAMILLE_LIBELLE
+-- 13. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D COUVERT DU SOL
 MERGE INTO TA_FAMILLE_LIBELLE tfl
 USING
 	(
@@ -286,13 +290,15 @@ USING
         ta_famille f,
         ta_libelle_long l
 	WHERE 
-		f.famille = 'OCS2D' AND
-		l.libelle_long IN
+		f.valeur = 'OCS2D: COUVERT DU SOL' AND
+		l.valeur IN
 			(
 			SELECT DISTINCT
 				libelle_long
 			FROM
 				ocs2d_nomenclature_couvert_usage
+			WHERE
+				SOURCE = 'CS'
 			)
 		) temp
 ON (temp.fid_famille = tfl.fid_famille
@@ -302,6 +308,34 @@ INSERT (tfl.fid_famille,tfl.fid_libelle_long)
 VALUES (temp.fid_famille,temp.fid_libelle_long)
 ;
 
+-- 13. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D USAGE DU SOL
+MERGE INTO TA_FAMILLE_LIBELLE tfl
+USING
+	(
+	SELECT
+		f.objectid fid_famille,
+		l.objectid fid_libelle_long
+    FROM
+        ta_famille f,
+        ta_libelle_long l
+	WHERE 
+		f.valeur = 'OCS2D: USAGE DU SOL' AND
+		l.valeur IN
+			(
+			SELECT DISTINCT
+				libelle_long
+			FROM
+				ocs2d_nomenclature_couvert_usage
+			WHERE
+				SOURCE = 'US'
+			)
+		) temp
+ON (temp.fid_famille = tfl.fid_famille
+AND temp.fid_libelle_long = tfl.fid_libelle_long)
+WHEN NOT MATCHED THEN
+INSERT (tfl.fid_famille,tfl.fid_libelle_long)
+VALUES (temp.fid_famille,temp.fid_libelle_long)
+;
 
 -- 14. Creation vue des relations
 CREATE VIEW oc_us_ocs2d_relation AS
@@ -345,7 +379,7 @@ LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court);
 INSERT INTO FUSION_OCS2D_COUVERT_USAGE
 SELECT
 -- attention à la séquence utilisée
-    ISEQ$$_78716.nextval AS objectid,
+    ISEQ$$_1249399.nextval AS objectid,
 -- attention à la séquence utilisée
     b.objectid AS fid_libelle_long,
     a.libelle_long,
@@ -376,7 +410,7 @@ VALUES (temp.objectid,temp.fid_libelle_long)
 
 
 -- 18. Insertion des données dans ta_correspondance_libelle
-MERGE INTO ta_correspondance_libelle tc
+MERGE INTO ta_libelle_correspondance tc
 USING
 	(
 	SELECT
