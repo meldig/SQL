@@ -203,36 +203,104 @@ VALUES(b.fid_metadonnee, b.fid_echelle)
 --------------------------------------------------------------------------------
 -- INSERTION DE LA NOMENCLATURE COUVERT USAGE DES DONNEES OCS2D
 --------------------------------------------------------------------------------
-
--- 9. Vue simplifiant la nomenclature OCS2D usage pour faciliter sa normalisation
-CREATE VIEW ocs2d_nomenclature_couvert_usage AS
-SELECT DISTINCT
-	niv_0_libelle_court AS libelle_court, 
-	niv_0_libelle libelle_long,
-	'niv_0' AS niveau
-FROM oc_us_ocs2d
-UNION ALL
-SELECT DISTINCT 
-	niv_1_libelle_court AS libelle_court, 
-	niv_1_libelle libelle_long,
-	'niv_1' AS niveau
-FROM oc_us_ocs2d
-UNION ALL
-SELECT DISTINCT 
-	niv_2_libelle_court AS libelle_court, 
-	niv_2_libelle libelle_long,
-	'niv_2' AS niveau
-FROM oc_us_ocs2d
-UNION ALL
-SELECT DISTINCT 
-	niv_3_libelle_court AS libelle_court, 
-	niv_3_libelle AS libelle_long,
-	'niv_3' AS niveau
+-- 9. Rassemblement dans une seule vue des nomenclatures US et CS des données OCS2D
+ CREATE VIEW OC_US_OCS2D AS
+ WITH CTE_1 AS
+    (
+    SELECT DISTINCT
+        'CS' AS niv_0_libelle_court,
+        'COUVERT DU SOL' AS niv_0_libelle,
+        SUBSTR(CS1_CODE,3,1) AS niv_1_libelle_court,
+        CS1_LIBELLE AS niv_1_libelle,
+        SUBSTR(CS2_CODE,5,1) AS niv_2_libelle_court,
+        CS2_LIBELLE AS niv_2_libelle,
+        SUBSTR(CS3_CODE,7,1) AS niv_3_libelle_court,
+        CS3_LIBELLE AS niv_3_libelle
+    FROM
+        OCS2D_CS
+    ORDER BY
+        niv_0_libelle_court,
+        niv_1_libelle_court,
+        niv_2_libelle_court,
+        niv_3_libelle_court
+    ),
+CTE_2 AS
+    (
+    SELECT DISTINCT
+        'US' AS niv_0_libelle_court,
+        'USAGE DU SOL' AS niv_0_libelle,
+        SUBSTR(US1_CODE,3,1) AS niv_1_libelle_court,
+        US1_LIBELLE AS niv_1_libelle,
+        SUBSTR(US2_CODE,5,1) AS niv_2_libelle_court,
+        US2_LIBELLE AS niv_2_libelle,
+        SUBSTR(US3_CODE,7,1) AS niv_3_libelle_court,
+        US3_LIBELLE AS niv_3_libelle
+    FROM
+        OCS2D_US
+    ORDER BY
+        niv_0_libelle_court,
+        niv_1_libelle_court,
+        niv_2_libelle_court,
+        niv_3_libelle_court
+    )
+SELECT
+        niv_0_libelle_court,
+        niv_0_libelle,
+        niv_1_libelle_court,
+        niv_1_libelle,
+        niv_2_libelle_court,
+        niv_2_libelle,
+        niv_3_libelle_court,
+        niv_3_libelle
 FROM
-	oc_us_ocs2d;
+    CTE_1
+UNION ALL
+SELECT
+        niv_0_libelle_court,
+        niv_0_libelle,
+        niv_1_libelle_court,
+        niv_1_libelle,
+        niv_2_libelle_court,
+        niv_2_libelle,
+        niv_3_libelle_court,
+        niv_3_libelle
+FROM
+    CTE_2;
 
 
--- 10. Insertion des libelles courts dans TA_LIBELLE_COURT
+-- 10. Vue simplifiant la nomenclature OCS2D usage pour faciliter sa normalisationCREATE OR REPLACE FORCE EDITIONABLE VIEW "G_GEO"."OCS2D_NOMENCLATURE_COUVERT_USAGE" ("LIBELLE_COURT", "LIBELLE_LONG", "NIVEAU", "SOURCE") AS 
+CREATE VIEW OCS2D_NOMENCLATURE_COUVERT_USAGE AS 
+SELECT DISTINCT
+    niv_0_libelle_court AS libelle_court, 
+    niv_0_libelle libelle_long,
+    'niv_0' AS niveau,
+    NIV_0_libelle_court AS source
+FROM oc_us_ocs2d
+UNION ALL
+SELECT DISTINCT 
+    niv_1_libelle_court AS libelle_court, 
+    niv_1_libelle libelle_long,
+    'niv_1' AS niveau,
+    NIV_0_libelle_court AS source
+FROM oc_us_ocs2d
+UNION ALL
+SELECT DISTINCT 
+    niv_2_libelle_court AS libelle_court, 
+    niv_2_libelle libelle_long,
+    'niv_2' AS niveau,
+    NIV_0_libelle_court AS source
+FROM oc_us_ocs2d
+UNION ALL
+SELECT DISTINCT 
+    niv_3_libelle_court AS libelle_court, 
+    niv_3_libelle AS libelle_long,
+    'niv_3' AS niveau,
+    NIV_0_libelle_court AS source
+FROM
+    oc_us_ocs2d;
+
+
+-- 11. Insertion des libelles courts dans TA_LIBELLE_COURT
 MERGE INTO ta_libelle_court tlc
 USING
 	(
@@ -248,7 +316,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 11. Insertion des libelles longs dans TA_LIBELLE_LONG
+-- 12. Insertion des libelles longs dans TA_LIBELLE_LONG
 MERGE INTO ta_libelle_long tl
 USING
 	(
@@ -264,7 +332,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 12. Insertion de la famille dans TA_FAMILLE
+-- 13. Insertion de la famille dans TA_FAMILLE
 MERGE INTO TA_FAMILLE tf
 USING
 	(
@@ -279,7 +347,7 @@ VALUES (temp.valeur)
 ;
 
 
--- 13. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D COUVERT DU SOL
+-- 14. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D COUVERT DU SOL
 MERGE INTO TA_FAMILLE_LIBELLE tfl
 USING
 	(
@@ -308,7 +376,7 @@ INSERT (tfl.fid_famille,tfl.fid_libelle_long)
 VALUES (temp.fid_famille,temp.fid_libelle_long)
 ;
 
--- 13. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D USAGE DU SOL
+-- 15. Insertion des relations dans TA_FAMILLE_LIBELLE pour les libelles de la famille OCS2D USAGE DU SOL
 MERGE INTO TA_FAMILLE_LIBELLE tfl
 USING
 	(
@@ -337,7 +405,7 @@ INSERT (tfl.fid_famille,tfl.fid_libelle_long)
 VALUES (temp.fid_famille,temp.fid_libelle_long)
 ;
 
--- 14. Creation vue des relations
+-- 16. Creation vue des relations
 CREATE VIEW oc_us_ocs2d_relation AS
 SELECT DISTINCT
     niv_1_libelle_court AS lcf,
@@ -359,7 +427,7 @@ UNION ALL select distinct
 FROM oc_us_ocs2d;
 
 
--- 15. creation de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
+-- 17. creation de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
 CREATE GLOBAL TEMPORARY TABLE FUSION_OCS2D_COUVERT_USAGE AS
 (SELECT
     d.objectid AS objectid,
@@ -375,11 +443,17 @@ JOIN TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
 LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court);
 
 
--- 16. Insertion des données dans la table temporaire fusion utilisation de la séquence de la table TA_LIBELLE
+-- 18. Insertion des données dans la table temporaire fusion utilisation de la séquence de la table TA_LIBELLE
 INSERT INTO FUSION_OCS2D_COUVERT_USAGE
+with CTE as (
+        SELECT
+            MAX(objectid) AS objectid_max
+        FROM
+            G_GEO.TA_LIBELLE
+            )
 SELECT
 -- attention à la séquence utilisée
-    ISEQ$$_1249399.nextval AS objectid,
+    CTE.objectid_max + ROWNUM AS objectid,
 -- attention à la séquence utilisée
     b.objectid AS fid_libelle_long,
     a.libelle_long,
@@ -389,10 +463,11 @@ SELECT
 FROM
     ocs2d_nomenclature_couvert_usage a
 JOIN TA_LIBELLE_LONG b ON b.valeur = a.libelle_long
-LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court;
+LEFT JOIN TA_LIBELLE_COURT c ON c.valeur = a.libelle_court,
+CTE;
 
 
--- 17. Insertion des données dans ta_libelle
+-- 19. Insertion des données dans ta_libelle
 MERGE INTO ta_libelle l
 USING
 	(
@@ -409,7 +484,7 @@ VALUES (temp.objectid,temp.fid_libelle_long)
 ;
 
 
--- 18. Insertion des données dans ta_correspondance_libelle
+-- 20. Insertion des données dans ta_correspondance_libelle
 MERGE INTO ta_libelle_correspondance tc
 USING
 	(
@@ -426,7 +501,7 @@ VALUES (temp.objectid,temp.fid_libelle_court)
 ;
 
 
--- 19. Insertion des données dans ta_relation_libelle
+-- 21. Insertion des données dans ta_relation_libelle
 MERGE INTO ta_relation_libelle tr
 USING 
 	(
@@ -462,15 +537,21 @@ VALUES (temp.fid_libelle_fils,temp.fid_libelle_parent)
 ;
 
 
--- 20. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 20.1. Suppression de la table temporaire oc_us_ocs2d
+-- 22. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
+-- 22.1. Suppression de la table temporaire oc_us_ocs2d
 DROP TABLE oc_us_ocs2d CASCADE CONSTRAINTS PURGE;
 
--- 20.2. Suppression de la table temporaire FUSION_OCS2D_COUVERT_USAGE
+-- 22.2. Suppression de la table temporaire FUSION_OCS2D_COUVERT_USAGE
 DROP TABLE FUSION_OCS2D_COUVERT_USAGE CASCADE CONSTRAINTS PURGE;
 
--- 20.3. Suppression de la vue oc_us_ocs2d_relation
+-- 22.3. Suppression de la vue OC_US_OCS2D
+DROP VIEW OC_US_OCS2D CASCADE CONSTRAINTS;
+
+-- 22.4. Suppression de la vue OCS2D_NOMENCLATURE_COUVERT_USAGE
+DROP VIEW OCS2D_NOMENCLATURE_COUVERT_USAGE CASCADE CONSTRAINTS;
+
+-- 22.5. Suppression de la vue oc_us_ocs2d_relation
 DROP VIEW oc_us_ocs2d_relation CASCADE CONSTRAINTS;
 
--- 20.4. Suppression de la vue ocs2d_nomenclature_couvert_usage
+-- 22.6. Suppression de la vue ocs2d_nomenclature_couvert_usage
 DROP VIEW ocs2d_nomenclature_couvert_usage CASCADE CONSTRAINTS;
