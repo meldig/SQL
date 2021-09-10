@@ -127,3 +127,101 @@ SET a.#COLONNE_GEOMETRIQUE# = SDO_GEOM.SDO_SELF_UNION(a.#COLONNE_GEOMETRIQUE#, 0
 WHERE
 SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 0, 5) IN ('13349');
 ```
+
+6. Comment corriger les géométries sans changer de type ?
+
+    6.1. Vérifier les corrections avant de les rendre effectives en base
+        Dans un premier temps, il est préférable de faire une requête de sélection afin de savoir ce que va donner la correction avant de la rendre effective en base. En effet, la correction d'une erreur peut parfois en provoquer une autre : la suppression de l'erreur 13349 peut parfois provoquer l'erreur 13356. Dans l'exemple qui suit, nous supposons que notre jeux de données contient des erreurs de type 13356 et 13349.
+
+```SQL
+WITH
+    C_1 AS(-- Sélection des données comportant une erreur de géométrie
+        SELECT
+            a.#COLONNE_IDENTIFIANT#,
+            a.#COLONNE_GEOMETRIQUE#,
+            a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS type_geom,
+            SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 0, 5) AS statut_geom
+        FROM
+            #MON_SCHEMA#.#MA_TABLE#. a
+        WHERE
+            SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) <> 'TRUE'
+    )
+    -- Correction de l'erreur 13356 : sommets redondants avec statut de la géométrie avant et après correction
+    SELECT
+        a.#COLONNE_IDENTIFIANT#,
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction 
+        a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS start_type_geom, -- type de géométrie avant correction
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
+        SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
+    FROM
+        C_1 a
+    WHERE
+        statut_geom = '13356'
+    UNION ALL
+    -- Correction de l'erreur 13349 : polygones qui s'auto-intersectent avec statut de la géométrie avant et après correction
+    SELECT
+        a.#COLONNE_IDENTIFIANT#,
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction
+        a.#COLONNE_GEOMETRIQUE#.sdo_gtype start_type_geom, -- type de géométrie avant correction
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
+        SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
+    FROM
+        C_1 a
+    WHERE
+        statut_geom = '13349';
+```
+
+    6.2. Pour être sûr de ne jamais changer de type de géométrie après la correction de l'erreur géométrique, il faut faire une condition sur le type de géométrie lors de sa correction, c'est-à-dire ceci :
+
+
+```SQL
+MERGE INTO #MON_SCHEMA#.#MA_TABLE# a
+USING(
+    WITH
+        C_1 AS(-- Sélection des données comportant une erreur de géométrie
+            SELECT
+                a.#COLONNE_IDENTIFIANT#,
+                a.#COLONNE_GEOMETRIQUE#,
+                a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS type_geom,
+                SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 0, 5) AS statut_geom
+            FROM
+                #MON_SCHEMA#.#MA_TABLE#. a
+            WHERE
+                SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) <> 'TRUE'
+        ),
+
+        C_2 AS(
+            -- Correction de l'erreur 13356 : sommets redondants avec statut de la géométrie avant et après correction
+            SELECT
+                a.#COLONNE_IDENTIFIANT#,
+                SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005) AS geom
+            FROM
+                C_1 a
+            WHERE
+                statut_geom = '13356'
+            UNION ALL
+            -- Correction de l'erreur 13349 : polygones qui s'auto-intersectent avec statut de la géométrie avant et après correction
+            SELECT
+                a.#COLONNE_IDENTIFIANT#,
+                SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005) AS geom
+            FROM
+                C_1 a
+            WHERE
+                statut_geom = '13349'
+        )
+
+        SELECT
+            a.#COLONNE_IDENTIFIANT#,
+            a.#COLONNE_GEOMETRIQUE#
+        FROM
+            C_2 a
+        WHERE
+            SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005) = 'TRUE'
+    )f
+ON (
+        a.#COLONNE_IDENTIFIANT# = f.#COLONNE_IDENTIFIANT# 
+        AND a.#COLONNE_GEOMETRIQUE#.SDO_GTYPE = f.end_type_geom
+    )
+    UPDATE
+    SET a.#COLONNE_GEOMETRIQUE# = f.#COLONNE_GEOMETRIQUE#;
+```
