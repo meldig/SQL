@@ -16,7 +16,7 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.objectid IS 'Clé primaire auto-incrém
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.geom IS 'Champ géométrique de type polygone.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.fid_usage IS 'Clé étrangère vers la table G_GEO.TA_LIBELLE permettant d''associer un usage aux éléments d''une grille. Chaque grille est dévolue à un et un seul usage. Exemple : la grille de recalage est uniquement à utiliser pour le recalage des objets par photo-interprétation.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.fid_etat IS 'Clé étrangère vers la table G_GEO.TA_LIBELLE permettant d''associer un état d''avancement à un élément d''une grille.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.fid_gestionnaire IS 'Clé étrangère vers la table TA_GG_SOURCE permettant d''attribuer le pnom d''un agent à un élément de la grille afin d''indiquer qu''il doit s''en occuper.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE.fid_gestionnaire IS 'Clé étrangère vers la table TA_AGENT permettant d''attribuer le pnom d''un agent à un élément de la grille afin d''indiquer qu''il doit s''en occuper.';
 
 -- 3. Création de la contrainte de clé primaire
 ALTER TABLE G_GESTIONGEO.TA_GRILLE
@@ -59,7 +59,7 @@ REFERENCES G_GEO.TA_LIBELLE(objectid);
 ALTER TABLE G_GESTIONGEO.TA_GRILLE
 ADD CONSTRAINT TA_GRILLE_FID_GESTIONNAIRE_FK
 FOREIGN KEY (fid_gestionnaire)
-REFERENCES G_GESTIONGEO.TA_GG_SOURCE(src_id);
+REFERENCES G_GESTIONGEO.TA_AGENT(src_id);
 
 -- 7. Création des index sur les clés étrangères et autres
 CREATE INDEX TA_GRILLE_FID_USAGE_IDX ON G_GESTIONGEO.TA_GRILLE(fid_usage)

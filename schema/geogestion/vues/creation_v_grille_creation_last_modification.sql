@@ -32,10 +32,10 @@
         FROM
             C_1 a
             INNER JOIN G_GESTIONGEO.TA_GRILLE_LOG b ON b.id_grille = a.id_grille AND b.date_action = a.date_action
-            INNER JOIN G_GESTIONGEO.TA_GG_SOURCE c ON c.src_id = b.fid_pnom
+            INNER JOIN G_GESTIONGEO.TA_AGENT c ON c.src_id = b.fid_pnom
             INNER JOIN G_GEO.TA_LIBELLE d ON d.objectid = b.id_etat
             INNER JOIN G_GEO.TA_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long
-            INNER JOIN G_GESTIONGEO.TA_GG_SOURCE f ON f.src_id = b.id_gestionnaire
+            INNER JOIN G_GESTIONGEO.TA_AGENT f ON f.src_id = b.id_gestionnaire
     UNION ALL
     SELECT
         a.id_grille,
@@ -47,10 +47,10 @@
         i.valeur AS etat_avancement
     FROM
         G_GESTIONGEO.TA_GRILLE_LOG a
-        INNER JOIN G_GESTIONGEO.TA_GG_SOURCE b ON b.src_id = a.fid_pnom
+        INNER JOIN G_GESTIONGEO.TA_AGENT b ON b.src_id = a.fid_pnom
         INNER JOIN G_GEO.TA_LIBELLE c ON c.objectid = a.fid_type_action
         INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = c.fid_libelle_long
-        INNER JOIN G_GESTIONGEO.TA_GG_SOURCE e ON e.src_id = a.id_gestionnaire
+        INNER JOIN G_GESTIONGEO.TA_AGENT e ON e.src_id = a.id_gestionnaire
         INNER JOIN G_GEO.TA_LIBELLE f ON f.objectid = a.id_usage
         INNER JOIN G_GEO.TA_LIBELLE_LONG g ON g.objectid = f.fid_libelle_long
         INNER JOIN G_GEO.TA_LIBELLE h ON h.objectid = a.id_etat

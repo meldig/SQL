@@ -11,8 +11,8 @@ BEGIN
     -- Sélection du pnom
     SELECT sys_context('USERENV','OS_USER') into username from dual;
 
-    -- Sélection de l'id du pnom correspondant dans la table TA_GG_SOURCE
-    SELECT src_id INTO v_id_agent FROM G_GESTIONGEO.TA_GG_SOURCE WHERE src_libel = username;
+    -- Sélection de l'id du pnom correspondant dans la table TA_AGENT
+    SELECT src_id INTO v_id_agent FROM G_GESTIONGEO.TA_AGENT WHERE src_libel = username;
 
     -- Sélection des id des actions présentes dans la table TA_LIBELLE
     SELECT
