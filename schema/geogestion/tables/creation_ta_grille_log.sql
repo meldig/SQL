@@ -21,10 +21,10 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.geom IS 'Géométrie, de type polyg
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.id_grille IS 'Identifiant de l''élément de la grille ayant été modifié.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.id_usage IS 'Identifiant de la table G_GEO.TA_LIBELLE permettant d''associer un usage aux éléments d''une grille. Chaque grille est dévolue à un et un seul usage. Exemple : la grille de recalage est uniquement à utiliser pour le recalage des objets par photo-interprétation.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.id_etat IS 'Identifiant de la table G_GEO.TA_LIBELLE permettant d''associer un état d''avancement à un élément d''une grille.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.id_gestionnaire IS 'Identifiant de la table TA_AGENT permettant d''attribuer le pnom d''un agent à un élément de la grille afin d''indiquer qu''il doit s''en occuper.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.id_gestionnaire IS 'Identifiant de la table TA_GG_AGENT permettant d''attribuer le pnom d''un agent à un élément de la grille afin d''indiquer qu''il doit s''en occuper.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.date_action IS 'Date de la création, modification ou suppression d''un objet de la table G_GESTIONGEO.TA_GRILLE.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.fid_type_action IS 'Clé étrangère vers la table G_GEO.TA_LIBELLE permettant de savoir quelle action a été effectuée sur un élément d''une grille.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.fid_pnom IS 'Clé étrangère vers la table TA_AGENT permettant d''associer à chaque objet le pnom de l''agent l''ayant créé ou modifié.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.fid_pnom IS 'Clé étrangère vers la table TA_GG_AGENT permettant d''associer à chaque objet le pnom de l''agent l''ayant créé ou modifié.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GRILLE_LOG.geom IS 'Champ géométrique de type polygone contenant l''état précédent la modification de chaque objet.';
 
 -- 3. Création de la contrainte de clé primaire
@@ -63,7 +63,7 @@ REFERENCES G_GEO.TA_LIBELLE(objectid);
 ALTER TABLE G_GESTIONGEO.TA_GRILLE_LOG
 ADD CONSTRAINT TA_GRILLE_LOG_FID_PNOM_FK
 FOREIGN KEY (fid_pnom)
-REFERENCES G_GESTIONGEO.TA_AGENT(src_id);
+REFERENCES G_GESTIONGEO.TA_GG_AGENT(objectid);
 
 -- 7. Création des index sur les clés étrangères et autres
 CREATE INDEX TA_GRILLE_LOG_FID_TYPE_ACTION_IDX ON G_GESTIONGEO.TA_GRILLE_LOG(fid_type_action)
