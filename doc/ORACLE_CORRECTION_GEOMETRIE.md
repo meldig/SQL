@@ -137,22 +137,22 @@ SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 
 WITH
     C_1 AS(-- Sélection des données comportant une erreur de géométrie
         SELECT
-            a.#COLONNE_IDENTIFIANT#,
-            a.#COLONNE_GEOMETRIQUE#,
+            a.#COLONNE_IDENTIFIANT# AS identifiant,
+            a.#COLONNE_GEOMETRIQUE# AS geom,
             a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS type_geom,
             SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 0, 5) AS statut_geom
         FROM
-            #MON_SCHEMA#.#MA_TABLE#. a
+            #MON_SCHEMA#.#MA_TABLE# a
         WHERE
             SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) <> 'TRUE'
     )
     -- Correction de l'erreur 13356 : sommets redondants avec statut de la géométrie avant et après correction
     SELECT
-        a.#COLONNE_IDENTIFIANT#,
-        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction 
-        a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS start_type_geom, -- type de géométrie avant correction
-        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
-        SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
+        a.identifiant,
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction 
+        a.geom.sdo_gtype AS start_type_geom, -- type de géométrie avant correction
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
+        SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
     FROM
         C_1 a
     WHERE
@@ -160,11 +160,11 @@ WITH
     UNION ALL
     -- Correction de l'erreur 13349 : polygones qui s'auto-intersectent avec statut de la géométrie avant et après correction
     SELECT
-        a.#COLONNE_IDENTIFIANT#,
-        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction
-        a.#COLONNE_GEOMETRIQUE#.sdo_gtype start_type_geom, -- type de géométrie avant correction
-        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
-        SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
+        a.identifiant,
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005) AS start_statut_geom, -- statut de la géométrie avant correction 
+        a.geom.sdo_gtype AS start_type_geom, -- type de géométrie avant correction
+        SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005), 0.005) AS end_statut_geom, -- statut de la géométrie après correction
+        SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005).sdo_gtype AS end_type_geom -- type de géométrie après correction
     FROM
         C_1 a
     WHERE
@@ -180,12 +180,12 @@ USING(
     WITH
         C_1 AS(-- Sélection des données comportant une erreur de géométrie
             SELECT
-                a.#COLONNE_IDENTIFIANT#,
-                a.#COLONNE_GEOMETRIQUE#,
+                a.#COLONNE_IDENTIFIANT# AS identifiant,
+                a.#COLONNE_GEOMETRIQUE# AS geom,
                 a.#COLONNE_GEOMETRIQUE#.sdo_gtype AS type_geom,
                 SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005), 0, 5) AS statut_geom
             FROM
-                #MON_SCHEMA#.#MA_TABLE#. a
+                #MON_SCHEMA#.#MA_TABLE# a
             WHERE
                 SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.#COLONNE_GEOMETRIQUE#, 0.005) <> 'TRUE'
         ),
@@ -193,8 +193,8 @@ USING(
         C_2 AS(
             -- Correction de l'erreur 13356 : sommets redondants avec statut de la géométrie avant et après correction
             SELECT
-                a.#COLONNE_IDENTIFIANT#,
-                SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005) AS geom
+                a.identifiant,
+                SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005) AS geom
             FROM
                 C_1 a
             WHERE
@@ -202,8 +202,8 @@ USING(
             UNION ALL
             -- Correction de l'erreur 13349 : polygones qui s'auto-intersectent avec statut de la géométrie avant et après correction
             SELECT
-                a.#COLONNE_IDENTIFIANT#,
-                SDO_UTIL.RECTIFY_GEOMETRY(a.#COLONNE_GEOMETRIQUE#, 0.005) AS geom
+                a.identifiant,
+                SDO_UTIL.RECTIFY_GEOMETRY(a.geom, 0.005) AS geom
             FROM
                 C_1 a
             WHERE
@@ -211,17 +211,19 @@ USING(
         )
 
         SELECT
-            a.#COLONNE_IDENTIFIANT#,
-            a.#COLONNE_GEOMETRIQUE#
+            a.identifiant,
+            a.geom,
+            a.geom.sdo_gtype AS end_type_geom
         FROM
             C_2 a
         WHERE
             SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005) = 'TRUE'
     )f
 ON (
-        a.#COLONNE_IDENTIFIANT# = f.#COLONNE_IDENTIFIANT# 
+        a.#COLONNE_IDENTIFIANT# = f.identifiant
         AND a.#COLONNE_GEOMETRIQUE#.SDO_GTYPE = f.end_type_geom
     )
+WHEN MATCHED THEN
     UPDATE
-    SET a.#COLONNE_GEOMETRIQUE# = f.#COLONNE_GEOMETRIQUE#;
+    SET a.#COLONNE_GEOMETRIQUE# = f.geom;
 ```
