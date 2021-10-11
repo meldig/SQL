@@ -133,9 +133,9 @@ COMMENT ON TABLE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT IS 'La table TA_GG_POI
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.objectid IS 'Clé primaire auto-incrémentée de la table.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.fid_point_vigilance IS 'Clé étrangère de la table TA_GG_POINT_VIGILANCE permettant d''associer un point de vigilance à une action.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.date_creation IS 'Date de création du point de vigilance.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation IS 'Clé étrangère vers TA_GG_SOURCE permettant de récupérer le pnom de l''utilisateur ayant créé le point de vigilance.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation IS 'Clé étrangère vers TA_GG_AGENT permettant de récupérer le pnom de l''utilisateur ayant créé le point de vigilance.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.date_modification IS 'Date de la dernière modification du point de vigilance.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification IS 'Clé étrangère vers TA_GG_SOURCE permettant de récupérer le pnom de l''utilisateur ayant modifié le point de vigilance.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification IS 'Clé étrangère vers TA_GG_AGENT permettant de récupérer le pnom de l''utilisateur ayant modifié le point de vigilance.';
 
 -- 3.3. Création de la clé primaire ;
 ALTER TABLE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT 
@@ -152,12 +152,12 @@ REFERENCES G_GESTIONGEO.TA_GG_POINT_VIGILANCE(OBJECTID);
 ALTER TABLE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT
 ADD CONSTRAINT TA_GG_POINT_VIGILANCE_AUDIT_FID_PNOM_CREATION_FK 
 FOREIGN KEY (FID_PNOM_CREATION)
-REFERENCES G_GESTIONGEO.TA_GG_SOURCE(SRC_ID);
+REFERENCES G_GESTIONGEO.TA_GG_AGENT(objectid);
 
 ALTER TABLE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT
 ADD CONSTRAINT TA_GG_POINT_VIGILANCE_AUDIT_FID_PNOM_MODIFICATION_FK 
 FOREIGN KEY (FID_PNOM_MODIFICATION)
-REFERENCES G_GESTIONGEO.TA_GG_SOURCE(SRC_ID);
+REFERENCES G_GESTIONGEO.TA_GG_AGENT(objectid);
 
 -- 3.5. Création des indexes ;
 CREATE INDEX TA_GG_POINT_VIGILANCE_AUDIT_FID_POINT_VIGILANCE_IDX ON G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT(FID_POINT_VIGILANCE)
@@ -198,15 +198,15 @@ FOR EACH ROW
 BEGIN
     -- Sélection du pnom
     SELECT sys_context('USERENV','OS_USER') into username from dual;
-    -- Sélection de l'id du pnom correspondant dans la table TA_GG_SOURCE
-    SELECT src_id INTO v_src_id FROM G_GESTIONGEO.TA_GG_SOURCE WHERE src_libel = username;
+    -- Sélection de l'id du pnom correspondant dans la table TA_GG_AGENT
+    SELECT objectid INTO v_src_id FROM G_GESTIONGEO.TA_GG_AGENT WHERE pnom = username;
 
-    IF INSERTING THEN -- En cas d'insertion on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation et la date de création dans TA_GG_POINT_VIGILANCE_AUDIT.date_creation
+    IF INSERTING THEN -- En cas d'insertion on insère l'objectid correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_creation et la date de création dans TA_GG_POINT_VIGILANCE_AUDIT.date_creation
         INSERT INTO G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT(fid_point_vigilance, fid_pnom_creation, date_creation)
             VALUES(:new.objectid, v_src_id, sysdate);
     END IF;
 
-    IF UPDATING THEN -- En cas d'édition on insère le SRC_ID correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification et la date de modification dans TA_GG_POINT_VIGILANCE_AUDIT.date_modification
+    IF UPDATING THEN -- En cas d'édition on insère l'objectid correspondant à l'utilisateur dans TA_GG_POINT_VIGILANCE_AUDIT.fid_pnom_modification et la date de modification dans TA_GG_POINT_VIGILANCE_AUDIT.date_modification
         UPDATE G_GESTIONGEO.TA_GG_POINT_VIGILANCE_AUDIT
         SET 
             fid_pnom_modification = v_src_id,
