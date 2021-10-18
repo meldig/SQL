@@ -1,6 +1,9 @@
-
+/*
+Création de la vue permettant de connaître les date de création, dernière modification, pnom, état d'avancement, thème de grille pour chaque grille
+*/
+-- 1. Création de la vue
   CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION" ("ID_GRILLE", "ACTION", "ACTION_PNOM", "DATE_ACTION", "GESTIONNAIRE", "THEME_GRILLE", "ETAT_AVANCEMENT", 
-	 CONSTRAINT "V_GRILLE_CREATION_LAST_MODIFICATION_PK" PRIMARY KEY ("ID_GRILLE") DISABLE) AS 
+     CONSTRAINT "V_GRILLE_CREATION_LAST_MODIFICATION_PK" PRIMARY KEY ("ID_GRILLE") DISABLE) AS 
   WITH
         C_1 AS(
             SELECT
@@ -58,6 +61,7 @@
     WHERE
         d.valeur = 'insertion';
 
+-- 2. Création des commentaires
    COMMENT ON COLUMN "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"."ID_GRILLE" IS 'Identifiant d''un élément d''une grille présent dans la table TA_GRILLE.';
    COMMENT ON COLUMN "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"."ACTION" IS 'Type de l''action effectué sur un élément d''une grille.';
    COMMENT ON COLUMN "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"."ACTION_PNOM" IS 'Pnom de l''agent ayant effectué une action sur un élément d''une grille.';
@@ -66,3 +70,23 @@
    COMMENT ON COLUMN "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"."THEME_GRILLE" IS 'Thème de la grille à laquelle appartient l''élément.';
    COMMENT ON COLUMN "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"."ETAT_AVANCEMENT" IS 'Etat d''avancement de l''élément de la grille (permet à son gestionnaire de savoir où il en est).';
    COMMENT ON TABLE "G_GESTIONGEO"."V_GRILLE_CREATION_LAST_MODIFICATION"  IS 'Vue proposant la date de création et la date de la dernière modification d''un élément de la grille de TA_GRILLE. Cette vue est utilisée pour visualiser l''évolution des grilles dans les projets qgis.';
+
+
+-- 3. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'V_GRILLE_CREATION_LAST_MODIFICATION',
+    'geom',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005)), 
+    2154
+);
+
+-- 2. Affectation du droit de sélection sur les objets de la table aux administrateurs
+GRANT SELECT ON G_GESTIONGEO.V_GRILLE_CREATION_LAST_MODIFICATION TO G_ADMIN_SIG;
+GRANT SELECT ON G_GESTIONGEO.V_GRILLE_CREATION_LAST_MODIFICATION TO G_GESTIONGEO_LEC;
+GRANT SELECT ON G_GESTIONGEO.V_GRILLE_CREATION_LAST_MODIFICATION TO G_GESTIONGEO_MAJ;
