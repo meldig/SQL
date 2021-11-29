@@ -127,7 +127,7 @@ DECLARE
     v_new_id NUMBER(38,0);
 
 BEGIN
--- Sélection de l'ID_GEOM à partir duquel faire reprendre l'incrémentation
+-- Sélection de l'ID_DOS à partir duquel faire reprendre l'incrémentation
     SELECT
         MAX(ID_DOS) + 1
         INTO v_new_id

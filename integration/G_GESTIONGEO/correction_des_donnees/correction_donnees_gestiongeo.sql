@@ -124,112 +124,7 @@ WHERE
                         )
 ;
 
-
--- 6. Passage de certains dossiers/périmètres en clôturés
--- Résultats attendus : 4 lignes éditées
-UPDATE GEO.TEMP_TA_GG_GEO a
-    SET a.ETAT_ID = 9
-WHERE
-    a.DOS_NUM IN(
-                    SELECT b.DOS_NUM
-                    FROM
-                        GEO.TEMP_TA_GG_GEO b
-                    WHERE
-                        b.DOS_NUM IN(
-                                        202860388,
-                                        203680443,
-                                        20320445,
-                                        202020446,
-                                        202520447
-                                    )
-                )
-;
--- Résultats attendus : 4 lignes éditées
-UPDATE GEO.TEMP_TA_GG_DOSSIER a
-    SET a.ETAT_ID = 9
-WHERE
-    a.DOS_NUM IN(
-                    SELECT b.DOS_NUM
-                    FROM
-                        GEO.TEMP_TA_GG_DOSSIER b
-                    WHERE
-                        b.DOS_NUM IN(
-                                        202860388,
-                                        203680443,
-                                        20320445,
-                                        202020446,
-                                        202520447
-                                    )
-                )
-;
-
--- 7. Création de deux nouveaux dossiers dans TEMP_TA_GG_DOSSIER. Ces dossiers correspondront aux périmètres présents dans TEMP_TA_GG_GEO dont le DOS_NUM = 5332, mais ne disposant pas de dossier dans TEMP_TA_GG_DOSSIER pour le moment.
-/*INSERT INTO GEO.TEMP_TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
-SELECT
-    45829,
-    a.SRC_ID,
-    a.ETAT_ID,
-    a.USER_ID,
-    a.FAM_ID,
-    a.DOS_DC,
-    a.DOS_PRECISION,
-    a.DOS_DMAJ,
-    a.DOS_RQ,
-    a.DOS_DT_FIN,
-    a.DOS_PRIORITE,
-    a.DOS_IDPERE,
-    a.DOS_DT_DEB_TR,
-    a.DOS_DT_FIN_TR,
-    a.DOS_DT_CMD_SAI,
-    a.DOS_INSEE,
-    3501303,
-    a.DOS_MAO,
-    a.DOS_ENTR,
-    a.ORDER_ID,
-    163500142,
-    a.DOS_OLD_ID,
-    a.DOS_DT_DEB_LEVE,
-    a.DOS_DT_FIN_LEVE,
-    a.DOS_DT_PREV,
-    'RECOL/163500142_59350_rue_du_ballon/'
-FROM
-    GEO.TEMP_TA_GG_DOSSIER a
-WHERE
-    a.DOS_NUM = 163500137;
-
-INSERT INTO GEO.TEMP_TA_GG_DOSSIER(ID_DOS, SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
-SELECT
-    45830,
-    a.SRC_ID,
-    a.ETAT_ID,
-    a.USER_ID,
-    a.FAM_ID,
-    a.DOS_DC,
-    a.DOS_PRECISION,
-    a.DOS_DMAJ,
-    a.DOS_RQ,
-    a.DOS_DT_FIN,
-    a.DOS_PRIORITE,
-    a.DOS_IDPERE,
-    a.DOS_DT_DEB_TR,
-    a.DOS_DT_FIN_TR,
-    a.DOS_DT_CMD_SAI,
-    a.DOS_INSEE,
-    a.DOS_VOIE,
-    a.DOS_MAO,
-    a.DOS_ENTR,
-    a.ORDER_ID,
-    163500169,  
-    a.DOS_OLD_ID,
-    a.DOS_DT_DEB_LEVE,
-    a.DOS_DT_FIN_LEVE,
-    a.DOS_DT_PREV,
-    'RECOL/163500169_59350_rue_de_la_communaute/'
-FROM
-    GEO.TEMP_TA_GG_DOSSIER a
-WHERE
-    a.DOS_NUM = 163500137;
-*/
+-- 7. Création d'un nouveau dossier dans TEMP_TA_GG_DOSSIER. Ce dossier correspondra à l'un des deux périmètres présents dans TEMP_TA_GG_GEO dont le DOS_NUM = 213500004, mais étant présents sur deux communes différentes.
 /*SELECT
     MAX(ID_DOS) + 1
 FROM
@@ -240,7 +135,7 @@ WITH
         SELECT
             COUNT(a.ID_DOS) AS decompte
         FROM
-            G_GESTIONGEO.TA_GG_DOSSIER a
+            GEO.TEMP_TA_GG_DOSSIER a
         WHERE
             SUBSTR(TRUNC(a.DOS_DC, 'YEAR'), 7, 2) = SUBSTR(TRUNC(sysdate, 'YEAR'), 7, 2)
     ),
@@ -258,7 +153,7 @@ WITH
                     THEN '00'||TO_CHAR(b.decompte)
             END AS nbr_dossiers
         FROM
-            G_GESTIONGEO.TA_GG_DOSSIER a,
+            GEO.TEMP_TA_GG_DOSSIER a,
             C_1 b
         WHERE
             a.DOS_NUM = 213500004
@@ -270,8 +165,40 @@ WITH
     FROM
         C_2;
 
--- 7.2. Création d'un nouveau dossier pour un périmètre en doublon
 INSERT INTO GEO.TEMP_TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
+SELECT
+    a.SRC_ID,
+    a.ETAT_ID,
+    a.USER_ID,
+    a.FAM_ID,
+    a.DOS_DC,
+    a.DOS_PRECISION,
+    a.DOS_DMAJ,
+    a.DOS_RQ,
+    a.DOS_DT_FIN,
+    a.DOS_PRIORITE,
+    a.DOS_IDPERE,
+    a.DOS_DT_DEB_TR,
+    a.DOS_DT_FIN_TR,
+    a.DOS_DT_CMD_SAI,
+    59328,
+    a.DOS_VOIE,
+    a.DOS_MAO,
+    a.DOS_ENTR,
+    a.ORDER_ID,
+    v_dos_num,
+    a.DOS_OLD_ID,
+    a.DOS_DT_DEB_LEVE,
+    a.DOS_DT_FIN_LEVE,
+    a.DOS_DT_PREV,
+    'IC/213500004_59350_avenue_leon_jouhaux/'
+FROM
+    GEO.TEMP_TA_GG_DOSSIER a
+WHERE
+    a.DOS_NUM = 213500004;
+
+-- 7.2. Création d'un nouveau dossier pour un périmètre en doublon
+/*INSERT INTO GEO.TEMP_TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
 SELECT
     a.SRC_ID,
     a.ETAT_ID,
@@ -301,7 +228,7 @@ SELECT
 FROM
     GEO.TEMP_TA_GG_DOSSIER a
 WHERE
-    a.DOS_NUM = 213500004;
+    a.DOS_NUM = 213500004;*/
 
 -- 8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7.
 /*MERGE INTO GEO.TEMP_TA_GG_GEO a
@@ -328,9 +255,9 @@ MERGE INTO GEO.TEMP_TA_GG_GEO a
             FROM
                 GEO.TEMP_TA_GG_DOSSIER b
             WHERE
-                b.DOS_NUM = 213500049
+                b.DOS_NUM = v_dos_num
         )t
-ON (a.ID_GEOM = 46478)
+ON (a.ID_GEOM = 46477)
 WHEN MATCHED THEN
     UPDATE 
         SET a.ID_DOS = t.ID_DOS, a.DOS_NUM = t.DOS_NUM;
@@ -467,7 +394,7 @@ WHEN MATCHED THEN
 UPDATE SET a.DOS_ENTR = 'TPRN';
 
 -- 10. Harmonisation des pnoms de la table TA_GG_SOURCE
-MERGE INTO GEO.TA_GG_SOURCE a
+/*MERGE INTO GEO.TA_GG_SOURCE a
     USING(
             SELECT
                 b.SRC_ID,
@@ -487,7 +414,7 @@ MERGE INTO GEO.TA_GG_SOURCE a
                     WHEN b.SRC_ID = 29916
                         THEN 'yaube'
                     WHEN b.SRC_ID = 196860
-                        THEN 'fmorelle'
+                        THEN 'fmorealle'
                 END AS SRC_LIBEL
             FROM
                 GEO.TA_GG_SOURCE b
@@ -510,7 +437,7 @@ WHEN MATCHED THEN
 INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
 VALUES(6068, 'rjault', 1);
 INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
-VALUES(5741, 'bjacq', 1);
+VALUES(5741, 'bjacq', 1);*/
 
 COMMIT;
 

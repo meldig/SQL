@@ -5,10 +5,10 @@ echo Bienvenu dans la creation des tables temporaires visant a corriger les tabl
 SET NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 
 :: 2. Déclaration et valorisation des variables
-SET /p chemin_code_ddl="Veuillez saisir le chemin d'accès du dossier contenant le code DDL des tables temporaires : "  
-SET /p USER="Veuillez saisir l'utilisateur Oracle : "    
+SET /p chemin_code_ddl="Veuillez saisir le chemin d acces du dossier contenant le code de creation des tables de correction : "  
+SET /p USER="Veuillez saisir l utilisateur Oracle : "    
 SET /p MDP="Veuillez saisir le MDP : "    
-SET /p INSTANCE="Veuillez saisir l'instance Oracle :" 
+SET /p INSTANCE="Veuillez saisir l instance Oracle :" 
 
 :: 3. lancement de SQL plus.
 CD C:/ora12c/R1/BIN
