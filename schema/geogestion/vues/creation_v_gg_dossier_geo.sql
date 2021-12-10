@@ -44,7 +44,7 @@ SELECT
     a.dos_mao,
     a.dos_entr,
     a.entreprise_travaux,
-    a.dos_url_file,
+    g.dos_url_file,
     a.dos_dt_deb_tr,
     a.dos_dt_fin_tr,
     a.dos_dt_deb_leve,
@@ -56,10 +56,11 @@ SELECT
 FROM
     G_GESTIONGEO.TA_GG_DOSSIER a
     INNER JOIN G_GESTIONGEO.TA_GG_GEO f ON f.ID_DOS = a.ID_DOS
-    INNER JOIN G_GESTIONGEO.TA_GG_AGENT b ON b.OBJECTID = a.OBJECTID
+    INNER JOIN G_GESTIONGEO.TA_GG_AGENT b ON b.OBJECTID = a.SRC_ID
     INNER JOIN G_GESTIONGEO.TA_GG_ETAT c ON c.ETAT_ID = a.ETAT_ID
     INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.FAM_ID = a.FAM_ID
     LEFT JOIN G_GESTIONGEO.TA_GG_AGENT d ON d.OBJECTID = a.USER_ID
+    INNER JOIN G_GESTIONGEO.TA_GG_URL_FILE g ON g.fid_dossier = a.id_dos
  ;
 
 -- 2. Création des commentaires de la vue et des colonnes
