@@ -29,10 +29,10 @@ copy /b %chemin_code_table%\creation_ta_gg_agent.sql + ^
 %chemin_code_mtd%\creation_mtd_spatiales_temp_ta_gg_geo.sql ^
 
 :: 3. lancement de SQL plus.
-::CD C:/ora12c/R1/BIN
+CD C:/ora12c/R1/BIN
 
 :: 4. Execution de sqlplus. pour lancer les requetes SQL.
-::sqlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_code_temp%\temp_code_ddl_schema.sql
+qlplus.exe %USER%/%MDP%@%INSTANCE% @%chemin_code_temp%\temp_code_ddl_schema.sql
 
 :: 5. MISE EN PAUSE
 PAUSE
