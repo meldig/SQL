@@ -5,16 +5,16 @@ Utile pour la visualisation des dossiers.
 
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
-    id_dos,
-    id_geom,
-    dos_num,
-    fam_id,
-    etat_id,
-    dos_insee,
-    OBJECTID,
-    dos_dc,
-    user_id,
-    dos_dmaj,
+    id_dossier,
+    id_perimetre,
+    numero_dossier,
+    famille,
+    etat_avancement,
+    code_insee,
+    pnom_creation,
+    date_creation,
+    pnom_modification,
+    date_modification,
     dos_mao,
     dos_entr,
     entreprise_travaux,
@@ -27,50 +27,51 @@ CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_DOSSIER_GEO (
     dos_precision,
     dos_rq,
     geom,
-    CONSTRAINT "V_GG_DOSSIER_GEO_PK" PRIMARY KEY (id_dos) DISABLE
+    CONSTRAINT "V_GG_DOSSIER_GEO_PK" PRIMARY KEY (objectid) DISABLE
 )
 AS
 SELECT
-    a.id_dos,
-    f.id_geom,
-    f.dos_num,
-    e.fam_lib AS FAM_ID,
-    c.etat_lib AS ETAT_ID,
-    a.dos_insee,
-    b.PNOM AS OBJECTID,
-    a.dos_dc,
-    d.PNOM AS user_ID,
-    a.dos_dmaj,
-    a.dos_mao,
-    a.dos_entr,
+    a.objectid,
+    --b.objectid,
+    --b.numero_dossier,   
+    e.libelle,
+    
+    --d.libelle_long,
+    a.code_insee,
+    --c.pnom AS PNOM_CREATION,    
+    a.date_creation,
+    --f.pnom AS PNOM_MODIFICATION,
+    a.date_modification,
+    a.maitre_ouvrage,
+    a.responsable_leve,
     a.entreprise_travaux,
     g.dos_url_file,
-    a.dos_dt_deb_tr,
-    a.dos_dt_fin_tr,
-    a.dos_dt_deb_leve,
-    a.dos_dt_fin_leve,
-    f.surface,
+    a.date_debut_travaux,
+    a.date_fin_travaux,
+    a.date_debut_leve,
+    a.date_fin_leve,
+    --b.surface,
     a.dos_precision,
-    a.dos_rq,
-    f.geom
+    a.remarque,    
+    b.geom
 FROM
     G_GESTIONGEO.TA_GG_DOSSIER a
-    INNER JOIN G_GESTIONGEO.TA_GG_GEO f ON f.ID_DOS = a.ID_DOS
-    INNER JOIN G_GESTIONGEO.TA_GG_AGENT b ON b.OBJECTID = a.SRC_ID
-    INNER JOIN G_GESTIONGEO.TA_GG_ETAT c ON c.ETAT_ID = a.ETAT_ID
-    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.FAM_ID = a.FAM_ID
-    LEFT JOIN G_GESTIONGEO.TA_GG_AGENT d ON d.OBJECTID = a.USER_ID
-    INNER JOIN G_GESTIONGEO.TA_GG_URL_FILE g ON g.fid_dossier = a.id_dos
+    INNER JOIN G_GESTIONGEO.TA_GG_GEO b ON b.fid_dossier = a.objectid
+    INNER JOIN G_GESTIONGEO.TA_GG_AGENT c ON c.objectid = a.fid_pnom_creation
+    INNER JOIN G_GESTIONGEO.TA_GG_ETAT d ON d.objectid = a.fid_etat_avancement
+    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = a.fid_famille
+    LEFT JOIN G_GESTIONGEO.TA_GG_AGENT f ON f.objectid = a.fid_pnom_modification
+    INNER JOIN G_GESTIONGEO.TA_GG_URL_FILE g ON g.objectid = a.objectid
  ;
 
 -- 2. Création des commentaires de la vue et des colonnes
 COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_GEO IS 'Vue proposant toutes les informations des dossiers (périmètre inclu) créé via GestionGeo.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_DOS IS 'Clé primaire du dossier issu de TA_GG_DOSSIER (il s''agit donc du numéo valide de chaque dossier).';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ID_GEOM IS 'Clé primaire du périmètre issu de TA_GG_GEO et associé au dossier.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_NUM IS 'Numéro du dossier obsolète issu de TA_GG_DOSSIER (ce numéro n''est plus mis à jour et est abandonné).';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.FAM_ID IS 'Familles des données issues de TA_GG_FAMILLE.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.ETAT_ID IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_INSEE IS 'Code INSEE issu de TA_GG_DOSSIER.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.objectid IS 'Clé primaire du dossier issu de TA_GG_DOSSIER (il s''agit donc du numéo valide de chaque dossier).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.objectid IS 'Clé primaire du périmètre issu de TA_GG_GEO et associé au dossier.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.numero_dossier IS 'Numéro du dossier obsolète issu de TA_GG_DOSSIER (ce numéro n''est plus mis à jour et est abandonné).';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.objectid IS 'Familles des données issues de TA_GG_FAMILLE.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.objectid IS 'Etat d''avancement des dossiers issu de TA_GG_ETAT.';
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.code_insee IS 'Code INSEE issu de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.OBJECTID IS 'Pnom de l''agent créateur du dossier issu de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.DOS_DC IS 'Date de création du dossier issu de TA_GG_DOSSIER.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_GEO.USER_ID IS 'Pnom de l''agent ayant fait la dernière modification sur le dossier (issu de TA_GG_DOSSIER).';
