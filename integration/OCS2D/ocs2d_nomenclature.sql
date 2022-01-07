@@ -35,8 +35,9 @@ VALUES(temp.url,temp.methode_acquisition)
 MERGE INTO ta_date_acquisition a
 USING
 	(
-		SELECT TO_DATE('06/04/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2005') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
-		UNION SELECT TO_DATE('06/04/2020') AS DATE_ACQUISITION, TO_DATE('01/01/2015') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
+		SELECT TO_DATE(sysdate, 'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/2005') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
+		UNION 
+        SELECT TO_DATE(sysdate, 'dd/mm/yy') AS DATE_ACQUISITION, TO_DATE('01/01/2015') AS MILLESIME,'rjault' AS OBTENTEUR FROM DUAL
 	) temp
 ON (temp.date_acquisition = a.date_acquisition
 AND temp.millesime = a.millesime)
@@ -502,7 +503,7 @@ VALUES (temp.objectid,temp.fid_libelle_court)
 
 
 -- 21. Insertion des données dans ta_relation_libelle
-MERGE INTO ta_relation_libelle tr
+MERGE INTO ta_libelle_relation tr
 USING 
 	(
 	SELECT
