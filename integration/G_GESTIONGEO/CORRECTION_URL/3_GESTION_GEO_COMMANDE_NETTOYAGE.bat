@@ -24,6 +24,6 @@ DEL liste_repertoire_renommer.csv
 :: table TEMP_LISTE_REPERTOIRE_GESTION_GEO
 
 :: 7. Mise en forme de la table TEMP_LISTE_REPERTOIRE_GESTION_GEO afin de renommer les dossiers GESTION_GEO.
- CALL C:/ora12c/R1/BIN/sqlplus.exe %USER%/%MDP%@%INSTANCE% @%CHEMIN%\G_GESTION_GEO_NETTOYAGE_4.sql
+ CALL C:/ora12c/R1/BIN/sqlplus.exe %USER%/%MDP%@%INSTANCE% @%CHEMIN%\G_GESTION_GEO_NETTOYAGE_3.sql
 
 PAUSE
