@@ -147,4 +147,5 @@ FOR EACH ROW
 BEGIN
     :new.ID_DOS := SEQ_TEMP_TA_GG_DOSSIER.nextval;
 END;
+
 /

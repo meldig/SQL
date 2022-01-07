@@ -439,6 +439,21 @@ VALUES(6068, 'rjault', 1);
 INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
 VALUES(5741, 'bjacq', 1);*/
 
+-- 12. Correction des valeurs du champ TA_GG_DOSSIER.USER_ID absentes de TA_GG_SOURCE. Cette erreur est due à l'obsolescence de DynMap qui créé de lui-même un identifiant absent de TA_GG_SOURCE et ne désignant donc aucun utilisateur.
+MERGE INTO GEO.TEMP_TA_GG_DOSSIER a
+USING(
+    SELECT
+        id_dos,
+        src_id,
+        user_id
+    FROM
+        GEO.TEMP_TA_GG_DOSSIER
+    WHERE
+        user_id NOT IN(SELECT src_id FROM GEO.TA_GG_SOURCE)
+)t
+ON(a.id_dos = t.id_dos)
+WHEN MATCHED THEN
+    UPDATE SET a.user_id = t.src_id;
 COMMIT;
 
 -- En cas d'erreur une exception est levée et un rollback effectué, empêchant ainsi toute insertion de se faire et de retourner à l'état des tables précédent l'insertion.
@@ -447,4 +462,5 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('L''erreur ' || SQLCODE || 'est survenue. Un rollback a été effectué : ' || SQLERRM(SQLCODE));
         ROLLBACK TO POINT_SAVE_TEMP_TA_GG_GEO;
 END;
+
 /
