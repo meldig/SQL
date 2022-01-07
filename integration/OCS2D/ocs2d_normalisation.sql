@@ -10,19 +10,60 @@ NOCACHE;
 COMMIT;
 
 
--- 1.2 indiquer la sequence de la table ta_ocs2d
-UPDATE ocs2d_05_test
--- Attention à la séquence utilisée
-SET identite = ISEQ$$_78920.NEXTVAL;
--- Attention à la séquence utilisée
+-- 1.2 creadtion de objectid à partir de TA_OCS2D pour reprendre la suite de la numérotation.
+MERGE INTO OCS2D_15 a
+USING
+    (
+        WITH CTE AS
+            (
+            SELECT
+                MAX(objectid) AS objectid_max
+            FROM
+                G_GEO.TA_LIBELLE 
+            )
+            SELECT
+                a.OGR_FID AS OGR_FID,
+                CTE.objectid_max + ROWNUM AS objectid
+            FROM
+                OCS2D_15 a,
+                CTE cte
+    )b
+ON (a.ogr_fid = b.ogr_fid)
+WHEN MATCHED THEN
+UPDATE SET a.identite = b.objectid;
+
 
 
 -- 2. Insertion des géométrie dans la table TA_OCS2D_GEOM
+-- CREATION DE LA COLONNE HASH
+ALTER TABLE OCS2D_15
+ADD HASH NUMBER(38)
+
+-- AJOUT DES DONNEES
+UPDATE TABLE OCS2D_15
+SET HASH = ORA_HASH(SDO_UTIL.TO_WKTGEOMETRY(a.ORA_GEOMETRY))
+
+-- INSERTION DES VALEURS DANS TA_OCS2D_GEOM.
+MERGE INTO TA_OCS2D_GEOM a
+USING
+	(
+		SELECT
+			ORA_HASH(SDO_UTIL.TO_WKTGEOMETRY(a.ORA_GEOMETRY)) AS HASH_OCS2D,
+			a.ORA_GEOMETRY AS ORA_GEOMETRY
+		FROM 
+			OCS2D_15 a
+	)b
+ON (ORA_HASH(SDO_UTIL.TO_WKTGEOMETRY(a.GEOM)) = b.HASH_OCS2D)
+WHEN NOT MATCHED THEN
+INSERT (a.GEOM)
+VALUES (b.ORA_GEOMETRY)
+
+-- AUTRE
 INSERT INTO ta_ocs2d_geom(geom)
 SELECT 
     ora_geometry
 FROM
-    SYSTEM.ocs2d_05_test a
+    OCS2D_15 a
 -- Selection des géométrie unique
 WHERE
     identite not IN
@@ -32,8 +73,8 @@ WHERE
                         a.identite AS id_a,
                         b.identite AS id_b
                     FROM
-                        SYSTEM.ocs2d_05_test a,
-                        SYSTEM.ocs2d_05_test b
+                        OCS2D_15 a,
+                        OCS2D_15 b
                     WHERE
                         a.identite < b.identite
                     AND
@@ -44,19 +85,18 @@ AND
         (SELECT
             a.identite
         FROM
-            SYSTEM.ocs2d_05_test a,
+            OCS2D_15 a,
             ta_ocs2d_geom b
         WHERE
             SDO_RELATE(a.ora_geometry, b.geom,'mask=equal') = 'TRUE')
 ;
-
 
 -- 3. Insertion des commentaires dans la table TA_OCS2D_COMMENTAIRE
 MERGE INTO TA_OCS2D_COMMENTAIRE tc
 USING
 	(
 		SELECT DISTINCT "comment05" AS commentaire
-        FROM system.ocs2d_05_test
+        FROM ocs2d_05_test
         WHERE "comment05" IS NOT NULL
 	)temp
 ON(temp.commentaire = tc.valeur)
@@ -71,7 +111,7 @@ MERGE INTO TA_OCS2D_SOURCE ts
 USING
 	(
 		SELECT DISTINCT "source05" AS source
-		FROM system.ocs2d_05_test
+		FROM ocs2d_05_test
 		WHERE "source05" IS NOT NULL
 	)temp
 ON(temp.source = ts.valeur)
@@ -85,7 +125,7 @@ VALUES (temp.source)
 MERGE INTO TA_OCS2D_INDICE ti
 USING
 	(
-		SELECT DISTINCT "indice05" AS indice FROM system.ocs2d_05_test
+		SELECT DISTINCT "indice05" AS indice FROM ocs2d_05_test
 	)temp
 ON(temp.indice = ti.valeur)
 WHEN NOT MATCHED THEN
@@ -108,7 +148,7 @@ USING(
 	FROM
 		TA_OCS2D_GEOM g,
 		TA_METADONNEE m,
-		system.ocs2d_05_test o
+		ocs2d_05_test o
 	LEFT JOIN V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o."cs05"
 	LEFT JOIN V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o."us05"
 	LEFT JOIN TA_OCS2D_INDICE i ON i.valeur = o."indice05"
@@ -160,7 +200,7 @@ USING
 			oc.identite AS identite,
 			c.objectid AS valeur
 		FROM
-			SYSTEM.ocs2d_05_test oc
+			ocs2d_05_test oc
 		INNER JOIN ta_ocs2d_commentaire c ON OC."comment05" = c.valeur
 	)temp
 ON(r.fid_ocs2d = temp.identite
