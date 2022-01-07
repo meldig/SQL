@@ -1,0 +1,3 @@
+DROP TABLE temp_liste_fichier_gestion_geo CASCADE CONSTRAINTS;
+DROP TABLE temp_liste_repertoire_gestion_geo CASCADE CONSTRAINTS;
+DELETE FROM G_GESTIONGEO.TEMP_GG_URL_FILE;
