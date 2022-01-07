@@ -10,10 +10,10 @@ WITH cte1 AS
 	    p.fid_libelle_parent AS fid_libelle_niv_2,
 	    p.fid_libelle_fils AS fid_libelle_niv_3
 	FROM
-	    ta_libelle_relation ggp
-	INNER JOIN ta_libelle_relation gp
+	    G_GEO.TA_LIBELLE_RELATION ggp
+	INNER JOIN G_GEO.TA_LIBELLE_RELATION gp
 	ON ggp.fid_libelle_fils = gp.fid_libelle_parent
-	INNER JOIN ta_libelle_relation p
+	INNER JOIN G_GEO.TA_LIBELLE_RELATION p
 	ON gp.fid_libelle_fils = p.fid_libelle_parent
 	)
 	SELECT
@@ -31,31 +31,30 @@ WITH cte1 AS
 		tll_niv_3.valeur AS libelle_long_niv_3
 	FROM
 		cte1 
-	INNER JOIN ta_libelle_correspondance tc_niv_0 ON cte1.fid_libelle_niv_0 = tc_niv_0.fid_libelle 
-	INNER JOIN ta_libelle_correspondance tc_niv_1 ON cte1.fid_libelle_niv_1 = tc_niv_1.fid_libelle
-	INNER JOIN ta_libelle_correspondance tc_niv_2 ON cte1.fid_libelle_niv_2 = tc_niv_2.fid_libelle
-	INNER JOIN ta_libelle_correspondance tc_niv_3 ON cte1.fid_libelle_niv_3 = tc_niv_3.fid_libelle
-	INNER JOIN ta_libelle_court tlc_niv_0 ON tc_niv_0.fid_libelle_court = tlc_niv_0.objectid 
-	INNER JOIN ta_libelle_court tlc_niv_1 ON tc_niv_1.fid_libelle_court = tlc_niv_1.objectid
-	INNER JOIN ta_libelle_court tlc_niv_2 ON tc_niv_2.fid_libelle_court = tlc_niv_2.objectid
-	INNER JOIN ta_libelle_court tlc_niv_3 ON tc_niv_3.fid_libelle_court = tlc_niv_3.objectid
-	INNER JOIN ta_libelle tl_niv_0 ON cte1.fid_libelle_niv_0 = tl_niv_0.objectid
-	INNER JOIN ta_libelle tl_niv_1 ON cte1.fid_libelle_niv_1 = tl_niv_1.objectid
-	INNER JOIN ta_libelle tl_niv_2 ON cte1.fid_libelle_niv_2 = tl_niv_2.objectid
-	INNER JOIN ta_libelle tl_niv_3 ON cte1.fid_libelle_niv_3 = tl_niv_3.objectid
-	INNER JOIN ta_libelle_long tll_niv_0 ON tl_niv_0.fid_libelle_long = tll_niv_0.objectid
-	INNER JOIN ta_libelle_long tll_niv_1 ON tl_niv_1.fid_libelle_long = tll_niv_1.objectid
-	INNER JOIN ta_libelle_long tll_niv_2 ON tl_niv_2.fid_libelle_long = tll_niv_2.objectid
-	INNER JOIN ta_libelle_long tll_niv_3 ON tl_niv_3.fid_libelle_long = tll_niv_3.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_0 ON tfl_niv_0.fid_libelle_long = tll_niv_0.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_1 ON tfl_niv_1.fid_libelle_long = tll_niv_1.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_2 ON tfl_niv_2.fid_libelle_long = tll_niv_2.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_3 ON tfl_niv_3.fid_libelle_long = tll_niv_3.objectid
-	INNER JOIN ta_famille tf_niv_0 ON tfl_niv_0.fid_famille = tf_niv_0.objectid
-	INNER JOIN ta_famille tf_niv_1 ON tfl_niv_1.fid_famille = tf_niv_1.objectid
-	INNER JOIN ta_famille tf_niv_2 ON tfl_niv_2.fid_famille = tf_niv_2.objectid
-	INNER JOIN
-		ta_famille tf_niv_3 ON tfl_niv_3.fid_famille = tf_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_0 ON cte1.fid_libelle_niv_0 = tc_niv_0.fid_libelle 
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_1 ON cte1.fid_libelle_niv_1 = tc_niv_1.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_2 ON cte1.fid_libelle_niv_2 = tc_niv_2.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_3 ON cte1.fid_libelle_niv_3 = tc_niv_3.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_0 ON tc_niv_0.fid_libelle_court = tlc_niv_0.objectid 
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_1 ON tc_niv_1.fid_libelle_court = tlc_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_2 ON tc_niv_2.fid_libelle_court = tlc_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_3 ON tc_niv_3.fid_libelle_court = tlc_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_0 ON cte1.fid_libelle_niv_0 = tl_niv_0.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_1 ON cte1.fid_libelle_niv_1 = tl_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_2 ON cte1.fid_libelle_niv_2 = tl_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_3 ON cte1.fid_libelle_niv_3 = tl_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_0 ON tl_niv_0.fid_libelle_long = tll_niv_0.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_1 ON tl_niv_1.fid_libelle_long = tll_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_2 ON tl_niv_2.fid_libelle_long = tll_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_3 ON tl_niv_3.fid_libelle_long = tll_niv_3.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_0 ON tfl_niv_0.fid_libelle_long = tll_niv_0.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_1 ON tfl_niv_1.fid_libelle_long = tll_niv_1.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_2 ON tfl_niv_2.fid_libelle_long = tll_niv_2.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_3 ON tfl_niv_3.fid_libelle_long = tll_niv_3.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_0 ON tfl_niv_0.fid_famille = tf_niv_0.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_1 ON tfl_niv_1.fid_famille = tf_niv_1.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_2 ON tfl_niv_2.fid_famille = tf_niv_2.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_3 ON tfl_niv_3.fid_famille = tf_niv_3.objectid
 WHERE
 	tlc_niv_0.valeur = 'US'
 	AND
@@ -83,10 +82,10 @@ WITH cte1 AS
 	    p.fid_libelle_parent AS fid_libelle_niv_2,
 	    p.fid_libelle_fils AS fid_libelle_niv_3
 	FROM
-	    ta_libelle_relation ggp
-	INNER JOIN ta_libelle_relation gp
+	    G_GEO.TA_LIBELLE_RELATION ggp
+	INNER JOIN G_GEO.TA_LIBELLE_RELATION gp
 	ON ggp.fid_libelle_fils = gp.fid_libelle_parent
-	INNER JOIN ta_libelle_relation p
+	INNER JOIN G_GEO.TA_LIBELLE_RELATION p
 	ON gp.fid_libelle_fils = p.fid_libelle_parent
 	)
 	select
@@ -104,31 +103,30 @@ WITH cte1 AS
 		tll_niv_3.valeur AS libelle_long_niv_3
 	FROM
 		cte1 
-	INNER JOIN ta_libelle_correspondance tc_niv_0 ON cte1.fid_libelle_niv_0 = tc_niv_0.fid_libelle 
-	INNER JOIN ta_libelle_correspondance tc_niv_1 ON cte1.fid_libelle_niv_1 = tc_niv_1.fid_libelle
-	INNER JOIN ta_libelle_correspondance tc_niv_2 ON cte1.fid_libelle_niv_2 = tc_niv_2.fid_libelle
-	INNER JOIN ta_libelle_correspondance tc_niv_3 ON cte1.fid_libelle_niv_3 = tc_niv_3.fid_libelle
-	INNER JOIN ta_libelle_court tlc_niv_0 ON tc_niv_0.fid_libelle_court = tlc_niv_0.objectid 
-	INNER JOIN ta_libelle_court tlc_niv_1 ON tc_niv_1.fid_libelle_court = tlc_niv_1.objectid
-	INNER JOIN ta_libelle_court tlc_niv_2 ON tc_niv_2.fid_libelle_court = tlc_niv_2.objectid
-	INNER JOIN ta_libelle_court tlc_niv_3 ON tc_niv_3.fid_libelle_court = tlc_niv_3.objectid
-	INNER JOIN ta_libelle tl_niv_0 ON cte1.fid_libelle_niv_0 = tl_niv_0.objectid
-	INNER JOIN ta_libelle tl_niv_1 ON cte1.fid_libelle_niv_1 = tl_niv_1.objectid
-	INNER JOIN ta_libelle tl_niv_2 ON cte1.fid_libelle_niv_2 = tl_niv_2.objectid
-	INNER JOIN ta_libelle tl_niv_3 ON cte1.fid_libelle_niv_3 = tl_niv_3.objectid
-	INNER JOIN ta_libelle_long tll_niv_0 ON tl_niv_0.fid_libelle_long = tll_niv_0.objectid
-	INNER JOIN ta_libelle_long tll_niv_1 ON tl_niv_1.fid_libelle_long = tll_niv_1.objectid
-	INNER JOIN ta_libelle_long tll_niv_2 ON tl_niv_2.fid_libelle_long = tll_niv_2.objectid
-	INNER JOIN ta_libelle_long tll_niv_3 ON tl_niv_3.fid_libelle_long = tll_niv_3.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_0 ON tfl_niv_0.fid_libelle_long = tll_niv_0.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_1 ON tfl_niv_1.fid_libelle_long = tll_niv_1.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_2 ON tfl_niv_2.fid_libelle_long = tll_niv_2.objectid
-	INNER JOIN ta_famille_libelle tfl_niv_3 ON tfl_niv_3.fid_libelle_long = tll_niv_3.objectid
-	INNER JOIN ta_famille tf_niv_0 ON tfl_niv_0.fid_famille = tf_niv_0.objectid
-	INNER JOIN ta_famille tf_niv_1 ON tfl_niv_1.fid_famille = tf_niv_1.objectid
-	INNER JOIN ta_famille tf_niv_2 ON tfl_niv_2.fid_famille = tf_niv_2.objectid
-	INNER JOIN
-		ta_famille tf_niv_3 ON tfl_niv_3.fid_famille = tf_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_0 ON cte1.fid_libelle_niv_0 = tc_niv_0.fid_libelle 
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_1 ON cte1.fid_libelle_niv_1 = tc_niv_1.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_2 ON cte1.fid_libelle_niv_2 = tc_niv_2.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE tc_niv_3 ON cte1.fid_libelle_niv_3 = tc_niv_3.fid_libelle
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_0 ON tc_niv_0.fid_libelle_court = tlc_niv_0.objectid 
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_1 ON tc_niv_1.fid_libelle_court = tlc_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_2 ON tc_niv_2.fid_libelle_court = tlc_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_COURT tlc_niv_3 ON tc_niv_3.fid_libelle_court = tlc_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_0 ON cte1.fid_libelle_niv_0 = tl_niv_0.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_1 ON cte1.fid_libelle_niv_1 = tl_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_2 ON cte1.fid_libelle_niv_2 = tl_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE tl_niv_3 ON cte1.fid_libelle_niv_3 = tl_niv_3.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_0 ON tl_niv_0.fid_libelle_long = tll_niv_0.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_1 ON tl_niv_1.fid_libelle_long = tll_niv_1.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_2 ON tl_niv_2.fid_libelle_long = tll_niv_2.objectid
+	INNER JOIN G_GEO.TA_LIBELLE_LONG tll_niv_3 ON tl_niv_3.fid_libelle_long = tll_niv_3.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_0 ON tfl_niv_0.fid_libelle_long = tll_niv_0.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_1 ON tfl_niv_1.fid_libelle_long = tll_niv_1.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_2 ON tfl_niv_2.fid_libelle_long = tll_niv_2.objectid
+	INNER JOIN G_GEO.TA_FAMILLE_LIBELLE tfl_niv_3 ON tfl_niv_3.fid_libelle_long = tll_niv_3.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_0 ON tfl_niv_0.fid_famille = tf_niv_0.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_1 ON tfl_niv_1.fid_famille = tf_niv_1.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_2 ON tfl_niv_2.fid_famille = tf_niv_2.objectid
+	INNER JOIN G_GEO.TA_FAMILLE tf_niv_3 ON tfl_niv_3.fid_famille = tf_niv_3.objectid
 WHERE
     tlc_niv_0.valeur = 'CS'
     AND
