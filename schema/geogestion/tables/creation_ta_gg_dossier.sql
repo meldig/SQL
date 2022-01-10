@@ -31,12 +31,12 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 
 -- 2. Les commentaires
 COMMENT ON TABLE G_GESTIONGEO.TA_GG_DOSSIER IS 'Table principale. Chaque dossier correspond à un numéro de chantier pour le plan topo et IC.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.OBJECTID IS 'Clé primaire de la table correspondant à l''identifiant unique de chaque dossier';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_ETAT_AVANCEMENT IS 'Clé étrangère vers la table TA_GG_ETAT indiquant l''état d''avancement du dossier - avec contrainte';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_FAMILLE IS 'Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : plan de récolement, investigation complémentaire, maj carto - avec contrainte';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.OBJECTID IS 'Clé primaire auto-incrémentée de de la table (identifiant de chaque dossier). Champ correspondant à l''ancien ID_DOS.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_ETAT_AVANCEMENT IS 'Clé étrangère vers la table TA_GG_ETAT_AVANCEMENT dans laquelle se trouve tous les états que peuvent prendre les dossiers.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_FAMILLE IS 'Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : plan de récolement, investigation complémentaire, maj carto.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PERIMETRE IS 'Clé étrangère vers la table TA_GG_GEO, permettant d''associer un périmètre à un dossier.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PNOM_CREATION IS 'Clé étrangère vers la table TA_GG_AGENT permettant de savoir quel utilisateur a créé quel dossier - champ utilisé uniquement pour de la création';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PNOM_MODIFICATION IS 'Identifiant du pnom ayant modifié ou qui modifie un dossier - ce champ fait référence à TA_GG_AGENT.OBJECTID avec contrainte)';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PNOM_CREATION IS 'Clé étrangère vers la table TA_GG_AGENT permettant de savoir quel utilisateur a créé quel dossier - champ utilisé uniquement pour de la création.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PNOM_MODIFICATION IS 'Clé étrangère vers la table TA_GG_AGENT permettant de savoir quel utilisateur a modifié quel dossier en dernier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_SAISIE IS 'Date de création du dossier';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_MODIFICATION IS 'Date de mise à jour du dossier';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_CLOTURE IS 'Date de clôture du dossier';
@@ -45,10 +45,10 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_FIN_LEVE IS 'Date de fin des l
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_DEBUT_TRAVAUX IS 'Date de début des travaux sur l''objet concerné par le dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_FIN_TRAVAUX IS 'Date de fin des travaux sur l''objet concerné par le dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_COMMANDE_DOSSIER IS 'Date de commande ou de création de dossier';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_VOIE IS 'Clé étrangère (sans contrainte de FK)';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.MAITRE_OUVRAGE IS 'Nom du maître d''ouvrage';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_VOIE IS 'Identifiant de la voie d''appartenance du dossier (G_BASE_VOIE.TA_VOIE).';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.MAITRE_OUVRAGE IS 'Nom du maître d''ouvrage.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.RESPONSABLE_LEVE IS 'Nom de l''entreprise responsable du levé';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'Entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_OLD_ID IS 'Ancien identifiant du dossier';
@@ -88,7 +88,32 @@ ADD CONSTRAINT TA_GG_DOSSIER_FID_PERIMETRE_FK
 FOREIGN KEY("FID_PERIMETRE")
 REFERENCES G_GESTIONGEO.TA_GG_GEO("OBJECTID") ON DELETE CASCADE;
 
--- 4. Les droits de lecture, écriture, suppression
+-- 4. Les index
+CREATE INDEX TA_GG_DOSSIER_FID_ETAT_AVANCEMENT_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_ETAT_AVANCEMENT")
+    TABLESPACE G_ADT_INDX;
+    
+CREATE INDEX TA_GG_DOSSIER_FID_FAMILLE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_FAMILLE")
+    TABLESPACE G_ADT_INDX;
+
+CREATE INDEX TA_GG_DOSSIER_FID_PERIMETRE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_PERIMETRE")
+    TABLESPACE G_ADT_INDX;
+    
+CREATE INDEX TA_GG_DOSSIER_FID_PNOM_CREATION_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_PNOM_CREATION")
+    TABLESPACE G_ADT_INDX;
+    
+CREATE INDEX TA_GG_DOSSIER_FID_PNOM_MODIFICATION_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_PNOM_MODIFICATION")
+    TABLESPACE G_ADT_INDX;
+
+CREATE INDEX TA_GG_DOSSIER_MAITRE_OUVRAGE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("MAITRE_OUVRAGE")
+    TABLESPACE G_ADT_INDX;
+    
+CREATE INDEX TA_GG_DOSSIER_RESPONSABLE_LEVE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("RESPONSABLE_LEVE")
+    TABLESPACE G_ADT_INDX;
+    
+CREATE INDEX TA_GG_DOSSIER_ENTREPRISE_TRAVAUX_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("ENTREPRISE_TRAVAUX")
+    TABLESPACE G_ADT_INDX;
+
+-- 5. Les droits de lecture, écriture, suppression
 GRANT SELECT ON G_GESTIONGEO.TA_GG_DOSSIER TO G_ADMIN_SIG;
 
 /

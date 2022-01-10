@@ -4,7 +4,7 @@ DECLARE
 BEGIN
 SAVEPOINT POINT_SAVE_TEMP_TA_GG_GEO;
 
--- 2. Suppression des polygones à supprimer de TEMP_TA_GG_GEO
+-- 1. Suppression des polygones à supprimer de TEMP_TA_GG_GEO
 DELETE
 FROM 
     GEO.TEMP_TA_GG_GEO a
@@ -12,7 +12,7 @@ WHERE
     a.ID_GEOM IN(38085, 43040, 40317, 38084, 38579);
 
 /* 
--- 3. Correction des erreurs de géométries
+-- 2. Correction des erreurs de géométries
 Correction des erreurs de géométrie dans TEMP_TA_GG_GEO via SDO_UTIL.RECTIFY_GEOMETRY
 Rappel - les erreurs que cette fonction corrige sont :
 - 13349 : le polygone l'intersecte lui-même ;
@@ -49,7 +49,7 @@ UPDATE GEO.TEMP_TA_GG_GEO a
 WHERE
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) = '13367';
 
--- 4. Fusion des polygones de TEMP_TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier)
+-- 3. Fusion des polygones de TEMP_TA_GG_GEO disposant du même DOS_NUM (appartenant donc au même dossier)
 MERGE INTO GEO.TEMP_TA_GG_GEO a
     USING(
         WITH
@@ -98,7 +98,7 @@ WHEN MATCHED THEN
     UPDATE
         SET a.geom = t.GEOM;
 
--- 5. Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4).
+-- 4. Suppression des entités ayant servi à la fusion, sauf celles dont la géométrie a été mise à jour par la requête précédente (cf. point 4).
 DELETE
 FROM 
     GEO.TEMP_TA_GG_GEO a
@@ -124,12 +124,12 @@ WHERE
                         )
 ;
 
--- 7. Création d'un nouveau dossier dans TEMP_TA_GG_DOSSIER. Ce dossier correspondra à l'un des deux périmètres présents dans TEMP_TA_GG_GEO dont le DOS_NUM = 213500004, mais étant présents sur deux communes différentes.
+-- 5. Création d'un nouveau dossier dans TEMP_TA_GG_DOSSIER. Ce dossier correspondra à l'un des deux périmètres présents dans TEMP_TA_GG_GEO dont le DOS_NUM = 213500004, mais étant présents sur deux communes différentes.
 /*SELECT
     MAX(ID_DOS) + 1
 FROM
     GEO.TEMP_TA_GG_DOSSIER;*/
--- 7.1. Création du DOS_NUM pour l'insertion d'un nouveau dossier (cf point 7.2)
+-- 5.1. Création du DOS_NUM pour l'insertion d'un nouveau dossier
 WITH
     C_1 AS(
         SELECT
@@ -197,56 +197,7 @@ FROM
 WHERE
     a.DOS_NUM = 213500004;
 
--- 7.2. Création d'un nouveau dossier pour un périmètre en doublon
-/*INSERT INTO GEO.TEMP_TA_GG_DOSSIER(SRC_ID,ETAT_ID,USER_ID,FAM_ID,DOS_DC,DOS_PRECISION,DOS_DMAJ,DOS_RQ,DOS_DT_FIN,DOS_PRIORITE,DOS_IDPERE,DOS_DT_DEB_TR,DOS_DT_FIN_TR,DOS_DT_CMD_SAI,DOS_INSEE,DOS_VOIE,DOS_MAO,DOS_ENTR,ORDER_ID,DOS_NUM,DOS_OLD_ID,DOS_DT_DEB_LEVE,DOS_DT_FIN_LEVE,DOS_DT_PREV, DOS_URL_FILE)
-SELECT
-    a.SRC_ID,
-    a.ETAT_ID,
-    a.USER_ID,
-    a.FAM_ID,
-    a.DOS_DC,
-    a.DOS_PRECISION,
-    a.DOS_DMAJ,
-    a.DOS_RQ,
-    a.DOS_DT_FIN,
-    a.DOS_PRIORITE,
-    a.DOS_IDPERE,
-    a.DOS_DT_DEB_TR,
-    a.DOS_DT_FIN_TR,
-    a.DOS_DT_CMD_SAI,
-    a.DOS_INSEE,
-    a.DOS_VOIE,
-    a.DOS_MAO,
-    a.DOS_ENTR,
-    a.ORDER_ID,
-    v_dos_num, --213500049  
-    a.DOS_OLD_ID,
-    a.DOS_DT_DEB_LEVE,
-    a.DOS_DT_FIN_LEVE,
-    a.DOS_DT_PREV,
-    a.DOS_URL_FILE
-FROM
-    GEO.TEMP_TA_GG_DOSSIER a
-WHERE
-    a.DOS_NUM = 213500004;*/
-
--- 8. Mise à jour de l'ID_DOS des deux polygones mentionnés au point 7 avec l'ID_DOS créés lors de l'exécution des requêtes du point 7.
-/*MERGE INTO GEO.TEMP_TA_GG_GEO a
-    USING(
-            SELECT
-                b.ID_DOS,
-                b.DOS_NUM
-            FROM
-                GEO.TEMP_TA_GG_DOSSIER b
-            WHERE
-                b.DOS_NUM IN(163500142, 163500169)
-        )t
-ON (a.DOS_NUM = t.DOS_NUM)
-WHEN MATCHED THEN
-    UPDATE 
-        SET a.ID_DOS = t.ID_DOS;
-*/
--- 8.2. Mise à jour de l'ID_DOS du périmètre dont le DOS_NUM = 213500004;
+-- 5.2. Mise à jour de l'ID_DOS du périmètre dont le DOS_NUM = 213500004;
 MERGE INTO GEO.TEMP_TA_GG_GEO a
     USING(
             SELECT
@@ -262,7 +213,7 @@ WHEN MATCHED THEN
     UPDATE 
         SET a.ID_DOS = t.ID_DOS, a.DOS_NUM = t.DOS_NUM;
 
--- 9. Correction des faux doublons du champ DOS_ENTR de la table TEMP_TA_GG_DOSSIER
+-- 6. Correction des faux doublons du champ DOS_ENTR de la table TEMP_TA_GG_DOSSIER
 MERGE INTO GEO.TEMP_TA_GG_DOSSIER a
     USING(
         SELECT
@@ -393,7 +344,8 @@ ON (a.ID_DOS = t.ID_DOS)
 WHEN MATCHED THEN
 UPDATE SET a.DOS_ENTR = 'TPRN';
 
--- 10. Harmonisation des pnoms de la table TA_GG_SOURCE
+-- 7. Gestion des Pnoms des agents
+-- 7.1. Harmonisation des pnoms de la table TA_GG_SOURCE
 /*MERGE INTO GEO.TA_GG_SOURCE a
     USING(
             SELECT
@@ -433,13 +385,13 @@ UPDATE SET a.DOS_ENTR = 'TPRN';
 WHEN MATCHED THEN
     UPDATE SET a.SRC_LIBEL = t.SRC_LIBEL;
 
--- 11. Ajout d'agents dans la table TA_GG_SOURCE
+-- 7.2. Ajout d'agents dans la table TA_GG_SOURCE
 INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
 VALUES(6068, 'rjault', 1);
 INSERT INTO GEO.TA_GG_SOURCE(src_id, src_libel, src_val)
 VALUES(5741, 'bjacq', 1);*/
 
--- 12. Correction des valeurs du champ TA_GG_DOSSIER.USER_ID absentes de TA_GG_SOURCE. Cette erreur est due à l'obsolescence de DynMap qui créé de lui-même un identifiant absent de TA_GG_SOURCE et ne désignant donc aucun utilisateur.
+-- 8. Correction des valeurs du champ TA_GG_DOSSIER.USER_ID absentes de TA_GG_SOURCE. Cette erreur est due à l'obsolescence de DynMap qui créé de lui-même un identifiant absent de TA_GG_SOURCE et ne désignant donc aucun utilisateur.
 MERGE INTO GEO.TEMP_TA_GG_DOSSIER a
 USING(
     SELECT

@@ -11,11 +11,11 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO (
 );
 
 -- 2. Les commentaires
-COMMENT ON TABLE G_GESTIONGEO.TA_GG_GEO IS 'Table rassemblant les géométries des dossiers créés dans GestionGeo. Le lien avec TA_GG_DOSSIER se fait via le champ FID_DOSSIER.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.OBJECTID IS 'Clé primaire (identifiant unique) de la table auto-incrémentée par un trigger.';
+COMMENT ON TABLE G_GESTIONGEO.TA_GG_GEO IS 'Table rassemblant les géométries des périmètres de chaque dossier créé dans GestionGeo.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.OBJECTID IS 'Clé primaire auto-incrémentée de la table.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.CODE_INSEE IS 'Champ calculé permettant d''identifier le code INSEE de la commune d''appartenance du dossier via une requête spatiale sélectionnant la commune comportant le centroïde du dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.SURFACE IS 'Champ calculé permettant de calculer la surface de chaque objet de la table en m².';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table (mais sans contrainte de type de géométrie)';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO.GEOM IS 'Champ géométrique de la table, de type multipolygone.';
 
 -- 3. Les métadonnées spatiales
 INSERT INTO USER_SDO_GEOM_METADATA(
