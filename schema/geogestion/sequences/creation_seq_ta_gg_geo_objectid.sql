@@ -5,3 +5,4 @@ SEQ_TA_GG_GEO_OBJECTID : création de la séquence d'auto-incrémentation de la 
 CREATE SEQUENCE SEQ_TA_GG_GEO_OBJECTID START WITH 1 INCREMENT BY 1;
 
 /
+
