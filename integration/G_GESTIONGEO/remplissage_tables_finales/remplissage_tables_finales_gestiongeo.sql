@@ -9,19 +9,29 @@ SOMMAIRE
 1. Désactivation des triggers, clés étrangères, contraintes et index ;
 2. Remplissage de la table TA_GG_AGENT ;
 3. Remplissage de la table TA_GG_FAMILLE ;
-4. Remplissage de la table TA_GG_ETAT ;
+4. Remplissage de la table TA_GG_ETAT_AVANCEMENT ;
 5. Remplissage de la table TA_GG_GEO ;
-6. Remplissage de la table TA_GG_DOSSIER ;
-7. Remplissage de la table TA_GG_GEO ;
-	7.1. Modification de l'id de départ de ID_DOS de TA_GG_DOSSIER ;
-	7.2. Modification de l'id de départ de ID_GEOM de TA_GG_GEO ;
-8. Réactivation des triggers, clés étrangères, contraintes et index ;
-	8.1. Contrainte de clé étrangère de TA_GG_GEO ;
-	8.2. Réactivation du trigger B_IUX_TA_GG_DOSSIER ;
-	8.3. Recréation des index de TA_GG_AGENT ;
-	8.4. Recréation des index de TA_GG_FAMILLE ;
-	8.5. Recréation des index de TA_GG_GEO ;
-	8.6. Recréation des index de TA_GG_URL_FILE ;
+6. Remplissage de la table TA_GG_DOS_NUM ;
+7. Remplissage de la table TA_GG_DOSSIER ;
+8. Remplissage de la table TA_GG_GEO ;
+9. Remplissage de la table TA_GG_CLASSE ;
+10. Réactivation des triggers, clés étrangères, contraintes et index ;
+	10.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER ;
+	10.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO ;
+	10.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM ;
+	10.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT ;
+	10.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE ;
+	10.6. Modification de l'id de départ de la clé primaire de TA_GG_URL_FILE ;
+	10.7. Modification de l'id de départ de la clé primaire de TA_GG_CLASSE ;
+11. Réactivation des triggers, clés étrangères, contraintes, index et suppression des champs temporaires ;
+	11.1. Contrainte de clé étrangère de TA_GG_DOSSIER ;
+	11.2. Réactivation du trigger B_UXX_TA_GG_DOSSIER ;
+	11.3. Réactivation du trigger A_IXX_TA_GG_DOSSIER ;
+	11.4. Recréation des index de TA_GG_FAMILLE ;
+	11.5. Recréation des index de TA_GG_ETAT_AVANCEMENT ;
+	11.6. Recréation des index de TA_GG_DOS_NUM ;
+	11.7. Recréation des index de TA_GG_GEO ;
+	11.8. Recréation des index de TA_GG_DOSSIER ;
 */
 
 SAVEPOINT POINT_SAUVEGARDE_REMPLISSAGE;
@@ -119,7 +129,7 @@ SELECT
 FROM
 	G_GESTIONGEO.TEMP_TA_GG_FAMILLE;
 
--- 4. Remplissage de la table TA_GG_ETAT
+-- 4. Remplissage de la table TA_GG_ETAT_AVANCEMENT
 INSERT INTO G_GESTIONGEO.TA_GG_ETAT_AVANCEMENT(OBJECTID, LIBELLE_LONG, ETAT_AFF, LIBELLE_COURT, LIBELLE_ABREGE)
 SELECT 
 	ETAT_ID, 
@@ -185,8 +195,25 @@ ON (a.objectid = t.id_dos)
 WHEN MATCHED THEN
     UPDATE SET a.fid_perimetre = t.id_geom;
 
--- 9. Redéfinition du START WITH des clés primaires
--- 9.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER
+-- 9. Remplissage de la table TA_GG_CLASSE
+MERGE INTO G_GESTIONGEO.TA_GG_CLASSE a
+USING(
+    SELECT
+        cla_inu,
+        dom_inu,
+        cla_code,
+        cla_li,
+        cla_val
+    FROM
+        G_GESTIONGEO.TEMP_TA_CLASSE
+)t
+ON(a.objectid = t.cla_inu)
+WHEN NOT MATCHED THEN
+INSERT(a.objectid, a.libelle_court, a.libelle_long, validite)
+VALUES(t.cla_inu, t.cla_code, t.cla_li, t.cla_val);
+
+-- 10. Redéfinition du START WITH des clés primaires
+-- 10.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -198,7 +225,7 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_DOSSIER_OBJECTID START WITH ' ||v_i
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOSSIER_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOSSIER_OBJECTID TO G_GESTIONGEO_RW';
 
--- 9.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO
+-- 10.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -210,7 +237,7 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_GEO_OBJECTID START WITH ' ||v_id|| 
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_GEO_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_GEO_OBJECTID TO G_GESTIONGEO_RW';
 
--- 9.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM
+-- 10.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -222,7 +249,7 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_DOS_NUM_OBJECTID START WITH ' ||v_i
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOS_NUM_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOS_NUM_OBJECTID TO G_GESTIONGEO_RW';
 
--- 9.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT
+-- 10.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -234,7 +261,7 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_ETAT_AVANCEMENT_OBJECTID START WITH
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_ETAT_AVANCEMENT_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_ETAT_AVANCEMENT_OBJECTID TO G_GESTIONGEO_RW';
 
--- 9.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE
+-- 10.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -246,7 +273,7 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FAMILLE_OBJECTID START WITH ' ||v_i
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FAMILLE_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FAMILLE_OBJECTID TO G_GESTIONGEO_RW';
 
--- 9.6. Modification de l'id de départ de la clé primaire de TA_GG_URL_FILE
+-- 10.6. Modification de l'id de départ de la clé primaire de TA_GG_URL_FILE
 SELECT
 	MAX(a.OBJECTID)+1
 	INTO v_id
@@ -258,38 +285,50 @@ EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_URL_FILE_OBJECTID START WITH ' ||v_
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_URL_FILE_OBJECTID TO G_GESTIONGEO_R';
 EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_URL_FILE_OBJECTID TO G_GESTIONGEO_RW';
 
+-- 10.7. Modification de l'id de départ de la clé primaire de TA_GG_CLASSE
+SELECT
+	MAX(a.OBJECTID)+1
+	INTO v_id
+FROM
+	G_GESTIONGEO.TA_GG_CLASSE a;
+
+EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_CLASSE_OBJECTID';
+EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_CLASSE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
+EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_CLASSE_OBJECTID TO G_GESTIONGEO_R';
+EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_CLASSE_OBJECTID TO G_GESTIONGEO_RW';
+
 COMMIT;
 
--- 10. Réactivation des triggers, clés étrangères, contraintes, index et suppression des champs temporaires
--- 10.1. Contrainte de clé étrangère de TA_GG_DOSSIER
+-- 11. Réactivation des triggers, clés étrangères, contraintes, index et suppression des champs temporaires
+-- 11.1. Contrainte de clé étrangère de TA_GG_DOSSIER
 EXECUTE IMMEDIATE 'ALTER TABLE G_GESTIONGEO.TA_GG_DOSSER ENABLE CONSTRAINT TA_GG_DOSSIER_FID_PERIMETRE_FK';
 
--- 10.2. Réactivation du trigger B_UXX_TA_GG_DOSSIER
+-- 11.2. Réactivation du trigger B_UXX_TA_GG_DOSSIER
 EXECUTE IMMEDIATE 'ALTER TRIGGER B_UXX_TA_GG_DOSSIER ENABLE';
 
--- 10.3. Réactivation du trigger A_IXX_TA_GG_DOSSIER
+-- 11.3. Réactivation du trigger A_IXX_TA_GG_DOSSIER
 EXECUTE IMMEDIATE 'ALTER TRIGGER A_IXX_TA_GG_GEO ENABLE';
 
--- 10.4. Recréation des index de TA_GG_FAMILLE
+-- 11.4. Recréation des index de TA_GG_FAMILLE
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_FAMILLE_VALIDITE_IDX" ON G_GESTIONGEO.TA_GG_FAMILLE ("VALIDITE") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_FAMILLE_LIBELLE_IDX" ON G_GESTIONGEO.TA_GG_FAMILLE ("LIBELLE") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_FAMILLE_LIBELLE_ABREGE_IDX" ON G_GESTIONGEO.TA_GG_FAMILLE ("LIBELLE_ABREGE") TABLESPACE G_ADT_INDX';
 
--- 10.5. Recréation des index de TA_GG_ETAT_AVANCEMENT
+-- 11.5. Recréation des index de TA_GG_ETAT_AVANCEMENT
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_ETAT_AVANCEMENT_LIBELLE_LONG_IDX" ON G_GESTIONGEO.TA_GG_GEO ("LIBELLE_LONG") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_ETAT_AVANCEMENT_LIBELLE_COURT_IDX" ON G_GESTIONGEO.TA_GG_GEO ("LIBELLE_COURT") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_ETAT_AVANCEMENT_LIBELLE_ABREGE_IDX" ON G_GESTIONGEO.TA_GG_GEO ("LIBELLE_ABREGE") TABLESPACE G_ADT_INDX;';
 
--- 10.6. Recréation des index de TA_GG_DOS_NUM
+-- 11.6. Recréation des index de TA_GG_DOS_NUM
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_DOS_NUM_DOS_NUM_IDX" ON G_GESTIONGEO.TA_GG_DOS_NUM ("DOS_NUM") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_DOS_NUM_FID_DOSSIER_IDX" ON G_GESTIONGEO.TA_GG_DOS_NUM("FID_DOSSIER")TABLESPACE G_ADT_INDX';
 
--- 10.7. Recréation des index de TA_GG_GEO
+-- 11.7. Recréation des index de TA_GG_GEO
 EXECUTE IMMEDIATE 'CREATE INDEX TA_GG_GEO_SIDX ON G_GESTIONGEO.TA_GG_GEO(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS(''sdo_indx_dims=2, layer_gtype=MULTIPOLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP'')';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_GEO_SURFACE_IDX" ON G_GESTIONGEO.TA_GG_GEO ("SURFACE") TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX G_GESTIONGEO."TA_GG_GEO_CODE_INSEE_IDX" ON G_GESTIONGEO.TA_GG_GEO ("CODE_INSEE") TABLESPACE G_ADT_INDX';
 
--- 10.8. Recréation des index de TA_GG_DOSSIER
+-- 11.8. Recréation des index de TA_GG_DOSSIER
 EXECUTE IMMEDIATE 'CREATE INDEX TA_GG_DOSSIER_FID_ETAT_AVANCEMENT_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_ETAT_AVANCEMENT")TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX TA_GG_DOSSIER_FID_FAMILLE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_FAMILLE")TABLESPACE G_ADT_INDX';
 EXECUTE IMMEDIATE 'CREATE INDEX TA_GG_DOSSIER_FID_PERIMETRE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("FID_PERIMETRE")TABLESPACE G_ADT_INDX';
