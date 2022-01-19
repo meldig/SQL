@@ -30,7 +30,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 
 -- 2. Les commentaires
 COMMENT ON TABLE G_GESTIONGEO.TA_GG_DOSSIER IS 'Table principale. Chaque dossier correspond à un numéro de chantier pour le plan topo et IC.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.OBJECTID IS 'Clé primaire auto-incrémentée de de la table (identifiant de chaque dossier). Champ correspondant à l''ancien ID_DOS.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.OBJECTID IS 'Clé primaire auto-incrémentée de la table (identifiant de chaque dossier). Champ correspondant à l''ancien ID_DOS.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_ETAT_AVANCEMENT IS 'Clé étrangère vers la table TA_GG_ETAT_AVANCEMENT dans laquelle se trouve tous les états que peuvent prendre les dossiers.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_FAMILLE IS 'Clé étrangère vers la table TA_GG_FAMILLE permettant de savoir à quelle famille appartient chaque dossier : plan de récolement, investigation complémentaire, maj carto.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.FID_PERIMETRE IS 'Clé étrangère vers la table TA_GG_GEO, permettant d''associer un périmètre à un dossier.';
