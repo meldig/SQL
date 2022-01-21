@@ -35,10 +35,10 @@ copy /b %chemin_code_sequence%\creation_seq_ta_gg_etat_avancement_objectid.sql +
 %chemin_code_table%\creation_ta_gg_relation_classe_domaine.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_traitement_fme.sql + ^
 %chemin_code_table%\creation_ta_gg_traitement_fme.sql + ^
-%chemin_code_sequence%\creation_seq_ta_gg_fme_geo_mesure_objectid.sql + ^
-%chemin_code_table%\creation_ta_gg_fme_geo_mesure.sql + ^
-%chemin_code_sequence%\creation_seq_ta_gg_fme_filtre_sur_lignes_objectid.sql + ^
-%chemin_code_table%\creation_ta_gg_fme_filtre_sur_lignes.sql + ^
+%chemin_code_sequence%\creation_seq_ta_gg_fme_mesure_objectid.sql + ^
+%chemin_code_table%\creation_ta_gg_fme_mesure.sql + ^
+%chemin_code_sequence%\creation_seq_ta_gg_fme_filtre_sur_ligne_objectid.sql + ^
+%chemin_code_table%\creation_ta_gg_fme_filtre_sur_ligne.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_fme_decalage_abscisse_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_fme_decalage_abscisse.sql + ^
 %chemin_code_trigger%\creation_b_uxx_ta_gg_dossier.sql + ^
