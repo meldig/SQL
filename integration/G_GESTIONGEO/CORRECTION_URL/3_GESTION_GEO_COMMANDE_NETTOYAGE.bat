@@ -1,4 +1,5 @@
 :: suppression des fichiers CSV
+@ECHO OFF
 
 :: 0. Encodage en UTF-8
 chcp 65001
