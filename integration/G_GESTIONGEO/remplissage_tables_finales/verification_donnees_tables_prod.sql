@@ -4,22 +4,6 @@ Vérification du bon déroulé de l'export des données dans les tables de produ
 
 -- Comparaison du nombre d'entités dans les tables d'import et les tables finales
 SELECT
-    'TA_GG_AGENT' AS NomTable,
-    COUNT(*) AS NbrEntites
-FROM
-    G_GESTIONGEO.TA_GG_AGENT
-GROUP BY
-    'TA_GG_AGENT'
-UNION ALL
-SELECT
-    'TEMP_TA_GG_AGENT' AS NomTable,
-    COUNT(*) AS NbrEntites
-FROM
-    G_GESTIONGEO.TEMP_TA_GG_AGENT
-GROUP BY
-    'TEMP_TA_GG_AGENT'
-UNION ALL
-SELECT
     'TA_GG_DOSSIER' AS NomTable,
     COUNT(*) AS NbrEntites
 FROM
@@ -44,12 +28,12 @@ GROUP BY
     'TEMP_TA_GG_ETAT'
 UNION ALL
 SELECT
-    'TA_GG_ETAT' AS NomTable,
+    'TA_GG_ETAT_AVANCEMENT' AS NomTable,
     COUNT(*) AS NbrEntites
 FROM
-    G_GESTIONGEO.TA_GG_ETAT
+    G_GESTIONGEO.TA_GG_ETAT_AVANCEMENT
 GROUP BY
-    'TA_GG_ETAT'
+    'TA_GG_ETAT_AVANCEMENT'
 UNION ALL
 SELECT
     'TA_GG_FAMILLE' AS NomTable,
@@ -89,19 +73,19 @@ Résultats attendus :
 */
 -- Vérification que chaque périmètre est associé à un et un seul dossier
 SELECT
-    id_dos
+    objectid
 FROM
     G_GESTIONGEO.TA_GG_GEO
 GROUP BY
-    id_dos
+    objectid
 HAVING
-    COUNT(id_dos) > 1;
+    COUNT(objectid) > 1;
 -- Résultat attendu : aucune ligne
 
 -- Vérification de la validité des géométries de TA_GG_GEO  
 SELECT
     SUBSTR(SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT(a.geom, 0.005), 0, 5) AS ERREUR,
-    COUNT(a.id_geom) AS Nombre
+    COUNT(a.objectid) AS Nombre
 FROM
     G_GESTIONGEO.TA_GG_GEO a
 WHERE

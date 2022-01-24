@@ -87,7 +87,7 @@ WITH
         a.DOS_NUM NOT IN (SELECT b.DOS_NUM FROM TA_GEO_CORRECT_DOUBLONS b);
 ```
 
-Si la requête renvoie un résultat, c'est qu'il y a un ou des doublons. Dans ce cas, proccédez à l'étape 2, sinon ou si ce doublon est déjà traité dans le fichier *correction_donnees_gestiongeo.sql*, proccédez à l'étape 4.
+Si la requête renvoie un résultat, c'est qu'il y a un ou des doublons (le dossier ayant le DOS_NUM *213500004* est traité plus bas). Dans ce cas, proccédez à l'étape 2, sinon ou si ce doublon est déjà traité dans le fichier *correction_donnees_gestiongeo.sql*, proccédez à l'étape 3.
 
 ## Etape n°2. Corriger les doublons ;
 

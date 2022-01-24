@@ -26,3 +26,6 @@ ATTENTION : pour les multipolygones à cheval sur deux communes, le centroïd pe
         WHEN NO_DATA_FOUND THEN
             RETURN 'error';
     END GET_CODE_INSEE_POLYGON;
+
+/
+

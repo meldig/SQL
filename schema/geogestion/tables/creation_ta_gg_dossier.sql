@@ -23,9 +23,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"RESPONSABLE_LEVE" VARCHAR2(200 BYTE),
     "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
 	"DOS_PRECISION" VARCHAR2(100 BYTE),
-	"REMARQUE" VARCHAR2(2048 BYTE),
-	"DOS_OLD_ID" VARCHAR2(8 BYTE),
-	"DOS_IDPERE" NUMBER(38,0)
+	"REMARQUE" VARCHAR2(2048 BYTE)
  );
 
 -- 2. Les commentaires
@@ -50,9 +48,6 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.RESPONSABLE_LEVE IS 'Nom de l''entr
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'Entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_OLD_ID IS 'Ancien identifiant du dossier';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_IDPERE IS 'Indique un numéro de dossier associé s''il y en a un (ce champ accepte les NULL) - n''est plus utilisé';
-
 
 -- 3. Les contraintes
 -- Contrainte de clé primaire

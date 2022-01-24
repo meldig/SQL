@@ -1,4 +1,5 @@
-/*TA_GG_FME_DECALAGE_ABSCISSE : La table TA_GG_FME_DECALAGE_ABSCISSE est utilisée par la chaine de traitement FME pour attribuer un décalage d'abcisse à certain CLA_CODE.
+/*
+TA_GG_FME_DECALAGE_ABSCISSE : La table TA_GG_FME_DECALAGE_ABSCISSE est utilisée par la chaine de traitement FME pour attribuer un décalage d'abcisse à certain CLA_CODE.
 */
 
 -- 1. Creation de la table
