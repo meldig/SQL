@@ -47,6 +47,7 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_temp%\ajout_champs_calcules_ta_gg_geo.sql + ^
 %chemin_code_trigger%\creation_b_uxx_ta_gg_dossier.sql + ^
 %chemin_code_trigger%\creation_a_ixx_ta_gg_geo.sql + ^
+%chemin_code_vue%\creation_v_valeur_traitement_fme.sql + ^
 %chemin_code_droits%\droits_lecture_edition_suppression_objets_gestiongeo.sql ^
 %chemin_code_temp%\temp_code_ddl_schema.sql
 
