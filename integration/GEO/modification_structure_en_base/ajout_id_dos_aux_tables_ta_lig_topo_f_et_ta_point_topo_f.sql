@@ -15,12 +15,27 @@ COMMENT ON COLUMN GEO.TA_LIG_TOPO_F.ID_DOS IS 'Identifiant du dossier de récole
 MERGE INTO GEO.TA_LIG_TOPO_F a
 	USING(
 		SELECT
-			objectid,
-			id_dos
+		    a.OBJECTID,
+		    CAST(
+	    		SUBSTR(
+	    				a.GEO_REF, 
+	    				INSTR(a.GEO_REF, '_') +1, 
+	    				LENGTH(a.GEO_REF)
+	    		) 
+		    	AS NUMBER
+		    ) AS ID_DOS
 		FROM
-			GEO.TA_LIG_TOPO_GPS
+		    GEO.TEMP_TA_LIG_TOPO_GPS a
 		WHERE
-            id_dos IS NOT NULL
+		    CAST(SUBSTR(a.GEO_REF, INSTR(a.GEO_REF, '_') +1, LENGTH(a.GEO_REF))AS NUMBER) IN 
+		        (
+		            SELECT
+		                DISTINCT(a.ID_DOS)
+		            FROM
+		                GEO.TA_GG_DOSSIER a
+		        )
+		AND (a.GEO_REF LIKE 'REC_%'
+		    OR a.GEO_REF LIKE 'IC_%')
 	)t
 ON(a.objectid = t.objectid)
 WHEN MATCHED THEN
@@ -39,12 +54,27 @@ COMMENT ON COLUMN GEO.TA_POINT_TOPO_F.ID_DOS IS 'Identifiant du dossier de réco
 MERGE INTO GEO.TA_POINT_TOPO_F a
 	USING(
 		SELECT
-			objectid,
-			id_dos
+		    a.OBJECTID,
+		    CAST(
+		    	SUBSTR(
+		    		a.GEO_REF, 
+		    		INSTR(a.GEO_REF, '_') +1, 
+		    		LENGTH(a.GEO_REF)
+		    	) 
+		    	AS NUMBER
+		    ) AS ID_DOS
 		FROM
-			GEO.TA_POINT_TOPO_GPS
+		    GEO.TA_POINT_TOPO_GPS a
 		WHERE
-            id_dos IS NOT NULL
+		    CAST(SUBSTR(a.GEO_REF, INSTR(a.GEO_REF, '_') +1, LENGTH(a.GEO_REF))AS NUMBER) IN 
+		        (
+		            SELECT
+		                DISTINCT(a.ID_DOS)
+		            FROM
+		                GEO.TA_GG_DOSSIER a
+		        )
+		AND (a.GEO_REF LIKE 'REC_%'
+		    OR a.GEO_REF LIKE 'IC_%')
 	)t
 ON(a.objectid = t.objectid)
 WHEN MATCHED THEN
