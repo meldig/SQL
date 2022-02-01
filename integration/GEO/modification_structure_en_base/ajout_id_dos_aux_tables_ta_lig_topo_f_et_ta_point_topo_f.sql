@@ -6,7 +6,7 @@ permettant de rattacher un élément du plan topo fin à un dossier de récoleme
 -- 1. TA_LIG_TOPO_F
 -- 1.1. Création du nouveau champ
 ALTER TABLE GEO.TA_LIG_TOPO_F
-ADD COLUMN ID_DOS NUMBER(38,0);
+ADD ID_DOS NUMBER(38,0);
 
 -- 1.2. Création du commentaire du nouveau champ
 COMMENT ON COLUMN GEO.TA_LIG_TOPO_F.ID_DOS IS 'Identifiant du dossier de récolement ou d''investigation complémentaire auquel appartient chaque entité de la table.';
@@ -45,7 +45,7 @@ COMMIT;
 -- 2. TA_POINT_TOPO_F
 -- 2.1. Création du nouveau champ
 ALTER TABLE GEO.TA_POINT_TOPO_F
-ADD COLUMN ID_DOS NUMBER(38,0);
+ADD ID_DOS NUMBER(38,0);
 
 -- 1.2. Création du commentaire du nouveau champ
 COMMENT ON COLUMN GEO.TA_POINT_TOPO_F.ID_DOS IS 'Identifiant du dossier de récolement ou d''investigation complémentaire auquel appartient chaque entité de la table.';

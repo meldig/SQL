@@ -3,7 +3,7 @@
 */
 
 CREATE OR REPLACE TRIGGER B_IUX_TA_LIG_TOPO_F
-AFTER INSERT ON GEO.TA_LIG_TOPO_F
+BEFORE INSERT ON GEO.TA_LIG_TOPO_F
 FOR EACH ROW
 DECLARE
     v_id_dos NUMBER(38,0);
@@ -32,7 +32,7 @@ BEGIN
         -- Insertion de l'id_dos dans TA_LIG_TOPO_F
         :new.id_dos := v_id_dos;
     END IF;
-    
+
 EXCEPTION
     WHEN OTHERS THEN
         mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER B_IUX_TA_LIG_TOPO_F','bjacq@lillemetropole.fr');
