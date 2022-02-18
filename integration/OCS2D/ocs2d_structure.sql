@@ -109,7 +109,7 @@ CREATE TABLE TA_OCS2D_COMMENTAIRE(
 -- 4.2. Création des commentaires
 COMMENT ON TABLE TA_OCS2D_COMMENTAIRE IS 'Table contenant les commentaires que peuvent avoir les surfaces OCS2D';
 COMMENT ON COLUMN ta_ocs2d_commentaire.objectid IS 'Clé primaire de la table';
-COMMENT ON COLUMN ta_ocs2d_commentaire.valeur IS 'Valeur de la source';
+COMMENT ON COLUMN ta_ocs2d_commentaire.valeur IS 'Valeur du commentaire';
 
 -- 4.3. Création de la clé primaire
 ALTER TABLE 
@@ -172,7 +172,7 @@ ALTER TABLE
 
 
 -- 7. Création de la table G_OCS2D.TA_OCS2D_RELATION_SOURCE
--- 7.1. La table TA_OCS2D_RELATION_COMMENTAIRE est une table qui relie les zones OCS2D avec les commentaires qu'elles peuvent avoir.
+-- 7.1. La table TA_OCS2D_RELATION_SOURCE est une table qui relie les zones OCS2D avec les commentaires qu'elles peuvent avoir.
 CREATE TABLE G_OCS2D.TA_OCS2D_RELATION_SOURCE(
 	fid_ocs2d_millesime NUMBER(38,0),
 	fid_ocs2d_source NUMBER(38,0)
@@ -181,7 +181,7 @@ CREATE TABLE G_OCS2D.TA_OCS2D_RELATION_SOURCE(
 -- 7.2. Création des commentaires
 COMMENT ON TABLE G_OCS2D.TA_OCS2D_RELATION_SOURCE IS 'Table permettant d''associer chaque element OCS2D à un millesime distingue à ses sources.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_SOURCE.fid_ocs2d_millesime IS 'Clé étrangère vers la table TA_OCS2D_MILLESIME.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_SOURCE.fid_ocs2d_source IS 'Clé étrangère vers la table TA_OCS2D_SOURCE pour connaitre le commentaire de la zone OCS2D concernée.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_SOURCE.fid_ocs2d_source IS 'Clé étrangère vers la table TA_OCS2D_SOURCE pour connaitre la source de la zone OCS2D concernée.';
 
 -- 7.3. Création de la clé primaire
 ALTER TABLE 
