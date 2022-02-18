@@ -231,15 +231,15 @@ INSERT INTO USER_SDO_GEOM_METADATA(
     SRID
 )
 VALUES(
-    'ta_ocs2d_geom',
-    'geom',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.005),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.005)), 
+    'TA_OCS2D_GEOM',
+    'GEOM',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.001),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.001)), 
     2154
 );
 
 -- 8.5. Création de l'index spatial sur le champ geom
 CREATE INDEX TA_OCS2D_GEOM_SIDX
-ON ta_ocs2d_geom(GEOM)
+ON TA_OCS2D_GEOM(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
