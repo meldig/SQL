@@ -1,20 +1,3 @@
--- Suppression des tables test
-    /*
-    DROP TABLE GEO.TEMP_TA_GG_GEO CASCADE CONSTRAINTS;
-
-    DELETE FROM USER_SDO_GEOM_METADATA
-    WHERE TABLE_NAME = 'TEMP_TA_GG_GEO';
-    COMMIT;
-
-    DROP SEQUENCE SEQ_TEMP_TA_GG_GEO;
-    DROP TRIGGER BEF_TEMP_TA_GG_GEO;
-
-    DROP TABLE GEO.TEMP_TA_GG_DOSSIER CASCADE CONSTRAINTS;
-
-    DROP SEQUENCE SEQ_TEMP_TA_GG_DOSSIER;
-    DROP TRIGGER BEF_TEMP_TA_GG_DOSSIER;
-    */
-
 -- Création d'une table temporaire pour TA_GG_DOSSIER
 -- 1. Création de la table TEMP_TA_GG_DOSSIER
     CREATE TABLE GEO.TEMP_TA_GG_DOSSIER
@@ -127,7 +110,7 @@ DECLARE
     v_new_id NUMBER(38,0);
 
 BEGIN
--- Sélection de l'ID_GEOM à partir duquel faire reprendre l'incrémentation
+-- Sélection de l'ID_DOS à partir duquel faire reprendre l'incrémentation
     SELECT
         MAX(ID_DOS) + 1
         INTO v_new_id
@@ -147,4 +130,5 @@ FOR EACH ROW
 BEGIN
     :new.ID_DOS := SEQ_TEMP_TA_GG_DOSSIER.nextval;
 END;
+
 /
