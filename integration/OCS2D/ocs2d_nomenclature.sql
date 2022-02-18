@@ -393,7 +393,7 @@ VALUES(temp.fid_metadonnee, temp.fid_echelle)
 -- INSERTION DE LA NOMENCLATURE COUVERT USAGE DES DONNEES OCS2D
 --------------------------------------------------------------------------------
 -- 9. Rassemblement dans une seule vue des nomenclatures US et CS des données OCS2D
- CREATE VIEW G_GEO.OC_US_OCS2D AS
+ CREATE VIEW G_GEO.CS_US_OCS2D AS
  WITH CTE_1 AS
     (
     SELECT DISTINCT
@@ -464,21 +464,21 @@ SELECT DISTINCT
     niv_0_libelle libelle_long,
     'niv_0' AS niveau,
     NIV_0_libelle_court AS source
-FROM oc_us_ocs2d
+FROM CS_US_OCS2D
 UNION ALL
 SELECT DISTINCT 
     niv_1_libelle_court AS libelle_court, 
     niv_1_libelle libelle_long,
     'niv_1' AS niveau,
     NIV_0_libelle_court AS source
-FROM oc_us_ocs2d
+FROM CS_US_OCS2D
 UNION ALL
 SELECT DISTINCT 
     niv_2_libelle_court AS libelle_court, 
     niv_2_libelle libelle_long,
     'niv_2' AS niveau,
     NIV_0_libelle_court AS source
-FROM oc_us_ocs2d
+FROM CS_US_OCS2D
 UNION ALL
 SELECT DISTINCT 
     niv_3_libelle_court AS libelle_court, 
@@ -486,7 +486,7 @@ SELECT DISTINCT
     'niv_3' AS niveau,
     NIV_0_libelle_court AS source
 FROM
-    oc_us_ocs2d;
+    CS_US_OCS2D;
 
 
 -- 11. Insertion des libelles courts dans TA_LIBELLE_COURT
@@ -595,25 +595,25 @@ VALUES (temp.fid_famille,temp.fid_libelle_long)
 ;
 
 -- 16. Creation vue des relations
-CREATE VIEW G_GEO.OC_US_OCS2D_RELATION AS
+CREATE VIEW G_GEO.CS_US_OCS2D_RELATION AS
 SELECT DISTINCT
     niv_1_libelle_court AS lcf,
     niv_1_libelle AS llf,
     niv_0_libelle_court AS lcp,
     niv_0_libelle AS llp
-FROM G_GEO.OC_US_OCS2D
+FROM G_GEO.CS_US_OCS2D
 UNION ALL SELECT DISTINCT
     niv_2_libelle_court AS lcf,
     niv_2_libelle AS llf,
     niv_1_libelle_court AS lcp,
     niv_1_libelle AS llf
-FROM G_GEO.OC_US_OCS2D
+FROM G_GEO.CS_US_OCS2D
 UNION ALL SELECT DISTINCT
     niv_3_libelle_court AS lcf,
     niv_3_libelle AS llf,
     niv_2_libelle_court AS lcp,
     niv_2_libelle AS llf
-FROM G_GEO.OC_US_OCS2D;
+FROM G_GEO.CS_US_OCS2D;
 
 
 -- 17. creation de la table FUSION_OCS2D_COUVERT_USAGE pour normaliser les données.
@@ -702,7 +702,7 @@ USING
 	FROM
 	    G_GEO.FUSION_OCS2D_COUVERT_USAGE ff,
 	    G_GEO.FUSION_OCS2D_COUVERT_USAGE fp,
-	    G_GEO.OC_US_OCS2D_RELATION o
+	    G_GEO.CS_US_OCS2D_RELATION o
 	WHERE
 	        ff.libelle_court = o.lcf
 	    AND
@@ -863,20 +863,20 @@ VALUES (b.fid_libelle,b.fid_libelle_court)
 
 
 -- 23. Suppression des tables et des vues utilisés seulement pour l'insertion de la nomenclature.
--- 23.1. Suppression de la table temporaire oc_us_ocs2d
-DROP TABLE oc_us_ocs2d CASCADE CONSTRAINTS PURGE;
+-- 23.1. Suppression de la table temporaire CS_US_OCS2D
+DROP TABLE CS_US_OCS2D CASCADE CONSTRAINTS PURGE;
 
 -- 23.2. Suppression de la table temporaire FUSION_OCS2D_COUVERT_USAGE
 DROP TABLE FUSION_OCS2D_COUVERT_USAGE CASCADE CONSTRAINTS PURGE;
 
--- 23.3. Suppression de la vue OC_US_OCS2D
-DROP VIEW OC_US_OCS2D CASCADE CONSTRAINTS;
+-- 23.3. Suppression de la vue CS_US_OCS2D
+DROP VIEW CS_US_OCS2D CASCADE CONSTRAINTS;
 
 -- 23.4. Suppression de la vue OCS2D_NOMENCLATURE_COUVERT_USAGE
 DROP VIEW OCS2D_NOMENCLATURE_COUVERT_USAGE CASCADE CONSTRAINTS;
 
--- 23.5. Suppression de la vue oc_us_ocs2d_relation
-DROP VIEW oc_us_ocs2d_relation CASCADE CONSTRAINTS;
+-- 23.5. Suppression de la vue CS_US_OCS2D_relation
+DROP VIEW CS_US_OCS2D_relation CASCADE CONSTRAINTS;
 
 -- 23.6. Suppression de la vue ocs2d_nomenclature_couvert_usage
 DROP VIEW ocs2d_nomenclature_couvert_usage CASCADE CONSTRAINTS;
