@@ -38,10 +38,8 @@ WHEN MATCHED THEN
 UPDATE SET a.IDENTITE = b.objectid;
 
 
--- 1.3 Mise à jour du SRID de la table dans la colonne GEOM
-UPDATE G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 a
-SET a.GEOM.SDO_SRID = 2154
-WHERE a.GEOM IS NOT NULL
+-- 1.3. Suppression des metadonnees créé par OGR2OGR
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME = 'TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020';
 
 
 -- 1.4. Suppression de l'index créé par OGR2OGR
@@ -72,8 +70,10 @@ END;
 /
 
 
--- 1.5. Suppression des metadonnees créé par OGR2OGR
-DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE NAME = 'TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020'
+-- 1.5 Mise à jour du SRID de la table dans la colonne GEOM
+UPDATE G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 a
+SET a.GEOM.SDO_SRID = 2154
+WHERE a.GEOM IS NOT NULL;
 
 
 -- 1.6. Creation des metadonnees
@@ -1148,3 +1148,4 @@ AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
 VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
+COMMIT;
