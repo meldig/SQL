@@ -367,8 +367,8 @@ USING
 		FROM
 			DUAL
 	)b
-ON (a.repertoire = b.repertoire
-AND a.protocole = b.protocole)
+ON (UPPER(a.repertoire) = UPPER(b.repertoire)
+AND UPPER(a.protocole = UPPER(b.protocole))
 WHEN NOT MATCHED THEN
 INSERT (a.repertoire,a.protocole)
 VALUES (b.repertoire,b.protocole)
