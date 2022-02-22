@@ -18,12 +18,12 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"DATE_DEBUT_TRAVAUX" DATE,
 	"DATE_FIN_TRAVAUX" DATE,
 	"DATE_COMMANDE_DOSSIER" DATE,
-	"DOS_VOIE" NUMBER(8,0),
 	"MAITRE_OUVRAGE" VARCHAR2(200 BYTE),
 	"RESPONSABLE_LEVE" VARCHAR2(200 BYTE),
     "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
-	"DOS_PRECISION" VARCHAR2(100 BYTE),
-	"REMARQUE" VARCHAR2(2048 BYTE)
+	"REMARQUE_GEOMETRE" VARCHAR2(4000 BYTE),
+	"REMARQUE_PHOTO_INTERPRETE" VARCHAR2(4000 BYTE),
+	"CODE_INSEE" VARCHAR2(5)
  );
 
 -- 2. Les commentaires
@@ -41,13 +41,13 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_DEBUT_LEVE IS 'Date de début 
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_FIN_LEVE IS 'Date de fin des levés de l''objet (du dossier) par les géomètres.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_DEBUT_TRAVAUX IS 'Date de début des travaux sur l''objet concerné par le dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_FIN_TRAVAUX IS 'Date de fin des travaux sur l''objet concerné par le dossier.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_COMMANDE_DOSSIER IS 'Date de commande ou de création de dossier';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_VOIE IS 'Identifiant de la voie d''appartenance du dossier (G_BASE_VOIE.TA_VOIE).';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DATE_COMMANDE_DOSSIER IS 'Date de commande ou de création de dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.MAITRE_OUVRAGE IS 'Nom du maître d''ouvrage.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.RESPONSABLE_LEVE IS 'Nom de l''entreprise responsable du levé';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.RESPONSABLE_LEVE IS 'Nom de l''entreprise responsable du levé.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'Entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.DOS_PRECISION IS 'Précision apportée au dossier telle que sa surface et l''origine de la donnée.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE IS 'Remarque lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE_GEOMETRE IS 'Précision apportée au dossier par le géomètre telle que sa surface et l''origine de la donnée.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE_PHOTO_INTERPRETE IS 'Remarque du photo-interprète lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.CODE_INSEE IS 'Code INSEE de la commune d''appartenance du périmètre du dossier. Ce code INSEE est calculé via une requête spatiale.';
 
 -- 3. Les contraintes
 -- Contrainte de clé primaire
@@ -105,6 +105,9 @@ CREATE INDEX TA_GG_DOSSIER_RESPONSABLE_LEVE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("R
     TABLESPACE G_ADT_INDX;
     
 CREATE INDEX TA_GG_DOSSIER_ENTREPRISE_TRAVAUX_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("ENTREPRISE_TRAVAUX")
+    TABLESPACE G_ADT_INDX;
+
+CREATE INDEX TA_GG_DOSSIER_CODE_INSEE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("CODE_INSEE")
     TABLESPACE G_ADT_INDX;
 
 -- 5. Les droits de lecture, écriture, suppression
