@@ -11,7 +11,7 @@ USING
 		FROM
 			DUAL
 	)b
-ON(a.valeur = b.valeur)
+ON(UPPER(a.valeur) = UPPER(b.valeur))
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
@@ -33,7 +33,7 @@ USING
 		FROM
 			DUAL
 	)b
-ON(a.valeur = b.valeur)
+ON(UPPER(a.valeur) = UPPER(b.valeur))
 WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
@@ -55,10 +55,11 @@ USING
 			UPPER(a.valeur) = UPPER('URL')
 			AND UPPER(b.valeur) IN (UPPER('/var/www/extraction/apps/gestiongeo'),UPPER('https://gtf.lillemetropole.fr/apps/gestiongeo/'))
 	)b
-ON(a.fid_libelle_long = b.fid_libelle_long)
+ON(a.fid_libelle_long = b.fid_libelle_long
+AND a.fid_famille = b.fid_famille)
 WHEN NOT MATCHED THEN
-INSERT (a.fid_libelle_long)
-VALUES (b.fid_libelle_long)
+INSERT (a.fid_famille, a.fid_libelle_long)
+VALUES (b.fid_famille, b.fid_libelle_long)
 ;
 COMMIT;
 

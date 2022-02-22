@@ -11,9 +11,9 @@ CREATE TABLE G_GESTIONGEO.TA_GG_REPERTOIRE (
 
 
  -- 2. Les commentaires
-COMMENT ON TABLE G_GESTIONGEO.TA_GG_REPERTOIRE IS 'Table qui présente les chemins d''accès aux fichiers des dossiers gestiongeo.';
+COMMENT ON TABLE G_GESTIONGEO.TA_GG_REPERTOIRE IS 'Table qui présente les chemins d''accès aux fichiers des dossiers de levés des géomètres, faits via l''application gestiongeo.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_REPERTOIRE.OBJECTID IS 'Clé primaire de la table.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_REPERTOIRE.REPERTOIRE IS 'Chemin des repertoire.';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_REPERTOIRE.REPERTOIRE IS 'Chemins des répertoires où sont stockés les dossiers de levé des géomètres.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_REPERTOIRE.FID_LIBELLE IS 'Clé étrangère vers la table G_GEO.TA_LIBELLE pour caractériser le chemin.';
 
 
@@ -32,8 +32,8 @@ REFERENCES G_GEO.TA_LIBELLE ("OBJECTID");
 
 
 -- 4. Les indexes
-CREATE INDEX G_GESTIONGEO."TA_GG_REPERTOIRE_REPERTOIRE_IDX" ON G_GESTIONGEO.TA_GG_REPERTOIRE ("REPERTOIRE") 
-    TABLESPACE G_ADT_INDX;
+CREATE INDEX G_GESTIONGEO."TA_GG_REPERTOIRE_FID_LIBELLE_REPERTOIRE_IDX" ON G_GESTIONGEO.TA_GG_REPERTOIRE ("FID_LIBELLE", "REPERTOIRE")
+TABLESPACE G_ADT_INDX;
 
 
 -- 5. Les droits de lecture, écriture, suppression
