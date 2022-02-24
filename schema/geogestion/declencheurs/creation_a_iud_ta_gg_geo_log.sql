@@ -45,7 +45,7 @@ BEGIN
         b.valeur = 'suppression';
 
     IF INSERTING THEN -- En cas d'insertion on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de insertion et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, fid_perimetre, fid_pnom)
+        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
             VALUES(
                     :new.geom,
                     :new.code_insee, 
@@ -59,7 +59,7 @@ BEGIN
                 );                    
     ELSE
         IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-            INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, fid_perimetre, fid_pnom)
+            INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
             VALUES(
                     :old.geom,
                     :old.code_insee,
@@ -73,7 +73,7 @@ BEGIN
         END IF;
     END IF;
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, fid_perimetre, fid_pnom)
+        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
         VALUES(
                 :old.geom,
                 :old.code_insee,

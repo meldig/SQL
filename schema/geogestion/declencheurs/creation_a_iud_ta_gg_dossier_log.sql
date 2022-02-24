@@ -67,7 +67,7 @@ BEGIN
                 );                    
     ELSE
         IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_GG_DOSSIER_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-            INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER_LOG(fid_dossier, id_etat_avancement, id_famille, id_perimetre, date_debut_leve, date_fin_leve, date_debut_travaux, date_fin_travaux, date_commande_dossier, maitre_ouvrage, responsable_leve, entreprise_travaux, remarque_geometre, remarque_photo_interprete, date_action, fid_type_action, fid_pnom)
+            INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER_LOG(id_dossier, id_etat_avancement, id_famille, id_perimetre, date_debut_leve, date_fin_leve, date_debut_travaux, date_fin_travaux, date_commande_dossier, maitre_ouvrage, responsable_leve, entreprise_travaux, remarque_geometre, remarque_photo_interprete, date_action, fid_type_action, fid_pnom)
             VALUES(
                     :old.objectid,
                     :old.fid_etat_avancement,
