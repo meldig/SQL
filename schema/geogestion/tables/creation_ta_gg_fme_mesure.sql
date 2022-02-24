@@ -17,7 +17,6 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_FME_MESURE.OBJECTID IS 'Clé primaire de la
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_FME_MESURE.FID_CLASSE IS 'Clé étrangère vers la table TA_GG_CLASSE.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_FME_MESURE.LONGUEUR IS 'Valeur de la longueur attribuée au symbole de la classe.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_FME_MESURE.LARGEUR IS 'Valeur de la largeur attribuée au symbole de la classe.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_FME_MESURE.fid_traitement IS 'Clé étrangère vers la table TA_GG_TRAITEMENT_FME pour connaitre le signet des opérations FME utilisant les valeurs de la table.';
 
 -- 3. Les contraintes
 -- 3.1. Contrainte de clé primaire

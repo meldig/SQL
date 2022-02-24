@@ -19,7 +19,6 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER_LOG(
     "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
     "REMARQUE_GEOMETRE" VARCHAR2(4000 BYTE),
     "REMARQUE_PHOTO_INTERPRETE" VARCHAR2(4000 BYTE),
-    "CODE_INSEE" VARCHAR2(5 BYTE),
     "DATE_ACTION" DATE NOT NULL,
     "FID_TYPE_ACTION" NUMBER(38,0) NOT NULL,
     "FID_PNOM" NUMBER(38,0) NOT NULL
@@ -42,7 +41,6 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.responsable_leve IS 'Nom de l''
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.entreprise_travaux IS 'Entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.remarque_geometre IS 'Précision apportée au dossier par le géomètre telle que sa surface et l''origine de la donnée.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.remarque_photo_interprete IS 'Remarque du photo-interprète lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.code_insee IS 'Code INSEE de la commune d''appartenance du périmètre du dossier. Ce code INSEE est calculé via une requête spatiale.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.date_action IS 'Date de création, modification ou suppression de la géométrie d''un dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.fid_type_action IS 'Clé étrangère vers la table TA_LIBELLE permettant de savoir quelle action a été effectuée sur le périmètre du dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER_LOG.fid_pnom IS 'Clé étrangère vers la table TA_GG_AGENT permettant d''associer le pnom d''un agent au périmètre du dossier qu''il a créé, modifié ou supprimé.';
@@ -75,9 +73,6 @@ CREATE INDEX TA_GG_DOSSIER_LOG_FID_TYPE_ACTION_IDX ON G_GESTIONGEO.TA_GG_DOSSIER
     TABLESPACE G_ADT_INDX;
 
 CREATE INDEX TA_GG_DOSSIER_LOG_FID_PNOM_IDX ON G_GESTIONGEO.TA_GG_DOSSIER_LOG(fid_pnom)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX TA_GG_DOSSIER_LOG_CODE_INSEE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER_LOG(code_insee)
     TABLESPACE G_ADT_INDX;
 
 CREATE INDEX TA_GG_DOSSIER_LOG_ACTION_IDX ON G_GESTIONGEO.TA_GG_DOSSIER_LOG(fid_type_action, fid_pnom, date_action)

@@ -27,8 +27,6 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_table%\creation_ta_gg_geo.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_dossier_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_dossier.sql + ^
-%chemin_code_sequence%\creation_seq_ta_gg_url_file_objectid.sql + ^
-%chemin_code_table%\creation_ta_gg_url_file.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_dos_num_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_dos_num.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_domaine_objectid.sql + ^
@@ -41,6 +39,9 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_table%\creation_ta_gg_fme_filtre_sur_ligne.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_fme_decalage_abscisse_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_fme_decalage_abscisse.sql + ^
+%chemin_code_sequence%\creation_seq_ta_gg_fichier_objectid.sql + ^
+%chemin_code_table%\creation_ta_gg_fichier.sql + ^
+%chemin_code_table%\creation_ta_gg_repertoire.sql + ^
 %chemin_code_fonction%\creation_get_id_dossier.sql + ^
 %chemin_code_fonction%\creation_get_etat_avancement.sql + ^
 %chemin_code_vue%\creation_v_creation_dos_num.sql + ^
@@ -48,6 +49,7 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_temp%\ajout_champs_calcules_ta_gg_geo.sql + ^
 %chemin_code_table%\creation_ta_gg_geo_log.sql + ^
 %chemin_code_table%\creation_ta_gg_dossier_log.sql + ^
+%chemin_code_vue%\creation_v_chemin_fichier_gestiongeo.sql + ^
 %chemin_code_trigger%\creation_b_uxx_ta_gg_dossier.sql + ^
 %chemin_code_trigger%\creation_b_ixx_ta_gg_dossier.sql + ^
 %chemin_code_trigger%\creation_a_ixx_ta_gg_geo.sql + ^

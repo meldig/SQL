@@ -11,7 +11,6 @@ CREATE TABLE G_GESTIONGEO.TA_GG_GEO_LOG(
     surface NUMBER(38,0),
     id_dossier NUMBER(38,0),
     etat_avancement VARCHAR2(4000 BYTE),
-    dos_num VARCHAR2(4000),
     date_action DATE NOT NULL,
     fid_type_action NUMBER(38,0) NOT NULL,
     fid_pnom NUMBER(38,0) NOT NULL
@@ -24,7 +23,6 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.id_perimetre IS 'Identifiant de la 
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.geom IS 'Géométrie de type multipolygone de chaque dossier présent dans la table.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.code_insee IS 'Code INSEE de la commune d''appartenance du centroïde du dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.surface IS 'Surface de chaque périmètre de chaque dossier.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.dos_num IS 'Champ calculé permettant d''avoir la date d''insertion, le code insee et le numéro de dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.date_action IS 'Date de création, modification ou suppression de la géométrie d''un dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.fid_type_action IS 'Clé étrangère vers la table TA_LIBELLE permettant de savoir quelle action a été effectuée sur le périmètre du dossier.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_GEO_LOG.fid_pnom IS 'Clé étrangère vers la table TA_GG_AGENT permettant d''associer le pnom d''un agent au périmètre du dossier qu''il a créé, modifié ou supprimé.';
@@ -80,9 +78,6 @@ CREATE INDEX TA_GG_GEO_LOG_FID_PNOM_IDX ON G_GESTIONGEO.TA_GG_GEO_LOG(fid_pnom)
     TABLESPACE G_ADT_INDX;
 
 CREATE INDEX TA_GG_GEO_LOG_CODE_INSEE_IDX ON G_GESTIONGEO.TA_GG_GEO_LOG(code_insee)
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX TA_GG_GEO_LOG_DOS_NUM_IDX ON G_GESTIONGEO.TA_GG_GEO_LOG(dos_num)
     TABLESPACE G_ADT_INDX;
 
 -- 8. Affectation du droit de sélection sur les objets de la table aux administrateurs
