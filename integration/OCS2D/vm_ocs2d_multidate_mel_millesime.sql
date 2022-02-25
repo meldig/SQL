@@ -487,12 +487,11 @@ ocs2d_attribut AS (
 		SDO_GEOM.SDO_AREA(c.geom,0.001) as surface_m2,
 		SDO_GEOM.SDO_AREA(c.geom,0.001)/10000 as surface_ha,
 		mi.source || ' - ' ||mi.millesime as metadonnee,
-		c.geom
+		b.geom
 	FROM
 		G_OCS2D.TA_OCS2D a
 		INNER JOIN ocs2d_attribut oa ON oa.identifiant = a.objectid
-		INNER JOIN G_OCS2D.TA_OCS2D_RELATION_GEOM b ON b.fid_ocs2d = a.objectid
-		INNER JOIN G_OCS2D.TA_OCS2D_GEOM c ON c.objectid = b.fid_ocs2d_geom
+		INNER JOIN G_OCS2D.TA_OCS2D_GEOM b ON b.objectid = a.fid_ocs2d_geom
 		INNER JOIN millesime mi ON mi.objectid = a.objectid
 	;
 
