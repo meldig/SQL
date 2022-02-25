@@ -1,6 +1,6 @@
 -- Vue des valeurs utilisées dans le traitement FME.
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE EDITIONABLE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
+CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
     (
     "CLA_INU",
     "CLA_CODE",

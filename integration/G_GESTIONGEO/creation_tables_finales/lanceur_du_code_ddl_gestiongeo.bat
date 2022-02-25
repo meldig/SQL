@@ -10,6 +10,7 @@ SET /p chemin_code_fonction="Veuillez saisir le chemin d'acces du dossier conten
 SET /p chemin_code_table="Veuillez saisir le chemin d'acces du dossier contenant le code DDL des TABLES du schema : "
 SET /p chemin_code_trigger="Veuillez saisir le chemin d'acces du dossier contenant le code DDL des DECLENCHEURS du schema : "
 SET /p chemin_code_vue="Veuillez saisir le chemin d'acces du dossier contenant le code DDL des VUES du schema : "
+SET /p chemin_code_vue_materialise="Veuillez saisir le chemin d'acces du dossier contenant le code DDL des VUES MATERIALISEES du schema : "
 SET /p chemin_code_droits="Veuillez saisir le chemin d'acces du dossier contenant les droits de lecture et ecriture du schema : "
 SET /p chemin_code_temp="Veuillez saisir le chemin d'acces du dossier integration\G_GESTIONGEO\creation_tables_finales : "
 ::SET /p USER="Veuillez saisir l'utilisateur Oracle : "
@@ -56,6 +57,11 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_trigger%\creation_a_iud_ta_gg_geo_log.sql + ^
 %chemin_code_trigger%\creation_a_iud_ta_gg_dossier_log.sql + ^
 %chemin_code_vue%\creation_v_valeur_traitement_fme.sql + ^
+%chemin_code_vue%\creation_v_stat_dossier.sql + ^
+%chemin_code_vue%\creation_v_stat_dossier_par_agent_annee.sql + ^
+%chemin_code_vue%\creation_v_stat_dossier_par_etat_annee.sql + ^
+%chemin_code_vue%\creation_v_stat_dossier_par_etat_avancement.sql + ^
+%chemin_code_vue%\creation_v_stat_dossier_par_territoire.sql + ^
 %chemin_code_droits%\droits_lecture_edition_suppression_objets_gestiongeo.sql ^
 %chemin_code_temp%\temp_code_ddl_schema.sql
 

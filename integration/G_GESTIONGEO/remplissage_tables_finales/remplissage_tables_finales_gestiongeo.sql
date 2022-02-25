@@ -162,6 +162,14 @@ WHEN NOT MATCHED THEN
 INSERT(a.objectid, a.libelle_court, a.libelle_long, validite)
 VALUES(t.cla_inu, t.cla_code, t.cla_li, t.cla_val);
 
+-- Remplissage de la table TA_GG_TYPE_LEVE
+INSERT INTO G_GESTIONGEO.TA_GG_TYPE_LEVE(OBJECTID, VALEUR)
+SELECT
+	OBJECTID,  
+	VALEUR
+FROM
+	G_GESTIONGEO.TEMP_GG_TYPE_LEVE;
+
 -- 5. Remplissage de la table TA_GG_GEO
 INSERT INTO G_GESTIONGEO.TA_GG_GEO(OBJECTID, GEOM)
 SELECT

@@ -24,5 +24,7 @@ COMMENT ON COLUMN "G_GESTIONGEO"."V_CHEMIN_FICHIER_GESTIONGEO"."INTEGRATION" IS 
 COMMENT ON COLUMN "G_GESTIONGEO"."V_CHEMIN_FICHIER_GESTIONGEO"."PROTOCOLE" IS 'Type de protocole du chemin d''accès.';
 COMMENT ON TABLE "G_GESTIONGEO"."V_CHEMIN_FICHIER_GESTIONGEO"  IS 'Vue permettant d''associer une URL à un nom de fichier afin de créer le chemin d''accès complet au fichier.';
 
+-- 3. Création d'un droit de lecture pour les admins
+GRANT SELECT ON G_GESTIONGEO.V_CHEMIN_FICHIER_GESTIONGEO TO G_ADMIN_SIG;
 /
 
