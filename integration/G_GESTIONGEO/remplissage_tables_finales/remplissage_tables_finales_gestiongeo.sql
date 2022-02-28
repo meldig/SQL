@@ -1,6 +1,6 @@
 SET SERVEROUTPUT ON
 DECLARE
-	v_id NUMBER(38,0);
+    v_id NUMBER(38,0);
 BEGIN
 /*
 Code permettant d'insérer les données gestiongeo des tables temporaires dans les tables finales suite aux corrections des données.
@@ -21,25 +21,25 @@ SOMMAIRE
 13. Remplissage de la table TA_GG_FME_MESURE ;
 14. Remplissage de la table TA_GG_FME_FILTRE_SUR_LIGNE ;
 15. Redéfinition du START WITH des clés primaires ;
-	15.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER ;
-	15.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO ;
-	15.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM ;
-	15.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT ;
-	15.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE ;
-	15.6. Modification de l'id de départ de la clé primaire de TA_GG_FICHIER ;
-	15.7. Modification de l'id de départ de la clé primaire de TA_GG_CLASSE ;
-	15.8. Modification de l'id de départ de la clé primaire de TA_GG_FME_DECALAGE_ABSCISSE ;
-	15.9. Modification de l'id de départ de la clé primaire de TA_GG_FME_MESURE ;
-	15.10. Modification de l'id de départ de la clé primaire de TA_GG_FME_FILTRE_SUR_LIGNE ;
+    15.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER ;
+    15.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO ;
+    15.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM ;
+    15.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT ;
+    15.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE ;
+    15.6. Modification de l'id de départ de la clé primaire de TA_GG_FICHIER ;
+    15.7. Modification de l'id de départ de la clé primaire de TA_GG_CLASSE ;
+    15.8. Modification de l'id de départ de la clé primaire de TA_GG_FME_DECALAGE_ABSCISSE ;
+    15.9. Modification de l'id de départ de la clé primaire de TA_GG_FME_MESURE ;
+    15.10. Modification de l'id de départ de la clé primaire de TA_GG_FME_FILTRE_SUR_LIGNE ;
 16. Réactivation des triggers, clés étrangères, contraintes, index et suppression des champs temporaires ;
-	16.1. Contrainte de clé étrangère de TA_GG_DOSSIER ;
-	16.2. Réactivation du trigger B_UXX_TA_GG_DOSSIER ;
-	16.3. Réactivation du trigger A_IXX_TA_GG_DOSSIER ;
-	16.4. Recréation des index de TA_GG_FAMILLE ;
-	16.5. Recréation des index de TA_GG_ETAT_AVANCEMENT ;
-	16.6. Recréation des index de TA_GG_DOS_NUM ;
-	16.7. Recréation des index de TA_GG_GEO ;
-	16.8. Recréation des index de TA_GG_DOSSIER ;
+    16.1. Contrainte de clé étrangère de TA_GG_DOSSIER ;
+    16.2. Réactivation du trigger B_UXX_TA_GG_DOSSIER ;
+    16.3. Réactivation du trigger A_IXX_TA_GG_DOSSIER ;
+    16.4. Recréation des index de TA_GG_FAMILLE ;
+    16.5. Recréation des index de TA_GG_ETAT_AVANCEMENT ;
+    16.6. Recréation des index de TA_GG_DOS_NUM ;
+    16.7. Recréation des index de TA_GG_GEO ;
+    16.8. Recréation des index de TA_GG_DOSSIER ;
 */
 
 SAVEPOINT POINT_SAUVEGARDE_REMPLISSAGE;
@@ -55,7 +55,6 @@ EXECUTE IMMEDIATE 'ALTER TRIGGER A_IXX_TA_GG_GEO DISABLE';
 EXECUTE IMMEDIATE 'ALTER TRIGGER B_UXX_TA_GG_DOSSIER DISABLE';
 EXECUTE IMMEDIATE 'ALTER TRIGGER A_IUD_TA_GG_DOSSIER_LOG DISABLE';
 EXECUTE IMMEDIATE 'ALTER TRIGGER A_IUD_TA_GG_GEO_LOG DISABLE';
-EXECUTE IMMEDIATE 'ALTER TRIGGER B_IXX_TA_GG_DOSSIER DISABLE';
 EXECUTE IMMEDIATE 'DROP INDEX TA_GG_GEO_SIDX';
 EXECUTE IMMEDIATE 'DROP INDEX TA_GG_GEO_SURFACE_IDX';
 EXECUTE IMMEDIATE 'DROP INDEX TA_GG_GEO_CODE_INSEE_IDX';
@@ -76,74 +75,79 @@ EXECUTE IMMEDIATE 'DROP INDEX TA_GG_DOS_NUM_FID_DOSSIER_IDX';
 -- Insertion des pnoms des agents utilisant gestiongeo
 /*INSERT INTO G_GESTIONGEO.TA_GG_AGENT(OBJECTID, PNOM, VALIDITE)
 SELECT
-	SRC_ID, 
-	TRIM(SRC_LIBEL), 
-	SRC_VAL
+    SRC_ID, 
+    TRIM(SRC_LIBEL), 
+    SRC_VAL
 FROM
-	G_GESTIONGEO.TEMP_TA_GG_AGENT;
+    G_GESTIONGEO.TEMP_TA_GG_AGENT;
 
 -- Insertion des pnoms génériques nécessaires pour des cas bien particuliers
 MERGE INTO G_GESTIONGEO.TA_GG_AGENT a
 USING(
-	SELECT
-		88888 AS OBJECTID,
-		'plusieurs gestionnaires' AS PNOM,
-		1 AS VALIDITE
-	FROM
-		DUAL
-	UNION ALL
-	SELECT
-		77777 AS OBJECTID,
-		'pas encore de gestionnaire' AS PNOM,
-		1 AS VALIDITE
-	FROM
-		DUAL
-	UNION ALL
-	SELECT
-		99999 AS OBJECTID,
-		'migration données' AS PNOM,
-		1 AS VALIDITE
-	FROM
-		DUAL
-	UNION ALL
-	SELECT
-		6068 AS OBJECTID,
-		'rjault' AS PNOM,
-		1 AS VALIDITE
-	FROM
-		DUAL
-	UNION ALL
-	SELECT
-		5741 AS OBJECTID,
-		'bjacq' AS PNOM,
-		1 AS VALIDITE
-	FROM
-		DUAL
+    SELECT
+        88888 AS OBJECTID,
+        'plusieurs gestionnaires' AS PNOM,
+        1 AS VALIDITE
+    FROM
+        DUAL
+    UNION ALL
+    SELECT
+        77777 AS OBJECTID,
+        'pas encore de gestionnaire' AS PNOM,
+        1 AS VALIDITE
+    FROM
+        DUAL
+    UNION ALL
+    SELECT
+        99999 AS OBJECTID,
+        'migration données' AS PNOM,
+        1 AS VALIDITE
+    FROM
+        DUAL
+    UNION ALL
+    SELECT
+        6068 AS OBJECTID,
+        'rjault' AS PNOM,
+        1 AS VALIDITE
+    FROM
+        DUAL
+    UNION ALL
+    SELECT
+        5741 AS OBJECTID,
+        'bjacq' AS PNOM,
+        1 AS VALIDITE
+    FROM
+        DUAL
 )t
 ON(a.objectid = t.objectid AND a.pnom = t.pnom)
 WHEN NOT MATCHED THEN
-	INSERT(a.objectid, a.pnom, a.validite)
-	VALUES(t.objectid, t.pnom, t.validite);
+    INSERT(a.objectid, a.pnom, a.validite)
+    VALUES(t.objectid, t.pnom, t.validite);
 */
+
+-- Insertion d'une nouvelle famille dans la table d'import
+INSERT INTO G_GESTIONGEO.TEMP_TA_GG_FAMILLE(OGR_FID, FAM_ID, FAM_LIB, FAM_VAL, FAM_LIB_SMALL)
+VALUES(4, 4, 'Maj Topo', 1, 'MT');
+
 -- 3. Remplissage de la table TA_GG_FAMILLE
 INSERT INTO G_GESTIONGEO.TA_GG_FAMILLE(OBJECTID, LIBELLE, VALIDITE, LIBELLE_ABREGE)
 SELECT
-	FAM_ID, 
-	FAM_LIB, 
-	FAM_VAL,
-	FAM_LIB_SMALL
+    FAM_ID, 
+    FAM_LIB, 
+    FAM_VAL,
+    FAM_LIB_SMALL
 FROM
-	G_GESTIONGEO.TEMP_TA_GG_FAMILLE;
+    G_GESTIONGEO.TEMP_TA_GG_FAMILLE;
 
 -- 4. Remplissage de la table TA_GG_ETAT_AVANCEMENT
 INSERT INTO G_GESTIONGEO.TA_GG_ETAT_AVANCEMENT(OBJECTID, LIBELLE_LONG, LIBELLE_COURT, LIBELLE_ABREGE)
 SELECT 
-	ETAT_ID, 
-	ETAT_LIB, 
-	ETAT_LIB_SMALL, 
-	ETAT_SMALL
+    ETAT_ID, 
+    ETAT_LIB, 
+    ETAT_LIB_SMALL, 
+    ETAT_SMALL
 FROM
-	G_GESTIONGEO.TEMP_TA_GG_ETAT;
+    G_GESTIONGEO.TEMP_TA_GG_ETAT;
 
 -- 9. Remplissage de la table TA_GG_CLASSE
 MERGE INTO G_GESTIONGEO.TA_GG_CLASSE a
@@ -162,44 +166,112 @@ WHEN NOT MATCHED THEN
 INSERT(a.objectid, a.libelle_court, a.libelle_long, validite)
 VALUES(t.cla_inu, t.cla_code, t.cla_li, t.cla_val);
 
--- Remplissage de la table TA_GG_TYPE_LEVE
-INSERT INTO G_GESTIONGEO.TA_GG_TYPE_LEVE(OBJECTID, VALEUR)
-SELECT
-	OBJECTID,  
-	VALEUR
-FROM
-	G_GESTIONGEO.TEMP_GG_TYPE_LEVE;
+-- Normalisation des données dans la table TA_GG_FME_MESURE
+MERGE INTO G_GESTIONGEO.TA_GG_FME_MESURE a
+USING
+    (
+    WITH CTE AS
+        (
+        SELECT
+            OBJECTID,
+            VALEUR,
+            MESURE
+        FROM
+            G_GESTIONGEO.TEMP_FME_VALUE_LISTE
+        UNPIVOT
+            (valeur for MESURE IN
+            (
+                GEO_POI_LN,
+                GEO_POI_LA,
+                GEO_LIG_OFFSET_D,
+                GEO_LIG_OFFSET_G
+            )
+            )
+        ),
+    CTE_2 AS
+        (
+        SELECT
+            OBJECTID,
+            VALEUR,
+            CASE MESURE
+                WHEN 'GEO_POI_LN' THEN UPPER('longeur')
+                WHEN 'GEO_POI_LA' THEN UPPER('largeur')
+                WHEN 'GEO_LIG_OFFSET_G' THEN UPPER('decalage abcisse gauche')
+                WHEN 'GEO_LIG_OFFSET_D' THEN UPPER('decalage abcisse droit')
+            END MESURE
+        FROM
+            CTE
+        )
+    SELECT
+        CTE_2.objectid AS fid_classe,
+        CTE_2.valeur AS valeur,
+        b.objectid AS fid_mesure
+    FROM
+        CTE_2
+        INNER JOIN G_GEO.TA_LIBELLE_LONG a ON UPPER(CTE_2.MESURE) = UPPER(a.valeur)
+        INNER JOIN G_GEO.TA_LIBELLE b ON b.fid_libelle_long = a.objectid
+    )b
+ON (a.fid_classe = b.fid_classe
+AND a.valeur = b.valeur
+AND a.fid_mesure = b.fid_mesure)
+WHEN NOT MATCHED THEN
+INSERT (a.fid_classe, a.valeur, a.fid_mesure)
+VALUES (b.fid_classe, b.valeur, b.fid_mesure);
+
+-- Mise à jour des familles des dossiers dans la table d'import (identification des dossiers faits par la MEL)
+MERGE INTO G_GESTIONGEO.TEMP_TA_GG_DOSSIER a
+USING(
+    SELECT
+        a.id_dos AS id_dossier,
+        b.objectid AS id_famille
+    FROM
+        G_GESTIONGEO.TEMP_TA_GG_DOSSIER a,
+        G_GESTIONGEO.TA_GG_FAMILLE b
+    WHERE
+        a.dos_entr IN(
+            'CUDL VOIRIE',
+            'MEL',
+            'METROPOLE TRAVAUX PUBLICS',
+            'M.V.E (Métropole Voirie et d''Enrobé)',
+            'UF Cartographie des territoires',
+            'UF Données métiers'
+        )
+        AND b.libelle = 'Maj Topo'
+)t
+ON(a.id_dos = t.id_dossier)
+WHEN MATCHED THEN
+UPDATE SET a.fam_id = t.id_famille;
 
 -- 5. Remplissage de la table TA_GG_GEO
 INSERT INTO G_GESTIONGEO.TA_GG_GEO(OBJECTID, GEOM)
 SELECT
-	ID_GEOM,  
-	ORA_GEOMETRY
+    ID_GEOM,  
+    ORA_GEOMETRY
 FROM
-	G_GESTIONGEO.TEMP_TA_GG_GEO;
+    G_GESTIONGEO.TEMP_TA_GG_GEO;
 
 -- 6. Remplissage de la table TA_GG_DOSSIER
 INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER(OBJECTID, FID_PNOM_CREATION, FID_ETAT_AVANCEMENT, FID_PNOM_MODIFICATION, FID_FAMILLE, DATE_SAISIE, REMARQUE_GEOMETRE, DATE_MODIFICATION, REMARQUE_PHOTO_INTERPRETE, DATE_CLOTURE, DATE_DEBUT_TRAVAUX, DATE_FIN_TRAVAUX, DATE_COMMANDE_DOSSIER, MAITRE_OUVRAGE, RESPONSABLE_LEVE, DATE_DEBUT_LEVE, DATE_FIN_LEVE)
 SELECT
-	a.id_dos, 
-	a.src_id, 
-	a.etat_id, 
-	a.user_id, 
-	a.fam_id, 
-	a.dos_dc, 
-	a.dos_precision, 
-	a.dos_dmaj, 
-	a.dos_rq, 
-	a.dos_dt_fin, 
-	a.dos_dt_deb_tr, 
-	a.dos_dt_fin_tr, 
-	a.dos_dt_cmd_sai, 
-	a.dos_mao, 
-	a.dos_entr,  
-	a.dos_dt_deb_leve, 
-	a.dos_dt_fin_leve
+    a.id_dos, 
+    a.src_id, 
+    a.etat_id, 
+    a.user_id, 
+    a.fam_id, 
+    a.dos_dc, 
+    a.dos_precision, 
+    a.dos_dmaj, 
+    a.dos_rq, 
+    a.dos_dt_fin, 
+    a.dos_dt_deb_tr, 
+    a.dos_dt_fin_tr, 
+    a.dos_dt_cmd_sai, 
+    a.dos_mao, 
+    a.dos_entr,  
+    a.dos_dt_deb_leve, 
+    a.dos_dt_fin_leve
 FROM
-	G_GESTIONGEO.TEMP_TA_GG_DOSSIER a;
+    G_GESTIONGEO.TEMP_TA_GG_DOSSIER a;
 
 -- 7. Mise à jour de la FK FID_PERIMETRE permettant d'associer un dossier à son périmètre
 MERGE INTO G_GESTIONGEO.TA_GG_DOSSIER a
@@ -239,10 +311,10 @@ WHEN NOT MATCHED THEN
 
 --Modification de l'id de départ de la clé primaire de TA_GG_DOMAINE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_DOMAINE a;
+    G_GESTIONGEO.TA_GG_DOMAINE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_DOMAINE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_DOMAINE_OBJECTID START WITH ' || v_id || ' INCREMENT BY 1';
@@ -260,8 +332,8 @@ USING
     )b
 ON(UPPER(a.DOMAINE) = UPPER(b.DOMAINE))
 WHEN NOT MATCHED THEN 
-	INSERT (a.DOMAINE)
-	VALUES (b.DOMAINE);
+    INSERT (a.DOMAINE)
+    VALUES (b.DOMAINE);
 
 -- 11. Remplissage de la table TA_GG_RELATION_CLASSE_DOMAINE
 MERGE INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE a
@@ -294,8 +366,8 @@ USING
 ON(a.FID_CLASSE = b.FID_CLASSE
 AND a.FID_DOMAINE = b.FID_DOMAINE)
 WHEN NOT MATCHED THEN 
-	INSERT (a.FID_CLASSE,a.FID_DOMAINE)
-	VALUES (b.FID_CLASSE, b.FID_DOMAINE);
+    INSERT (a.FID_CLASSE,a.FID_DOMAINE)
+    VALUES (b.FID_CLASSE, b.FID_DOMAINE);
 
 -- 12. Remplissage de la table TA_GG_FME_DECALAGE_ABSCISSE
 MERGE INTO G_GESTIONGEO.TA_GG_FME_DECALAGE_ABSCISSE a
@@ -313,16 +385,16 @@ USING (
         a.GEO_LIG_OFFSET_G IS NOT NULL
 )b
 ON(
-	a.FID_CLASSE = b.FID_CLASSE
-	AND a.DECALAGE_ABSCISSE_D = b.DECALAGE_ABSCISSE_D
-	AND a.DECALAGE_ABSCISSE_G = b.DECALAGE_ABSCISSE_G
+    a.FID_CLASSE = b.FID_CLASSE
+    AND a.DECALAGE_ABSCISSE_D = b.DECALAGE_ABSCISSE_D
+    AND a.DECALAGE_ABSCISSE_G = b.DECALAGE_ABSCISSE_G
 )
 WHEN NOT MATCHED THEN 
-	INSERT (a.FID_CLASSE,a.DECALAGE_ABSCISSE_D, a.DECALAGE_ABSCISSE_G)
-	VALUES (b.FID_CLASSE,b.DECALAGE_ABSCISSE_D, b.DECALAGE_ABSCISSE_G);
+    INSERT (a.FID_CLASSE,a.DECALAGE_ABSCISSE_D, a.DECALAGE_ABSCISSE_G)
+    VALUES (b.FID_CLASSE,b.DECALAGE_ABSCISSE_D, b.DECALAGE_ABSCISSE_G);
 
 -- 13. Remplissage de la table TA_GG_FME_MESURE
-MERGE INTO G_GESTIONGEO.TA_GG_FME_MESURE a
+/*MERGE INTO G_GESTIONGEO.TA_GG_FME_MESURE a
 USING (
     SELECT
         b.OBJECTID AS FID_CLASSE,
@@ -336,14 +408,14 @@ USING (
         AND a.GEO_POI_LA IS NOT NULL
 )b
 ON(
-	a.FID_CLASSE = b.FID_CLASSE
-	AND a.LONGUEUR = b.LONGUEUR
-	AND a.LARGEUR = b.LARGEUR
+    a.FID_CLASSE = b.FID_CLASSE
+    AND a.GEO_POI_LN = b.LONGUEUR
+    AND a.GEO_POI_LA = b.LARGEUR
 )
 WHEN NOT MATCHED THEN 
-	INSERT (a.FID_CLASSE,a.LONGUEUR, a.LARGEUR)
-	VALUES (b.FID_CLASSE,b.LONGUEUR, b.LARGEUR);
-
+    INSERT (a.FID_CLASSE,a.LONGUEUR, a.LARGEUR)
+    VALUES (b.FID_CLASSE,b.LONGUEUR, b.LARGEUR);
+*/
 -- 14. Remplissage de la table TA_GG_FME_FILTRE_SUR_LIGNE
 MERGE INTO G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a
 USING (
@@ -359,25 +431,25 @@ USING (
 )b
 ON(a.FID_CLASSE = b.FID_CLASSE)
 WHEN NOT MATCHED THEN 
-	INSERT (a.FID_CLASSE,a.FID_CLASSE_SOURCE)
-	VALUES (b.FID_CLASSE,b.FID_CLASSE_SOURCE);
+    INSERT (a.FID_CLASSE,a.FID_CLASSE_SOURCE)
+    VALUES (b.FID_CLASSE,b.FID_CLASSE_SOURCE);
 
 -- 15. Remplissage de la table TA_GG_REPERTOIRE
 MERGE INTO G_GESTIONGEO.TA_GG_REPERTOIRE a
 USING
-	(
-		SELECT
-			'/var/www/extraction/apps/gestiongeo' AS repertoire,
-			'SFTP' AS protocole
-		FROM
-			DUAL
-		UNION
-		SELECT
-			'https://gtf.lillemetropole.fr/apps/gestiongeo/' AS repertoire,
-			'HTTPS' AS protocole
-		FROM
-			DUAL
-	)b
+    (
+        SELECT
+            '/var/www/extraction/apps/gestiongeo' AS repertoire,
+            'SFTP' AS protocole
+        FROM
+            DUAL
+        UNION
+        SELECT
+            'https://gtf.lillemetropole.fr/apps/gestiongeo/' AS repertoire,
+            'HTTPS' AS protocole
+        FROM
+            DUAL
+    )b
 ON (UPPER(a.repertoire) = UPPER(b.repertoire)
 AND UPPER(a.protocole) = UPPER(b.protocole))
 WHEN NOT MATCHED THEN
@@ -396,10 +468,10 @@ WHERE
 -- 16. Redéfinition du START WITH des clés primaires
 -- 16.1. Modification de l'id de départ de la clé primaire de TA_GG_DOSSIER
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_DOSSIER a;
+    G_GESTIONGEO.TA_GG_DOSSIER a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_DOSSIER_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_DOSSIER_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -408,10 +480,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOSSIER_OBJECTID TO G_
 
 -- 16.2. Modification de l'id de départ de la clé primaire de TA_GG_GEO
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_GEO a;
+    G_GESTIONGEO.TA_GG_GEO a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_GEO_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_GEO_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -420,10 +492,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_GEO_OBJECTID TO G_GEST
 
 -- 16.3. Modification de l'id de départ de la clé primaire de TA_GG_DOS_NUM
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_DOS_NUM a;
+    G_GESTIONGEO.TA_GG_DOS_NUM a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_DOS_NUM_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_DOS_NUM_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -432,10 +504,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_DOS_NUM_OBJECTID TO G_
 
 -- 16.4. Modification de l'id de départ de la clé primaire de TA_GG_ETAT_AVANCEMENT
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_ETAT_AVANCEMENT a;
+    G_GESTIONGEO.TA_GG_ETAT_AVANCEMENT a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_ETAT_AVANCEMENT_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_ETAT_AVANCEMENT_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -444,10 +516,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_ETAT_AVANCEMENT_OBJECT
 
 -- 16.5. Modification de l'id de départ de la clé primaire de TA_GG_FAMILLE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_FAMILLE a;
+    G_GESTIONGEO.TA_GG_FAMILLE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_FAMILLE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FAMILLE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -456,10 +528,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FAMILLE_OBJECTID TO G_
 
 -- 16.6. Modification de l'id de départ de la clé primaire de TA_GG_FICHIER 
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_FICHIER a;
+    G_GESTIONGEO.TA_GG_FICHIER a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_FICHIER_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FICHIER_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -468,10 +540,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FICHIER_OBJECTID TO G_
 
 -- 16.7. Modification de l'id de départ de la clé primaire de TA_GG_CLASSE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_CLASSE a;
+    G_GESTIONGEO.TA_GG_CLASSE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_CLASSE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_CLASSE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -480,10 +552,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_CLASSE_OBJECTID TO G_G
 
 -- 16.8. Modification de l'id de départ de la clé primaire de TA_GG_FME_DECALAGE_ABSCISSE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_FME_DECALAGE_ABSCISSE a;
+    G_GESTIONGEO.TA_GG_FME_DECALAGE_ABSCISSE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_FME_DECALAGE_ABSCISSE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FME_DECALAGE_ABSCISSE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -492,10 +564,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FME_DECALAGE_ABSCISSE_
 
 -- 16.9. Modification de l'id de départ de la clé primaire de TA_GG_FME_MESURE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_FME_MESURE a;
+    G_GESTIONGEO.TA_GG_FME_MESURE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_FME_MESURE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FME_MESURE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';
@@ -504,10 +576,10 @@ EXECUTE IMMEDIATE 'GRANT SELECT ON G_GESTIONGEO.SEQ_TA_GG_FME_MESURE_OBJECTID TO
 
 -- 16.10. Modification de l'id de départ de la clé primaire de TA_GG_FME_FILTRE_SUR_LIGNE
 SELECT
-	MAX(a.OBJECTID)+1
-	INTO v_id
+    MAX(a.OBJECTID)+1
+    INTO v_id
 FROM
-	G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a;
+    G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a;
 
 EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_TA_GG_FME_FILTRE_SUR_LIGNE_OBJECTID';
 EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_GG_FME_FILTRE_SUR_LIGNE_OBJECTID START WITH ' ||v_id|| ' INCREMENT BY 1';

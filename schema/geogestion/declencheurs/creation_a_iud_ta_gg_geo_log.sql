@@ -12,6 +12,7 @@ DECLARE
     v_id_insertion NUMBER(38,0);
     v_id_modification NUMBER(38,0);
     v_id_suppression NUMBER(38,0);
+    v_message VARCHAR2(4000);
 BEGIN
     -- Sélection du pnom
     SELECT sys_context('USERENV','OS_USER') into username from dual;
@@ -44,14 +45,14 @@ BEGIN
     WHERE 
         b.valeur = 'suppression';
 
+    v_message := ' a été provoquée par ' || username || ' sur l''entité ' || TO_CHAR(:new.objectid) || ' le ' || TO_CHAR(sysdate) || '.';
+
     IF INSERTING THEN -- En cas d'insertion on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de insertion et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
+        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, date_action, fid_type_action, id_perimetre, fid_pnom)
             VALUES(
                     :new.geom,
                     :new.code_insee, 
                     :new.surface, 
-                    :new.id_dossier, 
-                    :new.etat_avancement, 
                     sysdate, 
                     v_id_insertion, 
                     :new.objectid, 
@@ -59,13 +60,11 @@ BEGIN
                 );                    
     ELSE
         IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-            INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
+            INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, date_action, fid_type_action, id_perimetre, fid_pnom)
             VALUES(
                     :old.geom,
                     :old.code_insee,
                     :old.surface,
-                    :old.id_dossier,
-                    :old.etat_avancement,
                     sysdate,
                     v_id_modification,
                     :old.objectid,
@@ -73,13 +72,11 @@ BEGIN
         END IF;
     END IF;
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, id_dossier, etat_avancement, date_action, fid_type_action, id_perimetre, fid_pnom)
+        INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, date_action, fid_type_action, id_perimetre, fid_pnom)
         VALUES(
                 :old.geom,
                 :old.code_insee,
                 :old.surface,
-                :old.id_dossier,
-                :old.etat_avancement,
                 sysdate,
                 v_id_suppression,
                 :old.objectid,
@@ -87,7 +84,7 @@ BEGIN
     END IF;
     EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('bjacq@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_GG_GEO_LOG','bjacq@lillemetropole.fr');
+            mail.sendmail('bjacq@lillemetropole.fr','L''erreur ' || SQLERRM || v_message, 'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_GG_GEO_LOG','bjacq@lillemetropole.fr');
 END;
 
 /

@@ -1,4 +1,4 @@
--- Vue des valeurs utilisées dans le traitement FME.
+-- Création de la vue V_VALEUR_TRAITEMENT_FME regroupant les valeurs utilisées dans le traitement FME.
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
     (
@@ -23,22 +23,70 @@ AS WITH CTE AS
         c.DOMAINE = 'Classe intégrée en base par la chaine de traitement FME'
     )
     SELECT
-        a.CLA_INU,
+        a.CLA_INU ,
         a.CLA_CODE,
-        b.LONGUEUR AS GEO_POI_LN,
-        b.LARGEUR AS GEO_POI_LA,
-        c.DECALAGE_ABSCISSE_D AS GEO_LIG_OFFSET_D,
-        c.DECALAGE_ABSCISSE_G AS GEO_LIG_OFFSET_G,
-        d.FID_CLASSE_SOURCE AS FID_CLASSE_SOURCE
+        b.VALEUR AS GEO_POI_LA,
+        c.VALEUR AS GEO_POI_LN,
+        d.VALEUR AS GEO_LIG_OFFSET_D,
+        e.VALEUR AS GEO_LIG_OFFSET_G,
+        f.FID_CLASSE_SOURCE AS FID_CLASSE_SOURCE
     FROM
         CTE a
-        LEFT JOIN TA_GG_FME_MESURE b ON b.FID_CLASSE = a.CLA_INU
-        LEFT JOIN TA_GG_FME_DECALAGE_ABSCISSE c ON c.FID_CLASSE = a.CLA_INU
-        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE d ON d.FID_CLASSE = a.CLA_INU
-        ;
+        LEFT JOIN 
+            (
+            SELECT
+                a.fid_classe,
+                a.valeur
+            FROM
+                G_GESTIONGEO.TA_GG_FME_MESURE a
+            WHERE
+                a.fid_mesure = 1432
+            )b
+            ON b.fid_classe = a.cla_inu
+        LEFT JOIN 
+            (
+            SELECT
+                a.fid_classe,
+                a.valeur
+            FROM
+                G_GESTIONGEO.TA_GG_FME_MESURE a
+            WHERE
+                a.fid_mesure = 1434
+            )c
+            ON c.fid_classe = a.cla_inu
+        LEFT JOIN 
+            (
+            SELECT
+                a.fid_classe,
+                a.valeur
+            FROM
+                G_GESTIONGEO.TA_GG_FME_MESURE a
+            WHERE
+                a.fid_mesure = 1433
+            )d
+            ON d.fid_classe = a.cla_inu
+        LEFT JOIN 
+            (
+            SELECT
+                a.fid_classe,
+                a.valeur
+            FROM
+                G_GESTIONGEO.TA_GG_FME_MESURE a
+            WHERE
+                a.fid_mesure = 1435
+            )e
+            ON e.fid_classe = a.cla_inu
+        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.CLA_INU;
 
 -- 2. Création des commentaires de la vue
-COMMENT ON TABLE "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"  IS 'Vue présentant les CLA_INU, VALEUR et TEXTE UTILISE PAR LES TRAITEMENTS FME. Cette table va permettre d''alimenter les TRANSFORMERS FME qui modifient ou catégorisent les informations se rapportant aux classes dans la chaîne de traitement FME.';
+COMMENT ON TABLE "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" IS 'Vue présentant les CLA_INU, VALEUR et TEXTE UTILISE PAR LES TRAITEMENTS FME. Cette table va permettre d''alimenter les TRANSFORMERS FME qui modifient ou catégorisent les informations se rapportant aux classes dans la chaîne de traitement FME.';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_inu IS 'Identifiant interne de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_code IS 'Nom court de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_poi_ln IS 'Longueur par défaut de l''objet de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_poi_la IS 'Largeur par défaut de l''objet de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_lig_offset_d IS 'Décalage d''abscisse droit par défaut de l''objet de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_lig_offset_g IS 'Décalage d''abscisse gauche par défaut de l''objet de la classe';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".fid_classe_source IS 'Identifiant interne de la classe source. Jointure avec le champ LAYER AUTOCAD pour les renommer selon le CLA_CODE';
 
 -- 3. Création d'un droit de lecture aux rôle de lecture et aux admins
 GRANT SELECT ON G_GESTIONGEO.V_VALEUR_TRAITEMENT_FME TO G_ADMIN_SIG;
