@@ -51,7 +51,7 @@ CREATE TABLE G_OCS2D.TA_OCS2D(
 -- 2.2. Création des commentaires
 COMMENT ON TABLE G_OCS2D.TA_OCS2D IS 'Table qui contient les identifiants des elements OCS2D';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D.objectid IS 'Clé primaire de la table TA_OCS2D, identifiant des elements OCS2D';
-COMMENT ON COLUMN TA_OCS2D_RELATION_GEOM.fid_ocs2d_geom IS 'Clé étrangère vers la table TA_OCS2D_GEOM pour connaitre la geométrie d''un élément OCS2D.';
+COMMENT ON COLUMN TA_OCS2D.fid_ocs2d_geom IS 'Clé étrangère vers la table TA_OCS2D_GEOM pour connaitre la geométrie d''un élément OCS2D.';
 
 
 -- 2.3. Création de la clé primaire
@@ -64,8 +64,8 @@ ALTER TABLE
 
 
 -- 2.4.1. vers la table ta_ocs2d_source
-ALTER TABLE TA_OCS2D_RELATION_GEOM
-    ADD CONSTRAINT TA_OCS2D_RELATION_GEOM_FID_OCS2D_GEOM_FK
+ALTER TABLE TA_OCS2D
+    ADD CONSTRAINT TA_OCS2D_FID_OCS2D_GEOM_FK
     FOREIGN KEY (fid_ocs2d_geom)
     REFERENCES G_OCS2D.TA_OCS2D_GEOM(objectid);
 

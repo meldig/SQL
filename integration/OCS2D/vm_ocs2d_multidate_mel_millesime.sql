@@ -483,9 +483,9 @@ ocs2d_attribut AS (
 			WHEN oa.cs15 <> oa.cs20 AND oa.us15 <> oa.us20 THEN 1
 			ELSE 2
 		END evol15_20,
-		SDO_GEOM.SDO_LENGTH(c.geom) as perimetre,
-		SDO_GEOM.SDO_AREA(c.geom,0.001) as surface_m2,
-		SDO_GEOM.SDO_AREA(c.geom,0.001)/10000 as surface_ha,
+		SDO_GEOM.SDO_LENGTH(b.geom) as perimetre,
+		SDO_GEOM.SDO_AREA(b.geom,0.001) as surface_m2,
+		SDO_GEOM.SDO_AREA(b.geom,0.001)/10000 as surface_ha,
 		mi.source || ' - ' ||mi.millesime as metadonnee,
 		b.geom
 	FROM
