@@ -5,7 +5,7 @@ TA_GG_DOSSIER : Création de la table TA_GG_DOSSIER contenant les données attri
 -- 1. La table
 CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"OBJECTID" NUMBER(38,0) DEFAULT G_GESTIONGEO.SEQ_TA_GG_DOSSIER_OBJECTID.NEXTVAL NOT NULL,
-	"FID_ETAT_AVANCEMENT" NUMBER(38,0) DEFAULT 5 NOT NULL,
+	"FID_ETAT_AVANCEMENT" NUMBER(38,0) DEFAULT 5,
 	"FID_FAMILLE" NUMBER DEFAULT 1,
 	"FID_PERIMETRE" NUMBER(38,0),
 	"FID_PNOM_CREATION" NUMBER(38,0) NOT NULL,
@@ -22,8 +22,7 @@ CREATE TABLE G_GESTIONGEO.TA_GG_DOSSIER (
 	"RESPONSABLE_LEVE" VARCHAR2(200 BYTE),
     "ENTREPRISE_TRAVAUX" VARCHAR2(200 BYTE),
 	"REMARQUE_GEOMETRE" VARCHAR2(4000 BYTE),
-	"REMARQUE_PHOTO_INTERPRETE" VARCHAR2(4000 BYTE),
-	"CODE_INSEE" VARCHAR2(5)
+	"REMARQUE_PHOTO_INTERPRETE" VARCHAR2(4000 BYTE)
  );
 
 -- 2. Les commentaires
@@ -47,7 +46,6 @@ COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.RESPONSABLE_LEVE IS 'Nom de l''entr
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.ENTREPRISE_TRAVAUX IS 'Entreprise ayant effectué les travaux de levé (si l''entreprise responsable du levé utilise un sous-traitant, alors c''est le nom du sous-traitant qu''il faut mettre ici).';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE_GEOMETRE IS 'Précision apportée au dossier par le géomètre telle que sa surface et l''origine de la donnée.';
 COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.REMARQUE_PHOTO_INTERPRETE IS 'Remarque du photo-interprète lors de la création du dossier permettant de préciser la raison de sa création, sa délimitation ou le type de bâtiment/voirie qui a été construit/détruit.';
-COMMENT ON COLUMN G_GESTIONGEO.TA_GG_DOSSIER.CODE_INSEE IS 'Code INSEE de la commune d''appartenance du périmètre du dossier. Ce code INSEE est calculé via une requête spatiale.';
 
 -- 3. Les contraintes
 -- Contrainte de clé primaire
@@ -105,9 +103,6 @@ CREATE INDEX TA_GG_DOSSIER_RESPONSABLE_LEVE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("R
     TABLESPACE G_ADT_INDX;
     
 CREATE INDEX TA_GG_DOSSIER_ENTREPRISE_TRAVAUX_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("ENTREPRISE_TRAVAUX")
-    TABLESPACE G_ADT_INDX;
-
-CREATE INDEX TA_GG_DOSSIER_CODE_INSEE_IDX ON G_GESTIONGEO.TA_GG_DOSSIER("CODE_INSEE")
     TABLESPACE G_ADT_INDX;
 
 -- 5. Les droits de lecture, écriture, suppression

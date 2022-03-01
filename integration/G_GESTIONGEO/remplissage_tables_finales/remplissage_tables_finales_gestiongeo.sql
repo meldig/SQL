@@ -196,8 +196,8 @@ USING
             CASE MESURE
                 WHEN 'GEO_POI_LN' THEN UPPER('longeur')
                 WHEN 'GEO_POI_LA' THEN UPPER('largeur')
-                WHEN 'GEO_LIG_OFFSET_G' THEN UPPER('decalage abcisse gauche')
-                WHEN 'GEO_LIG_OFFSET_D' THEN UPPER('decalage abcisse droit')
+                WHEN 'GEO_LIG_OFFSET_G' THEN UPPER('decalage abscisse gauche')
+                WHEN 'GEO_LIG_OFFSET_D' THEN UPPER('decalage abscisse droit')
             END MESURE
         FROM
             CTE
