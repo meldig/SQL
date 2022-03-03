@@ -69,5 +69,5 @@ Voici comment se présente une fenêtre QGIS, n'hésitez pas à venir vous y ré
 - Formulaire :  
 ![QGIS - Formulaire sélection par valeur](image/etape16_formulaire_selection_entite_par_valeur.PNG)
 
-Vous pourrez alors observer que le périmèter a été redesiné :  
+Vous pourrez alors observer que le périmétre a été redessiné :  
 ![QGIS - périmètre recalculé](image/perimetre_recalcule.PNG)
