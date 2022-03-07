@@ -36,6 +36,7 @@ USING
 ON (a.ogr_fid = b.ogr_fid)
 WHEN MATCHED THEN
 UPDATE SET a.IDENTITE = b.objectid;
+COMMIT;
 
 
 -- 1.3. Suppression des metadonnees créé par OGR2OGR
@@ -89,6 +90,7 @@ VALUES(
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 594000, 964000, 0.001),SDO_DIM_ELEMENT('Y', 6987000, 7165000, 0.001)), 
     2154
 );
+COMMIT;
 
 
 -- 1.7. Création du nouvel index
@@ -99,6 +101,7 @@ PARAMETERS('sdo_indx_dims=2, layer_gtype=POLYGON, tablespace=G_ADT_INDX, work_ta
 
 
 -- 2. Insertion des géométrie dans la table TA_OCS2D_GEOM
+-- 2.1. Insertion des données dans la table TA_OCS2D_GEOM
 INSERT INTO G_OCS2D.TA_OCS2D_GEOM(GEOM)
 SELECT 
     GEOM
@@ -130,41 +133,102 @@ AND
         WHERE
             SDO_RELATE(a.GEOM, b.geom,'mask=equal') = 'TRUE')
 ;
+COMMIT;
+
+
+-- 2.2. Suppression de la séquence SEQ_TA_OCS2D_GEOM_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_GEOM_OBJECTID;
+
+
+-- 2.3. Creation de la sequence SEQ_TA_OCS2D_GEOM_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant de la table TA_OCS2D_GEOM à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_GEOM;
+
+    -- Création de la séquence du trigger pour SEQ_TA_OCS2D_GEOM_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_GEOM_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
 
 
 -- 3. Insertion des commentaires dans la table TA_OCS2D_COMMENTAIRE
-MERGE INTO G_OCS2D.TA_OCS2D_COMMENTAIRE tc
+-- 3.1 Insertion des commentaires dans la table
+MERGE INTO G_OCS2D.TA_OCS2D_COMMENTAIRE a
 USING
 	(
-		SELECT
-            DISTINCT COMMENT05 AS commentaire
-        FROM
-            G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020
-        WHERE 
-            COMMENT05 IS NOT NULL
-        UNION
-		SELECT
-            DISTINCT COMMENT15 AS commentaire
-        FROM
-            G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020
-        WHERE 
-            COMMENT15 IS NOT NULL
-        UNION
-		SELECT
-            DISTINCT COMMENT20 AS commentaire
-        FROM
-            G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020
-        WHERE 
-            COMMENT20 IS NOT NULL
-	)temp
-ON(temp.commentaire = tc.valeur)
+	SELECT  
+	    DISTINCT(TRIM(REGEXP_SUBSTR(replace(comment05,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1))) AS VALEUR
+	FROM
+	    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 t
+	WHERE
+	    comment05 IS NOT NULL
+	CONNECT BY IDENTITE = PRIOR IDENTITE
+	AND PRIOR SYS_GUID() IS NOT NULL
+	AND LEVEL < REGEXP_COUNT(replace(comment05,'/',','), '([^,]*)(,|$)' )
+	UNION
+	SELECT  
+	    DISTINCT(TRIM(REGEXP_SUBSTR(replace(comment15,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1))) AS VALEUR
+	FROM
+	    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 t
+	WHERE
+	    comment15 IS NOT NULL
+	CONNECT BY IDENTITE = PRIOR IDENTITE
+	AND PRIOR SYS_GUID() IS NOT NULL
+	AND LEVEL < REGEXP_COUNT(replace(comment15,'/',','), '([^,]*)(,|$)' )
+	UNION
+	SELECT  
+	    DISTINCT(TRIM(REGEXP_SUBSTR(replace(comment20,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1))) AS VALEUR
+	FROM
+	    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 t
+	WHERE
+	    comment20 IS NOT NULL
+	CONNECT BY IDENTITE = PRIOR IDENTITE
+	AND PRIOR SYS_GUID() IS NOT NULL
+	AND LEVEL < REGEXP_COUNT(replace(comment20,'/',','), '([^,]*)(,|$)' )
+	)b
+ON(b.valeur = a.valeur)
 WHEN NOT MATCHED THEN
-INSERT (tc.valeur)
-VALUES (temp.commentaire)
+INSERT (a.valeur)
+VALUES (b.valeur)
 ;
+COMMIT;
+
+
+-- 3.2. Suppression de la séquence SEQ_TA_OCS2D_COMMENTAIRE_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_COMMENTAIRE_OBJECTID;
+
+
+-- 3.3. Creation de la sequence SEQ_TA_OCS2D_COMMENTAIRE_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_COMMENTAIRE;
+
+    -- Création de la séquence du trigger pour SEQ_TA_OCS2D_COMMENTAIRE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_COMMENTAIRE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
 
 
 -- 4. Insertion des sources dans la table TA_OCS2D_SOURCE
+-- 4.1. Insertion des sources dans la table TA_OCS2D_SOURCE
 MERGE INTO G_OCS2D.TA_OCS2D_SOURCE a
 USING
 	(
@@ -203,8 +267,35 @@ WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur)
 ;
+COMMIT;
+
+
+-- 4.2. Suppression de la séquence SEQ_TA_OCS2D_SOURCE_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_SOURCE_OBJECTID;
+
+
+-- 4.3. Creation de la sequence SEQ_TA_OCS2D_SOURCE_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_SOURCE;
+
+    -- Création de la séquence SEQ_TA_OCS2D_SOURCE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_SOURCE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
+
 
 -- 5. Insertion des données dans la table TA_OCS2D
+-- 5.1. Remplissage de la table
 MERGE INTO G_OCS2D.TA_OCS2D a
 USING
 	(
@@ -223,6 +314,31 @@ WHEN NOT MATCHED THEN
 INSERT (a.OBJECTID, a.FID_OCS2D_GEOM)
 VALUES (b.OBJECTID, b.FID_OCS2D_GEOM)
 ;
+COMMIT;
+
+
+-- 5.2. Suppression de la séquence SEQ_TA_OCS2D_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_OBJECTID;
+
+
+-- 5.3. Creation de la sequence SEQ_TA_OCS2D_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D;
+
+    -- Création de la séquence SEQ_TA_OCS2D_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
 
 
 -- 6. INSERTION DES DONNEESS DANS LA TABLE TA_OCS2D_MILLESIME
@@ -272,6 +388,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d,a.fid_metadonnee)
 VALUES(temp.fid_ocs2d,temp.fid_metadonnee)
 ;
+COMMIT;
 
 
 -- 6.2. 2015
@@ -320,6 +437,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d,a.fid_metadonnee)
 VALUES(temp.fid_ocs2d,temp.fid_metadonnee)
 ;
+COMMIT;
 
 
 -- 6.3. 2020
@@ -368,9 +486,35 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d,a.fid_metadonnee)
 VALUES(temp.fid_ocs2d,temp.fid_metadonnee)
 ;
+COMMIT;
+
+
+-- 6.4. Suppression de la séquence SEQ_TA_OCS2D_MILLESIME_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_MILLESIME_OBJECTID;
+
+
+-- 6.5. Creation de la sequence SEQ_TA_OCS2D_MILLESIME_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_MILLESIME;
+
+    -- Création de la séquence SEQ_TA_OCS2D_MILLESIME_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_MILLESIME_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
 
 
 -- 7. INSERTION DES DONNEES DANS LA TABLE TA_OCS2D_RELATION_LIBELLE
+
 -- 7.1. INSERTION DES DONNEES LIEES A L'OCCUPATION ET A L'USAGE DES SOLS DANS LA TABLE TA_OCS2D
 -- 7.1.1. 2005
 MERGE INTO G_OCS2D.TA_OCS2D_RELATION_LIBELLE a
@@ -384,8 +528,8 @@ USING
 		    us.fid_libelle_niv_3 as fid_us
 		FROM
 		    TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS05
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US05
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS05
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US05
 			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
 			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
 			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
@@ -440,6 +584,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
 VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
 ;
+COMMIT;
 
 
 -- 7.1.2. 2015
@@ -454,8 +599,8 @@ USING
 		    us.fid_libelle_niv_3 as fid_us
 		FROM
 		   G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS15
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US15
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS15
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US15
 			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
 			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
 			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
@@ -510,6 +655,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
 VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
 ;
+COMMIT;
 
 
 -- 7.1.3. 2020
@@ -524,8 +670,8 @@ USING
 		    us.fid_libelle_niv_3 as fid_us
 		FROM
 		    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS20
-			LEFT JOIN G_GEO.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US20
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_OCCUPATION cs ON cs."LIBELLE_COURT_NIV_3" = o.CS20
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_USAGE us ON us."LIBELLE_COURT_NIV_3" = o.US20
 			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
 			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
 			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
@@ -580,6 +726,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
 VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
 ;
+COMMIT;
 
 
 -- 7.2. INSERTION DES DONNEES LIEES AUX INDICES DANS LA TABLE TA_OCS2D_RELATION_LIBELLE
@@ -593,12 +740,12 @@ USING
 			a.OBJECTID AS FID_INDICE,
 			c.valeur AS INDICE
 		FROM
-			G_GEO.TA_LIBELLE a
-			INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
-			INNER JOIN G_GEO.TA_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
-			INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
-			INNER join G_GEO.TA_FAMILLE_LIBELLE e on e.fid_libelle_long = d.objectid
-			inner join G_GEO.TA_FAMILLE f ON f.objectid = e.fid_famille
+			G_OCS2D.TA_OCS2D_LIBELLE a
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
+			INNER join G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE e on e.fid_libelle = a.objectid
+			inner join G_OCS2D.TA_OCS2D_FAMILLE f ON f.objectid = e.fid_famille
 		WHERE
 			upper(f.valeur) = upper('Indice de confiance à la photo-interprétation OCS2D')
 		)
@@ -647,6 +794,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_MILLESIME,a.FID_LIBELLE)
 VALUES(temp.fid_ocs2d_MILLESIME,temp.FID_LIBELLE)
 ;
+COMMIT;
 
 
 -- 7.2.2. 2015
@@ -659,12 +807,12 @@ USING
 			a.OBJECTID AS FID_INDICE,
 			c.valeur AS INDICE
 		FROM
-			G_GEO.TA_LIBELLE a
-			INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
-			INNER JOIN G_GEO.TA_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
-			INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
-			INNER join G_GEO.TA_FAMILLE_LIBELLE e on e.fid_libelle_long = d.objectid
-			inner join G_GEO.TA_FAMILLE f ON f.objectid = e.fid_famille
+			G_OCS2D.TA_OCS2D_LIBELLE a
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
+			INNER join G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE e on e.fid_libelle = a.objectid
+			inner join G_OCS2D.TA_OCS2D_FAMILLE f ON f.objectid = e.fid_famille
 		WHERE
 			upper(f.valeur) = upper('Indice de confiance à la photo-interprétation OCS2D')
 		)
@@ -713,6 +861,7 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_MILLESIME,a.FID_LIBELLE)
 VALUES(temp.fid_ocs2d_MILLESIME,temp.FID_LIBELLE)
 ;
+COMMIT;
 
 
 -- 7.2.3. 2020
@@ -725,12 +874,12 @@ USING
 			a.OBJECTID AS FID_INDICE,
 			c.valeur AS INDICE
 		FROM
-			G_GEO.TA_LIBELLE a
-			INNER JOIN G_GEO.TA_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
-			INNER JOIN G_GEO.TA_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
-			INNER JOIN G_GEO.TA_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
-			INNER join G_GEO.TA_FAMILLE_LIBELLE e on e.fid_libelle_long = d.objectid
-			inner join G_GEO.TA_FAMILLE f ON f.objectid = e.fid_famille
+			G_OCS2D.TA_OCS2D_LIBELLE a
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE b ON b.fid_libelle = a.OBJECTID
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_COURT c ON c.OBJECTID = b.fid_libelle_court
+			INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_LONG d ON d.objectid = a.fid_libelle_long
+			INNER join G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE e on e.fid_libelle = a.objectid
+			inner join G_OCS2D.TA_OCS2D_FAMILLE f ON f.objectid = e.fid_famille
 		WHERE
 			upper(f.valeur) = upper('Indice de confiance à la photo-interprétation OCS2D')
 		)
@@ -779,6 +928,31 @@ WHEN NOT MATCHED THEN
 INSERT(a.fid_ocs2d_MILLESIME,a.FID_LIBELLE)
 VALUES(temp.fid_ocs2d_MILLESIME,temp.FID_LIBELLE)
 ;
+COMMIT;
+
+
+-- 7.3. Suppression de la séquence SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID;
+
+
+-- 7.4. Creation de la sequence SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_RELATION_LIBELLE;
+
+    -- Création de la séquence du trigger pour SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
 
 
 -- 8. INSERTION DES DONNEES DANS LA TABLE G_OCS2D.TA_OCS2D_RELATION_SOURCE
@@ -847,6 +1021,7 @@ AND a.fid_ocs2d_source = temp.fid_ocs2d_source)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_source)
 VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_source);
+COMMIT;
 
 
 -- 8.2. 2015
@@ -914,6 +1089,7 @@ AND a.fid_ocs2d_source = temp.fid_ocs2d_source)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_source)
 VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_source);
+COMMIT;
 
 
 -- 8.3. 2020
@@ -981,151 +1157,92 @@ AND a.fid_ocs2d_source = temp.fid_ocs2d_source)
 WHEN NOT MATCHED THEN
 INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_source)
 VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_source);
+COMMIT;
 
 
--- 9. INSERTION DES DONNEES DANS LA TABLE G_OCS2D.TA_OCS2D_RELATION_SOURCE
+--8.4. Suppression de la séquence SEQ_TA_OCS2D_RELATION_SOURCE_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_RELATION_SOURCE_OBJECTID;
+
+
+-- 8.5. Creation de la sequence SEQ_TA_OCS2D_RELATION_SOURCE_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_RELATION_SOURCE;
+
+    -- Création de la séquence du trigger pour SEQ_TA_OCS2D_RELATION_SOURCE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_RELATION_SOURCE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
+
+-- 9. INSERTION DES DONNEES DANS LA TABLE G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE
 -- 9.1. 2005
 MERGE INTO G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE a
 USING
 	(
-	SELECT
-		a.objectid as fid_ocs2d_millesime,
-	    d.objectid as fid_ocs2d_commentaire
-	FROM
-		G_OCS2D.TA_OCS2D_MILLESIME a
-	INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
-	INNER JOIN G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 c ON c.IDENTITE = b.objectid
-	INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE d ON d.valeur = c.comment05
-	INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
-	WHERE
-	m.objectid IN
-	        (
-	        SELECT
-	            m.objectid
-	        FROM
-	            G_GEO.TA_METADONNEE m
-	        INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
-	        INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
-	        INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
-	        WHERE
-	            s.nom_source = 'OCS2D'
-	        AND
-	            a.millesime = to_date('01/01/2005')
-	        AND
-	            a.date_acquisition = to_date('18/12/2021')
-	        AND
-	            p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
-	        AND
-	            p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
-	        AND
-	            o.acronyme = 'CLS'
-	        AND 
-	            e.valeur = 5000
-            )
-	)temp
-ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
-AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
-WHEN NOT MATCHED THEN
-INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
-VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
-
-
--- 9.2. 2015
-MERGE INTO G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE a
-USING
-	(
-	SELECT
-		a.objectid as fid_ocs2d_millesime,
-	    d.objectid as fid_ocs2d_commentaire
-	FROM
-		G_OCS2D.TA_OCS2D_MILLESIME a
-	INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
-	INNER JOIN G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 c ON c.IDENTITE = b.objectid
-	INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE d ON d.valeur = c.comment15
-	INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
-	WHERE
-	m.objectid IN
-	        (
-	        SELECT
-	            m.objectid
-	        FROM
-	            G_GEO.TA_METADONNEE m
-	        INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
-	        INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
-	        INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
-	        WHERE
-	            s.nom_source = 'OCS2D'
-	        AND
-	            a.millesime = to_date('01/01/2015')
-	        AND
-	            a.date_acquisition = to_date('18/12/2021')
-	        AND
-	            p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
-	        AND
-	            p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
-	        AND
-	            o.acronyme = 'CLS'
-	        AND 
-	            e.valeur = 5000
-            )
-	)temp
-ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
-AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
-WHEN NOT MATCHED THEN
-INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
-VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
-
-
--- 9.3. 2020
-MERGE INTO G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE a
-USING
-	(
-	SELECT
-		a.objectid as fid_ocs2d_millesime,
-	    d.objectid as fid_ocs2d_commentaire
-	FROM
-		G_OCS2D.TA_OCS2D_MILLESIME a
-	INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
-	INNER JOIN G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 c ON c.IDENTITE = b.objectid
-	INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE d ON d.valeur = c.comment20
-	INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
-	WHERE
-	m.objectid IN
-	        (
-	        SELECT
-	            m.objectid
-	        FROM
-	            G_GEO.TA_METADONNEE m
-	        INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
-	        INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
-	        INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
-	        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
-	        LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
-	        WHERE
-	            s.nom_source = 'OCS2D'
-	        AND
-	            a.millesime = to_date('01/01/2020')
-	        AND
-	            a.date_acquisition = to_date('18/12/2021')
-	        AND
-	            p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
-	        AND
-	            p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
-	        AND
-	            o.acronyme = 'CLS'
-	        AND 
-	            e.valeur = 5000
-            )
+	-- selection des différentes sources
+	WITH CTE AS
+	    (
+	    SELECT DISTINCT
+	        a.IDENTITE AS IDENTITE,
+	        TRIM(REGEXP_SUBSTR(replace(comment05,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1)) AS value
+	    FROM
+	        G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 a
+	    WHERE
+	    	comment05 IS NOT NULL
+	    CONNECT BY identite = PRIOR identite
+	    AND PRIOR SYS_GUID() IS NOT NULL
+	    AND LEVEL < REGEXP_COUNT(replace(comment05,'/',','), '([^,]*)(,|$)' )
+	    )
+	    -- selection des objectid de la table millesime
+	    SELECT
+	    	a.objectid as fid_ocs2d_millesime,
+            cte.value,
+            c.valeur,
+            c.objectid as fid_ocs2d_commentaire
+	    FROM
+	    	G_OCS2D.TA_OCS2D_MILLESIME a
+		INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
+	    INNER JOIN CTE ON cte.IDENTITE = b.objectid
+	    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
+        INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE c ON c.valeur = cte.value
+		WHERE
+        m.objectid IN
+                (
+                SELECT
+                    m.objectid
+                FROM
+                    G_GEO.TA_METADONNEE m
+                INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
+                INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
+                WHERE
+                    s.nom_source = 'OCS2D'
+                AND
+                    a.millesime = to_date('01/01/2005')
+                AND
+                    a.date_acquisition = to_date('18/12/2021')
+                AND
+                    p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+                AND
+                    p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+                AND
+                    o.acronyme = 'CLS'
+                AND 
+                    e.valeur = 5000
+			    )
 	)temp
 ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
 AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
@@ -1133,3 +1250,163 @@ WHEN NOT MATCHED THEN
 INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
 VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
 COMMIT;
+
+
+-- 8.2. 2015
+MERGE INTO G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE a
+USING
+	(
+	-- selection des différentes sources
+	WITH CTE AS
+	    (
+	    SELECT DISTINCT
+	        a.IDENTITE AS IDENTITE,
+	        TRIM(REGEXP_SUBSTR(replace(comment15,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1)) AS value
+	    FROM
+	        G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 a
+	    WHERE
+	    	comment15 IS NOT NULL
+	    CONNECT BY identite = PRIOR identite
+	    AND PRIOR SYS_GUID() IS NOT NULL
+	    AND LEVEL < REGEXP_COUNT(replace(comment15,'/',','), '([^,]*)(,|$)' )
+	    )
+	    -- selection des objectid de la table millesime
+	    SELECT
+	    	a.objectid as fid_ocs2d_millesime,
+            cte.value,
+            c.valeur,
+            c.objectid as fid_ocs2d_commentaire
+	    FROM
+	    	G_OCS2D.TA_OCS2D_MILLESIME a
+		INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
+	    INNER JOIN CTE ON cte.IDENTITE = b.objectid
+	    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
+        INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE c ON c.valeur = cte.value
+		WHERE
+        m.objectid IN
+                (
+                SELECT
+                    m.objectid
+                FROM
+                    G_GEO.TA_METADONNEE m
+                INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
+                INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
+                WHERE
+                    s.nom_source = 'OCS2D'
+                AND
+                    a.millesime = to_date('01/01/2015')
+                AND
+                    a.date_acquisition = to_date('18/12/2021')
+                AND
+                    p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+                AND
+                    p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+                AND
+                    o.acronyme = 'CLS'
+                AND 
+                    e.valeur = 5000
+			    )
+	)temp
+ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
+AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
+WHEN NOT MATCHED THEN
+INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
+VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
+COMMIT;
+
+
+-- 8.3. 2020
+MERGE INTO G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE a
+USING
+	(
+	-- selection des différentes sources
+	WITH CTE AS
+	    (
+	    SELECT DISTINCT
+	        a.IDENTITE AS IDENTITE,
+	        TRIM(REGEXP_SUBSTR(replace(comment20,'/',','), '([^,]*)(,|$)', 1, LEVEL, NULL, 1)) AS value
+	    FROM
+	        G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 a
+	    WHERE
+	    	comment20 IS NOT NULL
+	    CONNECT BY identite = PRIOR identite
+	    AND PRIOR SYS_GUID() IS NOT NULL
+	    AND LEVEL < REGEXP_COUNT(replace(comment20,'/',','), '([^,]*)(,|$)' )
+	    )
+	    -- selection des objectid de la table millesime
+	    SELECT
+	    	a.objectid as fid_ocs2d_millesime,
+            cte.value,
+            c.valeur,
+            c.objectid as fid_ocs2d_commentaire
+	    FROM
+	    	G_OCS2D.TA_OCS2D_MILLESIME a
+		INNER JOIN G_OCS2D.TA_OCS2D b ON b.objectid = a.fid_ocs2d
+	    INNER JOIN CTE ON cte.IDENTITE = b.objectid
+	    INNER JOIN G_GEO.TA_METADONNEE m ON m.objectid = a.fid_metadonnee
+        INNER JOIN G_OCS2D.TA_OCS2D_COMMENTAIRE c ON c.valeur = cte.value
+		WHERE
+        m.objectid IN
+                (
+                SELECT
+                    m.objectid
+                FROM
+                    G_GEO.TA_METADONNEE m
+                INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
+                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.objectid = m.fid_acquisition
+                INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organisme
+                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
+                LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
+                WHERE
+                    s.nom_source = 'OCS2D'
+                AND
+                    a.millesime = to_date('01/01/2020')
+                AND
+                    a.date_acquisition = to_date('18/12/2021')
+                AND
+                    p.url = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+                AND
+                    p.methode_acquisition = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+                AND
+                    o.acronyme = 'CLS'
+                AND 
+                    e.valeur = 5000
+			    )
+	)temp
+ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
+AND a.fid_ocs2d_commentaire = temp.fid_ocs2d_commentaire)
+WHEN NOT MATCHED THEN
+INSERT (a.fid_ocs2d_millesime,a.fid_ocs2d_commentaire)
+VALUES (temp.fid_ocs2d_millesime,temp.fid_ocs2d_commentaire);
+COMMIT;
+
+
+--8.4. Suppression de la séquence SEQ_TA_OCS2D_RELATION_COMMENTAIRE_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_RELATION_COMMENTAIRE_OBJECTID;
+
+
+-- 8.5. Creation de la sequence SEQ_TA_OCS2D_RELATION_COMMENTAIRE_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_RELATION_COMMENTAIRE;
+
+    -- Création de la séquence du trigger pour SEQ_TA_OCS2D_RELATION_COMMENTAIRE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_RELATION_COMMENTAIRE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
