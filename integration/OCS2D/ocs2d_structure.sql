@@ -8,7 +8,7 @@ CREATE TABLE TA_OCS2D_GEOM(
     );
 
 -- 1.2. Création des commentaires des colonnes
-COMMENT ON TABLE TA_OCS2D_GEOM IS 'Table regroupant les zones IRIS';
+COMMENT ON TABLE TA_OCS2D_GEOM IS 'Table regroupant les géométries des éléments OCS2D';
 COMMENT ON COLUMN TA_OCS2D_GEOM.objectid IS 'Clé primaire de la table TA_OCS2D_GEOM.';
 COMMENT ON COLUMN TA_OCS2D_GEOM.geom IS 'Géométrie des zones OCS2D.';
 
@@ -214,7 +214,7 @@ CREATE TABLE TA_OCS2D_SOURCE(
 );
 
 -- 7.2. Création des commentaires
-COMMENT ON TABLE TA_OCS2D_SOURCE IS 'Table contenant les sources que peuvent avoir les surfaces OCS2D';
+COMMENT ON TABLE TA_OCS2D_SOURCE IS 'Table contenant les sources que peuvent avoir les surfaces OCS2D suivant le millesime';
 COMMENT ON COLUMN ta_ocs2d_source.objectid IS 'Clé primaire de la table';
 COMMENT ON COLUMN ta_ocs2d_source.valeur IS 'Valeur de la source';
 
@@ -277,9 +277,9 @@ CREATE TABLE G_OCS2D.TA_OCS2D_FAMILLE(
 );
 
 -- 9.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_FAMILLE IS 'Table contenant les différentes nomenclature OCS2D.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE.objectid IS 'Identifiant de chaque nomenclature de OCS2D.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE.valeur IS 'Valeur de chaque nomenclature de libellés.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_FAMILLE IS 'Table contenant les différentes familles des libelles OCS2D.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE.objectid IS 'Identifiant de chaque famille de OCS2D.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE.valeur IS 'Valeur de chaque famille de libellés.';
 
 -- 9.3. Création de la clé primaire
 ALTER TABLE G_OCS2D.TA_OCS2D_FAMILLE
@@ -296,9 +296,9 @@ CREATE TABLE G_OCS2D.TA_OCS2D_LIBELLE_LONG(
 );
 
 -- 10.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_LONG IS 'Table regroupant les LIBELLEs long pouvant être pris par les LIBELLEs des nomenclatures OCS2D.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_LONG IS 'Table regroupant les libelles longs pouvant être pris par les libelles des nomenclatures OCS2D.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_LONG.objectid IS 'Clé primaire de la table TA_OCS2D_LIBELLE_LONG.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_LONG.valeur IS 'Valeur pouvant être prises par les LIBELLEs de la nomenclature OCS2D.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_LONG.valeur IS 'Valeur pouvant être prises par les libelles de la nomenclature OCS2D.';
 
 -- 10.3. Création de la clé primaire
 ALTER TABLE G_OCS2D.TA_OCS2D_LIBELLE_LONG
@@ -315,7 +315,7 @@ CREATE TABLE G_OCS2D.TA_OCS2D_LIBELLE(
 );
 
 -- 11.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE IS 'Table listant les LIBELLEs utilisé afin d''établir une hiérarchie.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE IS 'Table listant les libelles utilisés afin d''établir une hiérarchie.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE.objectid IS 'Identifiant de chaque libelle.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE.fid_libelle_long IS 'Clé étrangère vers la table TA_OCS2D_LIBELLE_LONG';
 
@@ -345,10 +345,10 @@ CREATE TABLE G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE(
 );
 
 -- 12.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE IS 'Table contenant les identifiant des tables ta_ocs2d_LIBELLE et ta_ocs2d_nomenclature, permettant de joindre le libellé à sa nomenclature.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE IS 'Table contenant les identifiant des tables TA_OCS2D_LIBELLE et TA_OCS2D_NOMENCLATURE, permettant de joindre le libellé à sa nomenclature.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE.objectid IS 'Identifiant de chaque ligne.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE.fid_famille IS 'Identifiant de chaque famille de libellés - FK de la table ta_ocs2d_nomenclature.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE.fid_libelle IS 'Identifiant de chaque libellés - FK de la table ta_ocs2d_libelle.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE.fid_famille IS 'Identifiant de chaque famille de libellés - FK de la table TA_OCS2D_FAMILLE.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE.fid_libelle IS 'Identifiant de chaque libellés - FK de la table TA_OCS2D_LIBELLE.';
 
 -- 12.3. Création de la clé primaire
 ALTER TABLE G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE
@@ -389,7 +389,7 @@ CREATE TABLE G_OCS2D.TA_OCS2D_LIBELLE_COURT(
 );
 
 -- 13.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_COURT IS 'Table regroupant les libelles court pouvant être pris par les LIBELLEs de la nomenclature OCS2D.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_COURT IS 'Table regroupant les libelles courts pouvant être pris par les libelles de la nomenclature OCS2D.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_COURT.objectid IS 'Clé primaire de la table TA_OCS2D_LIBELLE_COURT.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_COURT.valeur IS 'Valeur coute pouvant être prises par les libelles de la nomenclature OCS2D.';
 
@@ -409,10 +409,10 @@ CREATE TABLE G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE(
 );
 
 -- 14.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE IS 'Table contenant les identifiants des tables ta_ocs2d_libelle et ta_ocs2d_libelle_court, permettant de joindre les libelles à leur libellés courts.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE IS 'Table contenant les identifiants des tables TA_OCS2D_LIBELLE et TA_OCS2D_LIBELLE_COURT, permettant de joindre les libelles à leur libellés courts.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE.objectid IS 'clé primaire de la table TA_OCS2D_LIBELLE_CORRESPONDANCE.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE.fid_libelle IS 'Identifiant des libelles.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE.fid_libelle_court IS 'Identifiant de chaque LIBELLE court - FK de la table ta_ocs2d_libelle_court.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE.fid_libelle IS 'Identifiant des libelles - FK de la table TA_OCS2D_LIBELLE.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE.fid_libelle_court IS 'Identifiant de chaque LIBELLE court - FK de la table TA_OCS2D_LIBELLE_COURT.';
 
 -- 14.3. Création de la clé primaire
 ALTER TABLE G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE
@@ -501,11 +501,11 @@ CREATE TABLE G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE(
 );
 
 -- 16.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE IS 'Table contenant les necessaires pour mettre en relation une combinaison cs/us avec son LIBELLE selon la nomenclature 4 ou 21 LIBELLEs OCS2D.';
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE IS 'Table contenant les information necessaires pour mettre en relation une combinaison cs/us avec son libelle selon la nomenclature 4 ou 21 LIBELLEs OCS2D.';
 COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.objectid IS 'Clé primaire de la table TA_OCS2D_LIBELLE_RELATION_FAMILLE.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_cs IS 'Identifiant du code couvert.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_us IS 'Identifiant du code usage.';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_poste IS 'Identifiant du poste.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_cs IS 'Identifiant du code couvert. Clef étrangère vers la table TA_OCS2D_LIBELLE.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_us IS 'Identifiant du code usage. Clef étrangère vers la table TA_OCS2D_LIBELLE.';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE.fid_libelle_poste IS 'Identifiant du poste. Clef étrangère vers la table TA_OCS2D_LIBELLE.';
 
 -- 16.3. Création de la clé primaire
 ALTER TABLE G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE
