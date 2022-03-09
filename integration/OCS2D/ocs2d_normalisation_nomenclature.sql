@@ -692,7 +692,7 @@ Insertion des nomenclature COUVERT/USAGE OCS2D
         SUBSTR(CS3_CODE,7,1) AS niv_3_libelle_court,
         CS3_LIBELLE AS niv_3_libelle
     FROM
-        OCS2D_CS
+        G_GEO.OCS2D_CS
     ORDER BY
         niv_0_libelle_court,
         niv_1_libelle_court,
@@ -711,7 +711,7 @@ CTE_2 AS
         SUBSTR(US3_CODE,7,1) AS niv_3_libelle_court,
         US3_LIBELLE AS niv_3_libelle
     FROM
-        OCS2D_US
+        G_GEO.OCS2D_US
     ORDER BY
         niv_0_libelle_court,
         niv_1_libelle_court,
