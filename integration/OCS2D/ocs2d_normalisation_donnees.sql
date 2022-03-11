@@ -931,6 +931,220 @@ VALUES(temp.fid_ocs2d_MILLESIME,temp.FID_LIBELLE)
 COMMIT;
 
 
+-- 7.3. Insertion des relations dans la table TA_OCS2D_RELATION_LIBELLE des relations entres les polygones et leurs libelles sur les nomenclatures 4 et 21 postes.
+-- 7.3.1. 2005
+MERGE INTO G_OCS2D.TA_OCS2D_RELATION_LIBELLE a
+USING
+	(
+		WITH CTE AS
+	    (
+		SELECT
+		    mo.objectid AS fid_ocs2d_millesime,
+		    p4.fid_libelle as fid_poste_4,
+		    p21.fid_libelle as fid_poste_21
+		FROM
+		    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_4_POSTES p4 ON p4."POSTE" = o."4POSTES_05"
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_21_POSTES p21 ON p21."POSTE" = o."21_P_05"
+			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
+			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
+			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
+	    WHERE
+	        m.objectid IN
+	                (
+	                SELECT
+	                    m.objectid
+	                FROM
+	                    G_GEO.TA_METADONNEE m
+	                INNER JOIN G_GEO.TA_SOURCE s ON s.OBJECTID = m.FID_SOURCE
+	                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.OBJECTID = m.FID_ACQUISITION
+	                INNER JOIN G_GEO.TA_PROVENANCE p ON p.OBJECTID = m.FID_PROVENANCE
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ORGANISME o ON o.OBJECTID = mo.FID_ORGANISME
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ECHELLE e ON e.OBJECTID = me.FID_ECHELLE
+	                WHERE
+	                    s.NOM_SOURCE = 'OCS2D'
+	                AND
+	                    a.MILLESIME = to_date('01/01/2005')
+	                AND
+	                    a.DATE_ACQUISITION = to_date('18/12/2021')
+	                AND
+	                    p.URL = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+	                AND
+	                    p.METHODE_ACQUISITION = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+	                AND
+	                    o.ACRONYME = 'CLS'
+	                AND 
+	                    e.VALEUR = 5000
+	                )
+		)
+		SELECT
+		    fid_ocs2d_millesime AS fid_ocs2d_MILLESIME,
+		    valeur AS FID_LIBELLE,
+		    colonne
+		FROM 
+			CTE
+		UNPIVOT
+		    (
+		    valeur FOR (colonne) IN 
+		    	(
+			    fid_poste_4,
+			    fid_poste_21
+			    )
+			)
+	)temp
+ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
+AND a.fid_libelle = temp.fid_libelle)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
+VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
+;
+COMMIT;
+
+
+-- 7.3.2. 2015
+MERGE INTO G_OCS2D.TA_OCS2D_RELATION_LIBELLE a
+USING
+	(
+		WITH CTE AS
+	    (
+		SELECT
+		    mo.objectid AS fid_ocs2d_millesime,
+		    p4.fid_libelle as fid_poste_4,
+		    p21.fid_libelle as fid_poste_21
+		FROM
+		    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_4_POSTES p4 ON p4."POSTE" = o."4POSTES_15"
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_21_POSTES p21 ON p21."POSTE" = o."21_P_15"
+			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
+			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
+			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
+	    WHERE
+	        m.objectid IN
+	                (
+	                SELECT
+	                    m.objectid
+	                FROM
+	                    G_GEO.TA_METADONNEE m
+	                INNER JOIN G_GEO.TA_SOURCE s ON s.OBJECTID = m.FID_SOURCE
+	                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.OBJECTID = m.FID_ACQUISITION
+	                INNER JOIN G_GEO.TA_PROVENANCE p ON p.OBJECTID = m.FID_PROVENANCE
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ORGANISME o ON o.OBJECTID = mo.FID_ORGANISME
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ECHELLE e ON e.OBJECTID = me.FID_ECHELLE
+	                WHERE
+	                    s.NOM_SOURCE = 'OCS2D'
+	                AND
+	                    a.MILLESIME = to_date('01/01/2015')
+	                AND
+	                    a.DATE_ACQUISITION = to_date('18/12/2021')
+	                AND
+	                    p.URL = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+	                AND
+	                    p.METHODE_ACQUISITION = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+	                AND
+	                    o.ACRONYME = 'CLS'
+	                AND 
+	                    e.VALEUR = 5000
+	                )
+		)
+		SELECT
+		    fid_ocs2d_millesime AS fid_ocs2d_MILLESIME,
+		    valeur AS FID_LIBELLE,
+		    colonne
+		FROM 
+			CTE
+		UNPIVOT
+		    (
+		    valeur FOR (colonne) IN 
+		    	(
+			    fid_poste_4,
+			    fid_poste_21
+			    )
+			)
+	)temp
+ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
+AND a.fid_libelle = temp.fid_libelle)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
+VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
+;
+COMMIT;
+
+
+-- 7.3.3. 2020
+MERGE INTO G_OCS2D.TA_OCS2D_RELATION_LIBELLE a
+USING
+	(
+		WITH CTE AS
+	    (
+		SELECT
+		    mo.objectid AS fid_ocs2d_millesime,
+		    p4.fid_libelle as fid_poste_4,
+		    p21.fid_libelle as fid_poste_21
+		FROM
+		    G_OCS2D.TEMP_OCS2D_MEL_MULTIDATE_2005_2015_2020 o
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_4_POSTES p4 ON p4."POSTE" = o."4POSTES_20"
+			LEFT JOIN G_OCS2D.V_NOMENCLATURE_OCS2D_21_POSTES p21 ON p21."POSTE" = o."21_P_20"
+			INNER JOIN G_OCS2D.TA_OCS2D a ON a.objectid = o.identite
+			INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME mo ON mo.fid_ocs2d = a.objectid
+			INNER JOIN G_GEO.TA_METADONNEE m on m.OBJECTID = mo.FID_METADONNEE
+	    WHERE
+	        m.objectid IN
+	                (
+	                SELECT
+	                    m.objectid
+	                FROM
+	                    G_GEO.TA_METADONNEE m
+	                INNER JOIN G_GEO.TA_SOURCE s ON s.OBJECTID = m.FID_SOURCE
+	                INNER JOIN G_GEO.TA_DATE_ACQUISITION a ON a.OBJECTID = m.FID_ACQUISITION
+	                INNER JOIN G_GEO.TA_PROVENANCE p ON p.OBJECTID = m.FID_PROVENANCE
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ORGANISME o ON o.OBJECTID = mo.FID_ORGANISME
+	                LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.FID_METADONNEE = m.OBJECTID
+	                LEFT JOIN G_GEO.TA_ECHELLE e ON e.OBJECTID = me.FID_ECHELLE
+	                WHERE
+	                    s.NOM_SOURCE = 'OCS2D'
+	                AND
+	                    a.MILLESIME = to_date('01/01/2020')
+	                AND
+	                    a.DATE_ACQUISITION = to_date('18/12/2021')
+	                AND
+	                    p.URL = 'https://cloud.sirs-fr.com/index.php/s/MGSLBai7pweRXLJ'
+	                AND
+	                    p.METHODE_ACQUISITION = 'Donnée OCS2D finale corrigée par CLS. Téléchargée depuis le serveur CLS, disponible également sur le serveur infogeo, donnée externe, CLS sous le nom OCS2d_mel_Multidate_2005_2015_2020'
+	                AND
+	                    o.ACRONYME = 'CLS'
+	                AND 
+	                    e.VALEUR = 5000
+	                )
+		)
+		SELECT
+		    fid_ocs2d_millesime AS fid_ocs2d_MILLESIME,
+		    valeur AS FID_LIBELLE,
+		    colonne
+		FROM 
+			CTE
+		UNPIVOT
+		    (
+		    valeur FOR (colonne) IN 
+		    	(
+			    fid_poste_4,
+			    fid_poste_21
+			    )
+			)
+	)temp
+ON(a.fid_ocs2d_millesime = temp.fid_ocs2d_millesime
+AND a.fid_libelle = temp.fid_libelle)
+WHEN NOT MATCHED THEN
+INSERT(a.fid_ocs2d_millesime,a.fid_libelle)
+VALUES(temp.fid_ocs2d_millesime,temp.fid_libelle)
+;
+COMMIT;
+
+
 -- 7.3. Suppression de la séquence SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID
 DROP SEQUENCE SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID;
 
