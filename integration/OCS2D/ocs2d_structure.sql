@@ -110,44 +110,6 @@ ALTER TABLE G_OCS2D.TA_OCS2D_MILLESIME
 ALTER TABLE G_OCS2D.TA_OCS2D_MILLESIME
 ADD CONSTRAINT TA_OCS2D_MILLESIME_FID_OCS2D_FID_METADONNEE_UNIQUE UNIQUE("FID_OCS2D","FID_METADONNEE");
 
--- 4. Creation de la table TA_OCS2D_RELATION_LIBELLE
--- 4.1. La table TA_OCS2D_RELATION_LIBELLE sert à acceuillir les informations permettant de joindre un élément OCS2D multidate à ses attributs
-CREATE TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE(
-    objectid NUMBER(38,0) DEFAULT SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID.NEXTVAL NOT NULL,
-    fid_ocs2d_millesime NUMBER(38,0) NOT NULL,
-    fid_libelle NUMBER(38,0) NOT NULL
-);
-
--- 4.2. Création des commentaires
-COMMENT ON TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE IS 'Table qui permet d''associer chaque element OCS2D à son code de couvert et d''usage du sol, ainsi qu''à son indice de photo-interpretation';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.objectid IS 'Clé primaire de la table TA_OCS2D_RELATION_LIBELLE';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.fid_ocs2d_millesime IS 'Clé étrangère vers la table TA_OCS2D_MILLESIME';
-COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.fid_libelle IS 'Clé étrangère vers la table G_OCS2D.TA_OCS2D_LIBELLE';
-
--- 4.3. Création de la table TA_OCS2D_RELATION_LIBELLE
-ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
-    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_PK 
-    PRIMARY KEY("OBJECTID")
-    USING INDEX
-    TABLESPACE "G_ADT_INDX";
-
--- 4.4. création de la clé étrangère vers la table ta_metadonnee pour connaitre les métadonnees des éléments OCS2D
--- 4.4.1. Clé étrangère vers la table G_OCS2D.TA_OCS2D_MILLESIME
-ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
-    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_fid_ocs2d_MILLESIME_FK
-    FOREIGN KEY (fid_ocs2d_millesime)
-    REFERENCES G_OCS2D.TA_OCS2D_MILLESIME(objectid);
-
--- 4.4.1. Clé étrangère vers la table TA_G_OCS2D_LIBELLE
-ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
-    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_FID_LIBELLE_FK
-    FOREIGN KEY (fid_libelle)
-    REFERENCES G_OCS2D.TA_G_OCS2D_LIBELLE(objectid);
-
--- 4.5. Création d'une contrainte d'unicite. Un element OCS2D à un millesime distingue ne peut pas avoir deux fois le meme fid_libelle
-ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
-ADD CONSTRAINT G_OCS2DTA_OCS2D_RELATION_LIBELLE_FID_OCS2D_MILLESIME_FID_LIBELLE_UNIQUE UNIQUE ("FID_OCS2D_MILLESIME","FID_LIBELLE");
-
 -- 5. Création de la table TA_OCS2D_COMMENTAIRE
 -- 5.1. Table TA_OCS2D_COMMENTAIRE pour acceuillir les commentaires que peuvent avoir les surfaces OCS2D
 CREATE TABLE TA_OCS2D_COMMENTAIRE(
@@ -334,6 +296,45 @@ REFERENCES G_OCS2D.TA_OCS2D_LIBELLE_LONG(objectid);
 -- 11.5. Création de l'index de la clé étrangère
 CREATE INDEX TA_OCS2D_LIBELLE_LONG_FID_LIBELLE_LONG_IDX ON TA_OCS2D_LIBELLE(fid_libelle_long)
 TABLESPACE G_ADT_INDX;
+
+
+-- 4. Creation de la table TA_OCS2D_RELATION_LIBELLE
+-- 4.1. La table TA_OCS2D_RELATION_LIBELLE sert à acceuillir les informations permettant de joindre un élément OCS2D multidate à ses attributs
+CREATE TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE(
+    objectid NUMBER(38,0) DEFAULT SEQ_TA_OCS2D_RELATION_LIBELLE_OBJECTID.NEXTVAL NOT NULL,
+    fid_ocs2d_millesime NUMBER(38,0) NOT NULL,
+    fid_libelle NUMBER(38,0) NOT NULL
+);
+
+-- 4.2. Création des commentaires
+COMMENT ON TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE IS 'Table qui permet d''associer chaque element OCS2D à son code de couvert et d''usage du sol, ainsi qu''à son indice de photo-interpretation';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.objectid IS 'Clé primaire de la table TA_OCS2D_RELATION_LIBELLE';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.fid_ocs2d_millesime IS 'Clé étrangère vers la table TA_OCS2D_MILLESIME';
+COMMENT ON COLUMN G_OCS2D.TA_OCS2D_RELATION_LIBELLE.fid_libelle IS 'Clé étrangère vers la table G_OCS2D.TA_OCS2D_LIBELLE';
+
+-- 4.3. Création de la table TA_OCS2D_RELATION_LIBELLE
+ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
+    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_PK 
+    PRIMARY KEY("OBJECTID")
+    USING INDEX
+    TABLESPACE "G_ADT_INDX";
+
+-- 4.4. création de la clé étrangère vers la table ta_metadonnee pour connaitre les métadonnees des éléments OCS2D
+-- 4.4.1. Clé étrangère vers la table G_OCS2D.TA_OCS2D_MILLESIME
+ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
+    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_fid_ocs2d_MILLESIME_FK
+    FOREIGN KEY (fid_ocs2d_millesime)
+    REFERENCES G_OCS2D.TA_OCS2D_MILLESIME(objectid);
+
+-- 4.4.1. Clé étrangère vers la table TA_G_OCS2D_LIBELLE
+ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
+    ADD CONSTRAINT TA_OCS2D_RELATION_LIBELLE_FID_LIBELLE_FK
+    FOREIGN KEY (fid_libelle)
+    REFERENCES G_OCS2D.TA_OCS2D_LIBELLE(objectid);
+
+-- 4.5. Création d'une contrainte d'unicite. Un element OCS2D à un millesime distingue ne peut pas avoir deux fois le meme fid_libelle
+ALTER TABLE G_OCS2D.TA_OCS2D_RELATION_LIBELLE
+ADD CONSTRAINT G_OCS2DTA_OCS2D_RELATION_LIBELLE_FID_OCS2D_MILLESIME_FID_LIBELLE_UNIQUE UNIQUE ("FID_OCS2D_MILLESIME","FID_LIBELLE");
 
 
 -- 12. Creation de la table TA_OCS2D_FAMILLE_LIBELLE

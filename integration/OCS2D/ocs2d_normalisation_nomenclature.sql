@@ -513,7 +513,7 @@ USING
         INNER JOIN TA_OCS2D_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
     WHERE
         (
-        UPPER(a.valeur) = UPPER('famille « 4 libelles »')
+        UPPER(a.valeur) = UPPER('nomenclature « 4 postes »')
         AND UPPER(c.valeur) IN 
                             (
                             UPPER('Espaces artificialisés'),
@@ -524,7 +524,7 @@ USING
         )
         OR
         (
-        UPPER(a.valeur) = UPPER('famille « 21 libelles »')
+        UPPER(a.valeur) = UPPER('nomenclature « 21 postes »')
         AND UPPER(c.valeur) IN 
                             (
                             UPPER('Bâti de l’habitat'),
@@ -608,7 +608,7 @@ USING
         INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE d ON d.objectid = c.fid_famille,
         G_OCS2D.TA_OCS2D_LIBELLE_COURT e
     WHERE
-        UPPER(d.valeur) = UPPER('famille « 4 libelles »')
+        UPPER(d.valeur) = UPPER('nomenclature « 4 postes »')
         AND
             (
             (UPPER(e.valeur) = '1' AND UPPER(b.valeur) = UPPER('Espaces artificialisés')) OR
@@ -640,7 +640,7 @@ USING
         INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE d ON d.objectid = c.fid_famille,
         G_OCS2D.TA_OCS2D_LIBELLE_COURT e
     WHERE
-        UPPER(d.valeur) = UPPER('famille « 21 libelles »')
+        UPPER(d.valeur) = UPPER('nomenclature « 21 postes »')
         AND
             (
             (UPPER(e.valeur) = '1' AND UPPER(b.valeur) = UPPER('Bâti de l’habitat')) OR
@@ -1036,6 +1036,30 @@ WHEN NOT MATCHED THEN
 INSERT (a.valeur)
 VALUES (b.valeur);
 COMMIT;
+
+
+-- 38.1. Suppression de la séquence SEQ_TA_OCS2D_GEOM_OBJECTID
+DROP SEQUENCE SEQ_TA_OCS2D_LIBELLE_OBJECTID;
+
+-- 38.2. Creation de la sequence SEQ_TA_OCS2D_GEOM_OBJECTID avec la bonne incrémentation de départ.
+SET SERVEROUTPUT ON
+DECLARE
+    v_new_id NUMBER(38,0);
+
+    BEGIN
+    -- Sélection de l'identifiant à partir duquel faire reprendre l'incrémentation
+        SELECT
+            MAX(OBJECTID) + 1
+            INTO v_new_id
+        FROM
+            G_OCS2D.TA_OCS2D_LIBELLE;
+
+    -- Création de la séquence SEQ_TA_OCS2D_LIBELLE_OBJECTID
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE SEQ_TA_OCS2D_LIBELLE_OBJECTID INCREMENT BY 1 START WITH ' || v_new_id;
+    END;
+
+    /
+
 
 -- 31. Insertion des données dans G_OCS2D.TA_LIBELLE
 MERGE INTO G_OCS2D.TA_OCS2D_LIBELLE a
