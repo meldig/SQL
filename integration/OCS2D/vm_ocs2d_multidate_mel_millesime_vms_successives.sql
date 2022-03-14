@@ -80,7 +80,7 @@ CREATE MATERIALIZED VIEW COUVERT_USAGE AS
 CREATE MATERIALIZED VIEW INDICE AS
     (
 	SELECT
-	    a.objectid AS IDENTIFIANT,
+	    b.objectid AS IDENTIFIANT,
 	    d.OBJECTID AS FID_INDICE,
 	    CAST(f.valeur AS NUMBER(38,0)) AS INDICE
 	FROM
@@ -160,25 +160,19 @@ CREATE MATERIALIZED VIEW MILLESIME AS (
 -- 1.7. POSTE
 CREATE MATERIALIZED VIEW POSTE AS (
 	SELECT
-	    cs.fid_libelle_niv_3 AS fid_cs,
-		cs.libelle_court_niv_3 AS cs,
-	    us.fid_libelle_niv_3 AS fid_us,
-		us.libelle_court_niv_3 AS us,
-		cast(g.valeur AS NUMBER(38,0)) AS poste,
-		e.valeur AS libelle_poste,
-		i.valeur AS famille
+	    cast(f.valeur AS NUMBER(38,0)) AS poste,
+	    a.objectid AS fid_libelle,
+	    b.valeur AS Libelle,
+	    d.valeur AS FAMILLE
 	FROM
-		G_OCS2D.TA_OCS2D_LIBELLE_RELATION_NOMENCLATURE a
-		INNER JOIN couvert_usage cs ON cs.fid_libelle_niv_3 = a.fid_libelle_cs
-		INNER JOIN couvert_usage us ON us.fid_libelle_niv_3 = a.fid_libelle_us
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE b ON b.objectid = a.fid_libelle_cs
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE c ON c.objectid = a.fid_libelle_us
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE d ON d.objectid = a.fid_libelle_poste
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_LONG e ON e.objectid = d.fid_libelle_long
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE f ON f.fid_libelle = d.objectid
-		INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_COURT g ON g.objectid = f.fid_libelle_court
-		INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE h ON h.fid_libelle = d.objectid
-		INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE i ON i.objectid = h.fid_famille
+	    G_OCS2D.TA_OCS2D_LIBELLE a
+	    INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long
+	    INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE_LIBELLE c ON c.fid_libelle = a.objectid
+	    INNER JOIN G_OCS2D.TA_OCS2D_FAMILLE d ON d.objectid = c.fid_famille
+	    INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_CORRESPONDANCE e ON e.fid_libelle = a.objectid
+	    INNER JOIN G_OCS2D.TA_OCS2D_LIBELLE_COURT f ON f.objectid = e.fid_libelle_court
+	WHERE
+	    UPPER(d.valeur) IN (UPPER('Nomenclature « 4 postes »'),UPPER('Nomenclature « 21 postes »'))
 	);
 
 
@@ -419,7 +413,7 @@ CREATE MATERIALIZED VIEW OCS2D_ATTRIBUT AS (
 		INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME b ON b.fid_ocs2d = a.objectid
 		INNER JOIN G_OCS2D.TA_OCS2D_RELATION_LIBELLE c ON c.fid_ocs2d_millesime = b.objectid
 		INNER JOIN couvert_usage cu ON cu.fid_libelle_niv_3 = c.fid_libelle
-		INNER JOIN indice i ON i.IDENTIFIANT = b.objectid
+		INNER JOIN indice i ON i.IDENTIFIANT = a.objectid
 		LEFT JOIN ocs2d_source os ON os.fid_ocs2d = b.objectid
 		LEFT JOIN ocs2d_commentaire oc ON oc.fid_ocs2d = b.objectid
 		INNER JOIN millesime mi ON mi.objectid = a.objectid
@@ -440,63 +434,70 @@ CREATE MATERIALIZED VIEW OCS2D_ATTRIBUT AS (
 CREATE MATERIALIZED VIEW OCS2D_POSTE AS (
 	SELECT
 		a.objectid AS IDENTIFIANT,
-		MAX(CASE po05.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po05.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2005')
+            THEN po.poste
         END) AS "4POSTES_05",
-		MAX(CASE po05.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po05.libelle_poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2005')
+        	THEN po.libelle
         END) AS "4POSTES_05_LIBELLE",
-		MAX(CASE po05.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po05.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2005')
+        	THEN po.poste
         END) AS "21_P_05",
-		MAX(CASE po05.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po05.libelle_poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2005')
+        	THEN po.libelle
         END) AS "21_P_05_LIBELLE",
-		MAX(CASE po15.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po15.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2015')
+        	THEN po.poste
         END) AS "4POSTES_15",
-		MAX(CASE po15.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po15.libelle_poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2015')
+        	THEN po.libelle
         END) AS "4POSTES_15_LIBELLE",
-		MAX(CASE po15.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po15.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2015')
+        	THEN po.poste
         END) AS "21_P_15",
-		MAX(CASE po15.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po15.libelle_poste
+		MAX(CASE 
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2015')
+        	THEN po.libelle
         END) AS "21_P_15_LIBELLE",
-		MAX(CASE po20.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po20.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2020')
+        	THEN po.poste
         END) AS "4POSTES_20",
-		MAX(CASE po20.famille
-            WHEN 'Nomenclature « 4 postes »'
-        	THEN po20.libelle_poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 4 postes »') AND da.millesime = to_date('01/01/2020')
+        	THEN po.libelle
         END) AS "4POSTES_20_LIBELLE",
-		MAX(CASE po20.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po20.poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2020')
+        	THEN po.poste
         END) AS "21_P_20",
-		MAX(CASE po20.famille
-            WHEN 'Nomenclature « 21 postes »'
-        	THEN po20.libelle_poste
+		MAX(CASE
+            WHEN UPPER(po.famille) = UPPER('Nomenclature « 21 postes »') AND da.millesime = to_date('01/01/2020')
+        	THEN po.libelle
         END) AS "21_P_20_LIBELLE"
 	FROM
-		TA_OCS2D a
-	INNER JOIN ocs2d_attribut oa ON oa.identifiant = a.objectid
-	INNER JOIN poste po05 ON po05.fid_cs = oa.fid_cs05 AND po05.fid_us = oa.fid_us05
-	INNER JOIN poste po15 ON po15.fid_cs = oa.fid_cs15 AND po15.fid_us = oa.fid_us15
-	INNER JOIN poste po20 ON po20.fid_cs = oa.fid_cs20 AND po20.fid_us = oa.fid_us20
+		G_OCS2D.TA_OCS2D a
+		INNER JOIN G_OCS2D.TA_OCS2D_MILLESIME b ON b.fid_ocs2d = a.objectid
+		INNER JOIN G_OCS2D.TA_OCS2D_RELATION_LIBELLE c ON c.fid_ocs2d_millesime = b.objectid
+		INNER JOIN poste po ON po.fid_libelle = c.fid_libelle
+		INNER JOIN G_GEO.TA_METADONNEE m ON b.fid_metadonnee = m.objectid
+        INNER JOIN G_GEO.TA_SOURCE s ON s.objectid = m.fid_source
+        INNER JOIN G_GEO.TA_DATE_ACQUISITION da ON da.objectid = m.fid_acquISition
+        INNER JOIN G_GEO.TA_PROVENANCE p ON p.objectid = m.fid_provenance
+        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ORGANISME mo ON mo.fid_metadonnee = m.objectid
+        LEFT JOIN G_GEO.TA_ORGANISME o ON o.objectid = mo.fid_organISme
+        LEFT JOIN G_GEO.TA_METADONNEE_RELATION_ECHELLE me ON me.fid_metadonnee = m.objectid
+        LEFT JOIN G_GEO.TA_ECHELLE e ON e.objectid = me.fid_echelle
+    WHERE da.millesime IN (to_date('01/01/2005'),to_date('01/01/2015'),to_date('01/01/2020'))
 	GROUP BY a.objectid
 	);
-
 
 -- 2. Création de la vue
 CREATE MATERIALIZED VIEW VM_ADMIN_OCS2D_MULTIDATE_MEL
