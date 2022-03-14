@@ -22,7 +22,7 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.16\share\proj"
 CALL ogr2ogr.exe -f "CSV" %CHEMIN%/liste_repertoire_renommer.csv OCI:%USER%/%MDP%@%INSTANCE%: -sql "SELECT DISTINCT REPLACE(DOSSIER,'\','/') AS DOSSIER, REPLACE(LIEN_RENOMMAGE_DOSSIER,'\','/') AS LIEN_RENOMMAGE_DOSSIER FROM TEMP_LISTE_FICHIER_GESTION_GEO WHERE ID_DOS IS NOT NULL"
 
 :: 4. Export des nouveaux chemins des fichier GESTION GEO.
-CALL ogr2ogr.exe -f "CSV" %CHEMIN%/liste_fichier_renommer.csv OCI:%USER%/%MDP%@%INSTANCE%: -sql "SELECT REPLACE(LIEN,'\','/') AS FICHIER, REPLACE(LIEN_RENOMMAGE_FICHIER,'\','/') AS LIEN_RENOMMAGE_FICHIER FROM TEMP_LISTE_FICHIER_GESTION_GEO WHERE ID_DOS IS NOT NULL"
+CALL ogr2ogr.exe -f "CSV" %CHEMIN%/liste_fichier_renommer.csv OCI:%USER%/%MDP%@%INSTANCE%: -sql "SELECT REPLACE(LIEN,'\','/') AS FICHIER, REPLACE(LIEN_RENOMMAGE_FICHIER,'\','/') AS LIEN_RENOMMAGE_FICHIER FROM TEMP_LISTE_FICHIER_GESTION_GEO WHERE ID_DOS IS NOT NULL AND LIEN NOT LIKE '%Thumbs.db'"
 
 :: 5. Retour dans le dossier ou ce trouve les deux fichiers shell pour renommer les repertoires.
 cd %CHEMIN_SHELL%

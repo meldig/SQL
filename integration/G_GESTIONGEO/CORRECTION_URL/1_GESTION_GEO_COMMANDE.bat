@@ -27,6 +27,6 @@ setx PROJ_LIB "C:\Program Files\QGIS 3.16\share\proj"
 CALL ogr2ogr.exe -f OCI OCI:%USER%/%MDP%@%INSTANCE%:TEMP_LISTE_FICHIER_GESTION_GEO %CHEMIN%/liste_fichier_gestiongeo_test_incremente_colonne.csv -nln TEMP_LISTE_FICHIER_GESTION_GEO -lco ENCODING=UTF-8
 
 :: 7. Mise en forme de la table TEMP_LISTE_FICHIER_GESTION_GEO afin de renommer les dossiers GESTION_GEO.
-C:/ora12c/R1/BIN/sqlplus.exe %USER%/%MDP%@%INSTANCE% @%CHEMIN_INSERTION%\G_GESTION_GEO_MISE_EN_FORME_LIEN_1.sql
+ C:/ora12c/R1/BIN/sqlplus.exe %USER%/%MDP%@%INSTANCE% @%CHEMIN_INSERTION%\G_GESTION_GEO_MISE_EN_FORME_LIEN_1.sql
 
 PAUSE
