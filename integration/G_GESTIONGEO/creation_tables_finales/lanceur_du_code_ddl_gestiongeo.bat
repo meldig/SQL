@@ -38,8 +38,6 @@ copy /b %chemin_code_fonction%\creation_get_code_insee_polygon.sql + ^
 %chemin_code_table%\creation_ta_gg_relation_classe_domaine.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_fme_filtre_sur_ligne_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_fme_filtre_sur_ligne.sql + ^
-%chemin_code_sequence%\creation_seq_ta_gg_fme_decalage_abscisse_objectid.sql + ^
-%chemin_code_table%\creation_ta_gg_fme_decalage_abscisse.sql + ^
 %chemin_code_sequence%\creation_seq_ta_gg_fichier_objectid.sql + ^
 %chemin_code_table%\creation_ta_gg_fichier.sql + ^
 %chemin_code_table%\creation_ta_gg_repertoire.sql + ^
