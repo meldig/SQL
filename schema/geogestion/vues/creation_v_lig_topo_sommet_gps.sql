@@ -9,9 +9,9 @@ WITH CTE_1 AS
         a.objectid, 
         a.cla_inu,
         b.cla_li,
-        ROUND(t.X,2) AS x, 
-        ROUND(t.Y,2) AS y, 
-        ROUND(t.Z,2) AS z,
+        CAST(t.X AS NUMBER(9,2)) AS x,
+        CAST(t.Y AS NUMBER(9,2)) AS y,
+        CAST(t.Z AS NUMBER(9,2)) AS z,
         SDO_GEOMETRY(2001, 2154,
         SDO_POINT_TYPE(t.X,t.Y,NULL),
         NULL, NULL) AS GEOM
