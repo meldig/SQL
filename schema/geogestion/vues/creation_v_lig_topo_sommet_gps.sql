@@ -1,5 +1,6 @@
 -- 1. creation de la vue V_LIG_TOPO_SOMMET_GPS: Vue presentant les coordonnées X,Y et Z des sommets des lignes de la table TEM_TA_LIG_TOPO_GPS.
 
+
 CREATE OR REPLACE FORCE VIEW GEO.V_LIG_TOPO_SOMMET_GPS (identifiant,id_topo_lig_gps,cla_inu,cla_li,x,y,z,GEOM,
 CONSTRAINT "V_LIG_TOPO_SOMMET_GPS_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE) AS
 WITH CTE_1 AS
@@ -37,6 +38,7 @@ WITH CTE_1 AS
 
 
 -- 2. Commentaire
+
 COMMENT ON TABLE GEO.V_LIG_TOPO_SOMMET_GPS IS 'Vue presentant les coordonnées X,Y et Z des sommets des lignes de la table TEMP_TA_LIG_TOPO_GPS.';
 
 COMMENT ON COLUMN GEO.V_LIG_TOPO_SOMMET_GPS.IDENTIFIANT IS 'Clé primaire de la vue.';
