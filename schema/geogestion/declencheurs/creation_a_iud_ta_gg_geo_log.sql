@@ -45,7 +45,7 @@ BEGIN
     WHERE 
         b.valeur = 'suppression';
 
-    v_message := ' a été provoquée par ' || username || ' sur l''entité ' || TO_CHAR(:new.objectid) || ' le ' || TO_CHAR(sysdate) || '.';
+    v_message := ' a été provoquée par ' || username || ' sur l''entité ' || TO_CHAR(:old.objectid) || ' le ' || TO_CHAR(sysdate) || '.';
 
     IF INSERTING THEN -- En cas d'insertion on insère les valeurs de la table TA_GG_GEO_LOG, le numéro d'agent correspondant à l'utilisateur, la date de insertion et le type de modification.
         INSERT INTO G_GESTIONGEO.TA_GG_GEO_LOG(geom, code_insee, surface, date_action, fid_type_action, id_perimetre, fid_pnom)
