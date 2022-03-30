@@ -12,7 +12,6 @@ DECLARE
     v_id_insertion NUMBER(38,0);
     v_id_modification NUMBER(38,0);
     v_id_suppression NUMBER(38,0);
-    v_message VARCHAR2(4000);
 BEGIN
     -- Sélection du pnom
     SELECT sys_context('USERENV','OS_USER') into username from dual;
@@ -44,8 +43,6 @@ BEGIN
         INNER JOIN G_GEO.TA_LIBELLE_LONG b ON b.objectid = a.fid_libelle_long 
     WHERE 
         b.valeur = 'suppression';
-
-    v_message := ' a été provoquée par ' || username || ' sur l''entité ' || TO_CHAR(:old.objectid) || ' le ' || TO_CHAR(sysdate) || '.';
 
     IF INSERTING THEN -- En cas d'insertion on insère les valeurs de la table TA_GG_DOSSIER_LOG, le numéro d'agent correspondant à l'utilisateur, la date de insertion et le type de modification.
         INSERT INTO G_GESTIONGEO.TA_GG_DOSSIER_LOG(id_dossier, id_etat_avancement, id_famille, id_perimetre, date_debut_leve, date_fin_leve, date_debut_travaux, date_fin_travaux, date_commande_dossier, maitre_ouvrage, responsable_leve, entreprise_travaux, remarque_geometre, remarque_photo_interprete, date_action, fid_type_action, fid_pnom)
@@ -112,9 +109,6 @@ BEGIN
                 v_id_suppression,
                 v_id_agent);
     END IF;
-    EXCEPTION
-        WHEN OTHERS THEN
-            mail.sendmail('bjacq@lillemetropole.fr','L''erreur ' || SQLERRM || v_message,'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_GG_DOSSIER_LOG','bjacq@lillemetropole.fr');
 END;
 
 /

@@ -1,16 +1,8 @@
 -- Création de la vue V_VALEUR_TRAITEMENT_FME regroupant les valeurs utilisées dans le traitement FME.
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
-    (
-    "CLA_INU",
-    "CLA_CODE",
-    "GEO_POI_LN",
-    "GEO_POI_LA",
-    "GEO_LIG_OFFSET_D",
-    "GEO_LIG_OFFSET_G",
-    "FID_CLASSE_SOURCE"
-    )
-AS WITH CTE AS
+CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFIANT", "CLA_INU", "CLA_CODE", "GEO_POI_LN", "GEO_POI_LA", "GEO_LIG_OFFSET_D", "GEO_LIG_OFFSET_G", "FID_CLASSE_SOURCE", "CLA_CODE_SOURCE", 
+     CONSTRAINT "V_VALEUR_TRAITEMENT_FME_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE) AS 
+  WITH CTE AS
     (
     SELECT
         a.objectid as CLA_INU,
@@ -23,13 +15,15 @@ AS WITH CTE AS
         c.DOMAINE = 'Classe intégrée en base par la chaine de traitement FME'
     )
     SELECT
+        ROWNUM AS IDENTIFIANT,
         a.CLA_INU ,
         a.CLA_CODE,
         b.VALEUR AS GEO_POI_LA,
         c.VALEUR AS GEO_POI_LN,
         d.VALEUR AS GEO_LIG_OFFSET_D,
         e.VALEUR AS GEO_LIG_OFFSET_G,
-        f.FID_CLASSE_SOURCE AS FID_CLASSE_SOURCE
+        f.FID_CLASSE_SOURCE AS FID_CLASSE_SOURCE,
+        g.LIBELLE_COURT AS CLA_CODE_SOURCE
     FROM
         CTE a
         LEFT JOIN 
@@ -76,10 +70,12 @@ AS WITH CTE AS
                 a.fid_mesure = 1435
             )e
             ON e.fid_classe = a.cla_inu
-        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.CLA_INU;
+        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.CLA_INU
+        LEFT JOIN G_GESTIONGEO.TA_GG_CLASSE g ON f.FID_CLASSE_SOURCE = g.OBJECTID;
 
 -- 2. Création des commentaires de la vue
 COMMENT ON TABLE "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" IS 'Vue présentant les CLA_INU, VALEUR et TEXTE UTILISE PAR LES TRAITEMENTS FME. Cette table va permettre d''alimenter les TRANSFORMERS FME qui modifient ou catégorisent les informations se rapportant aux classes dans la chaîne de traitement FME.';
+COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".identifiant IS 'Clé primaire de la vue';
 COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_inu IS 'Identifiant interne de la classe';
 COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_code IS 'Nom court de la classe';
 COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_poi_ln IS 'Longueur par défaut de l''objet de la classe';
