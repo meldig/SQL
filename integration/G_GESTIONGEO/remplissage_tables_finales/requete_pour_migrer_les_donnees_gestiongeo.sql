@@ -244,7 +244,7 @@ USING
 	(
 	SELECT
 		OBJECTID AS objectid,
-		GEOM AS geom
+		ORA_GEOMETRY AS geom
 	FROM
 		G_DALC.TA_GG_GEO
 	) b
