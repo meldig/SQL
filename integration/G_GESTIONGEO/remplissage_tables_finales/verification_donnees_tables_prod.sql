@@ -75,11 +75,11 @@ Résultats attendus :
 SELECT
     objectid
 FROM
-    G_GESTIONGEO.TA_GG_GEO
+    G_GESTIONGEO.TA_GG_DOSSIER
 GROUP BY
     objectid
 HAVING
-    COUNT(objectid) > 1;
+    COUNT(fid_perimetre) > 1;
 -- Résultat attendu : aucune ligne
 
 -- Vérification de la validité des géométries de TA_GG_GEO  

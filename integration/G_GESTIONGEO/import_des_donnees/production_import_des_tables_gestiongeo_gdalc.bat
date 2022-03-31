@@ -1,8 +1,7 @@
 :: Migration des données des schémas G_GESTIONGEO vers G_DALC
-:: ecrire les commandes ogr pour g_gestiongeo@multit -> gdalc@multipp
 
 @echo off
-:: utilisation de ogr2ogr pour exporter des tables de CUDL vers MULTIT
+:: utilisation de ogr2ogr pour exporter des tables du schéma d'import dans le schéma de production
 :: 1. gestion des identifiants Oracle
 SET /p USER_D="Veuillez saisir l'utilisateur Oracle de destination: "
 SET /p USER_P="Veuillez saisir l'utilisateur Oracle de provenance: "
@@ -31,6 +30,9 @@ ogr2ogr.exe -f OCI OCI:%USER_D%/%MDP_D%@%INSTANCE_D% OCI:%USER_P%/%MDP_P%@%INSTA
 
 :: 5.4. table TA_GG_DOSSIER
 ogr2ogr.exe -f OCI OCI:%USER_D%/%MDP_D%@%INSTANCE_D% OCI:%USER_P%/%MDP_P%@%INSTANCE_P% -sql "SELECT * FROM G_GESTIONGEO.TA_GG_DOSSIER" -nln TA_GG_DOSSIER
+
+:: 5.4. table TA_GG_GEO
+ogr2ogr.exe -f OCI OCI:%USER_D%/%MDP_D%@%INSTANCE_D% OCI:%USER_P%/%MDP_P%@%INSTANCE_P% -sql "SELECT * FROM G_GESTIONGEO.TA_GG_GEO" -nln TA_GG_GEO -nlt MULTIPOLYGON -lco SRID=2154 -dim 2
 
 :: 5.5. table TA_GG_FME_FILTRE_SUR_LIGNE
 ogr2ogr.exe -f OCI OCI:%USER_D%/%MDP_D%@%INSTANCE_D% OCI:%USER_P%/%MDP_P%@%INSTANCE_P% -sql "SELECT * FROM G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE" -nln TA_GG_FME_FILTRE_SUR_LIGNE
