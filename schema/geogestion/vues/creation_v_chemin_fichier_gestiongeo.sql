@@ -8,7 +8,7 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "G_GESTIONGEO"."V_CHEMIN_FICHIER_GESTIO
 SELECT
   a.objectid,
   c.repertoire || a.objectid || '/',
-  c.repertoire || b.fichier,
+  c.repertoire || '/' || b.fid_dossier || '/' || b.fichier,
   b.integration,
   c.protocole
 FROM
@@ -26,5 +26,6 @@ COMMENT ON TABLE "G_GESTIONGEO"."V_CHEMIN_FICHIER_GESTIONGEO"  IS 'Vue permettan
 
 -- 3. Création d'un droit de lecture pour les admins
 GRANT SELECT ON G_GESTIONGEO.V_CHEMIN_FICHIER_GESTIONGEO TO G_ADMIN_SIG;
+
 /
 
