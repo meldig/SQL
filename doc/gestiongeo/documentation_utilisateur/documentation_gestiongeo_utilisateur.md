@@ -25,7 +25,9 @@ Voici comment se présente une fenêtre QGIS, n'hésitez pas à venir vous y ré
 ![Dessiner un polygone](image/etape4_dessiner_un_poygone.PNG)
 
 5. Après avoir dessiné votre périmètre, un formulaire s'ouvre automatiquement. Ne remplissez rien et cliquez sur **OK** en bas à droite. Par défaut votre dossier s'affichera en fiche prévisionnelle, mais vous pourrez le changer à l'étape d'après ;  
-![Formulaire partie 1](image/etape5_formulaire_partie1.PNG)
+![Formulaire partie 1](image/etape5_formulaire_partie1.PNG)  
+Une fois le périmètre dessiné, enregistrez votre couche en cliquant sur **Enregistrer les modifications de la couche** ;
+![Enregistrement_perimetre](image/etape5_Enregistrement_perimetre.PNG)
 
 6. Cliquez sur *Identifier des entités* et cliquez (clic gauche) sur le périmètre que vous venez de dessiner, ce qui ouvrira un formulaire ;  
 ![Formulaire partie 2](image/etape6_formulaire_partie2.PNG)
