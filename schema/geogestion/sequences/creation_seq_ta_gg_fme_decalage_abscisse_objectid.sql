@@ -1,8 +1,0 @@
-/*
-SEQ_TA_GG_FME_DECALAGE_ABSCISSE_OBJECTID : création de la séquence d'auto-incrémentation de la clé primaire de la table TA_GG_FME_DECALAGE_ABSCISSE
-*/
-
-CREATE SEQUENCE SEQ_TA_GG_FME_DECALAGE_ABSCISSE_OBJECTID START WITH 1 INCREMENT BY 1;
-
-/
-

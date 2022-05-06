@@ -1,5 +1,6 @@
 /*
-    A_IXX_TA_GG_GEO : Création du déclencheur A_IXX_TA_GG_GEO permettant de créer un dossier dans la table TA_GG_DOSSIER, suite à la création de son périmètre dans l'application.
+A_IXX_TA_GG_GEO : Création du déclencheur A_IXX_TA_GG_GEO permettant de créer un dossier dans la table TA_GG_DOSSIER, suite à la création de son périmètre dans l'application.
+Ce trigger permet aussi de récupérer le code insee de la commune d'appartenance du périmètre du dossier afin de créer son DOS_NUM.
 */
 
 CREATE OR REPLACE TRIGGER A_IXX_TA_GG_GEO
@@ -10,7 +11,10 @@ DECLARE
     v_id_agent NUMBER(38,0);
 
 BEGIN
-    -- Note : ce trigger permet de créer un dossier une fois son périmètre créé dans l'application (qgis).
+    /*
+    Objectif : ce trigger permet de créer un dossier une fois son périmètre créé dans l'application (qgis)
+    et de récupérer son code INSEE qui sera ensuite utilisé pour créer le DOS_NUM.
+    */
     -- Sélection du pnom
     SELECT sys_context('USERENV','OS_USER') into username from dual;
 
