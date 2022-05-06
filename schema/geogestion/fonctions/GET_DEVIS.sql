@@ -2,7 +2,6 @@
 Cette fonction a pour objectif de récupérer le devis estimé du relevé d'un dossier de l'application GestionGeo.
 La variable v_dossier et le numéro du dossier pour lequel nous voulons obtenir le devis. Il s'agit de l'objectid de la table G_GESTIONGEO.TA_GG_DOSSIER
 Le référentiel utilisé pour récupérer les troncons et leur type de traffic qui determine le cout d'un relevé et la table SIREO_LEC.OUT_CLAS_TRAF.
-ATTENTION : Cette fonction N'EST PAS A UTILISER pour des objets de types points.
 */
 
 CREATE OR REPLACE FUNCTION GET_DEVIS(v_dossier NUMBER) RETURN NUMBER
