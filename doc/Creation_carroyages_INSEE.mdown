@@ -1,0 +1,54 @@
+# Création des carroyages INSEE
+
+## Contexte :
+L'INSEE proposent des statistiques démographiques à plusieurs échelles (IRIS, communes, départements, etc), ainsi que des carroyages. Le carroyage est une technique de quadrillage consistant à découper le territoire en carreaux pour y diffuser de l’information statistique à un niveau faiblement agrégé. Cette technique permet de diffuser des données sur les revenus fiscaux des ménages en respectant l'anonymat des données. Cependant, aucun carroyage n'est continu, en effet certaines zones comme les parcs naturels ne sont pas couvertes par les carroyages en raison de leur trop faible densité de population. Hors les chefs de projets ont besoin de carroyages continus. Maxime a donc créé des workbench qui remplissent les carroyages à trous de l'INSEE.
+
+## Emplacement en base :
+* Instance : MULTIT (Oracle 12C);
+* Schéma : G_INSEE ;
+* Tables : CAR_FILOSOFI_2015_1KM / CAR_FILOSOFI_2015_200M / CAR_FILOSOFI_2015_NIV_NAT / CARROYAGE_100M_NODATA / CARROYAGE_200M_NODATA / CARROYAGE_1KM_NODATA /
+* Catégories des tables : les tables préfixées *CAR_FILOSOFI* ont été créées à partir des données INSEE, les tables préfixées *Carroyage* ont été créées et remplit par la DIG ;  
+
+![Emplacement_carroyage_insee](images_carroyage_insee/emplacement_carroyage_insee.png)
+
+## Noms des workbench utilisés:
+
+* Carroyage_1km.fmw ;
+* Carroyage_200m.fmw ;
+* Carroyage_100m.fmw ;
+* Grille_1km_vide.fmw ;
+* Grille_200m_vide.fmw ;
+* Grille_100m_vide.fmw ;
+Ces documents se trouvent dans le dossier P:\Tuilage MR-OD\Carroyage INSEE.
+
+## Hiérarchie des carroyages :
+**Il y a en tout trois tailles de carroyage différentes qui s'emboîtent les unes dans les autres :**
+* 1km x 1km ;
+* 200m x 200m ;
+* 100m x 100m ;  
+La couche de carroyage de 100m x 100m n'est pas produite par l'INSEE mais créer par la direction à la demande des chefs de projet.
+
+## Informations techniques :
+Le système de projection de chaque carroyage source est le *EPSG:3035 (système de projection européen)*.  
+
+Les workbench permettent de :
+* Créer des carroyages continus sans données dans les tables préfixées *Carroyage_* ;
+* Attribution d'un identifiant unique à chaque carreau ;
+* Remplir les trous laissés par le carroyage de l'INSEE dans les tables préfixées *CAR_FILOSOFI*
+* Créer un identifiant qui ressemble aux identifiants de l'INSEE pour chaque carreau (Exemple : CRS3035RES1000mNXminYmin);
+* Créer le carroyage de 100m x 100m qui est spécifique à la MEL;
+* Ajouter un champ MEL pour pouvoir filtrer les carraux situés sur le territoire métropolitain;
+* Les couches ont une emprise recouvrant les Hauts-de-France;
+
+## Informations méthodologiquses :
+
+Les différentes étapes du workbench:
+* Indiquer les coordonnées de la couche(determinées manuellement);
+* Déterminer le nombre de colonnes et de lignes du carroyage(determiné mathématiquement);
+* Reconstitution de l'identifiant avec l'outil *AttributeManager*;
+* Reprojection de la couche en *EPSG: 2154*;
+* Intersection spatiale de la couche avec la région pour ne garder que les carreaux situés dans les hauts-de-France;
+* Intersection spatiale de la couche avec le territoire métropolitain pour mettre à jour le champ *MEL*;
+* Ajout d'un champ pour permettre une correspondance avec les carreaux d'un carroyage de niveau supérieur;
+
+La normalisation des carroyages (tables, commentaires, vues) est faite par des requêtes une fois les carroyages terminés. Elles sont dans le fichier *carroyageNormalisation.sql*.
