@@ -1,0 +1,7 @@
+Nom_objet	Type_objet	Statut	Type_de_modification	Impact
+A_IUD_TA_GG_DOSSIER_LOG	Déclencheur	désactivé	Réactivation	Chaque insertion, modification ou suppression enverra un mail à geotrigger, c'est pour cette raison qu'il avait été désactivé
+A_IUD_TA_GG_GEO_LOG	Déclencheur	désactivé	Réactivation	Chaque insertion, modification ou suppression enverra un mail à geotrigger, c'est pour cette raison qu'il avait été désactivé
+A_IXX_TA_GG_GEO	Déclencheur	activé	Suppression	La suppression de ce trigger entraînerait la désolidarisation des périmètres et des dossiers de levés.
+B_UXX_TA_GG_DOSSIER	Déclencheur	activé	Suppression	Perte du pnom de l'agent ayant modifié le dossier ainsi que la date de la modification + perte de la date de clôture du dossier.
+TA_GG_GEO.OBJECTID	Champ	Valide	Modification / Suppression	Désolidarisation du périmètre et du dossier de levé auquel il est affecté. Chaque nouvelle insertion dans ce champ (donc pour toute création d'une nouvelle entité) implique la création d'une nouvelle entité dans TA_GG_DOSSIER via le trigger A_IXX_TA_GG_GEO
+TA_GG_DOSSIER.FID_ETAT_AVANCEMENT	Champ	Valide	Modification / Suppression	Perte de l'état d'avancement des dossiers, les géomètres et photo-interprètes ne sauront donc plus où ils en sont.
