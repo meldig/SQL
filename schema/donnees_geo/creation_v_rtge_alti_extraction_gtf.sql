@@ -1,0 +1,55 @@
+-- Création de la vue V_RTGE_ALTI_EXTRACTION_GTF
+
+/*
+Creation d''une vue pour exporter avec GTF les altitudes des points des éléments topographiques. Sommet des lignes de la table TA_LIG_TOPO_F et points de la table TA_POINT_TOPO_F.
+Ces éléments sont contenus dans la table G_GEO@TA_RTGE_ALTI.
+*/
+
+
+CREATE OR REPLACE FORCE VIEW G_GEO.V_RTGE_ALTI_EXTRACTION_GTF (IDENTIFIANT, TYPE_OBJET, ALTITUDE, GEOM,
+CONSTRAINT "V_RTGE_ALTI_EXTRACTION_GTF_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE) 
+AS
+SELECT
+	a.OBJECTID AS IDENTIFIANT,
+	1570 AS TYPE_OBJET,
+	a.COORD_Z AS ALTITUDE,
+	a.geom AS GEOM
+FROM
+	G_GEO.TA_RTGE_ALTI a
+;
+
+
+-- 2. Commentaire de la vue.
+COMMENT ON TABLE G_GEO.V_RTGE_ALTI_EXTRACTION_GTF IS 'Vue qui présente les altitudes des éléments topographiques contenues dans la table G_GEO.TA_RTGE_ALTI. Cette vue permet d''extraire à travers GTF les altitudes des elements';
+
+
+-- 3. Creation des commentaires des colonnes.
+COMMENT ON COLUMN G_GEO.V_RTGE_ALTI_EXTRACTION_GTF.IDENTIFIANT IS 'Numéro du dossier';
+COMMENT ON COLUMN G_GEO.V_RTGE_ALTI_EXTRACTION_GTF.TYPE_OBJET IS 'Cla inu 1570 - texte topo alti';
+COMMENT ON COLUMN G_GEO.V_RTGE_ALTI_EXTRACTION_GTF.ALTITUDE IS 'Altitude du point ou du sommet';
+COMMENT ON COLUMN G_GEO.V_RTGE_ALTI_EXTRACTION_GTF.GEOM IS 'Géométrie du dossier - type point';
+
+
+-- 4. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'V_RTGE_ALTI_EXTRACTION_GTF',
+    'GEOM',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005)), 
+    2154
+);
+COMMIT;
+
+-- 5. Affection des droits de lecture
+GRANT SELECT ON G_GEO.V_RTGE_ALTI_EXTRACTION_GTF TO G_ADMIN_SIG;
+GRANT SELECT ON G_GEO.V_RTGE_ALTI_EXTRACTION_GTF TO G_SERVICE_WEB;
+GRANT SELECT ON G_GEO.V_RTGE_ALTI_EXTRACTION_GTF TO ISOGEO_LEC;
+GRANT SELECT ON G_GEO.V_RTGE_ALTI_EXTRACTION_GTF TO G_GEO_LEC;
+GRANT SELECT ON G_GEO.V_RTGE_ALTI_EXTRACTION_GTF TO G_GEO_MAJ;
+
+/
