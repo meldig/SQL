@@ -1,7 +1,7 @@
 # Les fonctions oracle de fusion de géométrie
 
 ## A savoir : 
-Les fonctions oracle de fusion ou d'aggrégation se suivent aucun ordre ni aucun sens particulier.
+En théorie les fonctions oracle de fusion ou d'aggrégation ne suivent aucun ordre ni aucun sens particulier.
 
 ## 1. Les fonctions d'aggrégation de lignes
 
