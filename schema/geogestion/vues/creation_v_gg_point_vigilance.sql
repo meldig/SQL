@@ -1,4 +1,4 @@
--- Creation de la vue V_GG_POINT_VIGILANCE afin de restituer les informations des points de vigilance du projet GESTIONGEO
+-- Creation de la vue G_GESTIONGEO.V_GG_POINT_VIGILANCE afin de restituer les informations des points de vigilance du projet GESTIONGEO
 
 -- 1. Creation de la vue.
 CREATE OR REPLACE FORCE VIEW G_GESTIONGEO.V_GG_POINT_VIGILANCE (IDENTIFIANT_POINT,TYPE_SIGNALEMENT,VERIFICATION_EFFECTUE, STATUT_TRAITEMENT,OBJET_SIGNALE,DATE_CREATION,PNOM_CREATION,DATE_MODIFICATION,PNOM_MODIFICATION,DATE_PREVISIONNELLE,COMMENTAIRE,GEOM,
@@ -38,10 +38,10 @@ WHERE
 
 
 -- 2. Commentaire de la vue.
-COMMENT ON TABLE G_GESTIONGEO.V_GG_POINT_VIGILANCE IS 'Vue qui présente les points de vigilance créés par les photointerprètes dans le cadre de l''application GESETIONGEO';
+COMMENT ON TABLE G_GESTIONGEO.V_GG_POINT_VIGILANCE IS 'Vue qui présente les points de vigilance créés par les photointerprètes dans le cadre de l''application GESTIONGEO';
 
--- 3. Creation des commentaires des colonnes.
-COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT_VIGILANCE.IDENTIFIANT_POINT IS 'Identifiant du point clé primaire de la vue';
+-- 3. Création des commentaires des colonnes.
+COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT_VIGILANCE.IDENTIFIANT_POINT IS 'Identifiant du point ainsi que clé primaire de la vue';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT_VIGILANCE.TYPE_SIGNALEMENT IS 'Indique le type de signalement du point : création, modification manuelle ou vérification';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT_VIGILANCE.VERIFICATION_EFFECTUE IS 'Champ qui permet de connaître la réponse envisagée au signalement fait lors de la création du point.';
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_POINT_VIGILANCE.STATUT_TRAITEMENT IS 'Statut permettant de savoir si le point a été traité ou non.';
