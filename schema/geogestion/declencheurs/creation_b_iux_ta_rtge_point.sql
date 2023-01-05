@@ -1,7 +1,7 @@
--- 3. Creation du trigger B_IUX_TA_RTGE_POINT_FIN
+-- 3. Creation du trigger B_IUX_TA_RTGE_POINT
 
-CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT_FIN
-BEFORE INSERT OR UPDATE ON TA_RTGE_POINT_FIN FOR EACH ROW
+CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT
+BEFORE INSERT OR UPDATE ON TA_RTGE_POINT FOR EACH ROW
 DECLARE
 USERNAME VARCHAR(30);
 USERNUMBER NUMBER(38,0);
@@ -13,7 +13,7 @@ SELECT SYS_CONTEXT('USERENV','OS_USER') INTO USERNAME FROM DUAL;
 SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERNAME;
 
 	IF INSERTING THEN
-        :new.OBJECTID:=SEQ_TA_RTGE_POINT_FIN.nextval;
+        :new.OBJECTID:=SEQ_TA_RTGE_POINT.nextval;
         :new.FID_PNOM_CREATION:=usernumber;
         :new.DATE_CREATION:=sysdate;        
         :new.FID_PNOM_MODIFICATION:='';
@@ -29,8 +29,8 @@ SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERN
    EXCEPTION
 
   WHEN OTHERS THEN 
-    VMESSAGE := VMESSAGE||' '||SQLERRM||' '|| chr(10) || 'Le trigger B_IUX_TA_RTGE_POINT_FIN rencontre des problèmes par '||username;
-    mail.sendmail('rjault@lillemetropole.fr',VMESSAGE,'Souci Le trigger B_IUX_TA_RTGE_POINT_FIN ','rjault@lillemetropole.fr') ;
+    VMESSAGE := VMESSAGE||' '||SQLERRM||' '|| chr(10) || 'Le trigger B_IUX_TA_RTGE_POINT rencontre des problèmes par '||username;
+    mail.sendmail('rjault@lillemetropole.fr',VMESSAGE,'Souci Le trigger B_IUX_TA_RTGE_POINT ','rjault@lillemetropole.fr') ;
 END;
 
 /
