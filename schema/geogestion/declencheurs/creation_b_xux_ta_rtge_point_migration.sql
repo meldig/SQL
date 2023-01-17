@@ -36,7 +36,7 @@ OBJET := :new.OBJECTID;
 		END IF;
 	EXCEPTION
 	WHEN OTHERS THEN
-	    mail.sendmail('rjault@lillemetropole.fr',SQLERRM || ' Sur l''objet : ' || OBJET || ' modifié par ' || USERNAME,'ERREUR TRIGGER - G_GESTIONGEO.TRIGGER_B_XUX_TA_RTGE_POINT_MIGRATION','rjault@lillemetropole.fr');
+	    mail.sendmail('rjault@lillemetropole.fr',SQLERRM || ' Sur l''objet : ' || OBJET || ' modifié par ' || USERNAME,'ERREUR TRIGGER - G_GESTIONGEO.B_XUX_TA_RTGE_POINT_MIGRATION','rjault@lillemetropole.fr');
 END;
 
 /
