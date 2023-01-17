@@ -1,12 +1,22 @@
--- Création de la vue V_VALEUR_TRAITEMENT_FME regroupant les valeurs utilisées dans le traitement FME.
+-- Vue des valeurs utilisées dans le traitement FME.
 -- 1. Création de la vue
-CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFIANT", "CLA_INU", "CLA_CODE", "GEO_POI_LN", "GEO_POI_LA", "GEO_LIG_OFFSET_D", "GEO_LIG_OFFSET_G", "FID_CLASSE_SOURCE", "CLA_CODE_SOURCE", 
-     CONSTRAINT "V_VALEUR_TRAITEMENT_FME_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE) AS 
-  WITH CTE AS
+CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
+    (
+    "IDENTIFIANT",
+    "IDENTIFIANT_TYPE",
+    "LIBELLE_COURT_TYPE",
+    "LARGEUR",
+    "LONGUEUR",
+    "DECALAGE_DROITE",
+    "DECALAGE_GAUCHE",
+    "FID_CLASSE_SOURCE",
+    "LIBELLE_COURT_TYPE_SOURCE",
+CONSTRAINT "V_VALEUR_TRAITEMENT_FME_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE)
+AS WITH CTE AS
     (
     SELECT
-        a.objectid as CLA_INU,
-        TRIM(a.libelle_court) as CLA_CODE
+        a.objectid as IDENTIFIANT_TYPE,
+        TRIM(a.libelle_court) as LIBELLE_COURT_TYPE
     FROM
         G_GESTIONGEO.TA_GG_CLASSE a
         INNER JOIN G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE b ON b.FID_CLASSE = a.OBJECTID
@@ -16,14 +26,14 @@ CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFI
     )
     SELECT
         ROWNUM AS IDENTIFIANT,
-        a.CLA_INU ,
-        a.CLA_CODE,
-        b.VALEUR AS GEO_POI_LA,
-        c.VALEUR AS GEO_POI_LN,
-        d.VALEUR AS GEO_LIG_OFFSET_D,
-        e.VALEUR AS GEO_LIG_OFFSET_G,
+        a.IDENTIFIANT_TYPE ,
+        a.LIBELLE_COURT_TYPE,
+        b.VALEUR AS LARGEUR,
+        c.VALEUR AS LONGUEUR,
+        d.VALEUR AS DECALAGE_DROITE,
+        e.VALEUR AS DECALAGE_GAUCHE,
         f.FID_CLASSE_SOURCE AS FID_CLASSE_SOURCE,
-        g.LIBELLE_COURT AS CLA_CODE_SOURCE
+        g.LIBELLE_COURT AS LIBELLE_COURT_TYPE_SOURCE
     FROM
         CTE a
         LEFT JOIN 
@@ -33,10 +43,16 @@ CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFI
                 a.valeur
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
+                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
-                a.fid_mesure = 1432
+                TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
+                AND
+                TRIM(LOWER(c.valeur)) = TRIM(LOWER('largeur'))
             )b
-            ON b.fid_classe = a.cla_inu
+            ON b.fid_classe = a.IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -44,10 +60,16 @@ CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFI
                 a.valeur
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
+                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
-                a.fid_mesure = 1434
+                TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
+                AND
+                TRIM(LOWER(c.valeur)) = TRIM(LOWER('longueur'))
             )c
-            ON c.fid_classe = a.cla_inu
+            ON c.fid_classe = a.IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -55,10 +77,16 @@ CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFI
                 a.valeur
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
+                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
-                a.fid_mesure = 1433
+                TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
+                AND
+                TRIM(LOWER(c.valeur)) = TRIM(LOWER('decalage abscisse droit'))
             )d
-            ON d.fid_classe = a.cla_inu
+            ON d.fid_classe = a.IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -66,26 +94,27 @@ CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" ("IDENTIFI
                 a.valeur
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
+                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
-                a.fid_mesure = 1435
+                TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
+                AND
+                TRIM(LOWER(c.valeur)) = TRIM(LOWER('decalage abscisse gauche'))
             )e
-            ON e.fid_classe = a.cla_inu
-        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.CLA_INU
-        LEFT JOIN G_GESTIONGEO.TA_GG_CLASSE g ON f.FID_CLASSE_SOURCE = g.OBJECTID;
+            ON e.fid_classe = a.IDENTIFIANT_TYPE
+        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.IDENTIFIANT_TYPE
+        LEFT JOIN G_GESTIONGEO.TA_GG_CLASSE g ON f.FID_CLASSE_SOURCE = g.OBJECTID
+        ;
 
 -- 2. Création des commentaires de la vue
-COMMENT ON TABLE "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME" IS 'Vue présentant les CLA_INU, VALEUR et TEXTE UTILISE PAR LES TRAITEMENTS FME. Cette table va permettre d''alimenter les TRANSFORMERS FME qui modifient ou catégorisent les informations se rapportant aux classes dans la chaîne de traitement FME.';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".identifiant IS 'Clé primaire de la vue';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_inu IS 'Identifiant interne de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".cla_code IS 'Nom court de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_poi_ln IS 'Longueur par défaut de l''objet de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_poi_la IS 'Largeur par défaut de l''objet de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_lig_offset_d IS 'Décalage d''abscisse droit par défaut de l''objet de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".geo_lig_offset_g IS 'Décalage d''abscisse gauche par défaut de l''objet de la classe';
-COMMENT ON COLUMN "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME".fid_classe_source IS 'Identifiant interne de la classe source. Jointure avec le champ LAYER AUTOCAD pour les renommer selon le CLA_CODE';
+COMMENT ON TABLE "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"  IS 'Vue présentant les CLA_INU, VALEUR et TEXTE UTILISE PAR LES TRAITEMENTS FME. Cette table va permettre d''alimenter les TRANSFORMERS FME qui modifient ou catégorisent les informations se rapportant aux classes dans la chaîne de traitement FME.';
 
 -- 3. Création d'un droit de lecture aux rôle de lecture et aux admins
+GRANT SELECT ON G_GESTIONGEO.V_VALEUR_TRAITEMENT_FME TO G_GESTIONGEO_R;
+GRANT SELECT ON G_GESTIONGEO.V_VALEUR_TRAITEMENT_FME TO G_GESTIONGEO_LEC;
+GRANT SELECT ON G_GESTIONGEO.V_VALEUR_TRAITEMENT_FME TO G_GESTIONGEO_MAJ;
 GRANT SELECT ON G_GESTIONGEO.V_VALEUR_TRAITEMENT_FME TO G_ADMIN_SIG;
 
 /
-

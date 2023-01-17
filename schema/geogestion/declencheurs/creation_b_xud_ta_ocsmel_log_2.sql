@@ -58,12 +58,12 @@ WHERE
 
 -- TRIGGER
     IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_OCSMEL_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, FID_IDENTIFIANT, NUMERO_DOSSIER, IDENTIFIANT_TYPE, FID_PNOM_MODIFICATION, DATE_MODIFICATION, MODIFICATION)
+        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
             VALUES(
             		:old.GEOM,
 					:old.objectid,
-					:old.NUMERO_DOSSIER,
-					:old.IDENTIFIANT_TYPE,
+--					:old.NUMERO_DOSSIER,
+					:old.FID_IDENTIFIANT_TYPE,
 					USERNUMBER,
 					SYSDATE,
 					NUMBER_MODIFICATION
@@ -71,12 +71,12 @@ WHERE
     ELSE
 
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_OCSMEL_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, FID_IDENTIFIANT, NUMERO_DOSSIER, IDENTIFIANT_TYPE, FID_PNOM_MODIFICATION, DATE_MODIFICATION, MODIFICATION)
+        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
             VALUES(
             		:old.GEOM,
 					:old.objectid,
-					:old.NUMERO_DOSSIER,
-					:old.IDENTIFIANT_TYPE,
+--					:old.NUMERO_DOSSIER,
+					:old.FID_IDENTIFIANT_TYPE,
 					USERNUMBER,
 					SYSDATE,
 					NUMBER_SUPPRESSION
