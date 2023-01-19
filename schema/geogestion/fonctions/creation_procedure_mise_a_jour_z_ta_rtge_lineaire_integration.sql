@@ -26,7 +26,7 @@ BEGIN
         (
         SELECT
             a.objectid AS OBJECTID_LIGNE,
-            a.NUMERO_DOSSIER,
+            a.FID_NUMERO_DOSSIER,
             -- On remplace le '),' qui sépare chaque sous element par ');' afin de rendre plus aisé la séléction des sous éléments
             SUBSTR(
                    sdo_util.to_wktgeometry(SDO_CS.MAKE_2D(a.geom)),
@@ -50,12 +50,12 @@ BEGIN
         FROM
             G_GESTIONGEO.TA_RTGE_LINEAIRE_INTEGRATION a
         WHERE
-            a.NUMERO_DOSSIER = IDENTIFIANT_DOSSIER
+            a.FID_NUMERO_DOSSIER = IDENTIFIANT_DOSSIER
         )b
     ON (a.OBJECTID_LIGNE = b.OBJECTID_LIGNE)
     WHEN NOT MATCHED THEN 
-    INSERT(a.OBJECTID_LIGNE, a.NUMERO_DOSSIER, a.TYPE_WKT_LIGNE_GEOMETRY, a.GEOM)
-    VALUES(b.OBJECTID_LIGNE, b.NUMERO_DOSSIER, b.TYPE_WKT_LIGNE_GEOMETRY, b.GEOM)
+    INSERT(a.OBJECTID_LIGNE, a.FID_NUMERO_DOSSIER, a.TYPE_WKT_LIGNE_GEOMETRY, a.GEOM)
+    VALUES(b.OBJECTID_LIGNE, b.FID_NUMERO_DOSSIER, b.TYPE_WKT_LIGNE_GEOMETRY, b.GEOM)
     ;
 
     -- 2. Insertion des données dans la table TA_GG_RECUPERATION_Z_ETAPE_2.
@@ -166,7 +166,7 @@ BEGIN
                                 G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_4 a,
                                 G_GESTIONGEO.TA_PTTOPO_INTEGRATION b
                             WHERE
-                                b.NUMERO_DOSSIER = NUMERO_DOSSIER
+                                b.FID_NUMERO_DOSSIER = IDENTIFIANT_DOSSIER
                                 AND SDO_EQUAL(b.geom, a.geom) = 'TRUE'
                                 )
                     GROUP BY OBJECTID_LIGNE, OBJECTID_ELEMENT_LIGNE, OBJECTID_SOMMET
@@ -177,7 +177,7 @@ BEGIN
                 AND a.OBJECTID_SOMMET = c.OBJECTID_SOMMET,
                 G_GESTIONGEO.TA_PTTOPO_INTEGRATION b
         WHERE
-            b.NUMERO_DOSSIER = NUMERO_DOSSIER
+            b.FID_NUMERO_DOSSIER = IDENTIFIANT_DOSSIER
             AND SDO_EQUAL(b.geom, a.geom) = 'TRUE'
             AND c.OBJECTID_LIGNE IS NULL
             AND c.OBJECTID_ELEMENT_LIGNE IS NULL
@@ -346,7 +346,7 @@ BEGIN
         (
         SELECT
             a.OBJECTID_LIGNE,
-            b.NUMERO_DOSSIER,
+            b.FID_NUMERO_DOSSIER,
             SDO_AGGR_UNION(SDOAGGRTYPE(a.geom, 0.001)) AS GEOM
         FROM
             G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_10 a,
@@ -354,12 +354,12 @@ BEGIN
         WHERE
             a.OBJECTID_LIGNE = b.OBJECTID_LIGNE
         GROUP BY
-            a.OBJECTID_LIGNE,b.NUMERO_DOSSIER
+            a.OBJECTID_LIGNE,b.FID_NUMERO_DOSSIER
         )b
     ON (a.OBJECTID_LIGNE = b.OBJECTID_LIGNE)
     WHEN NOT MATCHED THEN 
-    INSERT(a.OBJECTID_LIGNE, a.NUMERO_DOSSIER, a.GEOM)
-    VALUES(b.OBJECTID_LIGNE, b.NUMERO_DOSSIER, b.GEOM)
+    INSERT(a.OBJECTID_LIGNE, a.FID_NUMERO_DOSSIER, a.GEOM)
+    VALUES(b.OBJECTID_LIGNE, b.FID_NUMERO_DOSSIER, b.GEOM)
     ;
 
     -- Mise à jour du système de projection des géométrie avant la mise à jour de la table TA_RTGE_LINEAIRE_INTEGRATION
@@ -374,13 +374,13 @@ BEGIN
         (
         SELECT
             a.OBJECTID_LIGNE AS OBJECTID,
-            a.NUMERO_DOSSIER AS NUMERO_DOSSIER,
+            a.FID_NUMERO_DOSSIER AS FID_NUMERO_DOSSIER,
             a.GEOM AS GEOM
         FROM
             G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_11 a
         )b
     ON (a.OBJECTID = b.OBJECTID
-    AND a.NUMERO_DOSSIER = b.NUMERO_DOSSIER)
+    AND a.FID_NUMERO_DOSSIER = b.FID_NUMERO_DOSSIER)
     WHEN MATCHED THEN UPDATE SET a.GEOM = b.GEOM
     ;
 

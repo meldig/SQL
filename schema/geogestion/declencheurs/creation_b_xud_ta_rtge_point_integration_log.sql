@@ -6,7 +6,7 @@ modification et suppression des données de la table TA_RTGE_POINT_INTEGRATION a
 */
 
 CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_XUD_TA_RTGE_POINT_INTEGRATION_LOG
-BEFORE UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_POINT_INTEGRATION
+AFTER UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_POINT_INTEGRATION
 FOR EACH ROW
 DECLARE
 USERNAME VARCHAR(30);
@@ -30,6 +30,7 @@ FROM
 WHERE
 	TRIM(LOWER(USERNAME)) = TRIM(LOWER(PNOM));
 
+
 -- selection de l'objectid du libelle modification dans la variable NUMBER_MODIFICATION
 SELECT 
 	a.OBJECTID INTO NUMBER_MODIFICATION 
@@ -42,6 +43,7 @@ WHERE
 	TRIM(LOWER(b.valeur)) = TRIM(LOWER('modification'))
 	AND
 	TRIM(LOWER(d.libelle)) = TRIM(LOWER('type d''action'));
+
 
 -- selection de l'objectid du libelle modification dans la variable NUMBER_SUPPRESSION
 SELECT 
@@ -94,8 +96,10 @@ WHERE
 					SYSDATE,
 					NUMBER_SUPPRESSION
 				);
+
     END IF;
     END IF;
+    
     EXCEPTION
         WHEN OTHERS THEN
             mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_DALC.B_XUD_TA_RTGE_POINT_INTEGRATION_LOG','rjault@lillemetropole.fr');

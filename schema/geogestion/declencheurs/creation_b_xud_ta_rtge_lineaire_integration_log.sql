@@ -63,7 +63,7 @@ WHERE
 					SYSDATE,
 					NUMBER_MODIFICATION
 				);
-    ELSE
+    ELSE   
 
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_RTGE_LINEAIRE_INTEGRATION_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
         INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_INTEGRATION_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
@@ -80,6 +80,7 @@ WHERE
 				);
     END IF;
     END IF;
+    
     EXCEPTION
         WHEN OTHERS THEN
             mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_DALC.B_XUD_TA_RTGE_LINEAIRE_INTEGRATION_LOG','rjault@lillemetropole.fr');
