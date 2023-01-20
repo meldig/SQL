@@ -24,6 +24,7 @@ AS
 			INNER JOIN G_GESTIONGEO.TA_GG_DOMAINE c ON c.objectid = b.fid_domaine
 		WHERE
 			c.OBJECTID = 73
+			AND a.VALIDITE = 1
 	);
 
 
