@@ -3,7 +3,7 @@
 CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
     (
     "IDENTIFIANT",
-    "IDENTIFIANT_TYPE",
+    "FID_IDENTIFIANT_TYPE",
     "LIBELLE_COURT_TYPE",
     "LARGEUR",
     "LONGUEUR",
@@ -15,7 +15,7 @@ CONSTRAINT "V_VALEUR_TRAITEMENT_FME_PK" PRIMARY KEY ("IDENTIFIANT") DISABLE)
 AS WITH CTE AS
     (
     SELECT
-        a.objectid as IDENTIFIANT_TYPE,
+        a.objectid as FID_IDENTIFIANT_TYPE,
         TRIM(a.libelle_court) as LIBELLE_COURT_TYPE
     FROM
         G_GESTIONGEO.TA_GG_CLASSE a
@@ -26,7 +26,7 @@ AS WITH CTE AS
     )
     SELECT
         ROWNUM AS IDENTIFIANT,
-        a.IDENTIFIANT_TYPE ,
+        a.FID_IDENTIFIANT_TYPE ,
         a.LIBELLE_COURT_TYPE,
         b.VALEUR AS LARGEUR,
         c.VALEUR AS LONGUEUR,
@@ -52,7 +52,7 @@ AS WITH CTE AS
                 AND
                 TRIM(LOWER(c.valeur)) = TRIM(LOWER('largeur'))
             )b
-            ON b.fid_classe = a.IDENTIFIANT_TYPE
+            ON b.fid_classe = a.FID_IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -69,7 +69,7 @@ AS WITH CTE AS
                 AND
                 TRIM(LOWER(c.valeur)) = TRIM(LOWER('longueur'))
             )c
-            ON c.fid_classe = a.IDENTIFIANT_TYPE
+            ON c.fid_classe = a.FID_IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -86,7 +86,7 @@ AS WITH CTE AS
                 AND
                 TRIM(LOWER(c.valeur)) = TRIM(LOWER('decalage abscisse droit'))
             )d
-            ON d.fid_classe = a.IDENTIFIANT_TYPE
+            ON d.fid_classe = a.FID_IDENTIFIANT_TYPE
         LEFT JOIN 
             (
             SELECT
@@ -103,8 +103,8 @@ AS WITH CTE AS
                 AND
                 TRIM(LOWER(c.valeur)) = TRIM(LOWER('decalage abscisse gauche'))
             )e
-            ON e.fid_classe = a.IDENTIFIANT_TYPE
-        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.IDENTIFIANT_TYPE
+            ON e.fid_classe = a.FID_IDENTIFIANT_TYPE
+        LEFT JOIN G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE f ON f.FID_CLASSE = a.FID_IDENTIFIANT_TYPE
         LEFT JOIN G_GESTIONGEO.TA_GG_CLASSE g ON f.FID_CLASSE_SOURCE = g.OBJECTID
         ;
 
