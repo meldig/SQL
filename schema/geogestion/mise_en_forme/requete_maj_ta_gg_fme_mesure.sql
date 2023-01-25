@@ -79,7 +79,7 @@ INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
 ;
 
 -- Correction de la colonne FID_MESURE dans la table TA_GG_FME_MESURE, redirection de la clé étrangère 
-UPDATE TA_GG_FME_MESURE a
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE a
 SET FID_MESURE = 
 (
 WITH CTE AS 
@@ -122,4 +122,26 @@ WITH CTE AS
         SELECT cte_3.n_fid_mesure FROM CTE_3 WHERE a.FID_MESURE = cte_3.o_fid_mesure
 );
 
+
+-- Insertion de deux nouvelles lignes dans la table TA_GG_FME_FILTRE_SUR_LIGNE pour gérer les classes FACCE1 et FACCE2.
+MERGE INTO G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a
+USING
+    (
+    SELECT
+        42 AS FID_CLASSE,
+        1530 AS FID_CLASSE_SOURCE
+    FROM
+        DUAL
+    UNION    
+    SELECT
+        42 AS FID_CLASSE,
+        1531 AS FID_CLASSE_SOURCE
+    FROM
+        DUAL
+    )b
+ON(a.FID_CLASSE = b.FID_CLASSE
+AND a.FID_CLASSE_SOURCE = b.FID_CLASSE_SOURCE)
+WHEN NOT MATCHED THEN
+INSERT(a.FID_CLASSE, a.FID_CLASSE_SOURCE)
+VALUES(b.FID_CLASSE, b.FID_CLASSE_SOURCE);
 /

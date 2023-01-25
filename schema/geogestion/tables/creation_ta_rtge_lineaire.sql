@@ -99,7 +99,7 @@ VALUES(
 CREATE INDEX TA_RTGE_LINEAIRE_SIDX
 ON G_GESTIONGEO.TA_RTGE_LINEAIRE(GEOM)
 INDEXTYPE IS MDSYS.SPATIAL_INDEX_V2
-PARAMETERS('sdo_indx_dims=2, layer_gtype=LINE, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
+PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTILINE, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
 
 -- 2.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
