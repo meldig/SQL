@@ -4,7 +4,7 @@ trigger d'insertion des données dans TA_RTGE_POINT_INTEGRATION
 
 -- 1. Création du trigger B_IUX_TA_RTGE_POINT_INTEGRATION
 
-CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT_INTEGRATION
+create or replace TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT_INTEGRATION
 BEFORE INSERT OR UPDATE ON TA_RTGE_POINT_INTEGRATION FOR EACH ROW
 DECLARE
 USERNAME VARCHAR(30);
@@ -16,17 +16,28 @@ BEGIN
 SELECT SYS_CONTEXT('USERENV','OS_USER') INTO USERNAME FROM DUAL;
 SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERNAME;
 
-	IF INSERTING THEN
-        :new.OBJECTID:=SEQ_TA_RTGE_POINT_INTEGRATION.nextval;
-        :new.FID_PNOM_CREATION:=usernumber;
-        :new.DATE_CREATION:=sysdate;        
-        :new.FID_PNOM_MODIFICATION:='';
-        :new.DATE_MODIFICATION:='';
+    IF INSERTING THEN
+
+        IF USERNAME = 'www-data' THEN
+            :new.OBJECTID:=SEQ_TA_RTGE_POINT_INTEGRATION.nextval;
+            :new.DATE_CREATION:=sysdate;        
+            :new.FID_PNOM_MODIFICATION:='';
+            :new.DATE_MODIFICATION:='';
+        ELSE
+            IF USERNAME <> 'www-data' THEN
+                :new.OBJECTID:=SEQ_TA_RTGE_POINT_INTEGRATION.nextval;
+                :new.FID_PNOM_CREATION:=usernumber;
+                :new.DATE_CREATION:=sysdate;        
+                :new.FID_PNOM_MODIFICATION:='';
+                :new.DATE_MODIFICATION:='';
+            END IF;
+        END IF;
     END IF;
-	IF UPDATING then
-		:new.FID_PNOM_MODIFICATION:=usernumber;
-		:new.DATE_MODIFICATION:=sysdate;
-	END IF;
+
+    IF UPDATING then
+        :new.FID_PNOM_MODIFICATION:=usernumber;
+        :new.DATE_MODIFICATION:=sysdate;
+    END IF;
 
    EXCEPTION
 
@@ -35,4 +46,3 @@ SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERN
     mail.sendmail('rjault@lillemetropole.fr',VMESSAGE,'Souci Le trigger B_IUX_TA_RTGE_POINT_INTEGRATION ','rjault@lillemetropole.fr') ;
 END;
 
-/
