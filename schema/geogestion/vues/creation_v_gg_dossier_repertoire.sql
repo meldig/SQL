@@ -72,7 +72,7 @@ WHERE
 
 
 -- 2. Commentaire de la vue.
-COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_REPERTOIRE IS 'Vue qui présente les dossiers de l''appplication gestiongeo avec leurs informations. Les dossiers gestiongeo contiennent les périmètres des surfaces sur lesquelles les éléments urbains ont été relevés par des géomètres. Cette vue présente également le chemin vers le repertoires des fichiers relevés du dossier';
+COMMENT ON TABLE G_GESTIONGEO.V_GG_DOSSIER_REPERTOIRE IS 'Vue qui présente les dossiers de l''appplication gestiongeo avec leurs informations. Les dossiers gestiongeo contiennent les périmètres des surfaces sur lesquelles les éléments urbains ont été relevés par des géomètres. Cette vue présente également le chemin vers les répertoires des fichiers relevés du dossier';
 
 -- 3. Creation des commentaires des colonnes.
 COMMENT ON COLUMN G_GESTIONGEO.V_GG_DOSSIER_REPERTOIRE.NUMERO_DOSSIER IS 'Numéro du dossier';
