@@ -35,7 +35,7 @@ COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.CODE_TYPE IS 'Nom court de la classe a 
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.LIBELLE_TYPE IS 'Libelle de la classe de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.DECALAGE_DROITE IS 'Decallage a droite par rapport a la generatrice';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.DECALAGE_GAUCHE IS 'Decallage a gauche par rapport a la generatrice';
-COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.DATE_MAJ IS 'Date de deniere modification de l''objet';
+COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.DATE_MAJ IS 'Date de derniere modification de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.GEOM IS 'Geometrie de l''objet - type ligne';
 
 

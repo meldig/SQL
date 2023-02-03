@@ -32,14 +32,14 @@ CREATE TABLE G_GEO.TA_RTGE_LINEAIRE_SOMMET
 -- 2. Commentaire
 COMMENT ON TABLE G_GEO.TA_RTGE_LINEAIRE_SOMMET IS 'Table qui présente les sommets des lineaires contenus dans la table GEO@cudl.TA_LIG_TOPO_F, avec la coordonée Z dans un champ spécifique';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.OBJECTID IS 'Cle primaire de la vue materialisee';
-COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique d''appartenance';
+COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique d''appartenance dans la table G_GEO.TA_RTGE_LINEAIRE';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.LIBELLE_TYPE IS 'Libelle de la classe de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.DECALAGE_DROITE IS 'Decallage a droite par rapport a la generatrice';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.DECALAGE_GAUCHE IS 'Decallage a gauche par rapport a la generatrice';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.COORD_Z IS 'Altitude du sommet';
-COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.DATE_MAJ IS 'Date de deniere modification de l''objet';
+COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.DATE_MAJ IS 'Date de derniere modification de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.GEOM IS 'Geometrie du sommet - type point';
 
 

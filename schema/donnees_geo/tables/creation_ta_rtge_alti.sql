@@ -31,14 +31,14 @@ CREATE TABLE G_GEO.TA_RTGE_ALTI
 -- 2. Commentaire
 COMMENT ON TABLE G_GEO.TA_RTGE_ALTI IS 'Table qui présente les éléments contenus dans les tables G_GEO.TA_RTGE_POINT et G_GEO.TA_RTGE_LINEAIRE_SOMMET situés dans le perimètre de la MEL et dont l''altitude est comprise entre 0 et 130 m';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.OBJECTID IS 'Cle primaire de la vue materialisee';
-COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.FID_IDENTIFIANT IS 'Identifiant de l''entité dans la table source TA_RTGE_POINT, TA_RTGE_LINAIRE';
-COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique';
+COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.FID_IDENTIFIANT IS 'Identifiant de l''entité dans la table source G_GEO.TA_RTGE_POINT, G_GEO.TA_RTGE_LINAIRE_SOMMET';
+COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique d''appartenance dans les tables G_GEO.TA_RTGE_POINT et G_GEO.TA_RTGE_LINEAIRE';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.LIBELLE_TYPE IS 'Libelle de la classe de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.COORD_Z IS 'Altitude du sommet';
-COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.SOURCE_ELEMENT IS 'Provenance du point, 1: TA_RTGE_POINT; 2: TA_RTGE_LINEAIRE_SOMMET';
-COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.DATE_MAJ IS 'Date de deniere modification de l''objet';
+COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.SOURCE_ELEMENT IS 'Provenance du point, 1: G_GEO.TA_RTGE_POINT; 2: G_GEO.TA_RTGE_LINEAIRE_SOMMET';
+COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.DATE_MAJ IS 'Date de derniere modification de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_ALTI.GEOM IS 'Geometrie de l''objet - type ligne';
 
 

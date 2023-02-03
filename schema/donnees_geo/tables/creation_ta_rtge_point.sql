@@ -30,7 +30,7 @@ CREATE TABLE G_GEO.TA_RTGE_POINT
 
 
 -- 2. Commentaire
-COMMENT ON TABLE G_GEO.TA_RTGE_POINT IS 'Table qui présente les points contenus dans la table GEO@cudl.TA_POINT_TOPO_F, avec la coordonnée Z dans une champ spécifique';
+COMMENT ON TABLE G_GEO.TA_RTGE_POINT IS 'Table qui présente les points contenus dans la table GEO@cudl.TA_POINT_TOPO_F, avec la coordonnée Z dans un champ spécifique';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique - Cle primaire de la vue materialisee';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
@@ -39,7 +39,7 @@ COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.LONGUEUR IS 'Longueur de l''objet (en cm)'
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.LARGEUR IS 'Largeur de l''objet (en cm)';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.ORIENTATION IS 'Orientation de l''objet (en degre)';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.COORD_Z IS 'Altitude du point';
-COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.DATE_MAJ IS 'Date de deniere modification de l''objet';
+COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.DATE_MAJ IS 'Date de derniere modification de l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_POINT.GEOM IS 'Geometrie de l''objet - type point';
 
 

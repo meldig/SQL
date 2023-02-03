@@ -1,0 +1,73 @@
+-- Creation de la vue V_RTGE_POINT afin de restituer les informations de la table TA_RGE_POINT
+
+-- 1. Creation de la vue.
+CREATE OR REPLACE FORCE VIEW G_GEO.V_RTGE_POINT (
+	IDENTIFIANT_OBJET,
+	IDENTIFIANT_TYPE,
+	CODE_TYPE,
+	LIBELLE_TYPE,
+	LONGUEUR,
+	LARGEUR,
+	ORIENTATION,
+	COORD_Z,
+	DATE_MAJ,
+	GEOM,
+CONSTRAINT "V_RTGE_POINT_PK" PRIMARY KEY ("IDENTIFIANT_OBJET") DISABLE) 
+AS
+SELECT
+	a.IDENTIFIANT_OBJET,
+	a.IDENTIFIANT_TYPE,
+	a.CODE_TYPE,
+	a.LIBELLE_TYPE,
+	a.LONGUEUR,
+	a.LARGEUR,
+	a.ORIENTATION,
+	a.COORD_Z,
+	a.DATE_MAJ,
+	a.GEOM
+FROM
+	G_GEO.TA_RTGE_POINT a
+;
+
+
+-- 2. Commentaire de la vue.
+COMMENT ON TABLE G_GEO.V_RTGE_POINT IS 'Vue qui présente les points contenus dans la table G_GEO.TA_RTGE_POINT.';
+
+-- 3. Creation des commentaires des colonnes.
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique - Cle primaire de la vue.';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.LIBELLE_TYPE IS 'Libelle de la classe de l''objet';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.LONGUEUR IS 'Longueur de l''objet (en cm)';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.LARGEUR IS 'Largeur de l''objet (en cm)';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.ORIENTATION IS 'Orientation de l''objet (en degre)';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.COORD_Z IS 'Altitude du point (en m)';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.DATE_MAJ IS 'Date de derniere modification de l''objet';
+COMMENT ON COLUMN G_GEO.V_RTGE_POINT.GEOM IS 'Geometrie de l''objet - type point';
+
+
+-- 4. Création des métadonnées spatiales
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'V_RTGE_POINT',
+    'GEOM',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005)), 
+    2154
+);
+COMMIT;
+
+
+-- 5. Affection des droits de lecture
+GRANT SELECT ON G_GEO.V_RTGE_POINT TO G_ADMIN_SIG;
+GRANT SELECT ON G_GEO.V_RTGE_POINT TO G_SERVICE_WEB;
+GRANT SELECT ON G_GEO.V_RTGE_POINT TO ISOGEO_LEC;
+GRANT SELECT ON G_GEO.V_RTGE_POINT TO G_GESTIONGEO_LEC;
+GRANT SELECT ON G_GEO.V_RTGE_POINT TO G_GESTIONGEO_MAJ;
+
+
+/
