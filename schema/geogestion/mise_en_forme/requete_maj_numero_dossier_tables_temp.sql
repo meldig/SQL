@@ -4,21 +4,26 @@
 METHODOLOGIE
 
 1. Créer un dossier pour les elements avec des numéros de dossier inexistant (IC et RECOL) -> 1
-2. Mise à jour 1 des GEO_REF des tables GPS qui ne commencent ni par REC ni IC
-3. Mise à jour du GEO_REF pour retirer TOPO les caractères alphabetiques
-4. Mise à jour des tables de log
+2. Mise à jour 1 des GEO_REF des tables GPS qui ne commencent ni par REC ni IC mais qui sont des dossiers de recolement
+3. Mise à jour 2 des GEO_REF des table GPS qui ne commencent ni par REC ni IC mais qui sont des dossiers de IC
+4. Mise à jour du GEO_REF pour retirer TOPO les caractères alphabetiques
+5. Mise à jour des tables de log
 
 */
 
 -- 1. Gestion de la table TA_POINT_TOPO_GPS.
 UPDATE G_GESTIONGEO.TEMP_PTTOPO
 SET ID_DOS = '1'
-WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
+WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER WHERE FID_FAMILLE = 1);
 
+-- 1. Gestion de la table TA_POINT_TOPO_GPS.
+UPDATE G_GESTIONGEO.TEMP_PTTOPO
+SET ID_DOS = '2'
+WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER WHERE FID_FAMILLE = 2);
 
--- 2. Mise à jour des numéros de dossier des tables TA_LIG_TOPO_G et TA_LIG_TOPO_GPS
+-- 2. Mise à jour des numéros de dossier des tables TA_POINT_TOPO_F et TA_LIG_TOPO_F
 
--- 2.1. TA_POINT_TOPO_GPS
+-- 2.1. TEMP_TA_POINT_TOPO_F
 MERGE INTO G_GESTIONGEO.TEMP_TA_POINT_TOPO_F a
 USING
 	(
@@ -33,7 +38,7 @@ WHEN MATCHED THEN
 UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
--- 2.2. TA_POINT_TOPO_GPS
+-- 2.2. TEMP_TA_LIG_TOPO_F
 MERGE INTO G_GESTIONGEO.TEMP_TA_LIG_TOPO_F a
 USING
 	(
@@ -48,7 +53,7 @@ WHEN MATCHED THEN
 UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
--- 2.3. TA_POINT_TOPO_GPS
+-- 2.3. TEMP_TA_POINT_TOPO_GPS
 MERGE INTO G_GESTIONGEO.TEMP_TA_LIG_TOPO_F a
 USING
 	(
@@ -63,7 +68,7 @@ WHEN MATCHED THEN
 UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
--- 2.4. TA_POINT_TOPO_GPS
+-- 2.4. TEMP_TA_POINT_TOPO_GPS
 MERGE INTO G_GESTIONGEO.TEMP_TA_LIG_TOPO_F a
 USING
 	(
