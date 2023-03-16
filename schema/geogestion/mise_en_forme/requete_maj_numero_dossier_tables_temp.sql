@@ -6,22 +6,24 @@ METHODOLOGIE
 1. Créer un dossier pour les elements avec des numéros de dossier inexistant (IC et RECOL) -> 1
 2. Mise à jour 1 des GEO_REF des tables GPS qui ne commencent ni par REC ni IC mais qui sont des dossiers de recolement
 3. Mise à jour 2 des GEO_REF des table GPS qui ne commencent ni par REC ni IC mais qui sont des dossiers de IC
-4. Mise à jour du GEO_REF pour retirer TOPO les caractères alphabetiques
+4. Mise à jour du GEO_REF pour retirer les caractères alphabetiques
 5. Mise à jour des tables de log
 
 */
 
--- 1. Gestion de la table TA_POINT_TOPO_GPS.
+
+-----------------------------------------------
+-- 1. Gestion de la table TEMP_PTTOPO. --
+-----------------------------------------------
+
 UPDATE G_GESTIONGEO.TEMP_PTTOPO
 SET ID_DOS = '1'
-WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER WHERE FID_FAMILLE = 1);
+WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
--- 1. Gestion de la table TA_POINT_TOPO_GPS.
-UPDATE G_GESTIONGEO.TEMP_PTTOPO
-SET ID_DOS = '2'
-WHERE ID_DOS NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER WHERE FID_FAMILLE = 2);
 
--- 2. Mise à jour des numéros de dossier des tables TA_POINT_TOPO_F et TA_LIG_TOPO_F
+----------------------------------------------------------------------------------------
+-- 2. Mise à jour des numéros de dossier des tables TA_POINT_TOPO_F et TA_LIG_TOPO_F. --
+----------------------------------------------------------------------------------------
 
 -- 2.1. TEMP_TA_POINT_TOPO_F
 MERGE INTO G_GESTIONGEO.TEMP_TA_POINT_TOPO_F a
@@ -83,7 +85,10 @@ WHEN MATCHED THEN
 UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
--- 3. Gestion de la table TA_POINT_TOPO_GPS.
+
+-----------------------------------------------
+-- 3. Gestion de la table TA_POINT_TOPO_GPS. --
+-----------------------------------------------
 
 -- 3.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 UPDATE G_GESTIONGEO.TEMP_TA_POINT_TOPO_GPS
@@ -113,7 +118,9 @@ SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
 
--- 4. Gestion de la table TA_LIG_TOPO_GPS.
+--------------------------------------------
+-- 4. Gestion de la table TA_LIG_TOPO_GPS.--
+--------------------------------------------
 
 -- 4.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -148,7 +155,9 @@ SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
 
--- 5. Gestion de la table TA_POINT_TOPO_FIN
+----------------------------------------------
+-- 5. Gestion de la table TA_POINT_TOPO_FIN --
+----------------------------------------------
 
 -- 5.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -183,7 +192,9 @@ SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
 
--- 6. Gestion de la table TA_POINT_TOPO_FIN
+-----------------------------------------------
+-- 6. Gestion de la table TA_POINT_TOPO_FIN. --
+-----------------------------------------------
 
 -- 6.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -218,7 +229,9 @@ SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
 
--- 7. Gestion de la table TA_POINT_TOPO_FIN
+-----------------------------------------------
+-- 7. Gestion de la table TA_POINT_TOPO_FIN. --
+-----------------------------------------------
 
 -- 7.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -252,7 +265,10 @@ UPDATE G_GESTIONGEO.TEMP_TA_SUR_TOPO_G
 SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
--- 8. Gestion de la table TA_POINT_TOPO_FIN
+
+-----------------------------------------------
+-- 8. Gestion de la table TA_POINT_TOPO_FIN. --
+-----------------------------------------------
 
 -- 8.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -286,7 +302,11 @@ UPDATE G_GESTIONGEO.TEMP_TA_SUR_TOPO_G_LOG
 SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
--- 9. Gestion de la table TA_POINT_TOPO_F_LOG
+
+------------------------------------------------
+-- 9. Gestion de la table TA_POINT_TOPO_F_LOG --
+------------------------------------------------
+
 MERGE INTO G_GESTIONGEO.TEMP_TA_POINT_TOPO_F_LOG a
 USING
 	(
@@ -302,7 +322,10 @@ UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
 
--- 10. Gestion de la table TA_LIG_TOPO_F_LOG
+-----------------------------------------------
+-- 10. Gestion de la table TA_LIG_TOPO_F_LOG --
+-----------------------------------------------
+
 MERGE INTO G_GESTIONGEO.TEMP_TA_LIG_TOPO_F_LOG a
 USING
 	(
@@ -317,7 +340,10 @@ WHEN MATCHED THEN
 UPDATE SET a.GEO_REF = b.GEO_REF
 ;
 
--- 11. Gestion de la table TA_POINT_TOPO_F_LOG
+
+--------------------------------------------------
+-- 11. Gestion de la table TA_POINT_TOPO_F_LOG. --
+--------------------------------------------------
 
 -- 11.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 
@@ -352,7 +378,9 @@ SET GEO_REF = '1'
 WHERE GEO_REF NOT IN (SELECT OBJECTID FROM TA_GG_DOSSIER);
 
 
--- 12. Gestion de la table TA_POINT_TOPO_F_LOG
+--------------------------------------------------
+-- 12. Gestion de la table TA_POINT_TOPO_F_LOG. --
+--------------------------------------------------
 
 -- 12.1. Mise à 1 des GEO_REF qui ne commencent ni par REC ni par IC.
 

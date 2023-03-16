@@ -1,12 +1,14 @@
-create or replace TRIGGER G_GESTIONGEO.B_XUD_TA_RTGE_POINT_LOG
-BEFORE UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_POINT
+CREATE OR REPLACE TRIGGER G_GESTIONGEO.A_IUD_TA_RTGE_POINT_LOG
+AFTER INSERT OR UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_POINT
 FOR EACH ROW
 DECLARE
+V_OBJECTID NUMBER(38,0);
 USERNAME VARCHAR(30);
 USERNUMBER NUMBER(38,0);
+NUMBER_INSERTION NUMBER(38,0);
 NUMBER_MODIFICATION NUMBER(38,0);
 NUMBER_SUPPRESSION NUMBER(38,0);
-NUMBER_INSERTION NUMBER(38,0);
+
 
 BEGIN
 -- selection du nom de l''agent dans la variable USERNAME
@@ -64,29 +66,41 @@ WHERE
 	TRIM(LOWER(d.libelle)) = TRIM(LOWER('type d''action'));
 
 
+SELECT 
+	SEQ_TA_RTGE_POINT_LOG.nextval INTO V_OBJECTID 
+FROM
+	DUAL;
+
+
 -- TRIGGER
-    IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_RTGE_POINT_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de action.
-        INSERT INTO G_GESTIONGEO.TA_RTGE_POINT_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, TEXTE, LONGUEUR, LARGEUR, ORIENTATION, HAUTEUR, INCLINAISON, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
+	IF INSERTING THEN
+
+        INSERT INTO G_GESTIONGEO.TA_RTGE_POINT_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, TEXTE, LONGUEUR, LARGEUR, ORIENTATION, HAUTEUR, INCLINAISON, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
             VALUES(
-            		:old.GEOM,
-					:old.objectid,
-					:old.FID_NUMERO_DOSSIER,
-					:old.FID_IDENTIFIANT_TYPE,
-					:old.TEXTE,
-					:old.LONGUEUR,
-					:old.LARGEUR,
-					:old.ORIENTATION,
-					:old.HAUTEUR,
-					:old.INCLINAISON,
+	            	V_OBJECTID,
+            		:new.GEOM,
+					:new.objectid,
+					:new.FID_NUMERO_DOSSIER,
+					:new.FID_IDENTIFIANT_TYPE,
+					:new.TEXTE,
+					:new.LONGUEUR,
+					:new.LARGEUR,
+					:new.ORIENTATION,
+					:new.HAUTEUR,
+					:new.INCLINAISON,
 					USERNUMBER,
 					SYSDATE,
-					NUMBER_MODIFICATION
+					NUMBER_INSERTION,
+					:new.FID_IDENTIFIANT_OBJET_INTEGRATION
 				);
+
     ELSE
 
-    IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_RTGE_POINT_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de action.
-            INSERT INTO G_GESTIONGEO.TA_RTGE_POINT_LOG(GEOM, IDENTIFIANT_OBJET, NFID_UFID_MERO_DOSSIER, FID_IDENTIFIANT_TYPE, TEXTE, LONGUEUR, LARGEUR, ORIENTATION, HAUTEUR, INCLINAISON, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
+    IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_RTGE_POINT_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de action.
+        
+        INSERT INTO G_GESTIONGEO.TA_RTGE_POINT_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, TEXTE, LONGUEUR, LARGEUR, ORIENTATION, HAUTEUR, INCLINAISON, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
             VALUES(
+	            	V_OBJECTID,
             		:old.GEOM,
 					:old.objectid,
 					:old.FID_NUMERO_DOSSIER,
@@ -99,14 +113,38 @@ WHERE
 					:old.INCLINAISON,
 					USERNUMBER,
 					SYSDATE,
-					NUMBER_SUPPRESSION
+					NUMBER_MODIFICATION,
+					:old.FID_IDENTIFIANT_OBJET_INTEGRATION
 				);
+
     END IF;
+    	END IF;
+
+    IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_RTGE_POINT_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de action.
+            
+            INSERT INTO G_GESTIONGEO.TA_RTGE_POINT_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, TEXTE, LONGUEUR, LARGEUR, ORIENTATION, HAUTEUR, INCLINAISON, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
+            	VALUES(
+	            	V_OBJECTID,
+            		:old.GEOM,
+					:old.objectid,
+					:old.FID_NUMERO_DOSSIER,
+					:old.FID_IDENTIFIANT_TYPE,
+					:old.TEXTE,
+					:old.LONGUEUR,
+					:old.LARGEUR,
+					:old.ORIENTATION,
+					:old.HAUTEUR,
+					:old.INCLINAISON,
+					USERNUMBER,
+					SYSDATE,
+					NUMBER_SUPPRESSION,
+					:old.FID_IDENTIFIANT_OBJET_INTEGRATION
+				);
     END IF;
 
     EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_DALC.B_XUD_TA_RTGE_POINT_LOG','rjault@lillemetropole.fr');
+            mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_RTGE_POINT_LOG','rjault@lillemetropole.fr');
 END;
 
 /

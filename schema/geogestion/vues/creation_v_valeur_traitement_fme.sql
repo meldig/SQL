@@ -45,7 +45,7 @@ AS WITH CTE AS
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
                 INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
-                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
                 TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
@@ -62,7 +62,7 @@ AS WITH CTE AS
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
                 INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
-                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
                 TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
@@ -79,7 +79,7 @@ AS WITH CTE AS
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
                 INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
-                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
                 TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))
@@ -96,7 +96,7 @@ AS WITH CTE AS
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
                 INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
-                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = c.objectid
+                INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
                 TRIM(LOWER(e.libelle)) = TRIM(LOWER('mesure'))

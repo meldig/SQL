@@ -115,4 +115,66 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
+
+
+-- 7. Ajout des domaines Classe des elements ponctuels representes par un rectangle ou un cercle.
+MERGE INTO G_GESTIONGEO.TA_GG_DOMAINE a
+USING
+	(
+		SELECT TRIM(LOWER('Classe des elements ponctuels représentes par un rectangle')) AS DOMAINE FROM DUAL UNION
+		SELECT TRIM(LOWER('Classe des elements ponctuels représentes par un cercle')) AS DOMAINE FROM DUAL 
+	)b
+ON(TRIM(LOWER(a.DOMAINE)) = TRIM(LOWER(b.DOMAINE)))
+WHEN NOT MATCHED THEN
+INSERT (a.DOMAINE)
+VALUES (b.DOMAINE);
+
+
+-- 8. Insertion des relations classe - avec le domaine Classe des elements ponctuels représentes par un rectangle
+MERGE INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE a
+USING
+	(
+		SELECT
+			a.objectid AS FID_CLASSE,
+			b.objectid AS FID_DOMAINE
+		FROM
+			TA_GG_CLASSE a,
+			TA_GG_DOMAINE b
+		WHERE
+			a.objectid IN ('66','29','100','31','45','36','33','172','188','89','84','83','741','116','64','75','38','76','59','111','137','168','40','167','71','70','88','107','179','73','164','178','162','191','161','142','114','93','740','63','545','670','690','691','53','121','52','37','39','56','82','108','81','736','141','139','405','547','126','160','132','30','151','119','133','79','185','118','32','158','125','120','109','55','176','96')
+			AND TRIM(LOWER(b.DOMAINE )) = TRIM(LOWER('Classe des elements ponctuels représentes par un rectangle'))
+	)b
+ON (a.FID_CLASSE = b.FID_CLASSE
+AND a.FID_DOMAINE = b.FID_DOMAINE)
+WHEN NOT MATCHED THEN
+INSERT (a.FID_CLASSE, a.FID_DOMAINE)
+VALUES (b.FID_CLASSE, b.FID_DOMAINE)
+;
+
+
+-- 9. Insertion des relations classe - avec le domaine Classe des elements ponctuels représentes par un rectangle
+MERGE INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE a
+USING
+	(
+		SELECT
+			a.objectid AS FID_CLASSE,
+			b.objectid AS FID_DOMAINE
+		FROM
+			TA_GG_CLASSE a,
+			TA_GG_DOMAINE b
+		WHERE
+			a.objectid IN ('28','738','146','170','187','110','115','48','739','105','130','760','157','46','129','761','737','147','123','1290','122','50','155','156','152')
+			AND TRIM(LOWER(b.DOMAINE )) = TRIM(LOWER('Classe des elements ponctuels représentes par un cercle'))
+	)b
+ON (a.FID_CLASSE = b.FID_CLASSE
+AND a.FID_DOMAINE = b.FID_DOMAINE)
+WHEN NOT MATCHED THEN
+INSERT (a.FID_CLASSE, a.FID_DOMAINE)
+VALUES (b.FID_CLASSE, b.FID_DOMAINE)
+;
+
+
+
 /
+
+

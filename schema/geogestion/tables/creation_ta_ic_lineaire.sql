@@ -98,7 +98,7 @@ VALUES(
 -- 2.2.6.1. Création de l'index spatial sur le champ geom
 CREATE INDEX TA_IC_LINEAIRE_SIDX
 ON G_GESTIONGEO.TA_IC_LINEAIRE(GEOM)
-INDEXTYPE IS MDSYS.SPATIAL_INDEX_V2
+INDEXTYPE IS MDSYS.SPATIAL_INDEX
 PARAMETERS('sdo_indx_dims=2, layer_gtype=MULTILINE, tablespace=G_ADT_INDX, work_tablespace=DATA_TEMP');
 
 

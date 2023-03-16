@@ -26,6 +26,29 @@ VALUES (b.LIBELLE)
 ;
 
 
+-- Insertion des libelles long dans TA_GG_LIBELLE
+
+MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE a
+USING
+	(
+	SELECT
+	    a.objectid AS FID_LIBELLE_LONG
+	FROM
+	    G_GESTIONGEO.TA_GG_LIBELLE_LONG a
+	WHERE
+	    (
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('largeur')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('longueur')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
+	    )
+	)b
+ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
+WHEN NOT MATCHED THEN
+INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
+;
+
+
 -- Insertion des relations libelle et famille
 
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE a
@@ -35,14 +58,15 @@ USING
 	    a.objectid AS FID_LIBELLE,
 	    b.objectid AS FID_FAMILLE
 	FROM
-	    G_GESTIONGEO.TA_GG_LIBELLE_LONG a,
+	    G_GESTIONGEO.TA_GG_LIBELLE a
+	    INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.OBJECTID = a.FID_LIBELLE_LONG,
 	    G_GESTIONGEO.TA_GG_FAMILLE b
 	WHERE
-	    (
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('largeur')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('longueur')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
+		(
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('largeur')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('longueur')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
 	    )
 	    AND LOWER(TRIM(b.libelle)) IN LOWER(TRIM('mesure'))
 	)b
@@ -53,30 +77,6 @@ INSERT (a.FID_FAMILLE,a.FID_LIBELLE)
 VALUES (b.FID_FAMILLE,b.FID_LIBELLE)
 ;
 
--- Insertion des libelles long dans TA_GG_LIBELLE
-
-MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE a
-USING
-	(
-	SELECT
-	    a.objectid AS FID_LIBELLE_LONG
-	FROM
-	    G_GESTIONGEO.TA_GG_LIBELLE_LONG a
-	    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE b ON b.FID_LIBELLE = a.OBJECTID
-	    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE c ON c.OBJECTID = b.FID_FAMILLE
-	WHERE
-	    (
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('largeur')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('longueur')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
-	    )
-	    AND LOWER(TRIM(c.libelle)) IN LOWER(TRIM('mesure'))
-	)b
-ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
-WHEN NOT MATCHED THEN
-INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
-;
 
 -- Correction de la colonne FID_MESURE dans la table TA_GG_FME_MESURE, redirection de la clé étrangère 
 UPDATE G_GESTIONGEO.TA_GG_FME_MESURE a
@@ -90,7 +90,7 @@ WITH CTE AS
 		FROM 
 		    G_GESTIONGEO.TA_GG_LIBELLE a
 		    INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG b ON a.fid_libelle_long = b.objectid
-		    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE c ON c.fid_libelle = b.objectid
+		    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE c ON c.fid_libelle = a.objectid
 		    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE d ON d.objectid = c.fid_famille
 		WHERE 
 		    d.libelle = 'Mesure'
