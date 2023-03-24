@@ -4,7 +4,7 @@ DROP INDEX TA_RTGE_LINEAIRE_SOMMET_SIDX;
 DROP INDEX TA_RTGE_LINEAIRE_SOMMET_IDENTIFIANT_TYPE_IDX;
 DROP INDEX TA_RTGE_LINEAIRE_SOMMET_CODE_TYPE_IDX;
 DROP INDEX TA_RTGE_LINEAIRE_SOMMET_LIBELLE_TYPE_IDX;
-DROP TABLE TA_RTGE_LINEAIRE_SOMMET;
+DROP TABLE TA_RTGE_LINEAIRE_SOMMET CASCADE CONSTRAINTS;
 */
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ CREATE TABLE G_GEO.TA_RTGE_LINEAIRE_SOMMET
 
 
 -- 2. Commentaire
-COMMENT ON TABLE G_GEO.TA_RTGE_LINEAIRE_SOMMET IS 'Table qui présente les sommets des lineaires contenus dans la table GEO@cudl.TA_LIG_TOPO_F, avec la coordonée Z dans un champ spécifique';
+COMMENT ON TABLE G_GEO.TA_RTGE_LINEAIRE_SOMMET IS 'Table qui présente les sommets des lineaires contenus dans la table GEO.TA_LIG_TOPO_F, avec la coordonée Z dans un champ spécifique';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.OBJECTID IS 'Cle primaire de la vue materialisee';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique d''appartenance dans la table G_GEO.TA_RTGE_LINEAIRE';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE_SOMMET.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
@@ -94,3 +94,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON G_GEO.TA_RTGE_LINEAIRE_SOMMET TO G_GEO_M
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE_SOMMET TO G_GEO_LEC;
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE_SOMMET TO G_SERVICE_WEB;
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE_SOMMET TO ISOGEO_LEC;
+
+COMMIT;
+
+/

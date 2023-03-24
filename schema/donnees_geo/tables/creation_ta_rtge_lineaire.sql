@@ -4,7 +4,7 @@ DROP INDEX TA_RTGE_LINEAIRE_SIDX;
 DROP INDEX TA_RTGE_LINEAIRE_IDENTIFIANT_TYPE_IDX;
 DROP INDEX TA_RTGE_LINEAIRE_CODE_TYPE_IDX;
 DROP INDEX TA_RTGE_LINEAIRE_LIBELLE_TYPE_IDX;
-DROP TABLE TA_RTGE_LINEAIRE;
+DROP TABLE TA_RTGE_LINEAIRE CASCADE CONSTRAINTS;
 */
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ CREATE TABLE G_GEO.TA_RTGE_LINEAIRE
 
 
 -- 2. Commentaire
-COMMENT ON TABLE G_GEO.TA_RTGE_LINEAIRE IS 'Table qui présente les éléments contenus dans la table GEO@cudl.TA_LIG_TOPO_F. Les arcs sont linéarisés';
+COMMENT ON TABLE G_GEO.TA_RTGE_LINEAIRE IS 'Table qui présente les éléments contenus dans la table GEO.TA_LIG_TOPO_F. Les arcs sont linéarisés';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique - Cle primaire de la vue materialisee';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.TA_RTGE_LINEAIRE.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
@@ -86,3 +86,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON G_GEO.TA_RTGE_LINEAIRE TO G_GEO_MAJ;
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE TO G_GEO_LEC;
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE TO G_SERVICE_WEB;
 GRANT SELECT ON G_GEO.TA_RTGE_LINEAIRE TO ISOGEO_LEC;
+
+COMMIT;
+
+/

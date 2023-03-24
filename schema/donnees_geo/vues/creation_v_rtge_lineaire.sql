@@ -30,7 +30,7 @@ FROM
 COMMENT ON TABLE G_GEO.V_RTGE_LINEAIRE IS 'Vue qui présente les points contenus dans la table G_GEO.TA_RTGE_LINEAIRE (les arcs sont linearises).';
 
 -- 3. Creation des commentaires des colonnes.
-COMMENT ON COLUMN G_GEO.V_RTGE_LINEAIRE.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique - Cle primaire de la vue materialisee';
+COMMENT ON COLUMN G_GEO.V_RTGE_LINEAIRE.IDENTIFIANT_OBJET IS 'Identifiant interne de l''objet geographique - Cle primaire de la vue';
 COMMENT ON COLUMN G_GEO.V_RTGE_LINEAIRE.IDENTIFIANT_TYPE IS 'Identifiant de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.V_RTGE_LINEAIRE.CODE_TYPE IS 'Nom court de la classe a laquelle appartient l''objet';
 COMMENT ON COLUMN G_GEO.V_RTGE_LINEAIRE.LIBELLE_TYPE IS 'Libelle de la classe de l''objet';
@@ -50,7 +50,7 @@ INSERT INTO USER_SDO_GEOM_METADATA(
 VALUES(
     'V_RTGE_LINEAIRE',
     'GEOM',
-    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005)), 
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005),SDO_DIM_ELEMENT('Z', -1000, 10000, 0.005)), 
     2154
 );
 COMMIT;
