@@ -36,7 +36,7 @@ FROM
 
 
 -- 2. Commentaire de la vue.
-COMMENT ON TABLE GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F IS 'Vue qui comptabilise les objets de la table GEO.TA_POINT_TOPO_F par classe d''objet.';
+COMMENT ON TABLE GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F IS 'Vue qui comptabilise les objets valides (GEO_ON_VALIDE = 0) de la table GEO.TA_POINT_TOPO_F par classe d''objet.';
 
 
 -- 3. Creation des commentaires des colonnes.
