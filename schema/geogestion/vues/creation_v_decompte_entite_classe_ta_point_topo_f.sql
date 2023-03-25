@@ -1,0 +1,51 @@
+-- CREATION VUE GEO afin de comptabiliser les objets contenus dans la table TA_POINT_TOPO_F:
+
+-------------------------------
+-- V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F--
+-------------------------------
+
+
+-- Creation de la vue V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F afin de restituer les informations des dossiers
+
+-- 1. Creation de la vue.
+CREATE OR REPLACE FORCE VIEW GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F (OBJECTID, NOMBRE_OBJET, CLA_INU, CLA_CODE, CLA_LI, VALIDITE_CLASSE,
+CONSTRAINT "V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F_PK" PRIMARY KEY ("OBJECTID") DISABLE) 
+AS
+WITH CTE AS
+	(
+	SELECT
+		COUNT(a.OBJECTID) AS NOMBRE_OBJET,
+		a.CLA_INU
+	FROM
+		GEO.TA_POINT_TOPO_F a
+	WHERE
+		a.GEO_ON_VALIDE = 0
+	GROUP BY
+	    a.CLA_INU
+	)
+SELECT
+	ROWNUM AS OBJECTID,
+	CTE.NOMBRE_OBJET AS NOMBRE_OBJET,
+	CTE.CLA_INU AS CLA_INU,
+	b.CLA_CODE AS CLA_CODE,
+	b.CLA_Li AS CLA_LI,
+	b.CLA_VAL AS VALIDITE_CLASSE
+FROM
+	CTE CTE INNER JOIN TA_CLASSE b on CTE.CLA_INU = b.CLA_INU
+;
+
+
+-- 2. Commentaire de la vue.
+COMMENT ON TABLE GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F IS 'Vue qui comptabilise les objets valides (GEO_ON_VALIDE = 0) de la table GEO.TA_POINT_TOPO_F par classe d''objet.';
+
+
+-- 3. Creation des commentaires des colonnes.
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.OBJECTID IS 'Clé primaire de la table.';
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.NOMBRE_OBJET IS 'Nombre d''objet appartenant à la classe considérée';
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.CLA_INU IS 'Identifiant de la classe d''objet';
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.CLA_CODE IS 'Code de la classe d''objet';
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.CLA_LI IS 'Libelle de la classe';
+COMMENT ON COLUMN GEO.V_DECOMPTE_ENTITE_CLASSE_TA_POINT_TOPO_F.VALIDITE_CLASSE IS 'Validite de la classe, 1: classe valide, 0 classe non valide';
+
+
+/
