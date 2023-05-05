@@ -16,8 +16,6 @@ CREATE TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_4
 ALTER TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_4
 ADD CONSTRAINT TA_GG_RECUPERATION_Z_ETAPE_4_OBJECTID_OBJECTID_ELEMENT_OBJECTID_SOMMET_UNIQUE UNIQUE("OBJECTID","OBJECTID_ELEMENT","OBJECTID_SOMMET");
 
-
-
 -- 5.3. Création du commentaire de la table.
 COMMENT ON TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_4  IS  'Table temporaire  utilisée pour récupérer le Z des éléments linéaire de la table TA_LIG_TOPO_GPS: Attribution de l''altitude du point topo situé à la même localisation au sommet';
 
