@@ -1,0 +1,43 @@
+-- 11. TA_GG_RECUPERATION_Z_ETAPE_12: Reconstitution de la géométrie complète avec la fonction SDO_AGGR_UNION 
+-- 11.1. Création de la table.
+CREATE TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12 
+   (	
+   	OBJECTID NUMBER(38,0), 
+    FID_NUMERO_DOSSIER NUMBER(38,0), 
+    GEOM SDO_GEOMETRY 
+   )
+;
+
+-- 11.2. Création de la contrainte d'unité
+ALTER TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12
+ADD CONSTRAINT TA_GG_RECUPERATION_Z_ETAPE_12_OBJECTID_UNIQUE UNIQUE("OBJECTID");
+
+
+
+-- 11.3. Création du commentaire de la table.
+COMMENT ON TABLE G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12  IS  'Table utilisée pour récupérer les mauvaises géométries de la table TA_RTGE_LINEAIRE_INTEGRATION.';
+
+-- 11.4. Création des commentaires sur les colonnes.
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12.OBJECTID IS 'Identifiant de l''objet'', contrainte d''unicité de la table';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12.FID_NUMERO_DOSSIER IS 'Numéro du dossier de l''objet';
+COMMENT ON COLUMN G_GESTIONGEO.TA_GG_RECUPERATION_Z_ETAPE_12.GEOM IS 'Géométrie de l''objet''';
+
+-- 11.5. Creation des metadonnees
+INSERT INTO USER_SDO_GEOM_METADATA(
+    TABLE_NAME, 
+    COLUMN_NAME, 
+    DIMINFO, 
+    SRID
+)
+VALUES(
+    'TA_GG_RECUPERATION_Z_ETAPE_12',
+    'GEOM',
+    SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005),SDO_DIM_ELEMENT('Z', -100, 100, 0.005)),
+    2154
+);
+
+-- 11.6. Gestion des droits
+GRANT SELECT, UPDATE, INSERT, DELETE ON TA_GG_RECUPERATION_Z_ETAPE_12 TO G_GESTIONGEO_MAJ; 
+
+/
+

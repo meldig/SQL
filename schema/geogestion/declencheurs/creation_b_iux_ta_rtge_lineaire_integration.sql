@@ -17,13 +17,11 @@ SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERN
     IF INSERTING THEN
 
         IF USERNAME = 'www-data' THEN
-            :new.OBJECTID:=SEQ_TA_RTGE_LINEAIRE_INTEGRATION.nextval;
             :new.DATE_CREATION:=sysdate;        
             :new.FID_PNOM_MODIFICATION:='';
             :new.DATE_MODIFICATION:='';
         ELSE
             IF USERNAME <> 'www-data' THEN
-                :new.OBJECTID:=SEQ_TA_RTGE_LINEAIRE_INTEGRATION.nextval;
                 :new.FID_PNOM_CREATION:=usernumber;
                 :new.DATE_CREATION:=sysdate;        
                 :new.FID_PNOM_MODIFICATION:='';

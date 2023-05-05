@@ -74,17 +74,12 @@ WHERE
 	TRIM(LOWER(d.libelle)) = TRIM(LOWER('type d''action'));
 
 
-SELECT 
-	SEQ_TA_OCSMEL_LOG.nextval INTO V_OBJECTID 
-FROM
-	DUAL;
 
 
 -- TRIGGER
     IF INSERTING THEN -- En cas de modification on insère les valeurs de la table TA_OCSMEL_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
+        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
             VALUES(
-            		V_OBJECTID,
             		:new.GEOM,
 					:new.objectid,
 --					:old.NUMERO_DOSSIER,
@@ -96,9 +91,8 @@ FROM
     ELSE
 
     IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_OCSMEL_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
+        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
             VALUES(
-            		V_OBJECTID,
             		:old.GEOM,
 					:old.objectid,
 --					:old.NUMERO_DOSSIER,
@@ -112,9 +106,8 @@ FROM
     END IF;
 
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_OCSMEL_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(OBJECTID, GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
+        INSERT INTO G_GESTIONGEO.TA_OCSMEL_LOG(GEOM, IDENTIFIANT_OBJET, FID_IDENTIFIANT_TYPE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION)
             VALUES(
-            		V_OBJECTID,
             		:old.GEOM,
 					:old.objectid,
 --					:old.NUMERO_DOSSIER,
