@@ -16,20 +16,19 @@ NUMBER_MODIFICATION NUMBER(38,0);
 NUMBER_SUPPRESSION NUMBER(38,0);
 
 BEGIN
--- selection du nom de l''agent dans la variable USERNAME
-SELECT 
-	SYS_CONTEXT('USERENV','OS_USER') 
-INTO USERNAME 
-	FROM
-DUAL;
-
 -- selection du numero de l''agent dans la variable USERNUMBER
 SELECT
-	OBJECTID INTO USERNUMBER
+	COALESCE(a.OBJECTID,99996) INTO USERNUMBER 
 FROM 
-	G_GESTIONGEO.TA_GG_AGENT
-WHERE
-	TRIM(LOWER(USERNAME)) = TRIM(LOWER(PNOM));
+	G_GESTIONGEO.TA_GG_AGENT a
+	RIGHT JOIN (
+				SELECT
+					SYS_CONTEXT('USERENV','OS_USER') AS NOM 
+				FROM 
+					DUAL
+				)b
+				ON a.pnom = b.nom
+;
 
 
 -- selection de l'objectid du libelle modification dans la variable NUMBER_MODIFICATION

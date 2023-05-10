@@ -9,7 +9,7 @@ BEGIN
 -- recupere le nom de la sequence
     BEGIN
         SELECT
-            MAX(objectid) INTO NOMBRE_DEPART
+            MAX(objectid) + 1 INTO NOMBRE_DEPART
         FROM
           (
           SELECT

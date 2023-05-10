@@ -9,21 +9,21 @@ BEGIN
 -- recupere le nom de la sequence
     BEGIN
         SELECT
-            MAX(objectid) INTO NOMBRE_DEPART
+            MAX(objectid) + 1 INTO NOMBRE_DEPART
         FROM
           (
           SELECT
-            MAX(objectid) as objectid 
-          FROM 
+            MAX(objectid) as objectid
+          FROM
             TA_RTGE_LINEAIRE_INTEGRATION
-          UNION ALL 
-          SELECT 
+          UNION ALL
+          SELECT
             MAX(objectid) as objectid
           FROM
             TA_RTGE_LINEAIRE
             )
       ;
-    DBMS_OUTPUT.PUT_LINE('CREATE SEQUENCE SEQ_TA_RTGE_LINEAIRE_OBJECTID START WITH ' || NOMBRE_DEPART || ' INCREMENT BY 1 NOCACHE';
+    DBMS_OUTPUT.PUT_LINE('CREATE SEQUENCE SEQ_TA_RTGE_LINEAIRE_OBJECTID START WITH ' || NOMBRE_DEPART || ' INCREMENT BY 1 NOCACHE');
     END;
 -- execution de la requete
     BEGIN
