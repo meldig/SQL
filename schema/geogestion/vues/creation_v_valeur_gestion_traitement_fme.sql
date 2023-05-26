@@ -18,7 +18,7 @@ WHERE
   AND
   TRIM(UPPER(b.libelle_court)) = TRIM(UPPER('Attente Validation (Topo)'))
   AND
-  TRIM(UPPER(c.libelle_court)) = TRIM(UPPER('Actif en base'))
+  TRIM(UPPER(c.libelle_court)) = TRIM(UPPER('Attente Validation (Topo)'))
   AND
   TRIM(UPPER(d.libelle_court)) = TRIM(UPPER('Attente levé géomètre'));
 

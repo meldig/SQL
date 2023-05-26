@@ -4,7 +4,9 @@ USING
 	(
 		SELECT
 		    a.OBJECTID,
-		    a.GEOM,
+			SDO_GEOMETRY(3001, 2154,
+                SDO_POINT_TYPE(a.GEOM.sdo_point.x, a.GEOM.sdo_point.y, COALESCE(a.GEOM.sdo_point.z,0)),
+                NULL, NULL) AS GEOM,
 		    TO_NUMBER(a.GEO_REF) AS FID_NUMERO_DOSSIER,
 		    a.CLA_INU AS FID_IDENTIFIANT_TYPE,
 		    CAST(TRIM(a.GEO_TEXTE) AS VARCHAR2 (2048 BYTE)) AS TEXTE,
