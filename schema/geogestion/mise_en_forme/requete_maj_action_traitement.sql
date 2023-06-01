@@ -4,7 +4,8 @@ USING
 	(
 		SELECT 'Insertion' AS VALEUR FROM DUAL UNION
 		SELECT 'Suppression' AS VALEUR FROM DUAL UNION
-		SELECT 'Modification' AS VALEUR FROM DUAL
+		SELECT 'Modification' AS VALEUR FROM DUAL UNION
+		SELECT 'édition' AS VALEUR FROM DUAL
 	)b
 ON (TRIM(LOWER(a.VALEUR)) = TRIM(LOWER(b.VALEUR)))
 WHEN NOT MATCHED THEN
@@ -38,7 +39,8 @@ USING
 	    (
 	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('Insertion')) OR
 	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('Modification')) OR
-	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('Suppression'))
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('Suppression')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('édition'))
 	    )
 	)b
 ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
@@ -64,7 +66,8 @@ USING
 	    (
 	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('Insertion')) OR
 	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('Suppression')) OR
-	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('Modification'))
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('Modification')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('édition'))
 	    )
 	    AND LOWER(TRIM(b.libelle)) IN LOWER(TRIM('Type d''action'))
 	)b

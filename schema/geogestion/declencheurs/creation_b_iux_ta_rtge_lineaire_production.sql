@@ -1,7 +1,7 @@
--- 3. Creation du trigger B_IUX_TA_RTGE_POINT
+-- 4. Creation du trigger B_IUX_TA_RTGE_LINEAIRE_PRODUCTION
 
-CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT
-BEFORE INSERT OR UPDATE ON TA_RTGE_POINT FOR EACH ROW
+CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_LINEAIRE_PRODUCTION
+BEFORE INSERT OR UPDATE ON TA_RTGE_LINEAIRE FOR EACH ROW
 DECLARE
 USERNAME VARCHAR(30);
 USERNUMBER NUMBER(38,0);
@@ -28,8 +28,8 @@ SELECT OBJECTID INTO USERNUMBER FROM G_GESTIONGEO.TA_GG_AGENT WHERE PNOM = USERN
    EXCEPTION
 
   WHEN OTHERS THEN 
-    VMESSAGE := VMESSAGE||' '||SQLERRM||' '|| chr(10) || 'Le trigger B_IUX_TA_RTGE_POINT rencontre des problèmes par '||username;
-    mail.sendmail('rjault@lillemetropole.fr',VMESSAGE,'Souci Le trigger B_IUX_TA_RTGE_POINT ','rjault@lillemetropole.fr') ;
+    VMESSAGE := VMESSAGE||' '||SQLERRM||' '|| chr(10) || 'Le trigger B_IUX_TA_RTGE_LINEAIRE_PRODUCTION rencontre des problèmes par '||username;
+    mail.sendmail('rjault@lillemetropole.fr',VMESSAGE,'Souci Le trigger B_IUX_TA_RTGE_LINEAIRE_PRODUCTION ','rjault@lillemetropole.fr') ;
 END;
 
 /

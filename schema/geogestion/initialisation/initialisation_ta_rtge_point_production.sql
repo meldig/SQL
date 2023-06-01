@@ -1,5 +1,5 @@
--- 2.1. Insertion des données dans la table TA_RTGE_POINT
-MERGE INTO G_GESTIONGEO.TA_RTGE_POINT a
+-- 2.1. Insertion des données dans la table TA_RTGE_POINT_PRODUCTION
+MERGE INTO G_GESTIONGEO.TA_RTGE_POINT_PRODUCTION a
 USING
 	(
 		SELECT

@@ -1,5 +1,5 @@
--- 3.1. Insertion des données dans la table TA_RTGE_POINT_LOG
-MERGE INTO G_GESTIONGEO.TA_RTGE_POINT_LOG a
+-- 3.1. Insertion des données dans la table TA_RTGE_POINT_PRODUCTION_LOG
+MERGE INTO G_GESTIONGEO.TA_RTGE_POINT_PRODUCTION_LOG a
 USING
 	(
 		WITH CTE AS

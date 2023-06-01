@@ -1,12 +1,12 @@
--- 2. Creation du trigger A_IUD_TA_RTGE_LINEAIRE_LOG
+-- 2. Creation du trigger A_IUD_TA_RTGE_LINEAIRE_PRODUCTION_LOG
 
 /*
-Déclencheur permettant de remplir la table de logs TA_RTGE_LINEAIRE_LOG dans laquelle sont enregistrés chaque insertion, 
-modification et suppression des données de la table TA_RTGE_LINEAIRE avec leur date et le pnom de l'agent les ayant effectuées.
+Déclencheur permettant de remplir la table de logs TA_RTGE_LINEAIRE_PRODUCTION_LOG dans laquelle sont enregistrés chaque insertion, 
+modification et suppression des données de la table TA_RTGE_LINEAIRE_PRODUCTION avec leur date et le pnom de l'agent les ayant effectuées.
 */
 
-CREATE OR REPLACE TRIGGER G_GESTIONGEO.A_IUD_TA_RTGE_LINEAIRE_LOG
-AFTER INSERT OR UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_LINEAIRE
+CREATE OR REPLACE TRIGGER G_GESTIONGEO.A_IUD_TA_RTGE_LINEAIRE_PRODUCTION_LOG
+AFTER INSERT OR UPDATE OR DELETE ON G_GESTIONGEO.TA_RTGE_LINEAIRE_PRODUCTION
 FOR EACH ROW
 DECLARE
 V_OBJECTID NUMBER(38,0);
@@ -75,7 +75,7 @@ WHERE
 
 -- TRIGGER
     IF INSERTING THEN -- En cas de modification on insère les valeurs de la table TA_RTGE_LINEAIRE_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
+        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_PRODUCTION_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
             VALUES(
             		:new.GEOM,
 					:new.objectid,
@@ -91,7 +91,7 @@ WHERE
     ELSE
 
     IF UPDATING THEN -- En cas de modification on insère les valeurs de la table TA_RTGE_LINEAIRE_LOG, le numéro d'agent correspondant à l'utilisateur, la date de modification et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
+        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_PRODUCTION_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
             VALUES(
             		:old.GEOM,
 					:old.objectid,
@@ -109,7 +109,7 @@ WHERE
     	END IF;
 
     IF DELETING THEN -- En cas de suppression on insère les valeurs de la table TA_RTGE_LINEAIRE_LOG, le numéro d'agent correspondant à l'utilisateur, la date de suppression et le type de modification.
-        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
+        INSERT INTO G_GESTIONGEO.TA_RTGE_LINEAIRE_PRODUCTION_LOG(GEOM, IDENTIFIANT_OBJET, FID_NUMERO_DOSSIER, FID_IDENTIFIANT_TYPE, DECALAGE_DROITE, DECALAGE_GAUCHE, FID_PNOM_ACTION, DATE_ACTION, FID_TYPE_ACTION, FID_IDENTIFIANT_OBJET_INTEGRATION)
             VALUES(
             		:old.GEOM,
 					:old.objectid,
@@ -126,7 +126,7 @@ WHERE
 
     EXCEPTION
         WHEN OTHERS THEN
-            mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_RTGE_LINEAIRE_LOG','rjault@lillemetropole.fr');
+            mail.sendmail('rjault@lillemetropole.fr',SQLERRM,'ERREUR TRIGGER - G_GESTIONGEO.A_IUD_TA_RTGE_LINEAIRE_PRODUCTION_LOG','rjault@lillemetropole.fr');
 END;
 
 /
