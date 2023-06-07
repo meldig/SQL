@@ -1,0 +1,4 @@
+create or replace FUNCTION get_aire_polygone(geom MDSYS.SDO_GEOMETRY) RETURN NUMBER DETERMINISTIC AS
+BEGIN
+    RETURN (SDO_GEOM.SDO_AREA(geom, 0.001));
+END;
