@@ -3,49 +3,49 @@
 
 -- G_GESTIONGEO.TA_IC_LINEAIRE
 
--- 2.2.6.1. Création de l'index spatial sur le champ geom
+-- 2.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_IC_LINEAIRE_SIDX;
 
--- 2.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 2.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_IC_LINEAIRE_FID_IDENTIFIANT_TYPE_IDX;
 
--- 3.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 3.2.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_IC_LINEAIRE_FID_NUMERO_DOSSIER_IDX;
 
 
 -- TA_IC_LINEAIRE_LOG
 
--- 3.2.6.1. Création de l'index spatial sur le champ geom
+-- 3.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_IC_LINEAIRE_LOG_SIDX;
 
--- 3.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_IC_LINEAIRE_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
--- 3.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 3.2.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_IC_LINEAIRE_LOG_FID_NUMERO_DOSSIER_IDX;
 
 
 -- TA_RTGE_LINEAIRE_PRODUCTION
 
--- 2.2.6.1. Création de l'index spatial sur le champ geom
+-- 2.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_SIDX;
 
--- 2.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 2.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_FID_IDENTIFIANT_TYPE_IDX;
 
--- 3.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 3.2.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_FID_NUMERO_DOSSIER_IDX;
 
--- 3.2.6.4. Creation d'un index sur le champ FID_IDENTIFIANT_OBJET_INTEGRATION
+-- 3.2.6.4. Suppression d'un index sur le champ FID_IDENTIFIANT_OBJET_INTEGRATION
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_FID_IDENTIFIANT_OBJET_INTEGRATION_IDX;
 
 
 -- TA_RTGE_LINEAIRE_PRODUCTION_LOG
 
--- 3.2.6.1. Création de l'index spatial sur le champ geom
+-- 3.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_LOG_SIDX;
 
--- 3.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
 -- 3.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
@@ -54,31 +54,31 @@ DROP INDEX TA_RTGE_LINEAIRE_PRODUCTION_LOG_FID_NUMERO_DOSSIER_IDX;
 
 -- TA_OCSMEL_LINEAIRE
 
--- 1.6.1. Création de l'index spatial sur le champ geom
+-- 1.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_OCSMEL_LINEAIRE_SIDX;
 
--- 1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_OCSMEL_LINEAIRE_FID_IDENTIFIANT_TYPE_IDX;
 
 
 -- TA_RTGE_LINEAIRE_INTEGRATION
 
--- 1.2.6.1. Création de l'index spatial sur le champ geom
+-- 1.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_SIDX;
 
--- 1.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 1.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_FID_IDENTIFIANT_TYPE_IDX;
 
--- 1.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 1.2.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_FID_NUMERO_DOSSIER_IDX;
 
 
 -- TA_RTGE_LINEAIRE_INTEGRATION_LOG
 
--- 3.2.6.1. Création de l'index spatial sur le champ geom
+-- 3.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_LOG_SIDX;
 
--- 3.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
 -- 3.2.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
@@ -87,76 +87,100 @@ DROP INDEX TA_RTGE_LINEAIRE_INTEGRATION_LOG_FID_NUMERO_DOSSIER_IDX;
 
 -- TA_OCSMEL_LINEAIRE_LOG
 
--- 3.2.6.1. Création de l'index spatial sur le champ geom
+-- 3.2.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_OCSMEL_LINEAIRE_LOG_SIDX;
 
--- 3.2.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.2.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_OCSMEL_LINEAIRE_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
 
 -- TA_RTGE_POINT
 
--- 2.1.6.1 Création de l'index spatial sur le champ geom
+-- 2.1.6.1 Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_POINT_PRODUCTION_SIDX;
 
--- 2.1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 2.1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_POINT_PRODUCTION_FID_IDENTIFIANT_TYPE_IDX;
 
--- 2.1.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 2.1.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_POINT_PRODUCTION_FID_NUMERO_DOSSIER_IDX;
 
--- 2.1.6.4. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 2.1.6.4. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_POINT_PRODUCTION_FID_IDENTIFIANT_OBJET_INTEGRATION_IDX;
 
 
 -- TA_RTGE_POINT_LOG
 
--- 3.1.6.1. Creation de l'index sur le champ GEOM
+-- 3.1.6.1. Suppression de l'index sur le champ GEOM
 DROP INDEX TA_RTGE_POINT_PRODUCTION_LOG_SIDX;
 
--- 3.1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_POINT_PRODUCTION_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
--- 3.1.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 3.1.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_POINT_PRODUCTION_LOG_FID_NUMERO_DOSSIER_IDX;
 
 
 -- TA_RTGE_POINT_INTEGRATION
 
--- 1.1.6.1. Création de l'index spatial sur le champ geom
+-- 1.1.6.1. Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_POINT_INTEGRATION_SIDX;
 
--- 1.1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 1.1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_POINT_INTEGRATION_FID_IDENTIFIANT_TYPE_IDX;
 
--- 1.1.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 1.1.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_POINT_INTEGRATION_FID_NUMERO_DOSSIER_IDX;
 
 
 -- TA_RTGE_POINT_INTEGRATION_LOG
 
--- 3.1.6.1. Creation de l'index sur le champ GEOM
+-- 3.1.6.1. Suppression de l'index sur le champ GEOM
 DROP INDEX TA_RTGE_POINT_INTEGRATION_LOG_SIDX;
 
--- 3.1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 3.1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_POINT_INTEGRATION_LOG_FID_IDENTIFIANT_TYPE_IDX;
 
--- 3.1.6.3. Creation d'un index sur le champ numero dossier
+-- 3.1.6.3. Suppression d'un index sur le champ numero dossier
 DROP INDEX TA_RTGE_POINT_INTEGRATION_LOG_FID_NUMERO_DOSSIER_IDX;
 
 
+-- Table de consultation
+
+-- Table TA_RTGE_POINT_CONSULTATION
+DROP INDEX G_GESTIONGEO.TA_RTGE_POINT_CONSULTATION_SIDX;
+DROP INDEX G_GESTIONGEO.TA_RTGE_POINT_CONSULTATION_IDENTIFIANT_TYPE_IDX;
+DROP INDEX G_GESTIONGEO.TA_RTGE_POINT_CONSULTATION_CODE_TYPE_IDX;
+DROP INDEX G_GESTIONGEO.TA_RTGE_POINT_CONSULTATION_LIBELLE_TYPE_IDX;
+
+-- Table TA_RTGE_LINEAIRE_CONSULTATION
+DROP INDEX G_GESITONGEO.TA_RTGE_LINEAIRE_CONSULTATION_SIDX;
+DROP INDEX G_GESITONGEO.TA_RTGE_LINEAIRE_CONSULTATION_IDENTIFIANT_TYPE_IDX;
+DROP INDEX G_GESITONGEO.TA_RTGE_LINEAIRE_CONSULTATION_CODE_TYPE_IDX;
+DROP INDEX G_GESITONGEO.TA_RTGE_LINEAIRE_CONSULTATION_LIBELLE_TYPE_IDX;
+
+-- TABLE TA_RTGE_ALTI_CONSULTATION
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_SIDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_IDENTIFIANT_TYPE_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_CODE_TYPE_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_LIBELLE_TYPE_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_FID_IDENTIFIANT_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_IDENTIFIANT_OBJET_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_FID_IDENTIFIANT_IDENTIFIANT_OBJET_IDX;
+DROP INDEX TA_RTGE_ALTI_CONSULTATION_OBJECTID_FID_IDENTIFIANT_IDENTIFIANT_OBJET_IDX;
+
 -- TA_RTGE_SURFACE
 
--- 2.1.6.1 Création de l'index spatial sur le champ geom
+-- 2.1.6.1 Suppression de l'index spatial sur le champ geom
 DROP INDEX TA_RTGE_SURFACE_SIDX;
 
--- 2.1.6.2. Création d'un index sur le champ FID_IDENTIFIANT_TYPE
+-- 2.1.6.2. Suppression d'un index sur le champ FID_IDENTIFIANT_TYPE
 DROP INDEX TA_RTGE_SURFACE_FID_IDENTIFIANT_TYPE_IDX;
 
--- 2.1.6.3. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 2.1.6.3. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_SURFACE_FID_NUMERO_DOSSIER_IDX;
 
--- 2.1.6.4. Creation d'un index sur le champ FID_NUMERO_DOSSIER
+-- 2.1.6.4. Suppression d'un index sur le champ FID_NUMERO_DOSSIER
 DROP INDEX TA_RTGE_SURFACE_FID_IDENTIFIANT_OBJET_INTEGRATION_IDX;
 
 -- TA_OCSMEL

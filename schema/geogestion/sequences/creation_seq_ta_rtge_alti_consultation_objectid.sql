@@ -9,7 +9,10 @@ BEGIN
 -- recupere le dernier numero de la colonne de clé primaire +1 pour determiner le nouveau point de départ de la séquence.
     BEGIN
       SELECT 
-        MAX(OBJECTID) +1 INTO NOMBRE_DEPART
+        CASE
+            WHEN MAX(OBJECTID)+1 IS NULL THEN  1
+            WHEN MAX(OBJECTID)+1 IS NOT NULL THEN MAX(OBJECTID)+1
+        END INTO NOMBRE_DEPART
       FROM
         G_GESTIONGEO.TA_RTGE_ALTI_CONSULTATION
       ;

@@ -2,3 +2,5 @@ create or replace FUNCTION get_aire_polygone(geom MDSYS.SDO_GEOMETRY) RETURN NUM
 BEGIN
     RETURN (SDO_GEOM.SDO_AREA(geom, 0.001));
 END;
+
+/
