@@ -1,3 +1,7 @@
+---------------------------------------------------------
+-- DROIT_LECTURE_EDICTION_SUPPRESSION_OBJET_GESTIONGEO --
+---------------------------------------------------------
+
 /*
 Affectation des droits de lecture, édition et suppression des tables et les séquences du schéma GestionGeo.
 */

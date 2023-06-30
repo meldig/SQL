@@ -1,3 +1,7 @@
+-------------------------------------------
+-- CREATION_A_IUD_TA_OCSMEL_LINEAIRE_LOG --
+-------------------------------------------
+
 -- 3. Creation du déclencheur A_IUD_TA_OCSMEL_LINEAIRE_LOG
 /*
 Déclencheur permettant de remplir la table de logs TA_OCSMEL_LINEAIRE_LOG dans laquelle sont enregistrés chaque insertion, 

@@ -1,3 +1,7 @@
+--------------------------------------------
+-- INITIALISATION_TA_PTTOPO_INTEGRATION_2 --
+--------------------------------------------
+
 -- 1.3. Insertion des données dans la table TA_PTTOPO_INTEGRATION
 -- insertion sous un autre objectid des points ayant les memes objectid dans la table geo.PTTOPO@cudl
 MERGE INTO G_GESTIONGEO.TA_PTTOPO_INTEGRATION a
@@ -37,5 +41,7 @@ AND a.FID_NUMERO_DOSSIER = b.FID_NUMERO_DOSSIER)
 WHEN NOT MATCHED THEN INSERT (a.ALT, a.MAT, a.FID_NUMERO_DOSSIER, a.GEOM, a.FID_PNOM_CREATION, a.DATE_CREATION)
 VALUES (b.ALT, b.MAT, b.FID_NUMERO_DOSSIER, b.GEOM, b.FID_PNOM_CREATION, b.DATE_CREATION)
 ;
+
+COMMIT;
 
 /

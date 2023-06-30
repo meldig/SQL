@@ -1,3 +1,7 @@
+------------------------------------------------
+-- CREATION_A_IUD_TA_PTTOPO_INTEGRATION_LOG_2 --
+------------------------------------------------
+
 -- 2. Creation du trigger A_IUD_TA_PTTOPO_INTEGRATION_LOG
 
 /*

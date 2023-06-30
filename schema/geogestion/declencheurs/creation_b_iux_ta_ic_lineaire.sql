@@ -1,4 +1,6 @@
--- Creation du trigger B_IUX_TA_IC_LINEAIRE
+-----------------------------------
+-- CREATION_B_IUX_TA_IC_LINEAIRE --
+-----------------------------------
 
 -- 1. Création du trigger B_IUX_TA_IC_LINEAIRE
 

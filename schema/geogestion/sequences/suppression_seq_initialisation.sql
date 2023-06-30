@@ -1,4 +1,6 @@
--- suppression_seq_initialisation
+------------------------------------
+-- SUPPRESSION_SEQ_INITIALISATION --
+------------------------------------
 
 -- Suppression de la sequence SEQ_TA_OCSMEL_LINEAIRE_LOG_OBJECTID
 DROP SEQUENCE SEQ_TA_OCSMEL_LINEAIRE_LOG_OBJECTID;

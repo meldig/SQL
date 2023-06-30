@@ -1,3 +1,7 @@
+----------------------------------------------------------
+------------ MISE_EN_FORME_TABLE_TA_GG_CLASSE ------------
+----------------------------------------------------------
+
 -- Mise à jour de la table TA_GG_CLASSE
 
 -- 1. Ajout d'une colonne pour ajouter une colonne temporaire
@@ -46,6 +50,12 @@ WHEN NOT MATCHED THEN
 INSERT (a.OBJECTID, a.LIBELLE_COURT, a.LIBELLE_LONG, a.VALIDITE)
 VALUES (b.OBJECTID, b.LIBELLE_COURT, b.LIBELLE_LONG, b.VALIDITE)
 ;
+
+COMMIT;
+
+-- 8. Ajout de la relation entre la classe EAU2_AR et le domaine des IC
+--INSERT INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE (fid_classe, fid_domaine)
+--VALUES (1616, 132);
 
 /*
 MERGE INTO G_GESTIONGEO.TA_GG_CLASSE a

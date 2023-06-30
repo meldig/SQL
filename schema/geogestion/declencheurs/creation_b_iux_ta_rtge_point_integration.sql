@@ -1,3 +1,7 @@
+----------------------------------------------
+-- CREATION_B_IUX_TA_RTGE_POINT_INTEGRATION --
+----------------------------------------------
+
 /*
 trigger d'insertion des données dans TA_RTGE_POINT_INTEGRATION
 */

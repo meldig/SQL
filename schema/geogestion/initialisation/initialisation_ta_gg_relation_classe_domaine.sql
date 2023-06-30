@@ -14,6 +14,8 @@ WHEN NOT MATCHED THEN
 INSERT (a.DOMAINE)
 VALUES (b.DOMAINE);
 
+COMMIT;
+
 /
 
 -- 2. Ajout des codes des classe qui ne sont pas déjà présents dans la table G_GESTIONGEO.Ta_GG_CLASSE 
@@ -39,6 +41,8 @@ INSERT (a.OBJECTID, a.LIBELLE_COURT, a.LIBELLE_LONG, a.VALIDITE)
 VALUES (b.OBJECTID, b.LIBELLE_COURT, b.LIBELLE_LONG, b.VALIDITE)
 ;
 
+COMMIT;
+
 /
 
 -- 3. Ajout des relations entre les codes des classes et les domaines dans la table G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE
@@ -60,6 +64,8 @@ INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
 
+COMMIT;
+
 -- 4. Ajout des domaines Classe des elements lineaires et Classe des elements ponctuels relevés par les géomètres.
 MERGE INTO G_GESTIONGEO.TA_GG_DOMAINE a
 USING
@@ -71,6 +77,8 @@ ON(TRIM(LOWER(a.DOMAINE)) = TRIM(LOWER(b.DOMAINE)))
 WHEN NOT MATCHED THEN
 INSERT (a.DOMAINE)
 VALUES (b.DOMAINE);
+
+COMMIT;
 
 
 -- 5. Insertion des relations classe - domaine des elements ponctuels relevés par les geometres.
@@ -94,6 +102,8 @@ INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
 
+COMMIT;
+
 
 -- 6. Insertion des relations classe - domaine des elements lineraires relevés par les geometres
 MERGE INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE a
@@ -116,6 +126,8 @@ INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
 
+COMMIT;
+
 
 -- 7. Ajout des domaines Classe des elements ponctuels representes par un rectangle ou un cercle.
 MERGE INTO G_GESTIONGEO.TA_GG_DOMAINE a
@@ -128,6 +140,8 @@ ON(TRIM(LOWER(a.DOMAINE)) = TRIM(LOWER(b.DOMAINE)))
 WHEN NOT MATCHED THEN
 INSERT (a.DOMAINE)
 VALUES (b.DOMAINE);
+
+COMMIT;
 
 
 -- 8. Insertion des relations classe - avec le domaine Classe des elements ponctuels représentes par un rectangle
@@ -151,6 +165,8 @@ INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
 
+COMMIT;
+
 
 -- 9. Insertion des relations classe - avec le domaine Classe des elements ponctuels représentes par un rectangle
 MERGE INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE a
@@ -172,6 +188,8 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_CLASSE, a.FID_DOMAINE)
 VALUES (b.FID_CLASSE, b.FID_DOMAINE)
 ;
+
+COMMIT;
 
 
 

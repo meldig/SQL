@@ -1,3 +1,7 @@
+--------------------------------------------
+-- CREATION_MISE_A_JOUR_Z_TA_RTGE_SURFACE --
+--------------------------------------------
+
 -- Procédure pour mettre à jour l'altitude des sommets des polygones contenus dans la table TA_RTGE_SURFACE
 
 create or replace PROCEDURE MISE_A_JOUR_Z_TA_RTGE_SURFACE(IDENTIFIANT_DOSSIER NUMBER, IDENTIFIANT_OBJET NUMBER)

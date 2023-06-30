@@ -1,4 +1,6 @@
--- creation_seq_initialisation
+---------------------------------
+-- CREATION_SEQ_INITIALISATION --
+---------------------------------
 
 /*
 SEQ_TA_RTGE_POINT_INTEGRATION_OBJECTID : création de la séquence d'auto-incrémentation de la clé primaire de la table TA_RTGE_POINT_INTEGRATION

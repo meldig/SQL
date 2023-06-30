@@ -1,4 +1,9 @@
+-------------------------------------------------------
+------------ REQUETE_MAJ_ACTION_TRAITEMENT ------------
+-------------------------------------------------------
+
 -- Insertion des valeurs dans la table TA_GG_LIBELLE (longueur, largeur, decalage gauche et decalage droite)
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE_LONG a
 USING
 	(
@@ -12,8 +17,11 @@ WHEN NOT MATCHED THEN
 INSERT (a.VALEUR)
 VALUES (b.VALEUR)
 ;
+*/
+
 
 -- Insertion de la famille mesure dans TA_GG_FAMILLE
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE a
 USING
 	(
@@ -24,10 +32,10 @@ WHEN NOT MATCHED THEN
 INSERT (a.LIBELLE)
 VALUES (b.LIBELLE)
 ;
-
+*/
 
 -- Insertion des libelles long dans TA_GG_LIBELLE
-
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE a
 USING
 	(
@@ -48,10 +56,10 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
 ;
 
-/
+*/
 
 -- Insertion des relations libelle et famille
-
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE a
 USING
 	(
@@ -77,7 +85,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_FAMILLE,a.FID_LIBELLE)
 VALUES (b.FID_FAMILLE,b.FID_LIBELLE)
 ;
-
+*/
 
 
 ------ TYPE ELEMENT
@@ -95,6 +103,8 @@ INSERT (a.VALEUR)
 VALUES (b.VALEUR)
 ;
 
+COMMIT;
+
 
 -- Insertion de la famille mesure dans TA_GG_FAMILLE
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE a
@@ -107,6 +117,8 @@ WHEN NOT MATCHED THEN
 INSERT (a.LIBELLE)
 VALUES (b.LIBELLE)
 ;
+
+COMMIT;
 
 
 -- Insertion des libelles long dans TA_GG_LIBELLE
@@ -128,6 +140,8 @@ ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
 WHEN NOT MATCHED THEN
 INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
 ;
+
+COMMIT;
 
 /
 
@@ -157,5 +171,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_FAMILLE,a.FID_LIBELLE)
 VALUES (b.FID_FAMILLE,b.FID_LIBELLE)
 ;
+
+COMMIT;
 
 /

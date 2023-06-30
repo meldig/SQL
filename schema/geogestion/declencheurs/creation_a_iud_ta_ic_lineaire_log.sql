@@ -1,3 +1,7 @@
+---------------------------------------
+-- CREATION_A_IUD_TA_IC_LINEAIRE_LOG --
+---------------------------------------
+
 -- 2. Creation du trigger A_IUD_TA_IC_LINEAIRE_LOG
 
 /*

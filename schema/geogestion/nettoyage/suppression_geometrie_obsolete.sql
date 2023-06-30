@@ -1,3 +1,7 @@
+------------------------------------
+-- SUPPRESSION_GEOMETRIE_OBSOLETE --
+------------------------------------
+
 -- Suppression des elements obsoletes de la table TA_RTGE_POINT_INTEGRATION
 DELETE FROM G_GESTIONGEO.TA_RTGE_POINT_INTEGRATION
 WHERE FID_NUMERO_DOSSIER = 1

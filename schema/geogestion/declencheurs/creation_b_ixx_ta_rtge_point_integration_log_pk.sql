@@ -1,3 +1,7 @@
+--------------------------------------------
+-- B_IXX_TA_RTGE_POINT_INTEGRATION_LOG_PK --
+--------------------------------------------
+
 -- Creation du trigger d'incrementaion B_IXX_TA_RTGE_POINT_INTEGRATION_LOG_PK de clé primaire de la table TA_RTGE_POINT_INTEGRATION_LOG
 CREATE OR REPLACE TRIGGER B_IXX_TA_RTGE_POINT_INTEGRATION_LOG_PK
 BEFORE INSERT ON TA_RTGE_POINT_INTEGRATION_LOG FOR EACH ROW

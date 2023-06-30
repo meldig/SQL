@@ -1,3 +1,7 @@
+------------------------------
+-- CREATION_B_IUX_TA_OCSMEL --
+------------------------------
+
 -- 5. Creation du trigger B_IUX_TA_OCSMEL
 
 CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_OCSMEL

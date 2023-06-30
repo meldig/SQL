@@ -1,4 +1,9 @@
+------------------------------------------------------
+------------ REQUETE_MAJ_TA_GG_FME_MESURE ------------
+------------------------------------------------------
+
 -- Insertion des valeurs dans la table TA_GG_LIBELLE (longueur, largeur, decalage gauche et decalage droite)
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE_LONG a
 USING
 	(
@@ -12,8 +17,10 @@ WHEN NOT MATCHED THEN
 INSERT (a.VALEUR)
 VALUES (b.VALEUR)
 ;
+*/
 
 -- Insertion de la famille mesure dans TA_GG_FAMILLE
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE a
 USING
 	(
@@ -24,10 +31,10 @@ WHEN NOT MATCHED THEN
 INSERT (a.LIBELLE)
 VALUES (b.LIBELLE)
 ;
-
+*/
 
 -- Insertion des libelles long dans TA_GG_LIBELLE
-
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE a
 USING
 	(
@@ -47,10 +54,10 @@ ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
 WHEN NOT MATCHED THEN
 INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
 ;
-
+*/
 
 -- Insertion des relations libelle et famille
-
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE a
 USING
 	(
@@ -76,7 +83,7 @@ WHEN NOT MATCHED THEN
 INSERT (a.FID_FAMILLE,a.FID_LIBELLE)
 VALUES (b.FID_FAMILLE,b.FID_LIBELLE)
 ;
-
+*/
 
 -- Mise en forme de la table G_GESTIONGEO.TA_GG_FME_MESURE
 -- changement de type de la colonne
@@ -85,6 +92,14 @@ ADD VALEUR_B NUMBER(38,3);
 
 UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
 SET VALEUR_B = VALEUR/100;
+
+-- multipp
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE
+DROP CONSTRAINT SYS_C00534279;
+
+-- multi
+-- ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE
+-- DROP CONSTRAINT SYS_C00143904
 
 UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
 SET VALEUR = NULL;
@@ -98,53 +113,25 @@ SET VALEUR = VALEUR_B;
 ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE 
 DROP COLUMN VALEUR_B;
 
+-- creation contrainte de non nullite sur le champ valeur
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE MODIFY (VALEUR NOT NULL);
 
 -- Correction de la colonne FID_MESURE dans la table TA_GG_FME_MESURE, redirection de la clé étrangère 
-UPDATE G_GESTIONGEO.TA_GG_FME_MESURE a
-SET FID_MESURE = 
-(
-WITH CTE AS 
-		(
-		SELECT 
-		    a.objectid AS n_fid_mesure,
-		    b.valeur AS n_libelle
-		FROM 
-		    G_GESTIONGEO.TA_GG_LIBELLE a
-		    INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG b ON a.fid_libelle_long = b.objectid
-		    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE c ON c.fid_libelle = a.objectid
-		    INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE d ON d.objectid = c.fid_famille
-		WHERE 
-		    d.libelle = 'Mesure'
-		),
-	CTE_2 AS
-		(
-		SELECT 
-		    e.objectid AS o_fid_mesure,
-		    f.valeur AS o_libelle
-		FROM
-		    G_GEO.TA_LIBELLE e
-		    INNER JOIN G_GEO.TA_LIBELLE_LONG f ON e.fid_libelle_long = f.objectid
-		    INNER JOIN G_GEO.TA_FAMILLE_LIBELLE g ON g.fid_libelle_long = f.objectid
-		    INNER JOIN G_GEO.TA_FAMILLE h ON h.objectid = g.fid_famille
-		WHERE
-	        h.valeur = 'Mesure'
-		),
-	CTE_3 AS
-		(
-		SELECT
-			cte.n_fid_mesure,
-			cte.n_libelle,
-			cte_2.o_fid_mesure,
-			cte_2.o_libelle
-		FROM
-			CTE
-			INNER JOIN CTE_2 ON cte.n_libelle = cte_2.o_libelle
-		)
-        SELECT cte_3.n_fid_mesure FROM CTE_3 WHERE a.FID_MESURE = cte_3.o_fid_mesure
-);
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
+SET FID_MESURE =
+	CASE
+		WHEN FID_MESURE = 1432 THEN 45
+		WHEN FID_MESURE = 1433 THEN 46
+		WHEN FID_MESURE = 1434 THEN 47
+		WHEN FID_MESURE = 1435 THEN 44
+	END
+;
+
+COMMIT;
 
 
 -- Insertion de deux nouvelles lignes dans la table TA_GG_FME_FILTRE_SUR_LIGNE pour gérer les classes HHS et HHM.
+/*
 MERGE INTO G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a
 USING
     (
@@ -167,3 +154,4 @@ INSERT(a.FID_CLASSE, a.FID_CLASSE_SOURCE)
 VALUES(b.FID_CLASSE, b.FID_CLASSE_SOURCE);
 
 /
+*/

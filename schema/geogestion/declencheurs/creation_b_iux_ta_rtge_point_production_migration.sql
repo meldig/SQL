@@ -1,3 +1,7 @@
+-------------------------------------------------------
+-- CREATION_B_IUX_TA_RTGE_POINT_PRODUCTION_MIGRATION --
+-------------------------------------------------------
+
 /*
 creation trigger de migration: B_IUX_TA_RTGE_POINT_PRODUCTION_MIGRATION
 */

@@ -1,3 +1,7 @@
+-------------------------
+-- DROIT_DES_SEQUENCES --
+-------------------------
+
 -- Gestion des droits des sequences
 
 GRANT SELECT ON G_GESTIONGEO.SEQ_TA_RTGE_POINT_INTEGRATION_OBJECTID TO G_GESTIONGEO_RW;

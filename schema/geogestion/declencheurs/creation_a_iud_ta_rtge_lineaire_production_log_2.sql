@@ -1,3 +1,7 @@
+----------------------------------------------------
+-- CREATION_A_IUD_TA_RTGE_LINEAIRE_PRODUCTION_LOG --
+----------------------------------------------------
+
 -- 2. Creation du trigger A_IUD_TA_RTGE_LINEAIRE_PRODUCTION_LOG
 
 /*

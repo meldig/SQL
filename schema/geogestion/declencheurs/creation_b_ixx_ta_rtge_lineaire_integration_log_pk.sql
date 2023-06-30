@@ -1,3 +1,7 @@
+-----------------------------------------------
+-- B_IXX_TA_RTGE_LINEAIRE_INTEGRATION_LOG_PK --
+-----------------------------------------------
+
 -- Creation du trigger B_IXX_TA_RTGE_LINEAIRE_INTEGRATION_LOG_PK d'incrematation de clé primaire de la table TA_RTGE_LINEAIRE_INTEGRATION_LOG
 CREATE OR REPLACE TRIGGER B_IXX_TA_RTGE_LINEAIRE_INTEGRATION_LOG_PK
 BEFORE UPDATE OR DELETE ON TA_RTGE_LINEAIRE_INTEGRATION_LOG FOR EACH ROW

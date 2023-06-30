@@ -1,3 +1,7 @@
+--------------------------------------------------------
+-- CREATION_V_RTGE_ELEMENT_PRODUCTION_SOMMET_ALTITUDE --
+--------------------------------------------------------
+
 -- 1. creation de la vue:
 CREATE OR REPLACE FORCE EDITIONABLE VIEW G_GESTIONGEO.V_RTGE_ELEMENT_PRODUCTION_SOMMET_ALTITUDE
     (

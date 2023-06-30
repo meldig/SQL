@@ -1,3 +1,7 @@
+--------------------------------------
+-- CREATION_V_VALEUR_TRAITEMENT_FME --
+--------------------------------------
+
 -- Vue des valeurs utilisées dans le traitement FME.
 -- 1. Création de la vue
 CREATE OR REPLACE FORCE VIEW "G_GESTIONGEO"."V_VALEUR_TRAITEMENT_FME"
@@ -61,7 +65,7 @@ AS WITH CTE AS
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
-                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
@@ -78,7 +82,7 @@ AS WITH CTE AS
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
-                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
@@ -95,7 +99,7 @@ AS WITH CTE AS
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
-                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE
@@ -112,7 +116,7 @@ AS WITH CTE AS
             FROM
                 G_GESTIONGEO.TA_GG_FME_MESURE a
                 INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE b ON b.objectid = a.fid_mesure
-                INNER JOIN TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
+                INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.objectid = b.fid_libelle_long
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE d ON d.fid_libelle = b.objectid
                 INNER JOIN G_GESTIONGEO.TA_GG_FAMILLE e ON e.objectid = d.fid_famille
             WHERE

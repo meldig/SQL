@@ -1,3 +1,7 @@
+--------------------------------------------------------------------------------------
+-- CREATION_PROCEDURE_NETTOYAGE_DES_TABLES_DINTEGRATION_DES_ELEMENTS_TOPOGRAPHIQUES --
+--------------------------------------------------------------------------------------
+
 create or replace PROCEDURE NETTOYAGE_DES_TABLES_DINTEGRATION_DES_ELEMENTS_TOPOGRAPHIQUES
 IS
 

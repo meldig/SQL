@@ -34,6 +34,8 @@ AND a.FID_NUMERO_DOSSIER = b.FID_NUMERO_DOSSIER)
 WHEN MATCHED THEN UPDATE
 SET a.DECALAGE_DROITE = b.MESURE;
 
+COMMIT;
+
 
 /*
 Mise à zero des largeurs des petits murs qui croisent deux points topo
@@ -84,5 +86,7 @@ USING
 ON(a.OBJECTID = b.OBJECTID_CORR)
 WHEN MATCHED THEN UPDATE
 SET a.DECALAGE_GAUCHE = b.MESURE_CORR;
+
+COMMIT;
 
 /

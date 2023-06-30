@@ -76,6 +76,7 @@ REFERENCES G_GESTIONGEO.TA_GG_DOSSIER(objectid);
 
 
 -- 2.1.5. Création des métadonnées spatiales
+DELETE FROM USER_SDO_GEOM_METADATA WHERE TABLE_NAME ='TA_RTGE_SURFACE';
 INSERT INTO USER_SDO_GEOM_METADATA(
     TABLE_NAME, 
     COLUMN_NAME, 
@@ -88,7 +89,7 @@ VALUES(
     SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 684540, 719822.2, 0.005),SDO_DIM_ELEMENT('Y', 7044212, 7078072, 0.005),SDO_DIM_ELEMENT('Z', -100, 100, 0.005)),
     2154
 );
-
+COMMIT;
 
 -- 2.1.6. Creation des index
 -- 2.1.6.1 Création de l'index spatial sur le champ geom

@@ -1,3 +1,7 @@
+---------------------------------------------
+-- CREATION_V_IDENTIFIANT_TYPE_LINEAIRE_IC --
+---------------------------------------------
+
 -- Vue des valeurs des classes utilisees qui peuvent être attribuees aux elements lineaires releves par les geometres dans le traitement FME.
 
 -- 1. Création de la vue

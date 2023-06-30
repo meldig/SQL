@@ -1,3 +1,7 @@
+---------------------------------------------
+-- CREATION_B_IUX_TA_RTGE_POINT_PRODUCTION --
+---------------------------------------------
+
 -- 3. Creation du trigger B_IUX_TA_RTGE_POINT_PRODUCTION
 
 CREATE OR REPLACE TRIGGER G_GESTIONGEO.B_IUX_TA_RTGE_POINT_PRODUCTION

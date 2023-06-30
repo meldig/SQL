@@ -1,3 +1,7 @@
+-----------------------------------------
+-- CREATION_V_IDENTIFIANT_PLAN_GESTION --
+-----------------------------------------
+
 -- Vue des valeurs des classes utilisees qui peuvent être attribuees aux elements du plan de gestion
 
 -- 1. Création de la vue

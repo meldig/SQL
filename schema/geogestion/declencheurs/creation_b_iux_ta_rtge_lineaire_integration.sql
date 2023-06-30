@@ -1,4 +1,6 @@
--- Creation du trigger B_IUX_TA_RTGE_LINEAIRE_INTEGRATION
+-------------------------------------------------
+-- CREATION_B_IUX_TA_RTGE_LINEAIRE_INTEGRATION --
+-------------------------------------------------
 
 -- 1. Création du trigger B_IUX_TA_RTGE_LINEAIRE_INTEGRATION
 

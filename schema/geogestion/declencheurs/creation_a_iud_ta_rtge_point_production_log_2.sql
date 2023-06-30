@@ -1,3 +1,7 @@
+---------------------------------------------------
+-- CREATION_A_IUD_TA_RTGE_POINT_PRODUCTION_LOG_2 --
+---------------------------------------------------
+
 /*
 Trigger de sauvegarde des modifictions effectuees sur la table G_GESTIONGEO.TA_RTGE_POINT_PRODUCTION dans la table G_GESTIONGEO.TA_RTGE_POINT_PRODUCTION_LOG
 */

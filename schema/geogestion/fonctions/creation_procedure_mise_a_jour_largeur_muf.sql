@@ -1,3 +1,7 @@
+------------------------------------------------
+-- CREATION_PROCEDURE_MISE_A_JOUR_LARGEUR_MUF --
+------------------------------------------------
+
 CREATE OR REPLACE PROCEDURE MISE_A_JOUR_LARGEUR_MUF(IDENTIFIANT_DOSSIER NUMBER)
 IS
 BEGIN

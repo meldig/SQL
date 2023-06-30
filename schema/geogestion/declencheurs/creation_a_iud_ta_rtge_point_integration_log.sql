@@ -1,3 +1,7 @@
+--------------------------------------------------
+-- CREATION_A_IUD_TA_RTGE_POINT_INTEGRATION_LOG --
+--------------------------------------------------
+
 -- 1. Creation du trigger A_IUD_TA_RTGE_POINT_INTEGRATION_LOG
 
 /*
