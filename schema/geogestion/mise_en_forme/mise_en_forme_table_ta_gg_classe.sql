@@ -1,0 +1,241 @@
+----------------------------------------------------------
+------------ MISE_EN_FORME_TABLE_TA_GG_CLASSE ------------
+----------------------------------------------------------
+
+-- Mise à jour de la table TA_GG_CLASSE
+
+-- 1. Ajout d'une colonne pour ajouter une colonne temporaire
+ALTER TABLE G_GESTIONGEO.TA_GG_CLASSE
+ADD LIBELLE_COURT_TEMP VARCHAR2(20 BYTE);
+
+-- 2. remplissage de la colonne temporaire
+UPDATE G_GESTIONGEO.TA_GG_CLASSE
+SET LIBELLE_COURT_TEMP = LIBELLE_COURT;
+
+
+-- 3. mise à jour de la colonne à null
+UPDATE G_GESTIONGEO.TA_GG_CLASSE SET LIBELLE_COURT = NULL;
+
+
+-- 4. changement du type de la colonne varchar2(20)
+ALTER TABLE G_GESTIONGEO.TA_GG_CLASSE MODIFY LIBELLE_COURT varchar2(20);
+
+
+-- 5. mise à jour de la colonne modifiée
+UPDATE G_GESTIONGEO.TA_GG_CLASSE
+SET LIBELLE_COURT = LIBELLE_COURT_TEMP;
+
+
+-- 6. suppression de la colonne temporaire
+ALTER TABLE G_GESTIONGEO.TA_GG_CLASSE DROP COLUMN LIBELLE_COURT_TEMP;
+
+
+-- 7. Ajout des nouvelles classes des IC
+MERGE INTO G_GESTIONGEO.TA_GG_CLASSE a
+USING
+	(
+	SELECT
+		1616 AS OBJECTID,
+		'EAU2_AR' AS LIBELLE_COURT,
+		'Conduite eau brute / industrielle Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	)b
+ON(a.OBJECTID = b.OBJECTID
+AND	TRIM(LOWER(a.LIBELLE_COURT)) = TRIM(LOWER(b.LIBELLE_COURT))
+AND TRIM(LOWER(a.LIBELLE_LONG)) = TRIM(LOWER(b.LIBELLE_LONG))
+AND a.VALIDITE = b.VALIDITE)
+WHEN NOT MATCHED THEN
+INSERT (a.OBJECTID, a.LIBELLE_COURT, a.LIBELLE_LONG, a.VALIDITE)
+VALUES (b.OBJECTID, b.LIBELLE_COURT, b.LIBELLE_LONG, b.VALIDITE)
+;
+
+COMMIT;
+
+-- 8. Ajout de la relation entre la classe EAU2_AR et le domaine des IC
+--INSERT INTO G_GESTIONGEO.TA_GG_RELATION_CLASSE_DOMAINE (fid_classe, fid_domaine)
+--VALUES (1616, 132);
+
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_CLASSE a
+USING
+	(
+	SELECT
+		'EAU2_A' AS LIBELLE_COURT,
+		'Conduite eau brute / industrielle Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'EAU2_AR' AS LIBELLE_COURT,
+		'Conduite eau brute / industrielle Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'EAU2_B' AS LIBELLE_COURT,
+		'Conduite eau brute / industrielle Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'EAU2_C' AS LIBELLE_COURT,
+		'Conduite eau brute / industrielle Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KA_A' AS LIBELLE_COURT,
+		'Axe ligne métro Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KA_AR' AS LIBELLE_COURT,
+		'Axe ligne métro Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KA_B' AS LIBELLE_COURT,
+		'Axe ligne métro Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KA_C' AS LIBELLE_COURT,
+		'Axe ligne métro Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KE_A' AS LIBELLE_COURT,
+		'Extrados Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KE_AR' AS LIBELLE_COURT,
+		'Extrados Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KE_B' AS LIBELLE_COURT,
+		'Extrados Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KE_C' AS LIBELLE_COURT,
+		'Extrados Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KI_A' AS LIBELLE_COURT,
+		'Intrados Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KI_AR' AS LIBELLE_COURT,
+		'Intrados Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KI_B' AS LIBELLE_COURT,
+		'Intrados Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'KI_C' AS LIBELLE_COURT,
+		'Intrados Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TRR_A' AS LIBELLE_COURT,
+		'Chambre Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TRR_AR' AS LIBELLE_COURT,
+		'Chambre Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TRR_B' AS LIBELLE_COURT,
+		'Chambre Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TRR_C' AS LIBELLE_COURT,
+		'Chambre Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TT_A' AS LIBELLE_COURT,
+		'Chambre complexe Classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TT_AR' AS LIBELLE_COURT,
+		'Chambre complexe Déjà en classe A' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TT_B' AS LIBELLE_COURT,
+		'Chambre complexe Classe B' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	UNION
+	SELECT
+		'TT_C' AS LIBELLE_COURT,
+		'Chambre complexe Classe C' AS LIBELLE_LONG,
+		1 AS VALIDITE
+	FROM
+		DUAL
+	)b
+ON(TRIM(LOWER(a.LIBELLE_COURT)) = TRIM(LOWER(b.LIBELLE_LONG))
+AND TRIM(LOWER(a.LIBELLE_COURT)) = TRIM(LOWER(b.LIBELLE_LONG))
+AND a.VALIDITE = b.VALIDITE)
+WHEN NOT MATCHED THEN
+INSERT (a.LIBELLE_COURT, a.LIBELLE_LONG, a.VALIDITE)
+VALUES (b.LIBELLE_COURT, b.LIBELLE_LONG, b.VALIDITE)
+;
+*/
+
+/

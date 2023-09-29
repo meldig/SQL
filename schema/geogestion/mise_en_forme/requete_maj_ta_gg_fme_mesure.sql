@@ -1,0 +1,157 @@
+------------------------------------------------------
+------------ REQUETE_MAJ_TA_GG_FME_MESURE ------------
+------------------------------------------------------
+
+-- Insertion des valeurs dans la table TA_GG_LIBELLE (longueur, largeur, decalage gauche et decalage droite)
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE_LONG a
+USING
+	(
+		SELECT 'decalage abscisse gauche' AS VALEUR FROM DUAL UNION
+		SELECT 'largeur' AS VALEUR FROM DUAL UNION
+		SELECT 'longueur' AS VALEUR FROM DUAL UNION
+		SELECT 'decalage abscisse droit' AS VALEUR FROM DUAL
+	)b
+ON (TRIM(LOWER(a.VALEUR)) = TRIM(LOWER(b.VALEUR)))
+WHEN NOT MATCHED THEN
+INSERT (a.VALEUR)
+VALUES (b.VALEUR)
+;
+*/
+
+-- Insertion de la famille mesure dans TA_GG_FAMILLE
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE a
+USING
+	(
+		SELECT 'Mesure' AS LIBELLE FROM DUAL
+	)b
+ON (TRIM(LOWER(a.LIBELLE)) = TRIM(LOWER(b.LIBELLE)))
+WHEN NOT MATCHED THEN
+INSERT (a.LIBELLE)
+VALUES (b.LIBELLE)
+;
+*/
+
+-- Insertion des libelles long dans TA_GG_LIBELLE
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_LIBELLE a
+USING
+	(
+	SELECT
+	    a.objectid AS FID_LIBELLE_LONG
+	FROM
+	    G_GESTIONGEO.TA_GG_LIBELLE_LONG a
+	WHERE
+	    (
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('largeur')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('longueur')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
+	    LOWER(TRIM(a.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
+	    )
+	)b
+ON (a.FID_LIBELLE_LONG = b.FID_LIBELLE_LONG)
+WHEN NOT MATCHED THEN
+INSERT (a.FID_LIBELLE_LONG)VALUES (b.FID_LIBELLE_LONG)
+;
+*/
+
+-- Insertion des relations libelle et famille
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_FAMILLE_LIBELLE a
+USING
+	(
+	SELECT
+	    a.objectid AS FID_LIBELLE,
+	    b.objectid AS FID_FAMILLE
+	FROM
+	    G_GESTIONGEO.TA_GG_LIBELLE a
+	    INNER JOIN G_GESTIONGEO.TA_GG_LIBELLE_LONG c ON c.OBJECTID = a.FID_LIBELLE_LONG,
+	    G_GESTIONGEO.TA_GG_FAMILLE b
+	WHERE
+		(
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('largeur')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('longueur')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('decalage abscisse gauche')) OR
+	    LOWER(TRIM(c.valeur)) IN LOWER(TRIM('decalage abscisse droit'))
+	    )
+	    AND LOWER(TRIM(b.libelle)) IN LOWER(TRIM('mesure'))
+	)b
+ON (a.FID_FAMILLE = b.FID_FAMILLE
+AND a.FID_LIBELLE = b.FID_LIBELLE)
+WHEN NOT MATCHED THEN
+INSERT (a.FID_FAMILLE,a.FID_LIBELLE)
+VALUES (b.FID_FAMILLE,b.FID_LIBELLE)
+;
+*/
+
+-- Mise en forme de la table G_GESTIONGEO.TA_GG_FME_MESURE
+-- changement de type de la colonne
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE
+ADD VALEUR_B NUMBER(38,3);
+
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
+SET VALEUR_B = VALEUR/100;
+
+-- multipp
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE
+DROP CONSTRAINT SYS_C00534279;
+
+-- multi
+-- ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE
+-- DROP CONSTRAINT SYS_C00143904
+
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
+SET VALEUR = NULL;
+
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE 
+MODIFY VALEUR NUMBER(38,3);
+
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
+SET VALEUR = VALEUR_B;
+
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE 
+DROP COLUMN VALEUR_B;
+
+-- creation contrainte de non nullite sur le champ valeur
+ALTER TABLE G_GESTIONGEO.TA_GG_FME_MESURE MODIFY (VALEUR NOT NULL);
+
+-- Correction de la colonne FID_MESURE dans la table TA_GG_FME_MESURE, redirection de la clé étrangère 
+UPDATE G_GESTIONGEO.TA_GG_FME_MESURE
+SET FID_MESURE =
+	CASE
+		WHEN FID_MESURE = 1432 THEN 45
+		WHEN FID_MESURE = 1433 THEN 46
+		WHEN FID_MESURE = 1434 THEN 47
+		WHEN FID_MESURE = 1435 THEN 44
+	END
+;
+
+COMMIT;
+
+
+-- Insertion de deux nouvelles lignes dans la table TA_GG_FME_FILTRE_SUR_LIGNE pour gérer les classes HHS et HHM.
+/*
+MERGE INTO G_GESTIONGEO.TA_GG_FME_FILTRE_SUR_LIGNE a
+USING
+    (
+    SELECT
+        42 AS FID_CLASSE,
+        1530 AS FID_CLASSE_SOURCE
+    FROM
+        DUAL
+    UNION    
+    SELECT
+        42 AS FID_CLASSE,
+        1531 AS FID_CLASSE_SOURCE
+    FROM
+        DUAL
+    )b
+ON(a.FID_CLASSE = b.FID_CLASSE
+AND a.FID_CLASSE_SOURCE = b.FID_CLASSE_SOURCE)
+WHEN NOT MATCHED THEN
+INSERT(a.FID_CLASSE, a.FID_CLASSE_SOURCE)
+VALUES(b.FID_CLASSE, b.FID_CLASSE_SOURCE);
+
+/
+*/

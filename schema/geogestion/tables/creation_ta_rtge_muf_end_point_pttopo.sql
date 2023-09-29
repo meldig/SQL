@@ -1,0 +1,30 @@
+-- 2.1. Creation de la table TA_RTGE_MUF_END_POINT_PTTOPO
+-- Table qui permet de connaitre les lignes dont le start point croise un point topographique
+
+-- 2.1.1. Creation de la table
+
+CREATE GLOBAL TEMPORARY TABLE G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO
+	(
+	OBJECTID_OBJET NUMBER(38,0), 
+	OBJECTID_PTTOPO NUMBER(38,0)
+	)
+;
+
+
+-- 2.1.2. Commentaire des tables
+COMMENT ON TABLE G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO IS 'Table qui permet de connaitre les lignes dont le end point croise un point topographique dans le cadre du calcul de la largeur des murs';
+
+
+-- 2.1.3. Commentaire de la colonne
+COMMENT ON COLUMN G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO.OBJECTID_OBJET IS 'Identifiant de l''objet considérée';
+COMMENT ON COLUMN G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO.OBJECTID_PTTOPO IS 'Identifiant du point considéré';
+
+
+-- 2.1.7. Affection des droits de lecture
+GRANT SELECT ON G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO TO G_ADMIN_SIG;
+GRANT SELECT ON G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO TO G_SERVICE_WEB;
+GRANT SELECT ON G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO TO ISOGEO_LEC;
+GRANT SELECT ON G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO TO G_GESTIONGEO_LEC;
+GRANT SELECT, UPDATE, DELETE, INSERT ON G_GESTIONGEO.TA_RTGE_MUF_END_POINT_PTTOPO TO G_GESTIONGEO_MAJ;
+
+/

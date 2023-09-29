@@ -1,0 +1,18 @@
+--------------------------------------------------------------------------------------
+-- CREATION_PROCEDURE_NETTOYAGE_DES_TABLES_DINTEGRATION_DES_ELEMENTS_TOPOGRAPHIQUES --
+--------------------------------------------------------------------------------------
+
+create or replace PROCEDURE NETTOYAGE_DES_TABLES_DINTEGRATION_DES_ELEMENTS_TOPOGRAPHIQUES
+IS
+
+BEGIN
+    -- Suppression des éléments de la table TA_RTGE_POINT_INTEGRATION.
+    DELETE FROM G_GESTIONGEO.TA_RTGE_POINT_INTEGRATION WHERE ETAT_INTEGRATION = 2;
+
+
+    -- Suppression des éléments de la table TA_RTGE_POINT_INTEGRATION.
+    DELETE FROM G_GESTIONGEO.TA_RTGE_LINEAIRE_INTEGRATION WHERE ETAT_INTEGRATION = 2;
+
+END NETTOYAGE_DES_TABLES_DINTEGRATION_DES_ELEMENTS_TOPOGRAPHIQUES;
+
+/
